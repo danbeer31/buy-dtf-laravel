@@ -6,3 +6,6 @@
 /storage/*.key
 /bootstrap/cache/*.php
 .phpunit.result.cache
+
+# IDE
+.idea/
