@@ -48,4 +48,9 @@ class User extends Authenticatable
             'password_reset_required' => 'boolean',
         ];
     }
+
+    public function business()
+    {
+        return $this->hasOne(Business::class);
+    }
 }
