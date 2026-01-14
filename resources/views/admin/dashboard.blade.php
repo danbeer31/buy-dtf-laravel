@@ -1,15 +1,20 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Admin Dashboard
+        <h2 class="fw-bold fs-4 text-dark mb-0">
+            {{ __('Admin Dashboard') }}
         </h2>
     </x-slot>
 
-    <div class="py-6">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    You are logged in as admin.
+    <div class="py-5">
+        <div class="container">
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-body p-4 text-center">
+                    <p class="fs-5 text-dark mb-4">You are logged in as admin.</p>
+                    <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+                        <a href="{{ route('admin.businesses.index') }}" class="btn btn-primary btn-lg px-4">
+                            <i class="bi bi-briefcase me-2"></i>Manage Businesses
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

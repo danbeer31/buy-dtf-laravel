@@ -16,8 +16,24 @@ return Application::configure(basePath: dirname(__DIR__))
         },
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->validateCsrfTokens(except: [
+            'cart/indicator',
+            'cart/preflight',
+            'cart/put/*',
+            'cart/image_update/*',
+            'cart/delete/*',
+            'cart/duplicate/*',
+            'cart/dupe_check',
+            'cart/dupe_check_hash',
+            'cart/use_existing',
+            'cart/render_dtfimage_card',
+            'cart/save/*',
+            'cart/use_saved',
+        ]);
+
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
+            'customer' => \App\Http\Middleware\CustomerMiddleware::class,
             // only keep this if you are actively using it in routes
             'force_reset' => \App\Http\Middleware\ForcePasswordReset::class,
         ]);

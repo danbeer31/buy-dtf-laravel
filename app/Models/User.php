@@ -13,6 +13,13 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     /**
+     * The connection name for the model.
+     *
+     * @var string|null
+     */
+    protected $connection = 'mysql';
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var list<string>
@@ -51,6 +58,6 @@ class User extends Authenticatable
 
     public function business()
     {
-        return $this->hasOne(Business::class);
+        return $this->hasOne(Business::class, 'email', 'email');
     }
 }

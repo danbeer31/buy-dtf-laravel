@@ -12,7 +12,11 @@
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
         <!-- Scripts -->
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
         @vite(['resources/css/app.scss', 'resources/js/app.js'])
+        <script src="{{ asset('assets/js/cart/indicator.js') }}"></script>
+
+        @stack('styles')
     </head>
     <body class="font-sans text-dark antialiased bg-light">
         <div class="min-vh-100 d-flex flex-column align-items-center pt-5">
@@ -36,5 +40,7 @@
                 </div>
             @endunless
         </div>
+
+        @stack('scripts')
     </body>
 </html>

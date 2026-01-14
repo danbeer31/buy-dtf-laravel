@@ -14,9 +14,9 @@
 
                 <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
                     @auth
-                        <a href="/cart" class="btn btn-warning btn-lg px-4 fw-bold text-uppercase tracking-wider">
+                        <a href="{{ route('account') }}" class="btn btn-warning btn-lg px-4 fw-bold text-uppercase tracking-wider">
                             <span class="badge bg-black text-warning me-2">NEW</span>
-                            Try our Cart & Uploader
+                            My Account Dashboard
                         </a>
                         <a href="/orders/order" class="btn btn-outline-light btn-lg px-4 fw-bold text-uppercase tracking-wider">
                             Classic Order Form
