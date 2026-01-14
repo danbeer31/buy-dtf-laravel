@@ -93,3 +93,6 @@ public/.user.ini
 # Optional: if you do NOT want legacy FuelPHP in this repo, ignore it:
 # fuelphp/
 # ------------------------------------------------------------
+
+# Do not commit legacy FuelPHP
+fuelphp/
