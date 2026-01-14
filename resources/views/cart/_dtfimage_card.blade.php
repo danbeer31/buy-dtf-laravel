@@ -44,7 +44,7 @@
             <div class="text-center mb-3">
                 <div class="image-box">
                     <img
-                            class="img-fluid rounded border"
+                            class="img-fluid rounded"
                             src="{{ $it['image'] }}"
                             alt="{{ $it['name'] }}"
                     >

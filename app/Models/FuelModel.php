@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 abstract class FuelModel extends Model
 {
+    protected $dateFormat = 'Y-m-d H:i:s';
+
     /**
      * The connection name for the model.
      *

@@ -28,7 +28,8 @@ return new class extends Migration
             $table->boolean('tax_exempt')->default(false);
             $table->string('tax_number')->nullable();
             $table->string('confirmation_code')->nullable();
-            $table->timestamps();
+            $table->dateTime('created_at')->nullable();
+            $table->dateTime('updated_at')->nullable();
         });
     }
 

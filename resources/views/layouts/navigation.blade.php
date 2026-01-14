@@ -55,11 +55,11 @@
                 <a href="/aboutus" class="nav-link px-3 h-100 d-flex align-items-center fs-5 fw-semibold text-sp-secondary text-uppercase">About Us</a>
 
                 <!-- Buy Direct to Film Dropdown -->
-                <li class="nav-item dropdown h-100 d-flex align-items-center me-4">
-                    <a class="nav-link fs-5 fw-semibold text-sp-secondary dropdown-toggle text-uppercase" href="#" id="buyDtfDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <li class="nav-item dropdown h-100 d-flex align-items-center me-4 position-static" x-data="{ open: false }" @click.outside="open = false">
+                    <a class="nav-link fs-5 fw-semibold text-sp-secondary dropdown-toggle text-uppercase" href="#" id="buyDtfDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" @click.prevent="open = !open">
                         Buy Direct to Film
                     </a>
-                    <div class="dropdown-menu w-100 py-5" aria-labelledby="buyDtfDropdown">
+                    <div class="dropdown-menu w-100 py-5" :class="{ 'show': open }" aria-labelledby="buyDtfDropdown">
                         <div class="container">
                             <div class="row mb-5">
                                 <div class="col-12 col-lg">
@@ -108,11 +108,11 @@
 
                 @auth
                     <!-- My Account Dropdown -->
-                    <li class="nav-item dropdown h-100 d-flex align-items-center me-4">
-                        <a class="nav-link fs-5 fw-semibold text-sp-secondary dropdown-toggle text-uppercase" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <li class="nav-item dropdown h-100 d-flex align-items-center me-4 position-static" x-data="{ open: false }" @click.outside="open = false">
+                        <a class="nav-link fs-5 fw-semibold text-sp-secondary dropdown-toggle text-uppercase" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" @click.prevent="open = !open">
                             My Account
                         </a>
-                        <div class="dropdown-menu w-100 py-5" aria-labelledby="accountDropdown">
+                        <div class="dropdown-menu w-100 py-5" :class="{ 'show': open }" aria-labelledby="accountDropdown">
                             <div class="container">
                                 <div class="row mb-5">
                                     <div class="col-12 col-lg">

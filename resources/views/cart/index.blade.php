@@ -122,6 +122,7 @@
                     linear-gradient(-45deg,transparent 75%,#eee 75%);
             background-size:16px 16px;
             background-position:0 0,0 8px,8px -8px,-8px 0px;
+            background-color: #f8f9fa;
 
             display: flex;
             align-items: center;
@@ -135,6 +136,7 @@
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;          /* scale without cropping */
+            image-rendering: -webkit-optimize-contrast; /* improved sharpness */
         }
 
         #qa-search {
