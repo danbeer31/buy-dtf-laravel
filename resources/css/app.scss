@@ -1,0 +1,62 @@
+// Fonts
+@import url('https://fonts.bunny.net/css?family=blinker:400,600,700|ubuntu:400,500,700');
+
+// Bootstrap
+@import 'bootstrap/scss/bootstrap';
+
+.font-blinker {
+    font-family: 'Blinker', sans-serif;
+}
+
+.font-ubuntu {
+    font-family: 'Ubuntu', sans-serif;
+}
+
+.bg-black {
+    background-color: #000 !important;
+}
+
+.bg-grey {
+    background-color: rgb(173, 181, 189) !important;
+}
+
+.text-sp-secondary {
+    color: #6c757d !important;
+}
+
+.text-sp-primary {
+    color: #0d6efd !important;
+}
+
+.header-logo {
+    max-width: 220px;
+    height: auto;
+}
+
+.nav-link {
+    transition: all 0.2s ease-in-out;
+}
+
+/* Mega Menu Styling */
+.navbar .dropdown-menu {
+    border: none;
+    border-radius: 0 0 1rem 1rem;
+    box-shadow: 0 1rem 3rem rgba(0,0,0,.175);
+    display: none;
+}
+
+.navbar .dropdown-menu.show {
+    display: block;
+}
+
+.nav-item.dropdown {
+    position: static;
+}
+
+@media (min-width: 992px) {
+    .dropdown-menu.w-100 {
+        top: 100%;
+        left: 0;
+        margin-top: 0;
+    }
+}
