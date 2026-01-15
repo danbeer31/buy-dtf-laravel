@@ -7,7 +7,7 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-5">
 
                 <div class="d-flex align-items-center justify-content-between mb-3">
                     <h1 class="h2 m-0">Your DTF Image Order</h1>
@@ -28,6 +28,13 @@
                 @if(empty($items))
                     <div id="no-images-alert" class="alert alert-info">No images found on your open order.</div>
                 @endif
+
+                <div class="alert alert-info border-0 shadow-sm rounded-4 d-flex align-items-center" role="alert">
+                    <i class="bi bi-info-circle fs-4 me-3"></i>
+                    <div>
+                        Need custom names and numbers? <a href="{{ route('teamcustomization.index') }}" class="alert-link">Click here!</a>
+                    </div>
+                </div>
 
                 <div id="img-grid" class="row g-3" data-order-id="{{ $order_id }}">
                     @foreach($items as $it)

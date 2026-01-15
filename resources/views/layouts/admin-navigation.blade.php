@@ -35,9 +35,13 @@
 
                 <a href="{{ route('admin.businesses.index') }}" class="nav-link px-3 h-100 d-flex align-items-center fs-6 fw-semibold text-sp-secondary text-uppercase {{ request()->routeIs('admin.businesses.*') ? 'active text-primary' : '' }}">Businesses</a>
 
+                <a href="{{ route('admin.customnames.index') }}" class="nav-link px-3 h-100 d-flex align-items-center fs-6 fw-semibold text-sp-secondary text-uppercase {{ request()->routeIs('admin.customnames.*') ? 'active text-primary' : '' }}">Custom Names</a>
+
+                <a href="{{ route('admin.customcolors.index') }}" class="nav-link px-3 h-100 d-flex align-items-center fs-6 fw-semibold text-sp-secondary text-uppercase {{ request()->routeIs('admin.customcolors.*') ? 'active text-primary' : '' }}">Custom Colors</a>
+
                 <!-- Example Admin Links (Can be expanded) -->
                 <a href="#" class="nav-link px-3 h-100 d-flex align-items-center fs-6 fw-semibold text-sp-secondary text-uppercase">Orders</a>
-                <a href="#" class="nav-link px-3 h-100 d-flex align-items-center fs-6 fw-semibold text-sp-secondary text-uppercase">Users</a>
+                <a href="{{ route('admin.users.index') }}" class="nav-link px-3 h-100 d-flex align-items-center fs-6 fw-semibold text-sp-secondary text-uppercase {{ request()->routeIs('admin.users.*') ? 'active text-primary' : '' }}">Users</a>
                 <a href="#" class="nav-link px-3 h-100 d-flex align-items-center fs-6 fw-semibold text-sp-secondary text-uppercase">Products</a>
 
                 <div class="ms-auto">
@@ -64,8 +68,10 @@
         <div class="list-group list-group-flush font-blinker">
             <a href="{{ route('admin.dashboard') }}" class="list-group-item list-group-item-action bg-dark text-white border-secondary py-3 fw-bold text-uppercase {{ request()->routeIs('admin.dashboard') ? 'text-primary' : '' }}">Dashboard</a>
             <a href="{{ route('admin.businesses.index') }}" class="list-group-item list-group-item-action bg-dark text-white border-secondary py-3 fw-bold text-uppercase {{ request()->routeIs('admin.businesses.*') ? 'text-primary' : '' }}">Businesses</a>
+            <a href="{{ route('admin.customnames.index') }}" class="list-group-item list-group-item-action bg-dark text-white border-secondary py-3 fw-bold text-uppercase {{ request()->routeIs('admin.customnames.*') ? 'text-primary' : '' }}">Custom Names</a>
+            <a href="{{ route('admin.customcolors.index') }}" class="list-group-item list-group-item-action bg-dark text-white border-secondary py-3 fw-bold text-uppercase {{ request()->routeIs('admin.customcolors.*') ? 'text-primary' : '' }}">Custom Colors</a>
             <a href="#" class="list-group-item list-group-item-action bg-dark text-white border-secondary py-3 fw-bold text-uppercase">Orders</a>
-            <a href="#" class="list-group-item list-group-item-action bg-dark text-white border-secondary py-3 fw-bold text-uppercase">Users</a>
+            <a href="{{ route('admin.users.index') }}" class="list-group-item list-group-item-action bg-dark text-white border-secondary py-3 fw-bold text-uppercase {{ request()->routeIs('admin.users.*') ? 'text-primary' : '' }}">Users</a>
             <a href="#" class="list-group-item list-group-item-action bg-dark text-white border-secondary py-3 fw-bold text-uppercase">Products</a>
             <a href="{{ route('home') }}" class="list-group-item list-group-item-action bg-dark text-white border-secondary py-3 fw-bold text-uppercase">View Store</a>
         </div>

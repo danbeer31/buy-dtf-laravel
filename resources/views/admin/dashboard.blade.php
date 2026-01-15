@@ -14,6 +14,12 @@
                         <a href="{{ route('admin.businesses.index') }}" class="btn btn-primary btn-lg px-4">
                             <i class="bi bi-briefcase me-2"></i>Manage Businesses
                         </a>
+                        <a href="{{ route('admin.customnames.index') }}" class="btn btn-outline-primary btn-lg px-4">
+                            <i class="bi bi-layers me-2"></i>Custom Names
+                        </a>
+                        <a href="{{ route('admin.customcolors.index') }}" class="btn btn-outline-primary btn-lg px-4">
+                            <i class="bi bi-palette me-2"></i>Custom Colors
+                        </a>
                     </div>
                 </div>
             </div>
