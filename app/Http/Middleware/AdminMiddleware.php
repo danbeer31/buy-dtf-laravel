@@ -16,10 +16,10 @@ class AdminMiddleware
         }
 
         // Allow admins only
-        if ($user->role !== 'admin') {
-            return redirect()->route('home');
+        if ($user->role === 'admin' || $user->role === 'superadmin') {
+            return $next($request);
         }
 
-        return $next($request);
+        return redirect()->route('home')->with('error', 'Admin access required.');
     }
 }

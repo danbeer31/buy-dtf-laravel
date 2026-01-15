@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\TeamCustomizationController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -40,6 +41,17 @@ Route::middleware(['auth', 'customer'])->group(function () {
     Route::get('/cart/quick_search', [CartController::class, 'myImages'])->name('cart.quick_search');
     Route::post('/cart/use_saved', [CartController::class, 'useSaved'])->name('cart.use_saved');
 
+    Route::get('/debug-user', function() {
+        $user = auth()->user();
+        return response()->json([
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'role' => $user->role,
+            'attributes' => $user->getAttributes(),
+        ]);
+    });
+
     Route::get('/account', [AccountController::class, 'index'])->name('account');
 
     Route::get('/orders', function() {
@@ -54,6 +66,19 @@ Route::middleware(['auth', 'customer'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Team Customization
+    Route::prefix('teamcustomization')->name('teamcustomization.')->group(function () {
+        Route::get('/', [TeamCustomizationController::class, 'index'])->name('index');
+        Route::get('/fonts', [TeamCustomizationController::class, 'getFonts'])->name('fonts');
+        Route::post('/preview', [TeamCustomizationController::class, 'preview'])->name('preview');
+        Route::post('/validate_csv', [TeamCustomizationController::class, 'validateCsv'])->name('validate_csv');
+        Route::post('/run_one', [TeamCustomizationController::class, 'runOne'])->name('run_one');
+        Route::get('/progress', [TeamCustomizationController::class, 'getProgress'])->name('progress');
+        Route::get('/templates', [TeamCustomizationController::class, 'getTemplates'])->name('templates');
+        Route::get('/template/{id?}', [TeamCustomizationController::class, 'getTemplate'])->name('template');
+        Route::get('/colors', [TeamCustomizationController::class, 'getColors'])->name('colors');
+    });
 });
 
 require __DIR__.'/auth.php';

@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    'namenumber' => [
+        'url' => env('NAMENUMBER_URL', 'http://127.0.0.1:3000'),
+        'token' => env('NAMENUMBER_TOKEN'),
+    ],
+
 ];
