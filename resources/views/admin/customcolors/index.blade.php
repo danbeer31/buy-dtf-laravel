@@ -8,7 +8,7 @@
     <div class="container py-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h3 class="mb-0 fw-bold">Custom Colors</h3>
-            @if($business)
+            @if($business || Auth::user()->role === 'superadmin')
                 <a href="{{ route('admin.customcolors.create') }}" class="btn btn-primary px-4">
                     <i class="bi bi-plus-lg me-1"></i> Add Color
                 </a>

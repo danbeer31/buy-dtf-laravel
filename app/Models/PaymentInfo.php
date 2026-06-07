@@ -10,9 +10,15 @@ class PaymentInfo extends FuelModel
 
     protected $fillable = [
         'dtforder_id',
+        'business_id',
         'processor',
         'processor_confirm',
+        'stripe_charge_id',
+        'qbo_payment_id',
+        'qbo_invoice_numbers',
+        'qbo_fee_expense_id',
         'amount',
+        'stripe_fee',
         'notes',
         'status',
     ];
@@ -30,8 +36,18 @@ class PaymentInfo extends FuelModel
     public $timestamps = true;
     protected $dateFormat = 'U';
 
+    public function stripePayoutEntries(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(StripePayoutEntry::class, 'dtforder_id', 'dtforder_id');
+    }
+
     public function dtfOrder(): BelongsTo
     {
         return $this->belongsTo(DtfOrder::class, 'dtforder_id');
+    }
+
+    public function business(): BelongsTo
+    {
+        return $this->belongsTo(Business::class, 'business_id');
     }
 }

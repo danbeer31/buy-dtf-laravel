@@ -6,11 +6,16 @@
     </x-slot>
 
     <div class="container py-4">
-        <div class="d-flex align-items-center mb-3 gap-2">
-            <h3 class="mb-0"><i class="bi bi-type me-2"></i> Fonts</h3>
-            <a href="{{ route('admin.customnames.fontsmap') }}" class="btn btn-sm btn-outline-primary ms-auto">
-                <i class="bi bi-map me-1"></i> Manage Display Names
+        <div class="d-flex align-items-center mb-4 gap-3">
+            <a href="{{ route('admin.customnames.index') }}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left"></i>
             </a>
+            <h3 class="mb-0 fw-bold"><i class="bi bi-type me-2 text-primary"></i> Font Management</h3>
+            <div class="ms-auto">
+                <a href="{{ route('admin.customnames.fontsmap') }}" class="btn btn-outline-primary">
+                    <i class="bi bi-map me-1"></i> Font Display Names
+                </a>
+            </div>
         </div>
 
         <div class="card shadow-sm border-0 rounded-3 mb-4">

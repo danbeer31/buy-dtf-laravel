@@ -67,6 +67,7 @@
                                 <tr>
                                     <th class="ps-4 py-3 text-uppercase small fw-bold">Name</th>
                                     <th class="py-3 text-uppercase small fw-bold">Email</th>
+                                    <th class="py-3 text-uppercase small fw-bold">Business</th>
                                     <th class="py-3 text-uppercase small fw-bold">Role</th>
                                     <th class="py-3 text-uppercase small fw-bold">Created At</th>
                                     <th class="py-3 text-uppercase small fw-bold text-end pe-4">Actions</th>
@@ -78,6 +79,23 @@
                                         <td class="ps-4 py-3 fw-bold">{{ $user->name }}</td>
                                         <td class="py-3">
                                             <a href="mailto:{{ $user->email }}" class="text-decoration-none">{{ $user->email }}</a>
+                                        </td>
+                                        <td class="py-3 small">
+                                            @php
+                                                $businessContext = $userBusinessMap[$user->id] ?? ['primary' => null, 'memberships' => collect()];
+                                                $primaryBusiness = $businessContext['primary'];
+                                                $memberships = $businessContext['memberships'];
+                                            @endphp
+
+                                            @if($primaryBusiness)
+                                                <div class="fw-semibold">{{ $primaryBusiness->business_name }}</div>
+                                            @else
+                                                <div class="text-muted">Unlinked</div>
+                                            @endif
+
+                                            @if($memberships->count() > 1)
+                                                <div class="text-muted">+{{ $memberships->count() - 1 }} more business memberships</div>
+                                            @endif
                                         </td>
                                         <td class="py-3">
                                             @php
@@ -92,7 +110,7 @@
                                             </span>
                                         </td>
                                         <td class="py-3 text-muted small">
-                                            {{ $user->created_at->format('M d, Y') }}
+                                            {{ optional($user->created_at)->format('M d, Y') ?? 'Legacy import' }}
                                         </td>
                                         <td class="py-3 text-end pe-4">
                                             <div class="btn-group">
@@ -113,7 +131,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="text-center py-5 text-muted">
+                                        <td colspan="6" class="text-center py-5 text-muted">
                                             No users found matching your criteria.
                                         </td>
                                     </tr>

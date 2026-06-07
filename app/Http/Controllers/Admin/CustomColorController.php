@@ -15,6 +15,12 @@ class CustomColorController extends Controller
         $user = Auth::user();
         $business = $user->business;
 
+        $query = CustomColor::orderBy('name', 'asc');
+
+        // If not superadmin, maybe we should filter?
+        // But this is admin panel, usually admins see all or their own business.
+        // Given the original code, it separated global and "the" business of the logged in user.
+
         $global_colors = CustomColor::where('business_id', 0)
             ->orderBy('name', 'asc')
             ->get();
@@ -26,6 +32,9 @@ class CustomColorController extends Controller
                 ->get();
         }
 
+        // If it's a superadmin without a business, they might want to see ALL colors?
+        // Or maybe they should be able to manage global colors anyway.
+
         return view('admin.customcolors.index', compact('global_colors', 'shop_colors', 'business'));
     }
 
@@ -34,11 +43,12 @@ class CustomColorController extends Controller
         $user = Auth::user();
         $business = $user->business;
 
-        if (!$business) {
+        // Allow superadmin to create global colors (business_id = 0)
+        if (!$business && $user->role !== 'superadmin') {
             return redirect()->route('admin.customcolors.index')->with('error', 'You must have an associated business to add custom colors.');
         }
 
-        return view('admin.customcolors.create');
+        return view('admin.customcolors.create', compact('business'));
     }
 
     public function store(Request $request)
@@ -46,7 +56,7 @@ class CustomColorController extends Controller
         $user = Auth::user();
         $business = $user->business;
 
-        if (!$business) {
+        if (!$business && $user->role !== 'superadmin') {
             return redirect()->route('admin.customcolors.index')->with('error', 'You must have an associated business to add custom colors.');
         }
 
@@ -54,11 +64,19 @@ class CustomColorController extends Controller
             'name' => 'required|max:100',
             'hex' => ['required', 'regex:/^#([0-9A-Fa-f]{6})$/'],
             'active' => 'nullable|integer',
+            'business_id' => 'nullable|integer',
         ]);
 
         try {
+            $target_business_id = $business ? $business->id : 0;
+
+            // If superadmin chooses to make it global
+            if ($user->role === 'superadmin' && $request->has('is_global')) {
+                $target_business_id = 0;
+            }
+
             CustomColor::create([
-                'business_id' => $business->id,
+                'business_id' => $target_business_id,
                 'name' => trim($request->name),
                 'hex' => strtoupper(trim($request->hex)),
                 'active' => $request->has('active') ? 1 : 0,
@@ -96,8 +114,14 @@ class CustomColorController extends Controller
         $color = CustomColor::findOrFail($id);
         $is_global = ((int)$color->business_id === 0);
 
-        if ($is_global || !$business || (int)$color->business_id !== (int)$business->id) {
-            return redirect()->route('admin.customcolors.index')->with('error', 'You cannot edit this color.');
+        // Permission check: superadmin can edit anything. Admin can edit their own or global?
+        // Original code: if ($is_global || !$business || (int)$color->business_id !== (int)$business->id)
+        // This meant admins could NOT edit global colors.
+
+        if ($user->role !== 'superadmin') {
+            if ($is_global || !$business || (int)$color->business_id !== (int)$business->id) {
+                return redirect()->route('admin.customcolors.index')->with('error', 'You cannot edit this color.');
+            }
         }
 
         $request->validate([
@@ -125,14 +149,12 @@ class CustomColorController extends Controller
         $user = Auth::user();
         $business = $user->business;
 
-        if (!$business) {
-            return redirect()->route('admin.customcolors.index')->with('error', 'You must have an associated business to toggle colors.');
-        }
-
         $color = CustomColor::findOrFail($id);
 
-        if ((int)$color->business_id !== (int)$business->id) {
-            return redirect()->route('admin.customcolors.index')->with('error', 'You can only toggle colors for your own shop.');
+        if ($user->role !== 'superadmin') {
+            if (!$business || (int)$color->business_id !== (int)$business->id) {
+                return redirect()->route('admin.customcolors.index')->with('error', 'You can only toggle colors for your own shop.');
+            }
         }
 
         $color->active = !$color->active;

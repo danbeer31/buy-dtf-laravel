@@ -437,23 +437,18 @@
         containerEl.innerHTML = '';
         const btn = document.createElement('button');
         btn.type = 'button';
-        btn.className = 'btn btn-outline-secondary btn-sm';
+        btn.className = 'nl-cc-btn';
         btn.setAttribute('data-bs-toggle', 'offcanvas');
         btn.setAttribute('data-bs-target', '#offcanvas-colors');
         btn.setAttribute('aria-controls', 'offcanvas-colors');
 
         const sw = document.createElement('span');
-        sw.className = 'tc-color-swatch';
-        sw.style.display = 'inline-block';
-        sw.style.width = '16px';
-        sw.style.height = '16px';
-        sw.style.border = '1px solid #d1d5db';
-        sw.style.borderRadius = '4px';
-        sw.style.marginRight = '8px';
+        sw.className = 'nl-cc-swatch';
         sw.style.background = initialHex || '#000000';
 
         const label = document.createElement('span');
         label.className = 'tc-color-label text-truncate';
+        label.style.maxWidth = '120px';
         label.textContent = colorNameForHex(initialHex) || (initialHex || '#000000');
 
         btn.appendChild(sw);
@@ -486,16 +481,19 @@
     }
 
     // ---------- Per-Block UI ----------
-    function makeNumberInput(labelText, initial, onChange, min = 0, step = 1, width = '100px') {
+    function makeNumberInput(labelText, initial, onChange, min = 0, step = 1, width = '80px') {
         const wrap = document.createElement('div');
         wrap.className = 'd-inline-flex align-items-center me-3 mb-2';
         const lab = document.createElement('span');
-        lab.className = 'me-2 small text-muted';
+        lab.className = 'me-2 small fw-bold text-muted text-uppercase';
+        lab.style.fontSize = '0.7rem';
         lab.textContent = labelText;
         const inp = document.createElement('input');
         inp.type = 'number';
         inp.className = 'form-control form-control-sm';
         inp.style.width = width;
+        inp.style.borderRadius = '0.5rem';
+        inp.style.border = '1px solid var(--tc-border)';
         inp.min = String(min);
         inp.step = String(step);
         inp.value = (initial ?? '');
@@ -544,7 +542,6 @@
         const tbody = els.blockRows;
         if (!tbody) return;
         tbody.innerHTML = '';
-        tbody.classList.add('fs-4');
         (template.blocks || []).forEach(b => {
             if (!b.slot) return;
 
@@ -552,10 +549,10 @@
             if (isSvgNonTextBlock(b)) {
                 const tr = document.createElement('tr');
                 const tdBlock = document.createElement('td');
-                tdBlock.textContent = b.slot;
+                tdBlock.innerHTML = `<span class="fw-bold text-dark">${b.slot}</span>`;
                 tr.appendChild(tdBlock);
                 const tdMode = document.createElement('td');
-                tdMode.innerHTML = '<span class="text-muted small">n/a</span>';
+                tdMode.innerHTML = '<span class="badge bg-light text-muted fw-normal">Static Asset</span>';
                 tr.appendChild(tdMode);
                 const tdColors = document.createElement('td');
                 tdColors.appendChild(createSvgPreviewCell(b));
@@ -571,13 +568,13 @@
 
             // Block name
             const tdBlock = document.createElement('td');
-            tdBlock.textContent = b.slot;
+            tdBlock.innerHTML = `<span class="fw-bold text-dark">${b.slot}</span>`;
             tr.appendChild(tdBlock);
 
             // Mode radios
             const tdMode = document.createElement('td');
             const group = document.createElement('div');
-            group.className = 'btn-group';
+            group.className = 'btn-group-modern';
             ['fill', 'outline', 'outline2', 'ring'].forEach(mode => {
                 const safeSlot = String(b.slot).replace(/[^a-z0-9_-]/gi, '_');
                 const id = `mode-${safeSlot}-${mode}`;
@@ -589,7 +586,7 @@
                 inp.value = mode;
                 if (q.mode === mode) inp.checked = true;
                 const lbl = document.createElement('label');
-                lbl.className = 'btn btn-outline-danger btn-sm';
+                lbl.className = 'btn btn-light btn-sm';
                 lbl.setAttribute('for', id);
                 lbl.textContent = mode;
                 inp.addEventListener('change', () => {
@@ -633,7 +630,8 @@
                 wrap.className = 'd-inline-flex align-items-center me-3 mb-2';
                 wrap.dataset.role = labelText;
                 const lab = document.createElement('span');
-                lab.className = 'me-2 small text-black-50';
+                lab.className = 'me-2 small fw-bold text-muted text-uppercase';
+                lab.style.fontSize = '0.7rem';
                 lab.textContent = labelText;
                 const btnWrap = document.createElement('span');
                 btnWrap.className = 'nl-cc-cell';
@@ -744,15 +742,21 @@
         const fonts = Array.isArray(TCState.fonts) ? TCState.fonts : [];
         const tbody = els.fontRows;
         tbody.innerHTML = '';
-        tbody.classList.add('fs-4');
         (baseTemplate.blocks || []).forEach(b => {
             if (!isTextualBlock(b) || !b.slot) return; // exclude static SVG blocks
             const tr = document.createElement('tr');
             const td1 = document.createElement('td');
-            td1.textContent = b.slot;
+            td1.innerHTML = `<span class="fw-bold text-dark">${b.slot}</span>`;
+
             const td2 = document.createElement('td');
             const sel = document.createElement('select');
-            sel.className = 'form-select form-select-sm';
+            sel.className = 'form-select';
+            sel.style.borderRadius = '0.75rem';
+            sel.style.border = '1px solid var(--tc-border)';
+            sel.style.padding = '0.5rem 1rem';
+            sel.style.fontSize = '0.9rem';
+            sel.style.fontWeight = '500';
+
             const opt0 = document.createElement('option');
             opt0.value = '';
             opt0.textContent = `(Default) ${b.font || ''}`;
@@ -1109,11 +1113,12 @@
         placeholders.forEach(ph => {
             const tr = document.createElement('tr');
             const td1 = document.createElement('td');
-            td1.textContent = ph;
+            td1.innerHTML = `<span class="fw-bold text-dark">${ph}</span>`;
             tr.appendChild(td1);
             const td2 = document.createElement('td');
             const sel = document.createElement('select');
-            sel.className = 'form-select form-select-sm';
+            sel.className = 'form-select';
+            sel.style.borderRadius = '0.5rem';
             sel.dataset.placeholder = ph;
 
             const opt0 = document.createElement('option');
@@ -1136,10 +1141,11 @@
         // Extra row: Order Quantity
         const trQ = document.createElement('tr');
         const tdQ1 = document.createElement('td');
-        tdQ1.textContent = 'Order Quantity';
+        tdQ1.innerHTML = `<span class="fw-bold text-primary">Order Quantity</span>`;
         const tdQ2 = document.createElement('td');
         const selQ = document.createElement('select');
-        selQ.className = 'form-select form-select-sm';
+        selQ.className = 'form-select';
+        selQ.style.borderRadius = '0.5rem';
         selQ.dataset.placeholder = ORDER_QTY_KEY;
         const optQ0 = document.createElement('option');
         optQ0.value = '';
@@ -1463,7 +1469,7 @@ Taylor,12,#FFFFFF`;
                 });
 
                 // Try to parse JSON either way to surface server message
-                let j = {};
+                let j = { success: false };
                 try {
                     j = await resp.json();
                 } catch (_) {
@@ -1496,6 +1502,9 @@ Taylor,12,#FFFFFF`;
                 console.error('run_one fetch failed', e);
             }
 
+            if (j.success && i === TCState.rows.length - 1) {
+                alert('Success! All batch items have been added to your cart.');
+            }
             // Advance progress bar
             setBar(i + 1, TCState.rows.length);
         }

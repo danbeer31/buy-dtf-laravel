@@ -46,6 +46,25 @@
                                     @enderror
                                 </div>
 
+                                <div class="mb-3">
+                                    <label for="business_id" class="form-label small fw-bold text-uppercase">Business</label>
+                                    <select
+                                        name="business_id"
+                                        id="business_id"
+                                        class="form-select @error('business_id') is-invalid @enderror"
+                                    >
+                                        <option value="">No Business</option>
+                                        @foreach($businesses as $business)
+                                            <option value="{{ $business->id }}" {{ (int) old('business_id', $selectedBusinessId ?? 0) === (int) $business->id ? 'selected' : '' }}>
+                                                {{ $business->business_name }} @if($business->email) ({{ $business->email }}) @endif
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('business_id')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
                                 <hr class="my-4">
                                 <h5 class="fw-bold mb-3">Change Password</h5>
                                 <p class="text-muted small mb-3">Leave blank if you don't want to change the password.</p>

@@ -110,11 +110,8 @@
             <!-- Action Buttons -->
             <div class="text-end mt-5">
                 @if ($order->status == 1)
-                <a href="#" class="btn btn-primary btn-lg px-4">
-                    <i class="bi bi-upload"></i> Upload Image
-                </a>
-                <a href="{{ route('orders.place', $order->id) }}" class="btn btn-success btn-lg px-4">
-                    <i class="bi bi-cart-check"></i> Place Order
+                <a href="{{ route('cart.index') }}" class="btn btn-primary btn-lg px-4">
+                    <i class="bi bi-cart"></i> Go to Cart
                 </a>
                 @endif
                 <a href="{{ route('orders.index') }}" class="btn btn-outline-secondary btn-lg px-4">

@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
@@ -29,6 +31,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'fuel_business_id',
         'password_reset_required',
     ];
 
@@ -58,6 +61,34 @@ class User extends Authenticatable
 
     public function business()
     {
+        if (!empty($this->fuel_business_id)) {
+            return $this->belongsTo(Business::class, 'fuel_business_id');
+        }
+
+        // Backward compatibility while migrating away from email linkage.
         return $this->hasOne(Business::class, 'email', 'email');
+    }
+
+    public function businessMemberships(): HasMany
+    {
+        return $this->hasMany(BusinessUser::class);
+    }
+
+    public function businesses(): Builder
+    {
+        $ids = $this->businessMemberships()
+            ->where('is_active', true)
+            ->pluck('business_id');
+
+        if ($ids->isEmpty()) {
+            return Business::query()->whereRaw('1=0');
+        }
+
+        return Business::query()->whereIn('id', $ids);
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin' || $this->role === 'superadmin';
     }
 }

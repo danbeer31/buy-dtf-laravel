@@ -8,7 +8,7 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <a href="{{ route('admin.dashboard') }}" class="navbar-brand d-flex align-items-center p-0 m-0">
-                    <img src="/assets/img/dtf_logo.svg" alt="Logo" class="header-logo" style="max-width: 220px; filter: brightness(0) invert(1);">
+                    <img src="/assets/img/dtf_logo.svg" alt="Logo" class="header-logo" style="max-width: 220px;">
                     <span class="ms-2 badge bg-danger text-uppercase tracking-wider">Admin</span>
                 </a>
             </div>
@@ -33,15 +33,55 @@
             <div class="navbar-nav w-100 d-flex justify-content-start align-items-center font-blinker tracking-wider" style="height: 56px;">
                 <a href="{{ route('admin.dashboard') }}" class="nav-link px-3 h-100 d-flex align-items-center fs-6 fw-semibold text-sp-secondary text-uppercase {{ request()->routeIs('admin.dashboard') ? 'active text-primary' : '' }}">Dashboard</a>
 
+                <div class="nav-item dropdown h-100 d-flex align-items-center position-relative">
+                    <a class="nav-link px-3 h-100 d-flex align-items-center fs-6 fw-semibold text-sp-secondary text-uppercase dropdown-toggle {{ request()->routeIs('admin.orders.*') ? 'active text-primary' : '' }}" href="#" id="ordersDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Orders
+                    </a>
+                    <ul class="dropdown-menu border-0 shadow-sm rounded-3 mt-0" aria-labelledby="ordersDropdown">
+                        <li><a class="dropdown-item py-2 fw-semibold text-sp-secondary" href="{{ route('admin.orders.index') }}">All Orders</a></li>
+                        <li><a class="dropdown-item py-2 fw-semibold text-sp-secondary" href="{{ route('admin.orders.production') }}">Production</a></li>
+                    </ul>
+                </div>
+
                 <a href="{{ route('admin.businesses.index') }}" class="nav-link px-3 h-100 d-flex align-items-center fs-6 fw-semibold text-sp-secondary text-uppercase {{ request()->routeIs('admin.businesses.*') ? 'active text-primary' : '' }}">Businesses</a>
 
-                <a href="{{ route('admin.customnames.index') }}" class="nav-link px-3 h-100 d-flex align-items-center fs-6 fw-semibold text-sp-secondary text-uppercase {{ request()->routeIs('admin.customnames.*') ? 'active text-primary' : '' }}">Custom Names</a>
-
-                <a href="{{ route('admin.customcolors.index') }}" class="nav-link px-3 h-100 d-flex align-items-center fs-6 fw-semibold text-sp-secondary text-uppercase {{ request()->routeIs('admin.customcolors.*') ? 'active text-primary' : '' }}">Custom Colors</a>
-
-                <!-- Example Admin Links (Can be expanded) -->
-                <a href="#" class="nav-link px-3 h-100 d-flex align-items-center fs-6 fw-semibold text-sp-secondary text-uppercase">Orders</a>
                 <a href="{{ route('admin.users.index') }}" class="nav-link px-3 h-100 d-flex align-items-center fs-6 fw-semibold text-sp-secondary text-uppercase {{ request()->routeIs('admin.users.*') ? 'active text-primary' : '' }}">Users</a>
+
+                <div class="nav-item dropdown h-100 d-flex align-items-center position-relative">
+                    <a class="nav-link px-3 h-100 d-flex align-items-center fs-6 fw-semibold text-sp-secondary text-uppercase dropdown-toggle {{ (request()->routeIs('admin.shipping.*') || request()->routeIs('admin.dropbox.*') || request()->routeIs('admin.qbo.*')) ? 'active text-primary' : '' }}" href="#" id="configurationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Configuration
+                    </a>
+                    <ul class="dropdown-menu border-0 shadow-sm rounded-3 mt-0" aria-labelledby="configurationDropdown">
+                        <li><a class="dropdown-item py-2 fw-semibold text-sp-secondary {{ request()->routeIs('admin.shipping.*') ? 'text-primary' : '' }}" href="{{ route('admin.shipping.index') }}">Shipping</a></li>
+                        <li><a class="dropdown-item py-2 fw-semibold text-sp-secondary {{ request()->routeIs('admin.dropbox.*') ? 'text-primary' : '' }}" href="{{ route('admin.dropbox.status') }}">Dropbox</a></li>
+                        <li><a class="dropdown-item py-2 fw-semibold text-sp-secondary {{ request()->routeIs('admin.qbo.*') ? 'text-primary' : '' }}" href="{{ route('admin.qbo.index') }}">QuickBooks</a></li>
+                    </ul>
+                </div>
+
+                <div class="nav-item dropdown h-100 d-flex align-items-center position-relative">
+                    <a class="nav-link px-3 h-100 d-flex align-items-center fs-6 fw-semibold text-sp-secondary text-uppercase dropdown-toggle {{ request()->routeIs('admin.payments.stripe*') ? 'active text-primary' : '' }}" href="#" id="stripeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Stripe
+                    </a>
+                    <ul class="dropdown-menu border-0 shadow-sm rounded-3 mt-0" aria-labelledby="stripeDropdown">
+                        <li><a class="dropdown-item py-2 fw-semibold text-sp-secondary {{ request()->routeIs('admin.payments.stripe') ? 'text-primary' : '' }}" href="{{ route('admin.payments.stripe') }}">Transactions</a></li>
+                        <li><a class="dropdown-item py-2 fw-semibold text-sp-secondary {{ request()->routeIs('admin.payments.stripe.payouts') ? 'text-primary' : '' }}" href="{{ route('admin.payments.stripe.payouts') }}">Payouts (Deposits)</a></li>
+                        <li><a class="dropdown-item py-2 fw-semibold text-sp-secondary {{ request()->routeIs('admin.payments.stripe.sync-logs*') ? 'text-primary' : '' }}" href="{{ route('admin.payments.stripe.sync-logs') }}">Sync Logs</a></li>
+                        <li><a class="dropdown-item py-2 fw-semibold text-sp-secondary {{ request()->routeIs('admin.payments.reconciliation.*') ? 'text-primary' : '' }}" href="{{ route('admin.payments.reconciliation.index') }}">Reconciliation</a></li>
+                    </ul>
+                </div>
+
+                <div class="nav-item dropdown h-100 d-flex align-items-center position-relative">
+                    <a class="nav-link px-3 h-100 d-flex align-items-center fs-6 fw-semibold text-sp-secondary text-uppercase dropdown-toggle {{ (request()->routeIs('admin.customnames.*') || request()->routeIs('admin.customcolors.*')) ? 'active text-primary' : '' }}" href="#" id="customizationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Customization
+                    </a>
+                    <ul class="dropdown-menu border-0 shadow-sm rounded-3 mt-0" aria-labelledby="customizationDropdown">
+                        <li><a class="dropdown-item py-2 fw-semibold text-sp-secondary {{ request()->routeIs('admin.customnames.index') ? 'text-primary' : '' }}" href="{{ route('admin.customnames.index') }}">Name & Number Config</a></li>
+                        <li><a class="dropdown-item py-2 fw-semibold text-sp-secondary {{ request()->routeIs('admin.customnames.fonts') ? 'text-primary' : '' }}" href="{{ route('admin.customnames.fonts') }}">Font Management</a></li>
+                        <li><a class="dropdown-item py-2 fw-semibold text-sp-secondary {{ request()->routeIs('admin.customnames.fontsmap') ? 'text-primary' : '' }}" href="{{ route('admin.customnames.fontsmap') }}">Font Display Names</a></li>
+                        <li><a class="dropdown-item py-2 fw-semibold text-sp-secondary {{ request()->routeIs('admin.customcolors.*') ? 'text-primary' : '' }}" href="{{ route('admin.customcolors.index') }}">Custom Colors</a></li>
+                    </ul>
+                </div>
+
                 <a href="#" class="nav-link px-3 h-100 d-flex align-items-center fs-6 fw-semibold text-sp-secondary text-uppercase">Products</a>
 
                 <div class="ms-auto">
@@ -68,9 +108,68 @@
         <div class="list-group list-group-flush font-blinker">
             <a href="{{ route('admin.dashboard') }}" class="list-group-item list-group-item-action bg-dark text-white border-secondary py-3 fw-bold text-uppercase {{ request()->routeIs('admin.dashboard') ? 'text-primary' : '' }}">Dashboard</a>
             <a href="{{ route('admin.businesses.index') }}" class="list-group-item list-group-item-action bg-dark text-white border-secondary py-3 fw-bold text-uppercase {{ request()->routeIs('admin.businesses.*') ? 'text-primary' : '' }}">Businesses</a>
-            <a href="{{ route('admin.customnames.index') }}" class="list-group-item list-group-item-action bg-dark text-white border-secondary py-3 fw-bold text-uppercase {{ request()->routeIs('admin.customnames.*') ? 'text-primary' : '' }}">Custom Names</a>
-            <a href="{{ route('admin.customcolors.index') }}" class="list-group-item list-group-item-action bg-dark text-white border-secondary py-3 fw-bold text-uppercase {{ request()->routeIs('admin.customcolors.*') ? 'text-primary' : '' }}">Custom Colors</a>
-            <a href="#" class="list-group-item list-group-item-action bg-dark text-white border-secondary py-3 fw-bold text-uppercase">Orders</a>
+            <div class="accordion accordion-flush" id="adminMobileAccordion">
+                <div class="accordion-item bg-dark border-secondary">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed bg-dark text-white py-3 fw-bold text-uppercase shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAdminOrders">
+                            Orders
+                        </button>
+                    </h2>
+                    <div id="collapseAdminOrders" class="accordion-collapse collapse {{ (request()->routeIs('admin.orders.*')) ? 'show' : '' }}" data-bs-parent="#adminMobileAccordion">
+                        <div class="accordion-body bg-dark p-0">
+                            <a href="{{ route('admin.orders.index') }}" class="list-group-item list-group-item-action bg-dark text-white border-0 ps-4 py-2 small text-uppercase {{ request()->routeIs('admin.orders.index') ? 'text-primary' : '' }}">All Orders</a>
+                            <a href="{{ route('admin.orders.production') }}" class="list-group-item list-group-item-action bg-dark text-white border-0 ps-4 py-2 small text-uppercase {{ request()->routeIs('admin.orders.production') ? 'text-primary' : '' }}">Production</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item bg-dark border-secondary">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed bg-dark text-white py-3 fw-bold text-uppercase shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAdminCustomization">
+                            Customization
+                        </button>
+                    </h2>
+                    <div id="collapseAdminCustomization" class="accordion-collapse collapse {{ (request()->routeIs('admin.customnames.*') || request()->routeIs('admin.customcolors.*')) ? 'show' : '' }}" data-bs-parent="#adminMobileAccordion">
+                        <div class="accordion-body bg-dark p-0">
+                            <a href="{{ route('admin.customnames.index') }}" class="list-group-item list-group-item-action bg-dark text-white border-0 ps-4 py-2 small text-uppercase {{ request()->routeIs('admin.customnames.index') ? 'text-primary' : '' }}">Name & Number Config</a>
+                            <a href="{{ route('admin.customnames.fonts') }}" class="list-group-item list-group-item-action bg-dark text-white border-0 ps-4 py-2 small text-uppercase {{ request()->routeIs('admin.customnames.fonts') ? 'text-primary' : '' }}">Font Management</a>
+                            <a href="{{ route('admin.customnames.fontsmap') }}" class="list-group-item list-group-item-action bg-dark text-white border-0 ps-4 py-2 small text-uppercase {{ request()->routeIs('admin.customnames.fontsmap') ? 'text-primary' : '' }}">Font Display Names</a>
+                            <a href="{{ route('admin.customcolors.index') }}" class="list-group-item list-group-item-action bg-dark text-white border-0 ps-4 py-2 small text-uppercase {{ request()->routeIs('admin.customcolors.*') ? 'text-primary' : '' }}">Custom Colors</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item bg-dark border-secondary">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed bg-dark text-white py-3 fw-bold text-uppercase shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAdminConfiguration">
+                            Configuration
+                        </button>
+                    </h2>
+                    <div id="collapseAdminConfiguration" class="accordion-collapse collapse {{ (request()->routeIs('admin.shipping.*') || request()->routeIs('admin.dropbox.*') || request()->routeIs('admin.qbo.*')) ? 'show' : '' }}" data-bs-parent="#adminMobileAccordion">
+                        <div class="accordion-body bg-dark p-0">
+                            <a href="{{ route('admin.shipping.index') }}" class="list-group-item list-group-item-action bg-dark text-white border-0 ps-4 py-2 small text-uppercase {{ request()->routeIs('admin.shipping.*') ? 'text-primary' : '' }}">Shipping</a>
+                            <a href="{{ route('admin.dropbox.status') }}" class="list-group-item list-group-item-action bg-dark text-white border-0 ps-4 py-2 small text-uppercase {{ request()->routeIs('admin.dropbox.*') ? 'text-primary' : '' }}">Dropbox</a>
+                            <a href="{{ route('admin.qbo.index') }}" class="list-group-item list-group-item-action bg-dark text-white border-0 ps-4 py-2 small text-uppercase {{ request()->routeIs('admin.qbo.*') ? 'text-primary' : '' }}">QuickBooks</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item bg-dark border-secondary">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed bg-dark text-white py-3 fw-bold text-uppercase shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAdminStripe">
+                            Stripe
+                        </button>
+                    </h2>
+                    <div id="collapseAdminStripe" class="accordion-collapse collapse {{ request()->routeIs('admin.payments.stripe*') ? 'show' : '' }}" data-bs-parent="#adminMobileAccordion">
+                        <div class="accordion-body bg-dark p-0">
+                            <a href="{{ route('admin.payments.stripe') }}" class="list-group-item list-group-item-action bg-dark text-white border-0 ps-4 py-2 small text-uppercase {{ request()->routeIs('admin.payments.stripe') ? 'text-primary' : '' }}">Transactions</a>
+                            <a href="{{ route('admin.payments.stripe.payouts') }}" class="list-group-item list-group-item-action bg-dark text-white border-0 ps-4 py-2 small text-uppercase {{ request()->routeIs('admin.payments.stripe.payouts') ? 'text-primary' : '' }}">Payouts (Deposits)</a>
+                            <a href="{{ route('admin.payments.stripe.sync-logs') }}" class="list-group-item list-group-item-action bg-dark text-white border-0 ps-4 py-2 small text-uppercase {{ request()->routeIs('admin.payments.stripe.sync-logs*') ? 'text-primary' : '' }}">Sync Logs</a>
+                            <a href="{{ route('admin.payments.reconciliation.index') }}" class="list-group-item list-group-item-action bg-dark text-white border-0 ps-4 py-2 small text-uppercase {{ request()->routeIs('admin.payments.reconciliation.*') ? 'text-primary' : '' }}">Reconciliation</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <a href="{{ route('admin.users.index') }}" class="list-group-item list-group-item-action bg-dark text-white border-secondary py-3 fw-bold text-uppercase {{ request()->routeIs('admin.users.*') ? 'text-primary' : '' }}">Users</a>
             <a href="#" class="list-group-item list-group-item-action bg-dark text-white border-secondary py-3 fw-bold text-uppercase">Products</a>
             <a href="{{ route('home') }}" class="list-group-item list-group-item-action bg-dark text-white border-secondary py-3 fw-bold text-uppercase">View Store</a>

@@ -11,6 +11,7 @@ class SavedImage extends FuelModel
     protected $fillable = [
         'business_id',
         'image',
+        'thumbnail',
         'image_name',
         'image_notes',
         'width',

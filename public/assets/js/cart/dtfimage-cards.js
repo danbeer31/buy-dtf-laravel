@@ -21,13 +21,35 @@
         let list = document.querySelector(LIST_SEL);
         if (list) return list;
 
-        const uploadCard = document.getElementById('upload-card');
-        if (!uploadCard || !uploadCard.parentNode) return null;
+        // Try to find a good parent. In index.blade.php, #img-grid is a sibling of #empty-cart-state
+        // or it's before the checkout button row.
+        const emptyState = document.getElementById('empty-cart-state');
+        const uploadCol = document.getElementById('upload-card')?.closest('.col-12');
 
         list = document.createElement('div');
         list.id = 'img-grid';
         list.className = 'row g-3';
-        uploadCard.parentNode.insertBefore(list, uploadCard);
+
+        const orderIdInp = document.querySelector('[name="source_order_id"]');
+        if (orderIdInp && orderIdInp.value) {
+            list.dataset.orderId = orderIdInp.value;
+        } else if (window.CART_CFG && window.CART_CFG.order_id) {
+            list.dataset.orderId = window.CART_CFG.order_id;
+        }
+
+        if (emptyState && emptyState.parentNode) {
+            emptyState.parentNode.insertBefore(list, emptyState);
+        } else if (uploadCol && uploadCol.parentNode) {
+            uploadCol.parentNode.insertBefore(list, uploadCol);
+        } else {
+            // Fallback
+            const uploadCard = document.getElementById('upload-card');
+            if (uploadCard && uploadCard.parentNode) {
+                uploadCard.parentNode.insertBefore(list, uploadCard);
+            }
+        }
+
+        console.log('[Cart] Created #img-grid container', list);
         return list;
     }
 
@@ -52,47 +74,75 @@
     }
 
     async function addDtfImageCard(dtfimageId, orderId) {
+        console.log('[Cart] addDtfImageCard called', { dtfimageId, orderId });
+
+        // If the cart was empty, we just refresh as requested by the user
+        // this is the most reliable way to ensure the UI is correct.
+        const empty = document.getElementById('empty-cart-state');
+        if (empty) {
+            console.log('[Cart] First image added, refreshing page...');
+            // Force a reload from the server
+            window.location.href = window.location.pathname + '?refresh=' + Date.now();
+            return true;
+        }
+
         try {
             const data = await fetchCardHTML(dtfimageId, orderId);
             if (!data || !data.success || !data.html) {
-                console.warn('Render failed:', data && data.msg);
+                console.warn('[Cart] Render failed:', data && data.msg);
                 return false;
             }
 
             const list = ensureListContainer();
             if (!list) {
-                console.error('Could not create/find card list container.');
+                console.error('[Cart] Could not create/find card list container.');
                 return false;
             }
 
             // remove the empty-state alert if present
-            const empty = document.getElementById('no-images-alert');
-            if (empty) empty.remove();
+            const empty = document.getElementById('empty-cart-state');
+            if (empty) {
+                console.log('[Cart] Removing #empty-cart-state');
+                empty.remove();
+            }
+            const noImages = document.getElementById('no-images-alert');
+            if (noImages) {
+                console.log('[Cart] Removing #no-images-alert');
+                noImages.remove();
+            }
 
             // enable the "Place order" button if it was disabled
-            const place = document.querySelector('a.btn.btn-success');
-            if (place) {
+            const placeButtons = document.querySelectorAll('a[href*="checkout"]');
+            placeButtons.forEach(place => {
                 place.classList.remove('disabled');
                 place.removeAttribute('aria-disabled');
                 place.removeAttribute('tabindex');
-            }
+            });
 
             // insert the new card
-            list.insertAdjacentHTML('beforeend', data.html.trim());  // APPEND
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = data.html.trim();
+            const newElement = tempDiv.firstElementChild;
+
+            if (!newElement) {
+                console.error('[Cart] Failed to parse HTML for new card');
+                return false;
+            }
+
+            list.appendChild(newElement);
+            console.log('[Cart] Card appended to list', newElement);
 
             // init the just-inserted node
-            const newCard = list.lastElementChild; // we inserted at the end
-            if (newCard) {
-                initNewCard(newCard);
-                // Also initialize proportion lock for the new card specifically
-                if (window.DTF && typeof window.DTF.initProportionLock === 'function') {
-                    window.DTF.initProportionLock(newCard.querySelector('.image-card') || newCard);
-                }
+            initNewCard(newElement);
+            // Also initialize proportion lock for the new card specifically
+            if (window.DTF && typeof window.DTF.initProportionLock === 'function') {
+                const card = newElement.querySelector('.image-card') || newElement;
+                window.DTF.initProportionLock(card);
             }
 
             return true;
         } catch (err) {
-            console.error('addDtfImageCard error:', err);
+            console.error('[Cart] addDtfImageCard error:', err);
             return false;
         }
     }
@@ -119,8 +169,12 @@
         const lock  = card.querySelector('.input-lock');
         if (!wInp || !hInp || !lock) return;
 
-        let ratio = parseFloat(card.dataset.ratio);
-        if (!Number.isFinite(ratio) || ratio <= 0) ratio = computeRatio(wInp.value, hInp.value) || 1;
+        // Ratio source of truth: current visible input values.
+        // Do NOT use image intrinsic ratio here; user controls print size ratio.
+        let ratio = computeRatio(wInp.value, hInp.value);
+        if (!Number.isFinite(ratio) || ratio <= 0) ratio = parseFloat(card.dataset.ratio);
+        if (!Number.isFinite(ratio) || ratio <= 0) ratio = 1;
+        card.dataset.ratio = String(ratio);
 
         let updating = false;
         const clamp = n => Math.min(MAX, Math.max(MIN, round3(n)));
@@ -150,11 +204,14 @@
         wInp.addEventListener('input',  syncFromWidth);
         hInp.addEventListener('input',  syncFromHeight);
         lock.addEventListener('change', () => {
-            if (lock.checked) { freezeCurrentRatio(); syncFromWidth(); }
+            if (lock.checked) { freezeCurrentRatio(); }
         });
 
-        // Initial normalize if locked
-        if (lock.checked) syncFromWidth();
+        // Hard baseline: when card initializes with lock on, trust visible inputs.
+        // This prevents stale/corrupt hidden ratios from forcing 10 -> 1 behavior.
+        if (lock.checked) {
+            freezeCurrentRatio();
+        }
 
         card.dataset.proportionInit = '1';
     }

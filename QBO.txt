@@ -1,0 +1,19 @@
+QuickBooks App Settings
+
+DEV (dev.buy-dtf.com)
+Host domain: dev.buy-dtf.com
+Launch URL: https://dev.buy-dtf.com/admin/qbo
+Disconnect URL: https://dev.buy-dtf.com/admin/qbo
+Connect/Reconnect URL: https://dev.buy-dtf.com/admin/qbo/connect
+OAuth Redirect URI: https://dev.buy-dtf.com/admin/qbo/callback
+End-user license agreement URL: https://dev.buy-dtf.com/legal/eula
+Privacy policy URL: https://dev.buy-dtf.com/legal/privacy-policy
+
+PRODUCTION (buy-dtf.com)
+Host domain: buy-dtf.com
+Launch URL: https://buy-dtf.com/admin/qbo
+Disconnect URL: https://buy-dtf.com/admin/qbo
+Connect/Reconnect URL: https://buy-dtf.com/admin/qbo/connect
+OAuth Redirect URI: https://buy-dtf.com/admin/qbo/callback
+End-user license agreement URL: https://buy-dtf.com/legal/eula
+Privacy policy URL: https://buy-dtf.com/legal/privacy-policy

@@ -1,0 +1,3 @@
+
+   Illuminate\Database\QueryException  SQLSTATE[HY000] [2002] Connection timed out (Connection: fuelmysql, Host: 134.209.175.25, Port: 3306, Database: buydtf_fuel_stage, SQL: DESCRIBE dropbox_tokens).
+

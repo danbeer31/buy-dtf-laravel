@@ -128,6 +128,7 @@
         reload: "/admin/customnames/templates/reload",
         fonts: "/admin/customnames/fonts/list",
         preview: "/admin/customnames/preview",
+        savePreview: "/admin/customnames/template/save-preview",
     };
 
     // ---------- DOM refs ----------
@@ -179,6 +180,7 @@
     const elPvPlaceholder = $("#pv-wrap .pv-placeholder");
     const elPvImg     = $("#pv-img");
     const elPvRun     = $("#pv-run");
+    const elPvSave    = $("#pv-save");
 
     // ---------- fonts ----------
     async function loadFonts() {
@@ -205,7 +207,59 @@
         }
         if (before) sel.value = before;
     }
-    const colorInput = (val, cls) => `<input type="text" class="form-control form-control-sm ${cls}" value="${esc(val||'')}" placeholder="#RRGGBB">`;
+    const colorInput = (val, cls) => {
+        const id = 'clr-' + Math.random().toString(36).substr(2, 9);
+        const colors = (urls.customColors || []);
+        let colorOptionsHtml = colors.map(c => `
+            <div class="color-swatch-item" data-hex="${esc(c.hex)}">
+                <div class="color-swatch-box" style="background-color: ${esc(c.hex)}"></div>
+                <span class="small">${esc(c.name)}</span>
+            </div>
+        `).join('');
+
+        return `
+            <div class="input-group input-group-sm">
+                <input type="text" class="form-control form-control-sm ${cls}" id="${id}" value="${esc(val||'')}" placeholder="#RRGGBB">
+                <button class="btn btn-outline-secondary dropdown-toggle color-selector-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <div class="color-swatch-box m-0" style="background-color: ${esc(asHex(val, '#ffffff'))}; width: 16px; height: 16px;"></div>
+                </button>
+                <div class="dropdown-menu dropdown-menu-end color-selector-dropdown">
+                    ${colorOptionsHtml || '<div class="dropdown-item disabled small">No custom colors</div>'}
+                </div>
+            </div>
+        `;
+    };
+
+    function wireColorSelectors(parent = document) {
+        $$(".color-swatch-item", parent).forEach(item => {
+            on(item, "click", (e) => {
+                const hex = item.dataset.hex;
+                const group = item.closest(".input-group");
+                const input = group.querySelector("input");
+                const preview = group.querySelector(".color-selector-btn .color-swatch-box");
+
+                if (input) {
+                    input.value = hex;
+                    // Trigger input event for live sync
+                    input.dispatchEvent(new Event('input', { bubbles: true }));
+                }
+                if (preview) {
+                    preview.style.backgroundColor = hex;
+                }
+            });
+        });
+
+        // Also update preview when manual text input happens
+        $$(".input-group:has(.color-selector-btn) input", parent).forEach(input => {
+            on(input, "input", (e) => {
+                const group = input.closest(".input-group");
+                const preview = group.querySelector(".color-selector-btn .color-swatch-box");
+                if (preview) {
+                    preview.style.backgroundColor = asHex(input.value, '#ffffff');
+                }
+            });
+        });
+    }
     function fontSelectHtml(current) {
         const opts = ['<option value="">(system)</option>'].concat(
             STATE.fonts.map(f => `<option value="${esc(f.slug)}"${(f.slug===current||f.family===current)?' selected':''}>${esc(f.family)} (${esc(f.slug)})</option>`)
@@ -470,6 +524,7 @@
         const body = $("#f-block-rows");
         if (!body) return;
         body.innerHTML = (STATE.blocks || []).map((b, i) => rowHtmlForBlock(b, i)).join("");
+        wireColorSelectors(body);
     }
 
     function applyTableInlineEdits() {
@@ -742,6 +797,7 @@
         </div>
       </div>`;
         document.body.appendChild(wrap);
+        wireColorSelectors(wrap.querySelector(".tb-modal"));
 
         if (!document.getElementById("tb-modal-css")) {
             const css = document.createElement("style");
@@ -886,29 +942,53 @@
 
         const dn = STATE.tpl.defaults?.name || {};
         if (elNameFont)  elNameFont.value  = dn.font || "";
-        if (elNameFill)  elNameFill.value  = dn.fill || "#000000";
-        if (elNameStroke)elNameStroke.value= dn.stroke || "#ffffff";
+        if (elNameFill) {
+            elNameFill.value    = dn.fill || "#000000";
+            elNameFill.closest(".input-group")?.querySelector(".color-swatch-box")?.style.setProperty('background-color', asHex(dn.fill, '#ffffff'));
+        }
+        if (elNameStroke) {
+            elNameStroke.value  = dn.stroke || "#ffffff";
+            elNameStroke.closest(".input-group")?.querySelector(".color-swatch-box")?.style.setProperty('background-color', asHex(dn.stroke, '#ffffff'));
+        }
         if (elNameSW)    elNameSW.value    = dn.strokeWidth ?? 0;
         if (elNameLS)    elNameLS.value    = dn.letterSpacing ?? 0;
-        if (elNameRingColor) elNameRingColor.value = dn.separatedOutline?.outerColor || "";
+        if (elNameRingColor) {
+            elNameRingColor.value = dn.separatedOutline?.outerColor || "";
+            elNameRingColor.closest(".input-group")?.querySelector(".color-swatch-box")?.style.setProperty('background-color', asHex(dn.separatedOutline?.outerColor, '#ffffff'));
+        }
         if (elNameRingWidth) elNameRingWidth.value = dn.separatedOutline?.outerWidthPx ?? 0;
         if (elNameRingGap)   elNameRingGap.value   = dn.separatedOutline?.gapPx ?? 0;
-        if (elNameO2Color)   elNameO2Color.value   = dn.outline2?.color || "";
+        if (elNameO2Color) {
+            elNameO2Color.value   = dn.outline2?.color || "";
+            elNameO2Color.closest(".input-group")?.querySelector(".color-swatch-box")?.style.setProperty('background-color', asHex(dn.outline2?.color, '#ffffff'));
+        }
         if (elNameO2Width)   elNameO2Width.value   = dn.outline2?.widthPx ?? 0;
         if (elNameO2Font)    elNameO2Font.value    = dn.outline2?.font || "";
 
         const dm = STATE.tpl.defaults?.number || {};
         if (elNumFont)   elNumFont.value   = dm.font || "";
-        if (elNumFill)   elNumFill.value   = dm.fill || "#000000";
-        if (elNumStroke) elNumStroke.value = dm.stroke || "#ffffff";
+        if (elNumFill) {
+            elNumFill.value    = dm.fill || "#000000";
+            elNumFill.closest(".input-group")?.querySelector(".color-swatch-box")?.style.setProperty('background-color', asHex(dm.fill, '#ffffff'));
+        }
+        if (elNumStroke) {
+            elNumStroke.value  = dm.stroke || "#ffffff";
+            elNumStroke.closest(".input-group")?.querySelector(".color-swatch-box")?.style.setProperty('background-color', asHex(dm.stroke, '#ffffff'));
+        }
         if (elNumSW)     elNumSW.value     = dm.strokeWidth ?? 0;
         if (elNumLS)     elNumLS.value     = dm.letterSpacing ?? 0;
-        if (elNumRingColor) elNumRingColor.value = dm.separatedOutline?.outerColor || "";
+        if (elNumRingColor) {
+            elNumRingColor.value = dm.separatedOutline?.outerColor || "";
+            elNumRingColor.closest(".input-group")?.querySelector(".color-swatch-box")?.style.setProperty('background-color', asHex(dm.separatedOutline?.outerColor, '#ffffff'));
+        }
         if (elNumRingWidth) elNumRingWidth.value = dm.separatedOutline?.outerWidthPx ?? 0;
         if (elNumRingGap)   elNumRingGap.value   = dm.separatedOutline?.gapPx ?? 0;
-        if (elNumO2Color)   elNumO2Color.value   = dm.outline2?.color || "";
+        if (elNumO2Color) {
+            elNumO2Color.value   = dm.outline2?.color || "";
+            elNumO2Color.closest(".input-group")?.querySelector(".color-swatch-box")?.style.setProperty('background-color', asHex(dm.outline2?.color, '#ffffff'));
+        }
         if (elNumO2Width)   elNumO2Width.value   = dm.outline2?.widthPx ?? 0;
-        if (elNumO2Font)    elNumO2Font.value    = dm.outline2?.font || "";
+        if (elNumO2Font)    elNumO2Font.value    = dn.outline2?.font || "";
 
         renderBlocksTable();
         syncJsonFromState();
@@ -928,14 +1008,23 @@
             number: asNum(elScaleNum?.value || 1, 1),
             scaleStroke: !!(elScaleStroke?.checked),
         };
-        tpl.defaults = shallowClone(STATE.tpl.defaults || {});
+        tpl.defaults = shallowClone(tpl.defaults || {});
         tpl.blocks   = shallowClone(STATE.blocks || []);
+
+        // Ensure preview_image is NOT lost if it was already in STATE.tpl
+        if (STATE.tpl && STATE.tpl.preview_image) {
+            tpl.preview_image = STATE.tpl.preview_image;
+        }
+
         return tpl;
     }
 
     function syncJsonFromState() {
         if (!elJson) return;
-        try { elJson.value = JSON.stringify(getTemplateFromForm(), null, 2); } catch {}
+        try {
+            const tpl = getTemplateFromForm();
+            elJson.value = JSON.stringify(tpl, null, 2);
+        } catch {}
     }
     function syncFormFromJson() {
         if (!elJson) return;
@@ -952,6 +1041,7 @@
     // ---------- Template CRUD ----------
     async function loadTemplateBySlug(slug) {
         if (!slug) throw new Error("Slug required.");
+        console.log('Loading template:', slug);
         const url = `${urls.get}${urls.get.includes("?") ? "&" : "?"}slug=${encodeURIComponent(slug)}`;
         const data = await fetchJSON(url, {method:"GET"});
 
@@ -1042,10 +1132,19 @@
         };
 
         // UI: spinner on
-        if (elPvImg) elPvImg.src = "";
+        elPvImg && (elPvImg.src = "");
         elPvWrap && elPvWrap.classList.add("loading");
         elPvPlaceholder && elPvPlaceholder.classList.add("d-none");
         elPvSpinner && elPvSpinner.classList.remove("d-none");
+        if (elPvSave) {
+            // Deterministic: preview must succeed before this can be clicked.
+            elPvSave.disabled = true;
+            elPvSave.removeAttribute('data-url');
+        }
+
+        // State for retry enabling
+        let previewSucceeded = false;
+        let finalImageUrl = null;
 
         try {
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
@@ -1091,33 +1190,55 @@
             }
 
             const ct = r.headers.get("content-type") || "";
-            if (ct.startsWith("image/") || ct === "application/octet-stream") {
+
+            if (ct.includes("application/json")) {
+                const j = await r.json();
+                if (j.url || j.png) {
+                    const url = j.url || j.png;
+                    elPvImg && (elPvImg.src = url);
+                    elPvImg && elPvImg.classList.remove("d-none");
+                    previewSucceeded = true;
+                    finalImageUrl = url;
+                } else if (j.png_base64) {
+                    const url = `data:image/png;base64,${j.png_base64}`;
+                    elPvImg && (elPvImg.src = url);
+                    elPvImg && elPvImg.classList.remove("d-none");
+                    previewSucceeded = true;
+                    finalImageUrl = url;
+                } else {
+                    throw new Error(j.message || "No preview image returned");
+                }
+            } else if (ct.startsWith("image/") || ct === "application/octet-stream") {
                 const blob = await r.blob();
                 const url = URL.createObjectURL(blob);
                 elPvImg && (elPvImg.src = url);
                 elPvImg && elPvImg.classList.remove("d-none");
-            } else if (ct.includes("application/json")) {
-                const j = await r.json();
-                if (j.png_base64) {
-                    elPvImg && (elPvImg.src = `data:image/png;base64,${j.png_base64}`);
-                    elPvImg && elPvImg.classList.remove("d-none");
-                } else if (j.url || j.png) {
-                    elPvImg && (elPvImg.src = j.url || j.png);
-                    elPvImg && elPvImg.classList.remove("d-none");
-                } else {
-                    throw new Error(j.message || "No preview image returned");
-                }
+                previewSucceeded = true;
+                finalImageUrl = url;
             } else {
                 const txt = await r.text();
                 throw new Error(`Unexpected preview content-type: ${ct} — ${txt.slice(0, 200)}`);
             }
         } catch (e) {
+            console.error('runPreview error:', e);
             elPvPlaceholder && elPvPlaceholder.classList.remove("d-none");
             if (typeof showAlert === "function") showAlert("danger", `Preview failed: ${e.message}`);
-            console.error(e);
         } finally {
             elPvWrap && elPvWrap.classList.remove("loading");
             elPvSpinner && elPvSpinner.classList.add("d-none");
+
+            if (elPvSave) {
+                if (previewSucceeded) {
+                    elPvSave.dataset.url = finalImageUrl;
+                    elPvSave.disabled = false;
+                    elPvSave.removeAttribute('disabled');
+                    elPvSave.classList.remove('opacity-50');
+                    elPvSave.style.pointerEvents = 'auto';
+                    elPvSave.style.opacity = '1';
+                } else {
+                    elPvSave.disabled = true;
+                }
+            }
         }
     }
 
@@ -1181,7 +1302,61 @@
         } catch (e) { showAlert("danger", e.message || "Delete failed"); }
     });
 
-    on(elPvRun, "click", runPreview);
+    on(elPvRun, "click", () => {
+        runPreview();
+    });
+
+    on(elPvSave, "click", async () => {
+        try {
+            const slug = (elSlug && elSlug.value || "").trim();
+            const imageUrl = elPvSave.dataset.url;
+            if (!slug) return showAlert("warning", "Need a template slug.");
+            if (!imageUrl) return showAlert("warning", "No preview image to save.");
+
+            if (imageUrl.startsWith('blob:')) {
+                return showAlert("danger", "Cannot save a local blob preview. The server must provide a persistent URL. Try running preview again.");
+            }
+
+            // Preserve original HTML (icon + label)
+            if (!elPvSave.dataset.originalHtml) {
+                elPvSave.dataset.originalHtml = elPvSave.innerHTML;
+            }
+
+            elPvSave.disabled = true;
+            elPvSave.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Saving…';
+
+            const res = await fetchJSON(urls.savePreview, {
+                method: "POST",
+                body: JSON.stringify({ slug, image_url: imageUrl })
+            });
+
+            if (res && res.success) {
+                showAlert("success", "Preview image saved to template.");
+                // Immediately update current state if needed
+                if (STATE.tpl) {
+                    STATE.tpl.preview_image = imageUrl;
+                }
+
+                // sync the JSON editor so the user sees it's there
+                syncJsonFromState();
+
+                // Keep disabled until a new preview is generated.
+                elPvSave.disabled = true;
+                elPvSave.setAttribute('disabled', 'disabled');
+                elPvSave.innerHTML = '<i class="bi bi-check-lg me-1"></i>Saved';
+            } else {
+                showAlert("danger", res.message || "Failed to save preview.");
+                elPvSave.disabled = false;
+                elPvSave.innerHTML = elPvSave.dataset.originalHtml;
+            }
+        } catch (e) {
+            showAlert("danger", e.message || "Error saving preview.");
+            if (elPvSave) {
+                elPvSave.disabled = false;
+                elPvSave.innerHTML = elPvSave.dataset.originalHtml || '<i class="bi bi-save me-1"></i> Save as Preview';
+            }
+        }
+    });
 
     [
         elWidthIn, elHeightIn, elDpi, elGap,
@@ -1201,6 +1376,12 @@
 
     // ---------- init ----------
     (async function init() {
+        console.log('Template Builder JS Initializing...');
+        const initIndicator = document.createElement('div');
+        initIndicator.id = 'js-loaded-indicator';
+        initIndicator.style.display = 'none';
+        document.body.appendChild(initIndicator);
+
         await loadFonts();
         ensureDataUI();
         const initSlug = (elSlug && typeof elSlug.value === "string") ? elSlug.value.trim() : "";

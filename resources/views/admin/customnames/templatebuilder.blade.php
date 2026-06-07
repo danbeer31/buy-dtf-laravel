@@ -33,6 +33,42 @@
         .data-val { width: 60%; }
         .data-actions { white-space: nowrap; }
         .help-hint { color:#6c757d; font-size: .95rem; }
+
+        /* Color Selector Styles */
+        .color-selector-btn {
+            width: 30px;
+            height: 30px;
+            padding: 0;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            background-color: #fff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .color-selector-dropdown {
+            max-height: 250px;
+            overflow-y: auto;
+            width: 200px;
+            padding: 8px;
+        }
+        .color-swatch-item {
+            display: flex;
+            align-items: center;
+            padding: 4px 8px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .color-swatch-item:hover {
+            background-color: #f8f9fa;
+        }
+        .color-swatch-box {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+            margin-right: 8px;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
     </style>
 
     <section class="container my-4" id="tpl-builder">
@@ -117,11 +153,18 @@
                             <div class="pv-spinner d-none" aria-label="Loading"></div>
                             <img id="pv-img" alt="preview" class="d-none" style="max-width:100%;height:auto;">
                         </div>
-                        <div class="form-check mt-2">
-                            <input class="form-check-input" type="checkbox" id="debug">
-                            <label class="form-check-label small" for="debug">
-                                Debug (show squeeze details)
-                            </label>
+                        <div class="d-flex align-items-center justify-content-between mt-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="debug">
+                                <label class="form-check-label small" for="debug">
+                                    Debug (show squeeze details)
+                                </label>
+                            </div>
+                            <div class="d-flex gap-2 align-items-center">
+                                <button id="pv-save" class="btn btn-sm btn-success" disabled style="pointer-events: auto !important;">
+                                    <i class="bi bi-save me-1"></i> Save as Preview
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -172,7 +215,9 @@
             del: '{{ $ajaxDeleteUrl }}',
             reload: '{{ $ajaxReloadUrl }}',
             fonts: '{{ $ajaxFontsUrl }}',
-            preview: '{{ $ajaxPreviewUrl }}'
+            preview: '{{ $ajaxPreviewUrl }}',
+            savePreview: '{{ $ajaxSavePreviewUrl }}',
+            customColors: {!! json_encode($customColors) !!}
         };
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         // Wrap fetch to include CSRF token
@@ -191,6 +236,6 @@
             return originalFetch(resource, config);
         };
     </script>
-    <script src="{{ asset('assets/js/admin/customnames/templatebuilder.js') }}"></script>
-    @endpush
+    <script src="{{ asset('assets/js/admin/customnames/templatebuilder.js') }}?v={{ time() }}"></script>
+@endpush
 </x-app-layout>

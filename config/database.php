@@ -83,6 +83,26 @@ return [
             ]) : [],
         ],
 
+        'remotefuel' => [
+            'driver' => 'mysql',
+            'url' => env('REMOTE_FUEL_DB_URL'),
+            'host' => env('REMOTE_FUEL_DB_HOST', '193.203.166.141'),
+            'port' => env('REMOTE_FUEL_DB_PORT', '3306'),
+            'database' => env('REMOTE_FUEL_DB_DATABASE', 'u115974381_dtftesttrans'),
+            'username' => env('REMOTE_FUEL_DB_USERNAME', 'u115974381_dtftesttrans'),
+            'password' => env('REMOTE_FUEL_DB_PASSWORD', ''),
+            'unix_socket' => env('REMOTE_FUEL_DB_SOCKET', ''),
+            'charset' => env('REMOTE_FUEL_DB_CHARSET', 'utf8mb4'),
+            'collation' => env('REMOTE_FUEL_DB_COLLATION', 'utf8mb4_unicode_ci'),
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => false,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                (PHP_VERSION_ID >= 80500 ? \Pdo\Mysql::ATTR_SSL_CA : \PDO::MYSQL_ATTR_SSL_CA) => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
+
         'mariadb' => [
             'driver' => 'mariadb',
             'url' => env('DB_URL'),

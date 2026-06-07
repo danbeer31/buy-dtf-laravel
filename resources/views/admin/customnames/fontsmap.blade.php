@@ -12,13 +12,16 @@
     </style>
 
     <section class="container my-4" id="fonts-map">
-        <div class="d-flex align-items-center mb-3 gap-2">
-            <h3 class="mb-0"><i class="bi bi-map me-2"></i> Font Display Names</h3>
+        <div class="d-flex align-items-center mb-4 gap-3">
+            <a href="{{ route('admin.customnames.fonts') }}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left"></i>
+            </a>
+            <h3 class="mb-0 fw-bold"><i class="bi bi-map me-2 text-primary"></i> Font Display Names</h3>
             <div class="ms-auto d-flex gap-2">
-                <button id="btn-reload" class="btn btn-outline-secondary">
+                <button id="btn-reload" class="btn btn-outline-secondary px-3">
                     <i class="bi bi-arrow-repeat me-1"></i> Reload Fonts
                 </button>
-                <button id="btn-save-all" class="btn btn-primary">
+                <button id="btn-save-all" class="btn btn-primary px-4">
                     <i class="bi bi-save me-1"></i> Save All
                 </button>
             </div>

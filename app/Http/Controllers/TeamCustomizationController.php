@@ -200,7 +200,7 @@ class TeamCustomizationController extends Controller
             $qty = (int)($payload['__order_quantity'] ?? $payload['opts']['order_quantity'] ?? $data['quantity'] ?? 1);
             $qty = max(1, $qty);
 
-            $dtfImage = DtfImage::create([
+            $dtfImage = DtfImage::createUsingExistingColumns([
                 'dtforder_id' => $order->id,
                 'image' => $url, // Use the full URL starting with /uploads/images/
                 'image_notes' => 'Team Customization Batch Loader',

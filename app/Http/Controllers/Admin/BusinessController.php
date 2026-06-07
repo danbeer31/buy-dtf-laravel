@@ -35,11 +35,32 @@ class BusinessController extends Controller
     public function show(Business $business)
     {
         // For now, just load the business. Later we can add orders and settings.
-        $business->load(['user', 'settings', 'dtfOrders.orderStatus']);
+        $business->load(['user', 'settings', 'dtfOrders.orderStatus', 'paymentMethods']);
 
         $orders = $business->dtfOrders()->orderBy('created_at', 'desc')->get();
+        $paymentMethods = \App\Models\PaymentMethod::all();
 
-        return view('admin.business.show', compact('business', 'orders'));
+        // Get recent payouts for this business
+        $payouts = \App\Models\StripePayout::whereHas('entries', function($q) use ($business) {
+            $q->whereHas('dtfOrder', function($oq) use ($business) {
+                $oq->where('business_id', $business->id);
+            });
+        })->orderBy('arrival_date', 'desc')->take(10)->get();
+
+        return view('admin.business.show', compact('business', 'orders', 'paymentMethods', 'payouts'));
+    }
+
+    public function updatePaymentMethods(Request $request, Business $business)
+    {
+        $fuelDb = env('FUEL_DB_CONNECTION', 'fuelmysql');
+        $request->validate([
+            'payment_methods' => 'nullable|array',
+            'payment_methods.*' => "exists:{$fuelDb}.paymentmethods,id",
+        ]);
+
+        $business->paymentMethods()->sync($request->input('payment_methods', []));
+
+        return back()->with('success', 'Business payment methods updated successfully.');
     }
 
     public function updateRate(Request $request, Business $business)
@@ -67,7 +88,9 @@ class BusinessController extends Controller
 
     public function impersonate(Business $business)
     {
-        if (!$business->user) {
+        $targetUser = $business->user ?: User::where('email', $business->email)->first();
+
+        if (!$targetUser) {
             return back()->with('error', 'This business does not have a linked user.');
         }
 
@@ -77,9 +100,9 @@ class BusinessController extends Controller
         // Store the original admin ID in session to allow "returning"
         session(['admin_impersonator' => Auth::id()]);
 
-        Auth::login($business->user);
+        Auth::login($targetUser);
 
-        return redirect()->route('dashboard')->with('success', 'You are now logged in as ' . $business->user->name);
+        return redirect()->route('dashboard')->with('success', 'You are now logged in as ' . $targetUser->name);
     }
 
     public function stopImpersonating()

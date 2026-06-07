@@ -43,7 +43,7 @@ class OrderController extends Controller
         }
 
         if ($openOrder = $business->open_order()) {
-            return redirect()->route('orders.show', $openOrder->id);
+            return redirect()->route('cart.index');
         }
 
         $order = DtfOrder::create([
@@ -52,7 +52,7 @@ class OrderController extends Controller
             'status' => 1, // Status 1 is 'open' based on FuelPHP logic
         ]);
 
-        return redirect()->route('orders.show', $order->id);
+        return redirect()->route('cart.index');
     }
 
     public function show($id)

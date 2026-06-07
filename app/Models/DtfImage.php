@@ -2,20 +2,59 @@
 
 namespace App\Models;
 
+use App\Services\GangSheetPricingService;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Schema;
 use Exception;
 
 class DtfImage extends FuelModel
 {
+    /**
+     * Create a row using only columns that exist on the active connection/table.
+     * This protects uploads when environments have schema drift.
+     */
+    public static function createUsingExistingColumns(array $attributes): self
+    {
+        $instance = new static();
+        $columns = $instance->existingColumnsForTable();
+
+        $filtered = array_filter(
+            $attributes,
+            static fn ($value, $key) => in_array($key, $columns, true),
+            ARRAY_FILTER_USE_BOTH
+        );
+
+        return static::query()->create($filtered);
+    }
+
+    protected function existingColumnsForTable(): array
+    {
+        static $cache = [];
+
+        $connection = $this->getConnectionName() ?: $this->getConnection()->getName();
+        $table = $this->getTable();
+        $cacheKey = $connection . '.' . $table;
+
+        if (!isset($cache[$cacheKey])) {
+            $cache[$cacheKey] = Schema::connection($connection)->getColumnListing($table);
+        }
+
+        return $cache[$cacheKey];
+    }
+
     protected $table = 'dtfimages';
 
     protected $fillable = [
         'dtforder_id',
         'image',
+        'thumbnail',
         'native_filename',
         'file_size',
         'sha256_original',
         'sha256_bitmap',
+        'upload_mime',
+        'item_type',
+        'item_meta',
         'image_name',
         'image_notes',
         'width',
@@ -26,6 +65,8 @@ class DtfImage extends FuelModel
         'orig_height',
         'quantity',
         'price',
+        'admin_unit_price',
+        'admin_price_locked',
         'date_uploaded',
         'production',
     ];
@@ -37,6 +78,7 @@ class DtfImage extends FuelModel
      */
     protected $casts = [
         'file_size' => 'integer',
+        'item_meta' => 'array',
         'width' => 'float',
         'height' => 'float',
         'width_ratio' => 'float',
@@ -45,6 +87,8 @@ class DtfImage extends FuelModel
         'orig_height' => 'float',
         'quantity' => 'integer',
         'price' => 'float',
+        'admin_unit_price' => 'float',
+        'admin_price_locked' => 'integer',
         'production' => 'integer',
     ];
 
@@ -71,13 +115,29 @@ class DtfImage extends FuelModel
 
     public function get_price()
     {
+        if ((int)($this->admin_price_locked ?? 0) === 1 && $this->admin_unit_price !== null) {
+            return round((float)$this->admin_unit_price, 2);
+        }
+
+        if ($this->isGangSheet()) {
+            $meta = $this->getGangSheetMeta();
+            $sizeKey = (string)($meta['size_key'] ?? '');
+            $qty = max(1, (int)$this->quantity);
+
+            $price = app(GangSheetPricingService::class)->unitPrice($sizeKey, $qty);
+            $this->price = $price;
+            $this->save();
+
+            return round($price, 2);
+        }
+
         if (!$this->dtfOrder || !$this->dtfOrder->business || !$this->dtfOrder->business->settings) {
             throw new Exception('Unable to calculate price: Missing related business or rate information.');
         }
 
         $rate = $this->dtfOrder->business->settings->rate;
 
-        if (!$rate) {
+        if ($rate === null) {
             throw new Exception('Unable to calculate price: Business rate is not set.');
         }
 
@@ -91,7 +151,7 @@ class DtfImage extends FuelModel
 
     public function get_square_inches()
     {
-        return ($this->width + 0.25) * ($this->height + 0.25);
+        return (float)$this->width * (float)$this->height;
     }
 
     public function get_total()
@@ -104,5 +164,26 @@ class DtfImage extends FuelModel
         $total = $price_per_image * $this->quantity;
 
         return round($total, 2);
+    }
+
+    public function isGangSheet(): bool
+    {
+        return $this->item_type === 'gang_sheet';
+    }
+
+    public function getGangSheetMeta(): array
+    {
+        $meta = $this->item_meta;
+
+        if (is_array($meta)) {
+            return $meta;
+        }
+
+        if (is_string($meta) && $meta !== '') {
+            $decoded = json_decode($meta, true);
+            return is_array($decoded) ? $decoded : [];
+        }
+
+        return [];
     }
 }

@@ -9,26 +9,27 @@
         <div class="container">
             <!-- Business Information -->
             <div class="card shadow-sm border-0 rounded-4 mb-4">
-                <div class="card-header bg-white border-0 py-3">
+                <div class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
                     <h5 class="mb-0 fw-bold">Business Information</h5>
+                    <a href="{{ route('profile.edit') }}" class="btn btn-sm btn-outline-primary">Edit Profile Settings</a>
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-6">
-                            <p><strong>Business Name:</strong> {{ $business->business_name }}</p>
-                            <p><strong>Contact Name:</strong> {{ $business->contact_name }}</p>
-                            <p><strong>Email:</strong> {{ $business->email }}</p>
-                            <p><strong>Phone:</strong> {{ $business->phone }}</p>
+                        <div class="col-md-6 border-end">
+                            <p class="mb-2"><i class="bi bi-building me-2 text-muted"></i><strong>Business Name:</strong> {{ $business->business_name }}</p>
+                            <p class="mb-2"><i class="bi bi-person me-2 text-muted"></i><strong>Contact Name:</strong> {{ $business->contact_name }}</p>
+                            <p class="mb-2"><i class="bi bi-envelope me-2 text-muted"></i><strong>Email:</strong> {{ $business->email }}</p>
+                            <p class="mb-2"><i class="bi bi-telephone me-2 text-muted"></i><strong>Phone:</strong> {{ $business->phone }}</p>
+                            <p class="mb-0"><i class="bi bi-geo-alt me-2 text-muted"></i><strong>Address:</strong> {{ $business->address }} {{ $business->address2 }}</p>
                         </div>
-                        <div class="col-md-6">
-                            <p><strong>Address:</strong> {{ $business->address }} {{ $business->address2 }}</p>
-                            <p><strong>City:</strong> {{ $business->city }}</p>
-                            <p><strong>State:</strong> {{ $business->state }}</p>
-                            <p><strong>Zip:</strong> {{ $business->zip }}</p>
+                        <div class="col-md-6" id="qbo-summary-container">
+                            <div class="d-flex justify-content-center align-items-center h-100 py-4">
+                                <div class="text-center">
+                                    <div class="spinner-border text-primary spinner-border-sm mb-2" role="status"></div>
+                                    <div class="small text-muted">Loading QuickBooks data...</div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="mt-3">
-                        <a href="{{ route('profile.edit') }}" class="btn btn-sm btn-outline-primary">Edit Profile Settings</a>
                     </div>
                 </div>
             </div>
@@ -43,6 +44,11 @@
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
+                            <button class="nav-link px-4 py-3 fw-bold border-0" id="invoices-tab" data-bs-toggle="tab" data-bs-target="#invoices" type="button" role="tab" aria-controls="invoices" aria-selected="false">
+                                Invoices (QuickBooks)
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
                             <button class="nav-link px-4 py-3 fw-bold border-0" id="images-tab" data-bs-toggle="tab" data-bs-target="#images" type="button" role="tab" aria-controls="images" aria-selected="false">
                                 Images
                             </button>
@@ -53,94 +59,37 @@
                     <div class="tab-content" id="accountTabsContent">
                         <!-- Orders Tab -->
                         <div class="tab-pane fade show active p-4" id="orders" role="tabpanel" aria-labelledby="orders-tab">
-                            <div class="d-flex justify-content-between align-items-center mb-4">
-                                <h5 class="mb-0">Order History</h5>
-                                @if(!$business->open_order())
-                                    <a href="{{ route('orders.new') }}" class="btn btn-primary">
-                                        <i class="bi bi-plus-circle me-1"></i> Start New Order
-                                    </a>
-                                @else
-                                    <a href="{{ route('orders.show', $business->open_order()->id) }}" class="btn btn-success">
-                                        <i class="bi bi-cart-plus me-1"></i> Continue Open Order
-                                    </a>
-                                @endif
+                            <div class="d-flex justify-content-center py-5">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading orders...</span>
+                                </div>
                             </div>
+                        </div>
 
-                            @if($orders->count() > 0)
-                                <div class="table-responsive">
-                                    <table class="table table-hover align-middle">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th>Order #</th>
-                                                <th>Date</th>
-                                                <th>Status</th>
-                                                <th class="text-center">Images</th>
-                                                <th class="text-end">Total</th>
-                                                <th class="text-end">Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach($orders as $order)
-                                                <tr>
-                                                    <td>{{ $order->id }}</td>
-                                                    <td>{{ $order->order_date->format('m/d/Y') }}</td>
-                                                    <td>
-                                                        <span class="badge" style="background-color: {{ $order->orderStatus->color ?? '#6c757d' }}">
-                                                            {{ ucfirst($order->orderStatus->name ?? 'Unknown') }}
-                                                        </span>
-                                                    </td>
-                                                    <td class="text-center">{{ $order->get_total_image_count() }}</td>
-                                                    <td class="text-end fw-bold">
-                                                        ${{ number_format($order->total_price + $order->sales_tax + $order->shipping_cost, 2) }}
-                                                    </td>
-                                                    <td class="text-end">
-                                                        <a href="{{ route('orders.show', $order->id) }}" class="btn btn-sm btn-outline-dark">View</a>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
+                        <!-- Invoices Tab -->
+                        <div class="tab-pane fade p-4" id="invoices" role="tabpanel" aria-labelledby="invoices-tab">
+                            <div class="d-flex justify-content-center py-5">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading invoices...</span>
                                 </div>
-                            @else
-                                <div class="text-center py-5">
-                                    <i class="bi bi-receipt fs-1 text-muted opacity-25"></i>
-                                    <p class="mt-3 text-muted">No orders found.</p>
-                                </div>
-                            @endif
+                            </div>
                         </div>
 
                         <!-- Images Tab -->
                         <div class="tab-pane fade p-4" id="images" role="tabpanel" aria-labelledby="images-tab">
-                            <h5 class="mb-4">My Images</h5>
-                            @if($images->count() > 0)
-                                <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 g-3">
-                                    @foreach($images as $image)
-                                        <div class="col">
-                                            <div class="card h-100 shadow-sm border-0 rounded-3">
-                                                <div class="checkerboard d-flex align-items-center justify-content-center p-2 rounded-top" style="height: 120px; background-color: #f8f9fa;">
-                                                    <img src="{{ $image->image }}" class="img-fluid rounded" style="max-height: 100px;" alt="{{ $image->image_name }}">
-                                                </div>
-                                                <div class="card-body p-2">
-                                                    <p class="small mb-0 text-truncate text-center" title="{{ $image->image_name }}">
-                                                        {{ $image->image_name ?: 'Unnamed' }}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @endforeach
+                            <div class="d-flex justify-content-center py-5">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading images...</span>
                                 </div>
-                            @else
-                                <div class="text-center py-5">
-                                    <i class="bi bi-image fs-1 text-muted opacity-25"></i>
-                                    <p class="mt-3 text-muted">No images found.</p>
-                                </div>
-                            @endif
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <div id="modal-container"></div>
 
     <style>
         .checkerboard {
@@ -161,4 +110,92 @@
             border-bottom: 3px solid #ffc107 !important;
         }
     </style>
+
+    @push('scripts')
+    <script>
+        $(document).ready(function() {
+            // State to keep track of loaded tabs
+            const loadedTabs = {
+                orders: false,
+                invoices: false,
+                images: false
+            };
+
+            // Function to load QBO summary
+            function loadQboSummary() {
+                $.get('{{ route('account.invoices') }}', function(data) {
+                    $('#qbo-summary-container').html(data.summary_html);
+                    $('#modal-container').html(data.modal_html);
+
+                    // Initialize modal scripts if necessary
+                    if ($('#payInvoicesModal').length) {
+                        $('.invoice-checkbox').on('change', window.updateSelectedTotal);
+                        window.updateSelectedTotal();
+
+                        $('#payButton').on('click', function() {
+                            $(this).prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Processing...');
+                            $('#paymentForm').submit();
+                        });
+                    }
+                });
+            }
+
+            // Function to load Tab content
+            function loadTabContent(tabName, url) {
+                if (loadedTabs[tabName]) return;
+
+                const containerId = '#' + tabName;
+                $.get(url, function(data) {
+                    $(containerId).html(data.html || data);
+                    loadedTabs[tabName] = true;
+
+                    // Handle pagination for orders
+                    if (tabName === 'orders') {
+                        $(containerId).on('click', '.ajax-pagination a', function(e) {
+                            e.preventDefault();
+                            const pageUrl = $(this).attr('href');
+                            $(containerId).html('<div class="d-flex justify-content-center py-5"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>');
+                            $.get(pageUrl, function(pageData) {
+                                $(containerId).html(pageData.html || pageData);
+                            });
+                        });
+                    }
+                });
+            }
+
+            // Initial load
+            loadQboSummary();
+            loadTabContent('orders', '{{ route('account.orders') }}');
+
+            // Tab change listeners
+            $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+                const targetId = $(e.target).data('bs-target').replace('#', '');
+                if (targetId === 'invoices') {
+                    loadTabContent('invoices', '{{ route('account.invoices') }}');
+                } else if (targetId === 'images') {
+                    loadTabContent('images', '{{ route('account.images') }}');
+                } else if (targetId === 'orders') {
+                    loadTabContent('orders', '{{ route('account.orders') }}');
+                }
+            });
+
+            // Re-define within window context for global access
+            window.uncheckAllInvoices = function() {
+                $('.invoice-checkbox').prop('checked', false);
+            };
+
+            window.updateSelectedTotal = function() {
+                let total = 0;
+                let selectedIds = [];
+                $('.invoice-checkbox:checked').each(function() {
+                    total += parseFloat($(this).data('amount'));
+                    selectedIds.push($(this).data('id'));
+                });
+                $('#selectedTotal').text('$' + total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+                $('#invoiceIdsInput').val(selectedIds.join(','));
+                $('#payButton').prop('disabled', selectedIds.length === 0);
+            };
+        });
+    </script>
+    @endpush
 </x-app-layout>

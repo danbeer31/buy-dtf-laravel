@@ -1,301 +1,438 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="fw-bold fs-4 text-dark mb-0">
-            {{ __('Team Customization') }}
-        </h2>
-    </x-slot>
-
-    <style>
-        /* ---------- Per-block controls (Block | Mode | Colors/Controls) ---------- */
-        #tc-block-rows td {
-            vertical-align: middle;
-        }
-
-        #tc-block-rows .btn-group .btn {
-            text-transform: capitalize;
-            padding: .25rem .5rem;
-            border-radius: .5rem;
-        }
-
-        #tc-block-rows .btn-group .btn:not(.active):hover {
-            background: rgba(0, 0, 0, .03);
-        }
-
-        #tc-block-rows .nl-cc-cell > .btn.btn-outline-secondary.btn-sm {
-            display: inline-flex;
-            align-items: center;
-            gap: .5rem;
-            border-radius: .6rem;
-            padding: .25rem .5rem;
-        }
-
-        #tc-block-rows .nl-cc-cell > .btn span:first-child {
-            width: 16px;
-            height: 16px;
-            border-radius: 4px;
-            border: 1px solid #d1d5db;
-        }
-
-        #tc-block-rows .form-control.form-control-sm[type="number"] {
-            max-width: 120px;
-        }
-
-        /* ---------- Color offcanvas palette (right) ---------- */
-        #offcanvas-colors .offcanvas-title {
-            font-size: 1rem;
-        }
-
-        #offcanvas-colors .btn-light {
-            background: #fff;
-        }
-
-        #offcanvas-colors .btn-light:hover {
-            box-shadow: 0 4px 14px rgba(0, 0, 0, .08);
-            transform: translateY(-1px);
-        }
-        /* ---------- CSV offcanvas (top) ---------- */
-        .csv-offcanvas .offcanvas-body {
-            padding-top: .25rem;
-        }
-
-        /* Sticky header for the preview table */
-        #csv-preview-table thead th {
-            position: sticky;
-            top: 0;
-            background: var(--bs-body-bg);
-            z-index: 1;
-            box-shadow: inset 0 -1px 0 rgba(0, 0, 0, .06);
-        }
-
-        #csv-preview-table thead th:first-child,
-        #csv-preview-table tbody td:first-child {
-            text-align: center;
-            width: 46px;
-            vertical-align: middle;
-        }
-
-        /* Readability */
-        #csv-preview-table tbody tr:nth-child(odd) {
-            background: rgba(0, 0, 0, .02);
-        }
-
-        #csv-preview-table tbody tr:hover {
-            background: rgba(0, 0, 0, .05);
-        }
-
-        /* Mapping table spacing (above preview) */
-        #csv-map-wrap table td:first-child {
-            white-space: nowrap;
-            width: 220px;
-        }
-
-        #csv-map-wrap select.form-select-sm {
-            max-width: 340px;
-        }
-
-        /* Tiny SVG preview frame (static svg blocks) */
-        .svg-preview, .svg-preview img {
-            border-radius: .5rem;
-        }
-        .tc-tpl-card { cursor:pointer; transition:.15s ease; border-radius:.75rem; }
-        .tc-tpl-card:hover { transform:translateY(-1px); box-shadow:0 .5rem 1rem rgba(0,0,0,.08); }
-        .tc-tpl-card.selected { border-color:var(--bs-primary)!important; box-shadow:0 0 0 .25rem rgba(var(--bs-primary-rgb), .15); }
-        .tc-tpl-img { background:#f8f9fa; display:flex; align-items:center; justify-content:center; border-bottom:1px solid rgba(0,0,0,.06); }
-        .tc-tpl-img img { max-width:100%; max-height:100%; object-fit:contain; }
-        .tc-tpl-name { font-weight:600; }
-        .tc-tpl-desc { min-height:2.6em; }
-    </style>
-
-    <div class="container my-4 pb-5">
-        <div class="d-flex align-items-center justify-content-between mb-3">
-            <div class="font-blinker fs-1 fw-semibold mb-0">Team Customization</div>
+    <div class="container my-5 pb-5">
+        <div class="mb-5 text-center">
+            <h1 class="font-blinker display-5 fw-bold text-dark mb-2">Team Customization</h1>
+            <p class="text-muted lead">Personalize jerseys, kits, and gear with custom names and numbers in bulk.</p>
         </div>
 
-        <div class="card mb-3 font-blinker">
-            <div class="card-body">
-                <!-- Top controls -->
-                <div class="row g-3 align-items-end">
-                    <div class="col-12">
-                        <label class="form-label">Template</label>
+        <style>
+            .tc-section-card {
+                border: none;
+                border-radius: 1rem;
+                box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+                transition: box-shadow 0.3s ease;
+                margin-bottom: 1.5rem;
+            }
 
-                        <div id="tc-templates-grid" class="row row-cols-1 row-cols-sm-2 row-cols-md-4 row-cols-xl-6 g-3">
-                            @if(isset($templates) && $templates->count() > 0)
-                                @foreach($templates as $t)
-                                    @php
-                                        $tpl_id = $t->id;
-                                        $tpl_name = $t->public_name ?: ($t->name ?: "Template #{$t->id}");
-                                        $tpl_desc = $t->description ?: '';
-                                        $tpl_img = $t->preview_url ?: ($t->preview ?: ($t->preview_image ?: ($t->thumb ?: '')));
-                                    @endphp
+            .tc-section-card:hover {
+                box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+            }
 
-                                    <div class="col">
-                                        <div class="card h-100 border tc-tpl-card {{ request('tpl') == $tpl_id ? 'selected' : '' }}"
-                                             data-id="{{ $tpl_id }}" tabindex="0" role="button" aria-label="Choose {{ $tpl_name }}">
-                                            <div class="tc-tpl-img ratio ratio-4x3">
-                                                @if($tpl_img != '')
-                                                    <img src="{{ $tpl_img }}" alt="{{ $tpl_name }}">
-                                                @else
-                                                    <div class="text-muted small d-flex align-items-center justify-content-center">No preview</div>
-                                                @endif
+            .tc-section-header {
+                background-color: #fff;
+                border-bottom: 1px solid #e9ecef;
+                padding: 1.25rem 1.5rem;
+                border-top-left-radius: 1rem !important;
+                border-top-right-radius: 1rem !important;
+            }
+
+            .tc-section-header h3 {
+                margin-bottom: 0;
+                font-weight: 700;
+                color: #212529;
+                font-size: 1.25rem;
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+            }
+
+            .tc-section-body {
+                padding: 1.5rem;
+            }
+
+            /* Template Grid Improvements */
+            .tc-tpl-card {
+                cursor: pointer;
+                transition: all 0.2s ease-in-out;
+                border-radius: 0.75rem;
+                border: 2px solid transparent;
+                overflow: hidden;
+                height: 100%;
+                position: relative;
+            }
+
+            .tc-tpl-card:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            }
+
+            .tc-tpl-card.selected {
+                border-color: #0d6efd;
+                background-color: rgba(13, 110, 253, 0.02);
+            }
+
+            .tc-tpl-card.selected::after {
+                content: "\F26A";
+                font-family: "bootstrap-icons";
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                background: #0d6efd;
+                color: #fff;
+                width: 24px;
+                height: 24px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.8rem;
+                z-index: 2;
+            }
+
+            .tc-tpl-img-container {
+                position: relative;
+                background: #f1f3f5;
+                padding: 1rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .tc-tpl-card.selected .tc-tpl-img-container {
+                background: rgba(13, 110, 253, 0.05);
+            }
+
+            .tc-tpl-name {
+                font-weight: 700;
+                font-size: 0.95rem;
+                color: #343a40;
+                margin-bottom: 0.25rem;
+            }
+
+            .tc-tpl-desc {
+                font-size: 0.85rem;
+                color: #6c757d;
+                line-height: 1.4;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                height: 2.8em;
+            }
+
+            /* Table Modernization */
+            .tc-modern-table {
+                border-collapse: separate;
+                border-spacing: 0 0.5rem;
+            }
+
+            .tc-modern-table thead th {
+                border: none;
+                color: #6c757d;
+                text-transform: uppercase;
+                font-size: 0.75rem;
+                font-weight: 700;
+                letter-spacing: 0.05em;
+                padding: 0.75rem 1rem;
+            }
+
+            .tc-modern-table tbody tr {
+                background: #fff;
+                box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.05);
+                transition: all 0.2s ease;
+            }
+
+            .tc-modern-table tbody tr:hover {
+                transform: scale(1.005);
+                box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.08);
+            }
+
+            .tc-modern-table td {
+                padding: 1rem;
+                border: none;
+            }
+
+            .tc-modern-table td:first-child { border-top-left-radius: 0.5rem; border-bottom-left-radius: 0.5rem; }
+            .tc-modern-table td:last-child { border-top-right-radius: 0.5rem; border-bottom-right-radius: 0.5rem; }
+
+            /* Block Controls */
+            #tc-block-rows td { vertical-align: middle; }
+            .btn-group-modern {
+                background: #f8f9fa;
+                padding: 0.25rem;
+                border-radius: 0.75rem;
+                display: inline-flex;
+            }
+
+            .btn-group-modern .btn {
+                border: none;
+                padding: 0.375rem 0.75rem;
+                font-size: 0.875rem;
+                font-weight: 600;
+                border-radius: 0.5rem !important;
+                color: #6c757d;
+                transition: all 0.2s ease;
+            }
+
+            .btn-group-modern .btn.active {
+                background: #fff;
+                color: #0d6efd;
+                box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1);
+            }
+
+            /* Color Swatch Button */
+            .nl-cc-btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.75rem;
+                padding: 0.5rem 1rem;
+                border-radius: 0.75rem;
+                border: 1px solid #e9ecef;
+                background: #fff;
+                transition: all 0.2s ease;
+                font-weight: 600;
+                font-size: 0.875rem;
+                color: #495057;
+            }
+
+            .nl-cc-btn:hover {
+                border-color: #0d6efd;
+                background: #f8f9fa;
+            }
+
+            .nl-cc-swatch {
+                width: 20px;
+                height: 20px;
+                border-radius: 6px;
+                border: 1px solid rgba(0,0,0,0.1);
+            }
+
+            /* Progress Area */
+            .tc-progress-container {
+                background: #fff;
+                padding: 1.5rem;
+                border-radius: 1rem;
+                border: 1px solid #e9ecef;
+            }
+
+            .progress-modern {
+                height: 0.75rem;
+                border-radius: 1rem;
+                background: #f8f9fa;
+                overflow: hidden;
+            }
+
+            .progress-bar-modern {
+                background: linear-gradient(90deg, #0d6efd, #0dcaf0);
+                transition: width 0.4s ease;
+            }
+
+            /* Helper Classes */
+            .font-blinker { font-family: 'Blinker', sans-serif; }
+        </style>
+
+        {{-- Step 1: Select Template --}}
+        <div class="tc-section-card card">
+            <div class="tc-section-header card-header">
+                <h3><i class="bi bi-layout-three-columns text-primary"></i> 1. Choose a Template</h3>
+            </div>
+            <div class="tc-section-body card-body">
+                <div id="tc-templates-grid" class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-6 g-3">
+                    @if(isset($templates) && $templates->count() > 0)
+                        @foreach($templates as $t)
+                            @php
+                                $tpl_id = $t->id;
+                                $tpl_name = $t->public_name ?: ($t->name ?: "Template #{$t->id}");
+                                $tpl_desc = $t->description ?: '';
+                                $tpl_img = $t->preview_url ?: ($t->preview ?: ($t->preview_image ?: ($t->thumb ?: '')));
+                            @endphp
+
+                            <div class="col">
+                                <div class="tc-tpl-card card {{ request('tpl') == $tpl_id ? 'selected' : '' }}"
+                                     data-id="{{ $tpl_id }}" tabindex="0" role="button">
+                                    <div class="tc-tpl-img-container ratio ratio-4x3">
+                                        @if($tpl_img != '')
+                                            <img src="{{ $tpl_img }}" alt="{{ $tpl_name }}" class="img-fluid object-fit-contain">
+                                        @else
+                                            <div class="text-muted small d-flex flex-column align-items-center">
+                                                <i class="bi bi-image fs-2 mb-1"></i>
+                                                <span>No preview</span>
                                             </div>
-                                            <div class="card-body">
-                                                <div class="tc-tpl-name text-truncate">{{ $tpl_name }}</div>
-                                                @if($tpl_desc != '')<p class="tc-tpl-desc small text-muted mb-0">{{ $tpl_desc }}</p>@endif
-                                            </div>
-                                        </div>
+                                        @endif
                                     </div>
-                                @endforeach
-                            @else
-                                <div class="col"><div class="text-muted">No templates available.</div></div>
-                            @endif
-                        </div>
-
-                        <select id="tc-template" class="form-select d-none" aria-hidden="true">
-                            <option value="">Select a template…</option>
-                            @foreach($templates as $t)
-                                <option value="{{ $t->id }}" {{ request('tpl') == $t->id ? 'selected' : '' }}>
-                                    {{ $t->public_name ?: ($t->name ?: "Template #{$t->id}") }}
-                                </option>
-                            @endforeach
-                        </select>
-
-                        <div class="form-text">Click a card to select a template.</div>
-                    </div>
+                                    <div class="card-body p-3">
+                                        <div class="tc-tpl-name text-truncate">{{ $tpl_name }}</div>
+                                        @if($tpl_desc != '')
+                                            <p class="tc-tpl-desc text-muted mb-0 text-truncate-2">{{ $tpl_desc }}</p>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    @else
+                        <div class="col-12"><div class="alert alert-light border shadow-none text-center py-4">No templates available.</div></div>
+                    @endif
                 </div>
+                <select id="tc-template" class="form-select d-none" aria-hidden="true">
+                    <option value="">Select a template…</option>
+                    @foreach($templates as $t)
+                        <option value="{{ $t->id }}" {{ request('tpl') == $t->id ? 'selected' : '' }}>
+                            {{ $t->public_name ?: ($t->name ?: "Template #{$t->id}") }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
 
-                <!-- Per-Block Customization -->
-                <div class="row g-3 mt-3">
-                    <div class="col-12">
-                        <div class="card" id="tc-quick" style="">
-                            <div class="card-header font-blinker fs-3 fw-semibold">Block Customization</div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-sm align-middle mb-0">
-                                        <thead>
+        <div class="row g-4 mb-5">
+            {{-- Step 2: Customization --}}
+            <div class="col-lg-12">
+                <div class="tc-section-card card h-100">
+                    <div class="tc-section-header card-header">
+                        <h3><i class="bi bi-palette text-primary"></i> 2. Style Options</h3>
+                    </div>
+                    <div class="tc-section-body card-body">
+                        <!-- Per-Block Customization -->
+                        <div class="mb-4">
+                            <h5 class="fw-bold mb-3 small text-uppercase text-muted tracking-wide">Colors & Modes</h5>
+                            <div class="table-responsive">
+                                <table class="table tc-modern-table align-middle">
+                                    <thead>
                                         <tr>
-                                            <th style="width:200px;">Block</th>
-                                            <th style="width:260px;">Outline Type</th>
+                                            <th>Block</th>
+                                            <th>Outline Mode</th>
                                             <th>Colors</th>
                                         </tr>
-                                        </thead>
-                                        <tbody id="tc-block-rows">
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="form-text mt-2">
-                                    Modes: <strong>Fill</strong> (just fill), <strong>Outline</strong> (fill + outline),
-                                    <strong>Outline 2</strong> (fill + outline + outline2), <strong>Ring</strong> (fill +
-                                    ring; outlines disabled).
-                                </div>
+                                    </thead>
+                                    <tbody id="tc-block-rows">
+                                        {{-- Populated by JS --}}
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                <!-- Fonts per block -->
-                <div class="row g-3 mt-3">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-header font-blinker fs-3 fw-semibold">Block Fonts</div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-sm align-middle mb-0">
-                                        <thead>
+                        <!-- Fonts per block -->
+                        <div>
+                            <h5 class="fw-bold mb-3 small text-uppercase text-muted tracking-wide">Typography</h5>
+                            <div class="table-responsive">
+                                <table class="table tc-modern-table align-middle">
+                                    <thead>
                                         <tr>
-                                            <th style="width:200px;">Block</th>
-                                            <th>Font</th>
+                                            <th style="width:150px;">Block</th>
+                                            <th>Font Selection</th>
                                         </tr>
-                                        </thead>
-                                        <tbody id="tc-font-rows">
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="form-text">Defaults come from the template; override per block as needed.</div>
+                                    </thead>
+                                    <tbody id="tc-font-rows">
+                                        {{-- Populated by JS --}}
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
 
-            </div> <!-- /.card-body -->
-        </div> <!-- /.card -->
-
-        <div class="card mb-3">
-            <div class="card-header font-blinker fs-3 fw-semibold"> Customization Data</div>
-            <div class="card-body">
-                <div id="tc-grid-empty" class="text-muted">Choose a template to generate placeholder columns.</div>
+        {{-- Step 3: Data Entry (renamed to 3) --}}
+        <div class="tc-section-card card mb-5">
+            <div class="tc-section-header card-header d-flex justify-content-between align-items-center">
+                <h3><i class="bi bi-database text-primary"></i> 3. Customization Data</h3>
+                <div class="d-flex gap-2">
+                    <button type="button" id="tc-add-row-inline" class="btn btn-sm btn-outline-primary" disabled>
+                        <i class="bi bi-plus-lg me-1"></i> Add Row
+                    </button>
+                    <button id="tc-import-csv" class="btn btn-sm btn-outline-primary" data-bs-toggle="offcanvas" data-bs-target="#offcanvas-csv" disabled>
+                        <i class="bi bi-file-earmark-arrow-up me-1"></i> Import CSV
+                    </button>
+                    <button type="button" id="tc-delete-all" class="btn btn-sm btn-outline-danger" disabled>
+                        <i class="bi bi-trash3 me-1"></i> Clear All
+                    </button>
+                </div>
+            </div>
+            <div class="tc-section-body card-body">
+                <div id="tc-grid-empty" class="text-center py-5">
+                    <div class="text-muted mb-3">
+                        <i class="bi bi-table fs-1 opacity-25"></i>
+                    </div>
+                    <p class="text-muted mb-0">Select a template above to generate the data entry grid.</p>
+                </div>
                 <div id="tc-grid" class="table-responsive" style="display:none;">
-                    <table class="table table-sm align-middle">
-                        <thead id="tc-grid-head"></thead>
+                    <table class="table table-hover align-middle">
+                        <thead id="tc-grid-head" class="table-light text-uppercase small fw-bold tracking-wider text-muted"></thead>
                         <tbody id="tc-grid-body"></tbody>
                     </table>
                 </div>
-                <div class="text-end mt-4">
-                    <button type="button" id="tc-add-row-inline" class="btn btn-outline-primary" disabled>
-                        <i class="bi bi-database-add fs-4"></i> Add row
-                    </button>
-                    <button id="tc-import-csv"
-                            class="btn btn-outline-primary"
-                            data-bs-toggle="offcanvas"
-                            data-bs-target="#offcanvas-csv"
-                            aria-controls="offcanvas-csv"
-                            disabled>
-                        <i class="bi bi-filetype-csv fs-4"></i> Import CSV
-                    </button>
-                    <button type="button" id="tc-delete-all" class="btn btn-outline-danger" disabled>
-                        <i class="bi bi-trash fs-4"></i> Delete all
-                    </button>
+            </div>
+        </div>
+
+        {{-- Step 4: Summary & Batch (renamed to 4) --}}
+        <div class="tc-section-card card mb-5">
+            <div class="tc-section-header card-header">
+                <h3><i class="bi bi-rocket-takeoff text-primary"></i> 4. Batch Action</h3>
+            </div>
+            <div class="tc-section-body card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <div class="tc-progress-container mb-3 mb-md-0">
+                            <label class="form-label fw-bold mb-2 small text-muted text-uppercase">Batch Progress</label>
+                            <div class="progress progress-modern mb-2">
+                                <div class="progress-bar progress-bar-modern" id="tc-progress" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span class="small text-muted" id="tc-progress-text">0% complete</span>
+                                <span class="small text-primary fw-bold" id="tc-status-badge">Idle</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end align-items-center">
+                            <div class="text-md-end me-md-3 mb-2 mb-md-0">
+                                <span class="small text-muted d-block">Finished items will be</span>
+                                <span class="small fw-bold text-dark">added to your cart automatically.</span>
+                            </div>
+                            <button id="tc-preview" class="btn btn-outline-primary btn-lg fw-bold px-4" disabled>
+                                <i class="bi bi-eye me-2"></i> Preview Selected
+                            </button>
+                            <button id="tc-run" class="btn btn-primary btn-lg fw-bold px-5" disabled>
+                                <i class="bi bi-cart-plus me-2"></i> Add Batch to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 overflow-auto" style="max-height: 200px; border-top: 1px solid #eee;">
+                    <ul id="tc-log" class="list-group list-group-flush small"></ul>
                 </div>
             </div>
         </div>
 
-
-        <div class="card">
-            <div class="card-header font-blinker fs-3 fw-semibold">Progress</div>
-            <div class="card-body">
-                <div class="progress mb-2">
-                    <div class="progress-bar" id="tc-progress" style="width:0%;">0%</div>
-                </div>
-                <ul id="tc-log" class="list-group small"></ul>
-            </div>
-            <div class="card-footer text-end">
-                <button id="tc-preview" class="btn btn-outline-secondary" disabled>
-                    <i class="bi bi-easel fs-4"></i> Preview Selected
-                </button>
-                <button id="tc-run" class="btn btn-primary" disabled>
-                    <i class="bi bi-file-earmark-play fs-4"></i> Run Batch
-                </button>
-            </div>
-        </div>
-
-        {{-- Offcanvas: CSV Import (from top) --}}
+        {{-- Step 5: CSV Import (Hidden by default) --}}
         <div class="offcanvas offcanvas-top csv-offcanvas"
              tabindex="-1"
              id="offcanvas-csv"
              aria-labelledby="offcanvasCsvLabel"
              style="--bs-offcanvas-height: 100vh;">
             <div class="offcanvas-header">
-                <h5 class="offcanvas-title" id="offcanvasCsvLabel">CSV Import</h5>
+                <h5 class="offcanvas-title fw-bold" id="offcanvasCsvLabel"><i class="bi bi-filetype-csv me-2 text-primary"></i>CSV Import & Mapping</h5>
                 <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
             </div>
 
             <div class="offcanvas-body overflow-auto">
-                <div class="row g-3 align-items-center mb-2">
-                    <div class="col-auto">
-                        <label for="csv-file" class="col-form-label">Upload CSV</label>
-                    </div>
-                    <div class="col-auto">
-                        <input class="form-control" type="file" id="csv-file" accept=".csv,text/csv">
-                    </div>
-                    <div class="col-auto d-flex gap-2">
-                        <button class="btn btn-outline-secondary" id="csv-sample" type="button">Sample</button>
-                        <button class="btn btn-success" id="csv-add-selected" type="button">Add Selected</button>
+                <div class="card border-0 bg-light mb-4">
+                    <div class="card-body">
+                        <div class="row g-3 align-items-center">
+                            <div class="col-md-auto">
+                                <label for="csv-file" class="form-label fw-bold small text-muted text-uppercase mb-0">Upload CSV File</label>
+                            </div>
+                            <div class="col-md-4">
+                                <input class="form-control" type="file" id="csv-file" accept=".csv,text/csv">
+                            </div>
+                            <div class="col-md-auto d-flex gap-2">
+                                <button class="btn btn-outline-secondary" id="csv-sample" type="button">
+                                    <i class="bi bi-file-earmark-spreadsheet me-1"></i> Download Sample
+                                </button>
+                                <button class="btn btn-success px-4" id="csv-add-selected" type="button">
+                                    <i class="bi bi-plus-circle me-1"></i> Import Selected Rows
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div id="csv-map-wrap" class="mb-3" style="display:none;">
-                    <h6 class="mb-2">Map CSV columns to placeholders</h6>
+                <div id="csv-map-wrap" class="mb-4" style="display:none;">
+                    <h6 class="fw-bold mb-3"><i class="bi bi-arrow-left-right me-2 text-primary"></i>Map CSV columns to placeholders</h6>
                     <div class="table-responsive">
-                        <table class="table table-sm align-middle mb-0">
+                        <table class="table table-sm tc-modern-table align-middle mb-0">
                             <thead>
                             <tr>
                                 <th>Placeholder</th>
@@ -307,9 +444,9 @@
                     </div>
                 </div>
 
-                <div class="table-responsive">
-                    <table class="table table-sm table-bordered align-middle mb-0" id="csv-preview-table">
-                        <thead></thead>
+                <div class="table-responsive rounded-3 border">
+                    <table class="table table-hover align-middle mb-0" id="csv-preview-table">
+                        <thead class="table-light"></thead>
                         <tbody></tbody>
                     </table>
                 </div>

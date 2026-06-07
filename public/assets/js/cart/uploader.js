@@ -739,20 +739,28 @@
             drop.addEventListener(evt, (e) => {
                 e.preventDefault(); e.stopPropagation();
                 if (evt === 'dragenter') dragDepth++;
-                drop.classList.add('bg-light');
+                drop.classList.add('bg-white');
+                drop.classList.add('shadow-sm');
+                drop.style.borderColor = '#0d6efd';
             });
         });
 
         drop.addEventListener('dragleave', (e) => {
             e.preventDefault(); e.stopPropagation();
             dragDepth = Math.max(0, dragDepth - 1);
-            if (dragDepth === 0) drop.classList.remove('bg-light');
+            if (dragDepth === 0) {
+                drop.classList.remove('bg-white');
+                drop.classList.remove('shadow-sm');
+                drop.style.borderColor = '';
+            }
         });
 
         drop.addEventListener('drop', (e) => {
             e.preventDefault(); e.stopPropagation();
             dragDepth = 0;
-            drop.classList.remove('bg-light');
+            drop.classList.remove('bg-white');
+            drop.classList.remove('shadow-sm');
+            drop.style.borderColor = '';
             const files = Array.from(e.dataTransfer?.files || []);
             if (files.length) handleFiles(files);
         });

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Auth;
 
+use App\Models\Business;
 use App\Models\User;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -26,6 +27,20 @@ class EmailVerificationTest extends TestCase
     {
         $user = User::factory()->unverified()->create();
 
+        // Create a linked business with unconfirmed status
+        $business = Business::create([
+            'user_id' => $user->id,
+            'business_name' => 'Test Business',
+            'contact_name' => $user->name,
+            'email' => $user->email,
+            'phone' => '1234567890',
+            'address' => '123 Test St',
+            'city' => 'Test City',
+            'state' => 'IN',
+            'zip' => '46350',
+            'status' => 'unconfirmed',
+        ]);
+
         Event::fake();
 
         $verificationUrl = URL::temporarySignedRoute(
@@ -38,6 +53,10 @@ class EmailVerificationTest extends TestCase
 
         Event::assertDispatched(Verified::class);
         $this->assertTrue($user->fresh()->hasVerifiedEmail());
+
+        // Verify business status is updated
+        $this->assertEquals('confirmed', $business->fresh()->status);
+
         $response->assertRedirect(route('dashboard', absolute: false).'?verified=1');
     }
 

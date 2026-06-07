@@ -2,9 +2,12 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Models\User;
+use App\Support\LegacyFuelPassword;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -41,15 +44,41 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
-            RateLimiter::hit($this->throttleKey());
+        $credentials = $this->only('email', 'password');
+        $remember = $this->boolean('remember');
 
-            throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
-            ]);
+        $user = User::where('email', $credentials['email'])->first();
+        if ($user) {
+            $stored = (string) $user->password;
+            $isLaravelHash = Str::startsWith($stored, ['$2y$', '$2a$', '$2b$', '$argon2i$', '$argon2id$']);
+
+            // Avoid Auth::attempt on legacy hashes; BcryptHasher throws on non-bcrypt input.
+            if ($isLaravelHash && Hash::check($credentials['password'], $stored)) {
+                Auth::login($user, $remember);
+                RateLimiter::clear($this->throttleKey());
+                return;
+            }
+
+            // Legacy FuelPHP fallback: verify old PBKDF2 hash, then upgrade to Laravel hash.
+            if (
+                config('auth_legacy.enabled', true) &&
+                ! $isLaravelHash &&
+                LegacyFuelPassword::check($credentials['password'], $stored)
+            ) {
+                $user->password = Hash::make($credentials['password']);
+                $user->save();
+
+                Auth::login($user, $remember);
+                RateLimiter::clear($this->throttleKey());
+                return;
+            }
         }
 
-        RateLimiter::clear($this->throttleKey());
+        RateLimiter::hit($this->throttleKey());
+
+        throw ValidationException::withMessages([
+            'email' => trans('auth.failed'),
+        ]);
     }
 
     /**
