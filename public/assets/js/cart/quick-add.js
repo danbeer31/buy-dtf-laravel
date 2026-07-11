@@ -144,10 +144,16 @@
         return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
     }
 
+    let suggestPage = 1, suggestQ = '';
+
     function renderSuggest(items) {
         if (!elSuggest) return;
         elSuggest.innerHTML = '';
-        if (!items || !items.length) { closeSuggest(); return; }
+
+        if (!items || !items.length) {
+            closeSuggest();
+            return;
+        }
 
         // Compute a width that fits the viewport and looks nice
         const vw     = document.documentElement.clientWidth || window.innerWidth || 1024;
@@ -159,7 +165,7 @@
         elSuggest.style.minWidth = finalW + 'px';
         elSuggest.style.maxWidth = maxW + 'px';
 
-        items.slice(0, 8).forEach(it => {
+        items.forEach(it => {
             const name = it.name || it.image_name || it.native_filename || ('#' + it.id);
             const src  = it.thumb || it.image || it.path || '';
             const subL = [];
@@ -182,7 +188,15 @@
             btn.addEventListener('click', async () => {
                 closeSuggest();
                 try {
-                    const r = await postUseExisting(it.dtfimage_id || it.id);
+                    let r;
+                    if (it.dtfimage_id) {
+                        r = await postUseExisting(it.dtfimage_id);
+                    } else if (it.id) {
+                        r = await postUseSaved(it.id);
+                    } else {
+                        throw new Error('No ID found for this item.');
+                    }
+
                     const useId = r.id || r.dtfimage_id;
                     if (window.Cart && typeof window.Cart.addDtfImageCard === 'function' && useId && r.order_id) {
                         try { await window.Cart.addDtfImageCard(useId, r.order_id); } catch (err1) {}
@@ -199,11 +213,12 @@
         elSuggest.classList.add('show');
     }
 
-    const doSearch = debounce(async function () {
-        const q = (elSearch && elSearch.value || '').trim();
-        if (!q) { closeSuggest(); return; }
+    const doSearchFn = async function (reset = true) {
+        suggestPage = 1;
+        suggestQ = (elSearch && elSearch.value || '').trim();
+        if (!suggestQ) { closeSuggest(); return; }
         try {
-            const res = await fetch(`${URLS.quickSearch}?q=${encodeURIComponent(q)}`, {
+            const res = await fetch(`${URLS.quickSearch}?q=${encodeURIComponent(suggestQ)}&page=${suggestPage}&per_page=12`, {
                 credentials: 'same-origin',
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest',
@@ -213,13 +228,15 @@
             const j = await res.json();
             if (!j || j.success === false) { closeSuggest(); return; }
             renderSuggest(j.items || j.results || []);
-        } catch (_) {
+        } catch (err) {
             closeSuggest();
         }
-    }, 180);
+    };
+
+    const doSearch = debounce(doSearchFn, 180);
 
     if (elSearch && elSuggest) {
-        elSearch.addEventListener('input', doSearch);
+        elSearch.addEventListener('input', () => doSearch(true));
         document.addEventListener('click', (e) => {
             if (!elSuggest.contains(e.target) && e.target !== elSearch) closeSuggest();
         });
@@ -237,10 +254,11 @@
     let page = 1, hasMore = true, loading = false, qStr = '';
 
     function cardHtml(it) {
-        const name     = it.name || it.image_name || it.native_filename || ('#' + it.id);
+        const name     = it.name || it.image_name || it.native_filename || ('#' + (it.id || it.dtfimage_id));
         const src      = it.thumb || it.image || it.path || '';
         const uploaded = it.uploaded_fmt || ''; // server may send date-only string
         const dtfAttr  = it.dtfimage_id ? ` data-dtfimage-id="${String(it.dtfimage_id)}"` : '';
+        const savedId  = it.id ? String(it.id) : '';
 
         return `
       <div class="col-6 col-sm-4 col-md-3 col-lg-2">
@@ -251,7 +269,7 @@
           <div class="card-body p-2">
             <div class="small text-truncate" title="${name}">${name}</div>
             ${uploaded ? `<div class="text-muted small">${uploaded}</div>` : ``}
-            <button class="btn btn-sm btn-primary w-100 qa-add mt-2" data-id="${String(it.id)}">Add</button>
+            <button class="btn btn-sm btn-primary w-100 qa-add mt-2" data-id="${savedId}">Add</button>
           </div>
         </div>
       </div>
@@ -315,9 +333,14 @@
 
             try {
                 // Prefer dtfimage_id when available; else assume list already returns dtfimages (id)
-                const r = dtfId
-                ? await postUseExisting(dtfId)
-                    : await postUseSaved(savedId);
+                let r;
+                if (dtfId) {
+                    r = await postUseExisting(dtfId);
+                } else if (savedId) {
+                    r = await postUseSaved(savedId);
+                } else {
+                    throw new Error('No ID found for this item.');
+                }
 
                 const useId = r.id || r.dtfimage_id;
                 if (window.Cart && typeof window.Cart.addDtfImageCard === 'function' && useId && r.order_id) {

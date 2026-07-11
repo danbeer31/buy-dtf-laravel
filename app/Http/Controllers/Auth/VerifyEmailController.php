@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Business;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\RedirectResponse;
@@ -20,6 +21,10 @@ class VerifyEmailController extends Controller
 
         if ($request->user()->markEmailAsVerified()) {
             event(new Verified($request->user()));
+
+            // Update linked business status to confirmed
+            Business::where('email', $request->user()->email)
+                ->update(['status' => 'confirmed']);
         }
 
         return redirect()->intended(route('dashboard', absolute: false).'?verified=1');

@@ -125,4 +125,5 @@
         if (!card) return;
         autosave(card);
     }, true);
+    window.autosave = autosave;
 })();

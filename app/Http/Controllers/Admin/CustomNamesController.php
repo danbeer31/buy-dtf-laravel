@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Template;
+use App\Models\CustomColor;
 use App\Services\NameNumberService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -65,7 +66,9 @@ class CustomNamesController extends Controller
             'ajaxReloadUrl' => route('admin.customnames.templates.reload'),
             'ajaxFontsUrl' => route('admin.customnames.fonts.list'),
             'ajaxPreviewUrl' => route('admin.customnames.preview'),
+            'ajaxSavePreviewUrl' => route('admin.customnames.template.save-preview'),
             'initialSlug' => $slug,
+            'customColors' => CustomColor::where('active', 1)->orderBy('name')->get(),
         ];
 
         return view('admin.customnames.templatebuilder', $vars);
@@ -290,10 +293,14 @@ class CustomNamesController extends Controller
             $template = Template::find($payload['id']);
             if ($template) {
                 $templateInline = $template->json_config;
+                if (!is_array($templateInline)) {
+                    $templateInline = json_decode($templateInline, true);
+                }
             }
         }
 
         if (is_array($templateInline) && !empty($templateInline)) {
+            Log::info('Generating preview for inline template', ['slug' => $slug]);
             $res = $this->nameNumberService->renderTemplateRemote(null, $name, $number, [], [], [
                 'template_inline' => $templateInline,
                 'format' => $format,
@@ -303,21 +310,65 @@ class CustomNamesController extends Controller
             ]);
 
             if (!($res['success'] ?? false)) {
+                Log::error('Inline preview failed', ['res' => $res]);
                 return response()->json(['success' => false, 'message' => $res['message'] ?? 'Preview failed'], 400);
             }
 
+            Log::info('Inline preview success', ['url' => $res['url'] ?? null]);
             return response()->json(['success' => true, 'message' => 'OK', 'url' => $res['url'] ?? null]);
         }
 
         if ($slug === '') return response()->json(['success' => false, 'message' => 'Missing slug'], 400);
 
+        Log::info('Generating preview for slug: ' . $slug);
         $res = $this->nameNumberService->renderTemplateRemote($slug, $name, $number, [], [], ['format' => $format]);
 
         if (!($res['success'] ?? false)) {
+            Log::error('Slug preview failed', ['slug' => $slug, 'res' => $res]);
             return response()->json(['success' => false, 'message' => $res['message'] ?? 'Preview failed'], 400);
         }
 
+        Log::info('Slug preview success', ['slug' => $slug, 'url' => $res['url'] ?? null]);
         return response()->json(['success' => true, 'message' => 'OK', 'url' => $res['url'] ?? null]);
+    }
+
+    /**
+     * POST /admin/customnames/template/save-preview
+     */
+    public function savePreview(Request $request)
+    {
+        $slug = (string)$request->input('slug', '');
+        $imageUrl = (string)$request->input('image_url', '');
+
+        Log::info('savePreview request received', [
+            'slug' => $slug,
+            'image_url' => $imageUrl,
+            'ip' => $request->ip()
+        ]);
+
+        if ($slug === '') {
+            Log::warning('savePreview: Missing slug');
+            return response()->json(['success' => false, 'message' => 'Missing slug'], 400);
+        }
+
+        if ($imageUrl === '') {
+            Log::warning('savePreview: Missing image URL');
+            return response()->json(['success' => false, 'message' => 'Missing image URL'], 400);
+        }
+
+        $template = Template::where('slug', $slug)->first();
+        if (!$template) {
+            Log::error('savePreview: Template not found', ['slug' => $slug]);
+            return response()->json(['success' => false, 'message' => 'Template not found'], 404);
+        }
+
+        // image_url is likely a relative path from the server like /uploads/images/TEAM_CUSTOM_XXX.png
+        // We want to store it in preview_image.
+        Log::info('savePreview: Updating template preview_image', ['id' => $template->id, 'slug' => $slug, 'old' => $template->preview_image, 'new' => $imageUrl]);
+        $template->preview_image = $imageUrl;
+        $template->save();
+
+        return response()->json(['success' => true, 'message' => 'Preview image saved to template']);
     }
 
     /**

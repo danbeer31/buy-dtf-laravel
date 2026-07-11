@@ -62,9 +62,42 @@
                         </div>
                     </div>
 
-                    <!-- Orders Table (Placeholder) -->
-                    <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+                    <!-- Payment Methods Management -->
+                    <div class="card shadow-sm border-0 rounded-4 overflow-hidden mb-4">
                         <div class="card-header bg-white border-bottom-0 pt-4 px-4">
+                            <h5 class="fw-bold mb-0">Payment Methods</h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <form action="{{ route('admin.businesses.update-payment-methods', $business) }}" method="POST">
+                                @csrf
+                                @method('PATCH')
+                                <div class="row g-3 mb-4">
+                                    @foreach($paymentMethods as $pm)
+                                        <div class="col-md-6">
+                                            <div class="p-3 border rounded-3 h-100 {{ $business->paymentMethods->contains($pm->id) ? 'bg-light border-primary' : '' }}">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" name="payment_methods[]" value="{{ $pm->id }}" id="pm_{{ $pm->id }}" {{ $business->paymentMethods->contains($pm->id) ? 'checked' : '' }}>
+                                                    <label class="form-check-label ms-2" for="pm_{{ $pm->id }}">
+                                                        <span class="d-block fw-bold">{{ $pm->method_name }}</span>
+                                                        <small class="text-muted">{{ $pm->description }}</small>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-primary fw-bold text-uppercase px-4 py-2">
+                                        Update Payment Methods
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Orders Table (Placeholder) -->
+                    <div class="card shadow-sm border-0 rounded-4 overflow-hidden mb-4">
+                        <div class="card-header bg-white border-bottom-0 pt-4 px-4 d-flex justify-content-between align-items-center">
                             <h5 class="fw-bold mb-0">Recent Orders</h5>
                         </div>
                         <div class="card-body p-0">
@@ -104,6 +137,61 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Recent Payouts Table -->
+                    <div class="card shadow-sm border-0 rounded-4 overflow-hidden mb-4">
+                        <div class="card-header bg-white border-bottom-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+                            <h5 class="fw-bold mb-0">Recent Stripe Payouts (Deposits)</h5>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table align-middle mb-0">
+                                    <thead class="bg-light">
+                                        <tr>
+                                            <th class="ps-4 py-3 text-uppercase small fw-bold">Arrival Date</th>
+                                            <th class="py-3 text-uppercase small fw-bold">Payout ID</th>
+                                            <th class="py-3 text-uppercase small fw-bold">Status</th>
+                                            <th class="py-3 text-uppercase small fw-bold text-end pe-4">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse($payouts as $payout)
+                                            <tr>
+                                                <td class="ps-4 py-3 fw-bold">{{ $payout->arrival_date->format('M d, Y') }}</td>
+                                                <td class="py-3 small text-muted font-monospace">{{ $payout->stripe_payout_id }}</td>
+                                                <td class="py-3">
+                                                    @php
+                                                        $statusBadge = match($payout->status) {
+                                                            'paid' => 'bg-success',
+                                                            'pending' => 'bg-warning text-dark',
+                                                            'in_transit' => 'bg-info text-dark',
+                                                            'failed' => 'bg-danger',
+                                                            default => 'bg-secondary',
+                                                        };
+                                                    @endphp
+                                                    <span class="badge rounded-pill {{ $statusBadge }} text-uppercase">
+                                                        {{ str_replace('_', ' ', $payout->status) }}
+                                                    </span>
+                                                </td>
+                                                <td class="py-3 text-end pe-4">
+                                                    <a href="{{ route('admin.payments.stripe.payouts.show', $payout->id) }}" class="btn btn-sm btn-outline-primary fw-bold">
+                                                        View Detail
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="4" class="text-center py-5 text-muted small">
+                                                    No payouts recorded for this business yet.
+                                                </td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
                 <!-- Sidebar Actions -->

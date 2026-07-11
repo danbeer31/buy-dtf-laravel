@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Business;
+use App\Models\BusinessUser;
 use App\Models\BusinessSetting;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -65,10 +66,28 @@ class RegisteredUserController extends Controller
                 'status' => 'unconfirmed',
             ]);
 
+            $user->forceFill([
+                'fuel_business_id' => $business->id,
+            ])->save();
+
+            BusinessUser::updateOrCreate(
+                [
+                    'business_id' => $business->id,
+                    'user_id' => $user->id,
+                ],
+                [
+                    'role' => 'owner',
+                    'is_active' => true,
+                ]
+            );
+
             BusinessSetting::create([
                 'business_id' => $business->id,
                 'rate' => 0.0300,
             ]);
+
+            // New businesses should start with credit card only.
+            $business->paymentMethods()->sync([2]);
 
             event(new Registered($user));
 

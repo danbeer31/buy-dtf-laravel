@@ -1,10 +1,4 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="fw-bold fs-4 text-dark mb-0">
-            {{ __('Welcome to Next Level DTF') }}
-        </h2>
-    </x-slot>
-
     <div class="py-5">
         <div class="container">
             <!-- Welcome / Hero -->
@@ -18,8 +12,8 @@
                             <span class="badge bg-black text-warning me-2">NEW</span>
                             My Account Dashboard
                         </a>
-                        <a href="/orders/order" class="btn btn-outline-light btn-lg px-4 fw-bold text-uppercase tracking-wider">
-                            Classic Order Form
+                        <a href="{{ route('cart.index') }}" class="btn btn-outline-light btn-lg px-4 fw-bold text-uppercase tracking-wider">
+                            Order Now
                         </a>
                     @else
                         <a href="/cart" class="btn btn-warning btn-lg px-4 fw-bold text-uppercase tracking-wider">

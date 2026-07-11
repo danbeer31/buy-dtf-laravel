@@ -46,6 +46,25 @@
                                 </div>
 
                                 <div class="mb-3">
+                                    <label for="business_id" class="form-label small fw-bold text-uppercase">Business</label>
+                                    <select
+                                        name="business_id"
+                                        id="business_id"
+                                        class="form-select @error('business_id') is-invalid @enderror"
+                                    >
+                                        <option value="">No Business</option>
+                                        @foreach($businesses as $business)
+                                            <option value="{{ $business->id }}" {{ (int) old('business_id', 0) === (int) $business->id ? 'selected' : '' }}>
+                                                {{ $business->business_name }} @if($business->email) ({{ $business->email }}) @endif
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('business_id')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="mb-3">
                                     <label for="password" class="form-label small fw-bold text-uppercase">Password</label>
                                     <input type="password" name="password" id="password" class="form-control @error('password') is-invalid @enderror" required>
                                     @error('password')

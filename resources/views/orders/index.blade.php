@@ -14,7 +14,7 @@
                     <i class="bi bi-plus-circle"></i> Start New Order
                 </a>
                 @else
-                <a href="{{ route('orders.show', $business->open_order()->id) }}" class="btn btn-primary btn-lg">
+                <a href="{{ route('cart.index') }}" class="btn btn-primary btn-lg">
                     <i class="bi bi-plus-circle"></i> Add to Order
                 </a>
                 @endif
@@ -40,9 +40,11 @@
                             @foreach ($orders as $order)
                             <tr>
                                 <td>
-                                    <a href="{{ route('orders.show', $order->id) }}" class="btn btn-sm btn-success">
-                                        <i class="bi bi-eye"></i> View
-                                    </a>
+                                    @if($order->status == 1)
+                                        <a href="{{ route('cart.index') }}" class="btn btn-sm btn-success">
+                                            <i class="bi bi-cart"></i> Edit
+                                        </a>
+                                    @endif
                                 </td>
                                 <td class="text-center">
                                     {{ $order->order_date ? $order->order_date->format('m-d-Y') : 'N/A' }}
@@ -60,7 +62,7 @@
                                     @endif
                                 </td>
                                 <td class="text-end fw-bold">
-                                    ${{ number_format($order->total_price + $order->sales_tax + $order->shipping_cost, 2) }}
+                                    ${{ number_format($order->total_price, 2) }}
                                 </td>
                             </tr>
                             @endforeach

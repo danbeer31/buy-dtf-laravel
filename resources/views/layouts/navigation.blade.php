@@ -10,8 +10,9 @@
             </div>
         </div>
     @endif
-    <!-- Top Bar (Black) -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-black py-3">
+
+    <!-- Top Bar (Dark) -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark py-3">
         <div class="container d-flex align-items-center justify-content-between">
             <!-- Logo and Mobile Menu Toggler -->
             <div class="d-flex align-items-center">
@@ -43,197 +44,99 @@
                         0
                     </span>
                 </a>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Main Menu (Desktop) -->
-    <nav class="navbar navbar-expand-lg bg-white border-bottom border-light d-none d-lg-block py-0">
-        <div class="container">
-            <div class="navbar-nav w-100 d-flex justify-content-start align-items-center font-blinker tracking-wider position-relative" style="height: 64px;">
-                <a href="{{ route('home') }}" class="nav-link px-3 h-100 d-flex align-items-center fs-5 fw-semibold text-sp-secondary text-uppercase">Home</a>
-                <a href="/aboutus" class="nav-link px-3 h-100 d-flex align-items-center fs-5 fw-semibold text-sp-secondary text-uppercase">About Us</a>
-
-                <!-- Buy Direct to Film Dropdown -->
-                <li class="nav-item dropdown h-100 d-flex align-items-center me-4 position-static" x-data="{ open: false }" @click.outside="open = false">
-                    <a class="nav-link fs-5 fw-semibold text-sp-secondary dropdown-toggle text-uppercase" href="#" id="buyDtfDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" @click.prevent="open = !open">
-                        Buy Direct to Film
-                    </a>
-                    <div class="dropdown-menu w-100 py-5" :class="{ 'show': open }" aria-labelledby="buyDtfDropdown">
-                        <div class="container">
-                            <div class="row mb-5">
-                                <div class="col-12 col-lg">
-                                    <h4 class="text-sp-secondary border-2 border-bottom font-ubuntu mb-3">About our DTF's</h4>
-                                    <ul class="list-unstyled">
-                                        <li class="mb-2 font-blinker fs-5">
-                                            <a class="text-sp-primary text-decoration-none" href="/aboutdtf">Why buy from us?</a>
-                                        </li>
-                                        <li class="mb-2 font-blinker fs-5">
-                                            <a class="text-sp-primary text-decoration-none" href="/about">How to buy DTF's</a>
-                                        </li>
-                                        <li class="mb-2 font-blinker fs-5">
-                                            <a class="text-sp-primary text-decoration-none" href="/heatpress">Pressing Instructions</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="col-12 col-lg">
-                                    <h4 class="text-sp-secondary border-2 border-bottom font-ubuntu mb-3">How to Order</h4>
-                                    <ul class="list-unstyled">
-                                        <li class="mb-2 font-blinker fs-5">
-                                            <a class="text-sp-primary text-decoration-none" href="{{ route('register') }}">Sign up for an Account</a>
-                                        </li>
-                                        <li class="mb-2 font-blinker fs-5">
-                                            <a class="text-sp-primary text-decoration-none" href="{{ route('login') }}">Login to your Account</a>
-                                        </li>
-                                        <li class="mb-2 font-blinker fs-5">
-                                            <a class="text-sp-primary text-decoration-none fw-bold" href="{{ route('orders.new') }}">Start New Order</a>
-                                        </li>
-                                        <li class="mb-2 font-blinker fs-5">
-                                            <a class="text-sp-primary text-decoration-none" href="/faq">FAQ</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="col-12 col-lg">
-                                    <h4 class="text-sp-secondary border-2 border-bottom font-ubuntu mb-3">Artwork</h4>
-                                    <ul class="list-unstyled">
-                                        <li class="mb-2 font-blinker fs-5">
-                                            <a class="text-sp-primary text-decoration-none" href="/imagerequirements">Image Requirements</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </li>
 
                 @auth
-                    <!-- My Account Dropdown -->
-                    <li class="nav-item dropdown h-100 d-flex align-items-center me-4 position-static" x-data="{ open: false }" @click.outside="open = false">
-                        <a class="nav-link fs-5 fw-semibold text-sp-secondary dropdown-toggle text-uppercase" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" @click.prevent="open = !open">
-                            My Account
-                        </a>
-                        <div class="dropdown-menu w-100 py-5" :class="{ 'show': open }" aria-labelledby="accountDropdown">
-                            <div class="container">
-                                <div class="row mb-5">
-                                    <div class="col-12 col-lg">
-                                        <h4 class="text-sp-secondary border-2 border-bottom font-ubuntu mb-3">Account</h4>
-                                        <ul class="list-unstyled">
-                                            <li class="mb-2 font-blinker fs-5">
-                                                <a class="text-sp-primary text-decoration-none" href="{{ route('account') }}">My Dashboard</a>
-                                            </li>
-                                            <li class="mb-2 font-blinker fs-5">
-                                                <a class="text-sp-primary text-decoration-none fw-bold" href="{{ route('orders.new') }}">Start New Order</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div class="col-12 col-lg">
-                                        <h4 class="text-sp-secondary border-2 border-bottom font-ubuntu mb-3">User Settings</h4>
-                                        <ul class="list-unstyled">
-                                            <li class="mb-2 font-blinker fs-5">
-                                                <a class="text-sp-primary text-decoration-none" href="{{ route('profile.edit') }}">Update Profile</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div class="col-12 col-lg">
-                                        <h4 class="text-sp-secondary border-2 border-bottom font-ubuntu mb-3">User</h4>
-                                        <ul class="list-unstyled">
-                                            <li class="mb-2 font-blinker fs-5">
-                                                <form method="POST" action="{{ route('logout') }}">
-                                                    @csrf
-                                                    <button type="submit" class="btn btn-link p-0 font-blinker fs-5 text-danger text-decoration-none fw-bold">Log Out</button>
-                                                </form>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </li>
+                    <form method="POST" action="{{ route('logout') }}" class="m-0 d-none d-lg-block">
+                        @csrf
+                        <button type="submit" class="btn btn-outline-danger btn-sm px-3 fw-bold text-uppercase">Log Out</button>
+                    </form>
                 @endauth
-
-                <a href="{{ route('contact') }}" class="nav-link px-3 h-100 d-flex align-items-center fs-5 fw-semibold text-sp-secondary text-uppercase">Contact Us</a>
             </div>
         </div>
     </nav>
 
-    <!-- Optional Login Banner -->
-    @guest
-        <div class="bg-warning text-dark py-2 text-center small fw-bold shadow-sm">
-            <span class="me-2">🚀 Ready to order?</span>
-            Please <a href="{{ route('login') }}" class="text-dark text-decoration-underline hover:text-black">log in</a> or <a href="{{ route('register') }}" class="text-dark text-decoration-underline hover:text-black">sign up</a> to start your DTF journey.
+    <!-- Secondary Nav (Desktop) -->
+    <nav class="navbar navbar-expand-lg bg-white border-bottom border-light d-none d-lg-block py-0">
+        <div class="container">
+            <div class="navbar-nav w-100 d-flex justify-content-start align-items-center font-blinker tracking-wider" style="height: 56px;">
+                <a href="{{ route('home') }}" class="nav-link px-3 h-100 d-flex align-items-center fs-6 fw-semibold text-sp-secondary text-uppercase {{ request()->routeIs('home') ? 'active text-primary border-bottom border-primary border-3' : '' }}">Home</a>
+
+                @auth
+                    <a href="{{ route('account') }}" class="nav-link px-3 h-100 d-flex align-items-center fs-6 fw-semibold text-sp-secondary text-uppercase {{ request()->routeIs('account') ? 'active text-primary border-bottom border-primary border-3' : '' }}">My Account</a>
+                    <a href="{{ route('orders.new') }}" class="nav-link px-3 h-100 d-flex align-items-center fs-6 fw-semibold text-sp-secondary text-uppercase {{ request()->routeIs('orders.new') ? 'active text-primary border-bottom border-primary border-3' : '' }}">New Order</a>
+                @endauth
+
+                <!-- Buy DTF Dropdown -->
+                <div class="nav-item dropdown h-100 d-flex align-items-center position-relative">
+                    <a class="nav-link px-3 h-100 d-flex align-items-center fs-6 fw-semibold text-sp-secondary text-uppercase dropdown-toggle {{ (request()->routeIs('about*') || request()->routeIs('heatpress') || request()->routeIs('faq') || request()->routeIs('imagerequirements')) ? 'active text-primary border-bottom border-primary border-3' : '' }}" href="#" id="buyDtfDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Buy DTF
+                    </a>
+                    <ul class="dropdown-menu border-0 shadow-sm rounded-3 mt-0" aria-labelledby="buyDtfDropdown">
+                        <li><a class="dropdown-item py-2 fw-semibold text-sp-secondary" href="{{ route('about.dtf') }}">Why buy from us?</a></li>
+                        <li><a class="dropdown-item py-2 fw-semibold text-sp-secondary" href="{{ route('about') }}">How to buy DTF's</a></li>
+                        <li><a class="dropdown-item py-2 fw-semibold text-sp-secondary" href="{{ route('heatpress') }}">Pressing Instructions</a></li>
+                        <li><a class="dropdown-item py-2 fw-semibold text-sp-secondary" href="{{ route('imagerequirements') }}">Image Requirements</a></li>
+                        <li><a class="dropdown-item py-2 fw-semibold text-sp-secondary" href="{{ route('faq') }}">FAQ</a></li>
+                    </ul>
+                </div>
+
+                <a href="{{ route('contact') }}" class="nav-link px-3 h-100 d-flex align-items-center fs-6 fw-semibold text-sp-secondary text-uppercase {{ request()->routeIs('contact') ? 'active text-primary border-bottom border-primary border-3' : '' }}">Contact</a>
+
+                @if(Auth::check() && Auth::user()->isAdmin())
+                    <div class="ms-auto">
+                        <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-danger px-3 fw-bold text-uppercase">Admin Panel</a>
+                    </div>
+                @endif
+            </div>
         </div>
-    @endguest
+    </nav>
 </div>
 
 <!-- Mobile Offcanvas Menu -->
-<div class="offcanvas offcanvas-start bg-white" tabindex="-1" id="mobileMenu" aria-labelledby="mobileMenuLabel">
-    <div class="offcanvas-header border-bottom">
-        <img src="/assets/img/dtf_logo.svg" alt="Logo" class="h-8" style="height: 32px;">
-        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+<div class="offcanvas offcanvas-start bg-dark text-white" tabindex="-1" id="mobileMenu" aria-labelledby="mobileMenuLabel">
+    <div class="offcanvas-header border-bottom border-secondary">
+        <h5 class="offcanvas-title" id="mobileMenuLabel">Menu</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body p-0">
         <div class="list-group list-group-flush font-blinker">
-            <a href="{{ route('home') }}" class="list-group-item list-group-item-action py-3 fw-bold text-uppercase">Home</a>
-            <a href="/aboutus" class="list-group-item list-group-item-action py-3 fw-bold text-uppercase">About Us</a>
+            <a href="{{ route('home') }}" class="list-group-item list-group-item-action bg-dark text-white border-secondary py-3 fw-bold text-uppercase {{ request()->routeIs('home') ? 'text-primary' : '' }}">Home</a>
+
+            @auth
+                <a href="{{ route('account') }}" class="list-group-item list-group-item-action bg-dark text-white border-secondary py-3 fw-bold text-uppercase {{ request()->routeIs('account') ? 'text-primary' : '' }}">My Account</a>
+                <a href="{{ route('orders.new') }}" class="list-group-item list-group-item-action bg-dark text-white border-secondary py-3 fw-bold text-uppercase {{ request()->routeIs('orders.new') ? 'text-primary' : '' }}">New Order</a>
+            @endauth
 
             <div class="accordion accordion-flush" id="mobileNavAccordion">
-                <div class="accordion-item">
+                <div class="accordion-item bg-dark border-secondary">
                     <h2 class="accordion-header">
-                        <button class="accordion-button collapsed py-3 fw-bold text-uppercase" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBuyDtf">
-                            Buy Direct to Film
+                        <button class="accordion-button collapsed bg-dark text-white py-3 fw-bold text-uppercase shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBuyDtf">
+                            Buy DTF
                         </button>
                     </h2>
                     <div id="collapseBuyDtf" class="accordion-collapse collapse" data-bs-parent="#mobileNavAccordion">
-                        <div class="accordion-body bg-light">
-                            <ul class="list-unstyled d-grid gap-3">
-                                <li><a href="/aboutdtf" class="text-secondary text-decoration-none">Why buy from us?</a></li>
-                                <li><a href="/about" class="text-secondary text-decoration-none">How to buy DTF's</a></li>
-                                <li><a href="/heatpress" class="text-secondary text-decoration-none">Pressing Instructions</a></li>
-                                <li><a href="{{ route('register') }}" class="text-secondary text-decoration-none">Sign up for an Account</a></li>
-                                <li><a href="{{ route('login') }}" class="text-secondary text-decoration-none">Login to your Account</a></li>
-                                <li><a href="{{ route('orders.new') }}" class="fw-bold text-dark text-decoration-none">Start New Order</a></li>
-                                <li><a href="/faq" class="text-secondary text-decoration-none">FAQ</a></li>
-                                <li><a href="/imagerequirements" class="text-secondary text-decoration-none">Image Requirements</a></li>
-                            </ul>
+                        <div class="accordion-body bg-dark p-0">
+                            <a href="{{ route('about.dtf') }}" class="list-group-item list-group-item-action bg-dark text-white border-0 ps-4 py-2 small text-uppercase">Why buy from us?</a>
+                            <a href="{{ route('about') }}" class="list-group-item list-group-item-action bg-dark text-white border-0 ps-4 py-2 small text-uppercase">How to buy DTF's</a>
+                            <a href="{{ route('heatpress') }}" class="list-group-item list-group-item-action bg-dark text-white border-0 ps-4 py-2 small text-uppercase">Pressing Instructions</a>
+                            <a href="{{ route('imagerequirements') }}" class="list-group-item list-group-item-action bg-dark text-white border-0 ps-4 py-2 small text-uppercase">Image Requirements</a>
+                            <a href="{{ route('faq') }}" class="list-group-item list-group-item-action bg-dark text-white border-0 ps-4 py-2 small text-uppercase">FAQ</a>
                         </div>
                     </div>
                 </div>
-
-                @auth
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed py-3 fw-bold text-uppercase" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAccount">
-                            My Account
-                        </button>
-                    </h2>
-                    <div id="collapseAccount" class="accordion-collapse collapse" data-bs-parent="#mobileNavAccordion">
-                        <div class="accordion-body bg-light">
-                            <ul class="list-unstyled d-grid gap-3">
-                                <li><a href="{{ route('account') }}" class="text-secondary text-decoration-none">My Dashboard</a></li>
-                                <li><a href="{{ route('orders.new') }}" class="fw-bold text-dark text-decoration-none">Start New Order</a></li>
-                                <li><a href="{{ route('profile.edit') }}" class="text-secondary text-decoration-none">Account Information</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                @endauth
             </div>
 
-            <a href="{{ route('contact') }}" class="list-group-item list-group-item-action py-3 fw-bold text-uppercase">Contact Us</a>
-        </div>
+            <a href="{{ route('contact') }}" class="list-group-item list-group-item-action bg-dark text-white border-secondary py-3 fw-bold text-uppercase {{ request()->routeIs('contact') ? 'text-primary' : '' }}">Contact</a>
 
-        <div class="p-4 bg-light mt-auto">
             @guest
-                <div class="d-grid gap-2">
-                    <a href="{{ route('login') }}" class="btn btn-outline-dark fw-bold text-uppercase">Log in</a>
-                    <a href="{{ route('register') }}" class="btn btn-warning fw-bold text-uppercase">Sign up</a>
-                </div>
+                <a href="{{ route('login') }}" class="list-group-item list-group-item-action bg-dark text-white border-secondary py-3 fw-bold text-uppercase">Log In</a>
+                <a href="{{ route('register') }}" class="list-group-item list-group-item-action bg-dark text-white border-secondary py-3 fw-bold text-uppercase text-warning">Sign Up</a>
             @else
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button type="submit" class="btn btn-outline-danger w-100 fw-bold text-uppercase">Log Out</button>
+                    <button type="submit" class="list-group-item list-group-item-action bg-dark text-white border-secondary py-3 fw-bold text-uppercase text-danger">Log Out</button>
                 </form>
-            @endauth
+            @endguest
         </div>
     </div>
 </div>

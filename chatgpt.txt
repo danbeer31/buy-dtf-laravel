@@ -1,0 +1,332 @@
+# Buy-DTF — Gang Sheet Uploader Phase 1 (Correct Project, Conservative Rollout)
+
+## Critical instruction
+The previous gang sheet work was accidentally done in the wrong project and was reverted.
+
+This work must now begin fresh in the **correct Buy-DTF project only**.
+
+Do not assume any prior gang sheet code exists.
+Inspect the real current Buy-DTF codebase first, then implement conservatively.
+
+---
+
+# Primary objective
+Add a **Gang Sheet Uploader** to Buy-DTF using the **existing cart / checkout / order pipeline**.
+
+## Highest priority
+**Do not break existing customer flow.**
+
+That includes:
+- normal DTF cart flow
+- checkout flow
+- payment flow
+- Stripe flow
+- QBO invoice/accounting-related flow
+- admin order views
+- production queue behavior
+
+This feature must be implemented as a guarded rollout.
+
+---
+
+# Business intent
+Customers should be able to:
+- upload a print-ready gang sheet
+- choose a gang sheet size
+- choose quantity
+- add optional notes
+- see the price
+- add it to the existing cart
+- complete checkout normally
+- have the uploaded file/details visible in admin and production
+
+## Phase 1 constraints
+- same cart
+- same checkout
+- same order system
+- no separate cart
+- no separate order path
+- dark launch only
+
+---
+
+# Dark launch requirement
+Build this behind the scenes without exposing it publicly.
+
+That means:
+- no nav links
+- no homepage links
+- no public CTA
+- no banner
+- page accessible by direct URL only for internal testing
+
+If the Buy-DTF project already has a clean feature flag pattern, use it.
+Otherwise keep the route unlinked.
+
+---
+
+# Pricing for phase 1
+
+## Fixed width
+- 22 inches
+
+## Size / price table
+- 22x24 → $15
+- 22x36 → $22
+- 22x48 → $29
+- 22x60 → $36
+- 22x72 → $42
+- 22x84 → $48
+- 22x96 → $55
+
+## Quantity discount only for 22x96
+- 1–2 sheets → $55 each
+- 3–5 sheets → $52 each
+- 6–9 sheets → $50 each
+- 10+ sheets → $48 each
+
+Price is based on selected sheet size, not used space.
+
+---
+
+# File support for phase 1
+Keep this narrow and safe:
+- PNG
+- PDF
+
+Only add SVG if the current Buy-DTF project already supports it safely and consistently.
+
+---
+
+# Required technical approach
+
+## 1. Use existing cart/order system
+Do not create a second cart or second order path.
+
+Gang sheets should be represented as a new item mode/type/branch within the existing data model and cart flow.
+
+## 2. Centralize pricing
+Create a dedicated pricing service for gang sheets.
+
+Do not spread pricing logic across:
+- controllers
+- blade/views
+- JS
+- duplicated helper code
+
+Qty changes must reprice correctly, especially for 22x96 tiers.
+
+## 3. Keep checkout pipeline unchanged
+Do not alter the core checkout/payment pipeline beyond what is needed to support gang sheet line-item metadata and pricing.
+
+Be extra careful not to disrupt:
+- Stripe flow
+- QBO invoice/accounting behavior
+- existing order creation
+- tax/shipping/discount assumptions
+
+## 4. Reuse existing storage/upload patterns
+Uploads must use the project’s existing storage conventions where possible.
+
+Add strict server-side validation for:
+- MIME
+- extension
+- file size
+
+Do not rely on extension only.
+
+## 5. Admin/production should be read-only extensions first
+Add gang sheet visibility into admin/production in a conservative way first:
+- badge/type label
+- selected size
+- qty
+- file link
+- notes
+
+Do not over-automate phase 1 if it adds risk.
+
+---
+
+# Step 1 — inspect actual Buy-DTF architecture before coding
+Before making changes, inspect and identify:
+
+- current cart flow
+- current qty update flow
+- checkout flow
+- payment flow
+- Stripe-related order/payment logic
+- QBO/accounting-related order/invoice logic
+- order item structure
+- file upload/storage patterns
+- admin order rendering
+- production queue/graphics flow
+
+If the real Buy-DTF codebase differs from the assumptions below, adapt carefully and explain the difference.
+
+Do not guess based on other projects.
+
+---
+
+# Preferred implementation direction
+If the actual codebase supports it cleanly, implement gang sheets as:
+
+- existing cart system
+- new item type / mode for gang sheets
+- gang sheet metadata stored with cart/order line items
+- same checkout
+- same order creation
+- admin + production display support
+
+If the codebase has a better extension point, use it and explain why.
+
+---
+
+# Metadata to preserve
+However the Buy-DTF project stores line-item metadata, preserve at least:
+
+- sheet size key
+- width
+- length
+- upload path
+- original file name
+- mime type
+- file size
+- notes
+- pricing version
+- applied unit price snapshot
+
+If existing line-item meta JSON already exists, reuse it.
+
+---
+
+# Frontend phase 1
+Add a dedicated gang sheet page for direct internal testing only.
+
+Expected page features:
+- file upload
+- size selector
+- quantity
+- notes
+- price display
+- add-to-cart button
+- clear disclaimers / file requirements
+
+Keep phase 1 simple and safe.
+Server-side validation matters more than fancy JS.
+
+---
+
+# File handling requirements
+Need safe support for:
+- upload validation
+- allowed MIME + extension
+- max file size
+- persistent storage
+- order/admin/production access after checkout
+- cleanup strategy for abandoned uploads if appropriate
+
+---
+
+# Admin / production requirements
+Add clear visibility for gang sheet items in:
+- admin order detail
+- production/graphics queue or equivalent
+
+Need to show:
+- gang sheet label/type
+- selected size
+- qty
+- uploaded file link
+- notes
+
+Keep standard item rendering untouched.
+
+---
+
+# Implementation safety notes
+Main risk points to avoid:
+- separate cart/order path
+- pricing logic spread across controllers/views
+- file upload validation/security gaps
+- touching checkout/payment logic incorrectly
+- impacting QBO invoice behavior
+- impacting Stripe flow
+- changing shared logic without guarded item-type branching
+
+---
+
+# Implementation order
+
+## Step 1
+Inspect current architecture and identify actual integration points.
+
+## Step 2
+Add the minimum data model support needed for gang sheet item typing/metadata.
+
+## Step 3
+Add dedicated `GangSheetPricingService` with tests.
+
+## Step 4
+Add dark-launch uploader route/controller/view.
+
+## Step 5
+Integrate into existing cart safely, including qty repricing.
+
+## Step 6
+Integrate into order creation / line-item snapshotting.
+
+## Step 7
+Add admin order display support.
+
+## Step 8
+Add production visibility support.
+
+## Step 9
+Add cleanup handling for stale uploads if appropriate.
+
+---
+
+# Required regression checklist
+Before considering this ready, run a focused regression review for:
+
+- normal DTF cart flow
+- mixed cart flow (standard + gang sheet)
+- checkout flow
+- Stripe flow
+- QBO invoice/accounting flow
+- admin order views
+- production queue
+
+If automated coverage exists, extend it.
+If not, provide a clear manual test checklist.
+
+---
+
+# Deliverables from first implementation pass
+After the first pass, report back with:
+
+1. what you found in the actual Buy-DTF architecture
+2. files changed
+3. migrations added
+4. routes added
+5. services added
+6. how gang sheet items were represented
+7. how uploads are stored/validated
+8. what checkout/order changes were made
+9. what admin/production changes were made
+10. what Stripe/QBO-sensitive areas were intentionally avoided or guarded
+11. risks / follow-up items
+12. exact regression test checklist
+
+---
+
+# Final instruction
+Be conservative.
+
+Success criteria:
+1. correct project only
+2. existing customer flow remains intact
+3. gang sheet works end-to-end behind the scenes
+4. pricing is centralized
+5. checkout/accounting/payment behavior remains safe
+6. no unnecessary broad refactors

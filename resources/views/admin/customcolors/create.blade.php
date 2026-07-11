@@ -68,6 +68,15 @@
                                        {{ old('active', 1) ? 'checked' : '' }}>
                                 <label class="form-check-label fw-semibold" for="activeCheck">Active</label>
                             </div>
+
+                            @if(Auth::user()->role === 'superadmin')
+                                <div class="mb-3 form-check form-switch border-top pt-3 mt-3">
+                                    <input class="form-check-input" type="checkbox" id="globalCheck" name="is_global" value="1"
+                                           {{ old('is_global', (!$business ? 1 : 0)) ? 'checked' : '' }}>
+                                    <label class="form-check-label fw-semibold" for="globalCheck">Make Global Color</label>
+                                    <div class="form-text small text-muted">Global colors are available to all shops.</div>
+                                </div>
+                            @endif
                         </div>
                         <div class="card-footer bg-light p-4 d-flex justify-content-between">
                             <a href="{{ route('admin.customcolors.index') }}" class="btn btn-secondary px-4">Cancel</a>

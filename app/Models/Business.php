@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+
 class Business extends FuelModel
 {
     protected $fillable = [
@@ -30,9 +33,23 @@ class Business extends FuelModel
         'tax_exempt' => 'boolean',
     ];
 
-    public function user()
+    public function user(): HasOne
     {
-        return $this->belongsTo(User::class, 'email', 'email');
+        return $this->hasOne(User::class, 'fuel_business_id', 'id');
+    }
+
+    public function users(): Builder
+    {
+        $ids = BusinessUser::query()
+            ->where('business_id', $this->id)
+            ->where('is_active', true)
+            ->pluck('user_id');
+
+        if ($ids->isEmpty()) {
+            return User::query()->whereRaw('1=0');
+        }
+
+        return User::query()->whereIn('id', $ids);
     }
 
     public function settings()
@@ -48,5 +65,10 @@ class Business extends FuelModel
     public function open_order()
     {
         return $this->dtfOrders()->where('status', 1)->first();
+    }
+
+    public function paymentMethods()
+    {
+        return $this->belongsToMany(PaymentMethod::class, 'business_paymentmethods');
     }
 }

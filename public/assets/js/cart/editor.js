@@ -109,28 +109,15 @@
        ========================= */
     function bindCard(card) {
         if (!card) return;
-        const ratio = parseFloat(card.getAttribute('data-ratio')) || 1;
 
-        const formU = card.querySelector('.form-update');
-        const w     = formU ? formU.querySelector('.input-width')  : null;
-        const h     = formU ? formU.querySelector('.input-height') : null;
-        const lock  = formU ? formU.querySelector('.input-lock')   : null;
-
-        if (w && h && lock) {
-            if (!w.__ratioBound) {
-                w.addEventListener('input', () => {
-                    const val = parseFloat(w.value);
-                    if (lock.checked && val > 0) h.value = (val / ratio).toFixed(2);
-                });
-                w.__ratioBound = true;
-            }
-            if (!h.__ratioBound) {
-                h.addEventListener('input', () => {
-                    const val = parseFloat(h.value);
-                    if (lock.checked && val > 0) w.value = (val * ratio).toFixed(2);
-                });
-                h.__ratioBound = true;
-            }
+        // dtfimage-cards.js is the canonical proportion-lock handler on cart.
+        // If present, delegate to it and avoid double-binding stale ratio logic.
+        if (window.DTF && typeof window.DTF.initProportionLock === 'function') {
+            window.DTF.initProportionLock(card);
+        } else {
+            // If the dedicated handler is unavailable, avoid binding a second
+            // proportion script here. This file handles save/delete flows only.
+            console.warn('[Cart] Proportion lock handler (dtfimage-cards.js) not available.');
         }
     }
 
@@ -159,6 +146,7 @@
             const btn = form.querySelector('.btn-save, button[type="submit"]');
             const w   = form.querySelector('input[name="width"]');
             const h   = form.querySelector('input[name="height"]');
+            const q   = form.querySelector('input[name="quantity"]');
             const prevText = btn ? btn.textContent : '';
 
             if (btn) { btn.disabled = true; btn.textContent = 'Saving…'; }
@@ -168,7 +156,21 @@
 
                 if (typeof j.width  !== 'undefined' && w) w.value = Number(j.width).toFixed(2);
                 if (typeof j.height !== 'undefined' && h) h.value = Number(j.height).toFixed(2);
-                // if (j.price_each || j.total) { /* update price UI here if returned */ }
+                if (typeof j.quantity !== 'undefined' && q) q.value = String(j.quantity);
+
+                const card = form.closest('.image-card');
+                if (card) {
+                    const eachEl = card.querySelector('[data-price-each]');
+                    const totalEl = card.querySelector('[data-total]');
+
+                    if (j.price_error) {
+                        if (eachEl) eachEl.textContent = 'Unavailable';
+                        if (totalEl) totalEl.textContent = 'Unavailable';
+                    } else {
+                        if (eachEl && typeof j.price === 'number') eachEl.textContent = '$' + Number(j.price).toFixed(2);
+                        if (totalEl && typeof j.extended === 'number') totalEl.textContent = '$' + Number(j.extended).toFixed(2);
+                    }
+                }
                 if (window.refreshCartIndicator) {
                     window.refreshCartIndicator();
                 } else {
@@ -227,26 +229,34 @@
                 const hasCards = !!(list && list.querySelector('.image-card'));
 
                 if (!hasCards) {
-                    if (!document.getElementById('no-images-alert')) {
-                        const alert = document.createElement('div');
-                        alert.id = 'no-images-alert';
-                        alert.className = 'alert alert-info';
-                        alert.textContent = 'No images found on your open order.';
-                        const uploadCard = document.getElementById('upload-card');
+                    if (!document.getElementById('empty-cart-state') && !document.getElementById('no-images-alert')) {
+                        const emptyState = document.createElement('div');
+                        emptyState.id = 'empty-cart-state';
+                        emptyState.className = 'text-center py-5 bg-light rounded-4 mb-4 border border-dashed';
+                        emptyState.innerHTML = `
+                            <i class="bi bi-cart-x fs-1 text-muted opacity-25"></i>
+                            <p class="mt-3 text-muted fw-semibold">Your order is currently empty.</p>
+                            <p class="small text-muted">Upload designs below or select from your saved images to get started.</p>
+                        `;
+
+                        // Try to find the container where it should go
+                        const container = document.querySelector('.bg-white.p-5') || document.body;
+                        const firstCol = container.querySelector('.col-12');
+
                         if (list && list.parentNode) {
-                            list.parentNode.insertBefore(alert, list);
-                        } else if (uploadCard && uploadCard.parentNode) {
-                            uploadCard.parentNode.insertBefore(alert, uploadCard);
+                            list.parentNode.insertBefore(emptyState, list);
+                        } else if (firstCol) {
+                            firstCol.parentNode.insertBefore(emptyState, firstCol);
                         } else {
-                            document.body.prepend(alert);
+                            container.prepend(emptyState);
                         }
                     }
-                    const place = document.querySelector('a.btn.btn-success');
-                    if (place) {
+                    const placeButtons = document.querySelectorAll('a[href*="checkout"]');
+                    placeButtons.forEach(place => {
                         place.classList.add('disabled');
                         place.setAttribute('aria-disabled', 'true');
                         place.setAttribute('tabindex', '-1');
-                    }
+                    });
                 }
                 if (window.refreshCartIndicator) {
                     window.refreshCartIndicator();

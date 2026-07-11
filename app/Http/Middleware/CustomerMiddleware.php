@@ -20,8 +20,8 @@ class CustomerMiddleware
             'email' => $user->email
         ]);
 
-        // Allow customers and admins
-        if ($user->role !== 'customer' && $user->role !== 'admin') {
+        // Allow customers and all admin roles.
+        if ($user->role !== 'customer' && ! $user->isAdmin()) {
             \Illuminate\Support\Facades\Log::info('CustomerMiddleware: Redirecting to home because role is not customer or admin.');
             return redirect()->route('home')->with('error', 'Access denied.');
         }

@@ -20,25 +20,38 @@
 
                                 <div class="d-flex align-items-start mb-4">
                                     <div class="text-warning me-3">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-geo-alt-fill" viewBox="0 0 16 16">
-                                            <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
-                                        </svg>
+                                        <i class="bi bi-geo-alt-fill fs-4"></i>
                                     </div>
                                     <div>
-                                        <h6 class="fw-bold mb-1">Headquarters</h6>
-                                        <p class="small text-light opacity-75 mb-0">Next Level DTF</p>
+                                        <h6 class="fw-bold mb-1">Our Location</h6>
+                                        <p class="small text-light opacity-75 mb-0">
+                                            811 Fairfield Ave,<br>
+                                            LaPorte, IN 46350
+                                        </p>
                                     </div>
                                 </div>
 
                                 <div class="d-flex align-items-start mb-4">
                                     <div class="text-warning me-3">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-envelope-fill" viewBox="0 0 16 16">
-                                            <path d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555zM0 4.697v7.104l5.803-3.558L0 4.697zM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-.239-.756zm3.436-.569L16 11.801V4.697l-5.803 3.564z"/>
-                                        </svg>
+                                        <i class="bi bi-telephone-fill fs-4"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="fw-bold mb-1">Call Us</h6>
+                                        <p class="small text-light opacity-75 mb-0">
+                                            <a href="tel:2192214060" class="text-light text-decoration-none">(219) 221-4060</a>
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex align-items-start mb-4">
+                                    <div class="text-warning me-3">
+                                        <i class="bi bi-envelope-fill fs-4"></i>
                                     </div>
                                     <div>
                                         <h6 class="fw-bold mb-1">Email Us</h6>
-                                        <p class="small text-light opacity-75 mb-0">support@nextleveldtf.com</p>
+                                        <p class="small text-light opacity-75 mb-0">
+                                            <a href="mailto:info@nlcustomtees.com" class="text-light text-decoration-none">info@nlcustomtees.com</a>
+                                        </p>
                                     </div>
                                 </div>
                             </div>

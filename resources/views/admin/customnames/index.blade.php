@@ -1,16 +1,21 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="fw-bold fs-4 text-dark mb-0">
-            {{ __('Custom Names • Templates') }}
+            {{ __('Name & Number Config') }}
         </h2>
     </x-slot>
 
     <div class="container py-4">
-        <div class="d-flex align-items-center mb-3 gap-2">
-            <h3 class="mb-0"><i class="bi bi-layers me-2"></i>Local Templates</h3>
-            <a href="{{ route('admin.customnames.templatebuilder') }}" class="btn btn-sm btn-success ms-auto">
-                <i class="bi bi-plus-lg me-1"></i> New Template
-            </a>
+        <div class="d-flex align-items-center mb-4 gap-3">
+            <h3 class="mb-0 fw-bold"><i class="bi bi-layers me-2 text-primary"></i>Templates</h3>
+            <div class="ms-auto d-flex gap-2">
+                <a href="{{ route('admin.customnames.fonts') }}" class="btn btn-outline-primary">
+                    <i class="bi bi-type me-1"></i> Fonts
+                </a>
+                <a href="{{ route('admin.customnames.templatebuilder') }}" class="btn btn-success px-4">
+                    <i class="bi bi-plus-lg me-1"></i> New Template
+                </a>
+            </div>
         </div>
 
         <form method="get" action="{{ route('admin.customnames.index') }}" class="mb-3">
