@@ -397,17 +397,62 @@ class CustomNamesController extends Controller
     public function uploadFont(Request $request)
     {
         if (!$request->hasFile('font')) {
-            return response()->json(['success' => false, 'message' => 'No file uploaded'], 400);
+            Log::warning('Font upload failed before file reached Laravel', [
+                'content_length' => $request->server('CONTENT_LENGTH'),
+                'upload_max_filesize' => ini_get('upload_max_filesize'),
+                'post_max_size' => ini_get('post_max_size'),
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'No font file was received. If the file is large, keep it under ' . ini_get('upload_max_filesize') . '.',
+            ], 400);
         }
 
         $file = $request->file('font');
-        $path = $file->store('tmp/uploads');
+        if (!$file->isValid()) {
+            Log::warning('Font upload failed PHP validation', [
+                'client_name' => $file->getClientOriginalName(),
+                'error' => $file->getError(),
+                'error_message' => $file->getErrorMessage(),
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Font upload failed: ' . $file->getErrorMessage(),
+            ], 400);
+        }
+
+        $extension = strtolower((string)$file->getClientOriginalExtension());
+        if (!in_array($extension, ['ttf', 'otf', 'woff', 'woff2'], true)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid font extension. Upload a .ttf, .otf, .woff, or .woff2 file.',
+            ], 422);
+        }
+
+        $path = $file->storeAs('tmp/uploads', Str::uuid() . '.' . $extension);
+        if (!$path) {
+            Log::error('Font upload failed while storing temp file', [
+                'client_name' => $file->getClientOriginalName(),
+                'size' => $file->getSize(),
+            ]);
+
+            return response()->json(['success' => false, 'message' => 'Could not save font temporarily on the web server.'], 500);
+        }
+
         $fullPath = storage_path('app/' . $path);
 
         $res = $this->nameNumberService->uploadFont($fullPath);
         @unlink($fullPath);
 
         if (!($res['success'] ?? false)) {
+            Log::warning('Node font upload failed', [
+                'client_name' => $file->getClientOriginalName(),
+                'size' => $file->getSize(),
+                'node_response' => $res,
+            ]);
+
             return response()->json(['success' => false, 'message' => $res['message'] ?? 'Node upload failed'], 400);
         }
 

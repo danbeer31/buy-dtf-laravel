@@ -25,7 +25,7 @@
                         <div class="col-md-6">
                             <label class="form-label fw-semibold">Upload Font File</label>
                             <input class="form-control" type="file" name="font" id="font-file" accept=".ttf,.otf,.woff,.woff2" required />
-                            <div class="form-text">Allowed formats: .ttf, .otf, .woff, .woff2</div>
+                            <div class="form-text">Allowed formats: .ttf, .otf, .woff, .woff2. Max 16MB.</div>
                         </div>
                         <div class="col-md-6 d-flex gap-2">
                             <button type="submit" class="btn btn-primary px-4">
@@ -81,6 +81,6 @@
             return originalFetch(resource, config);
         };
     </script>
-    <script src="{{ asset('assets/js/admin/customnames/fonts.js') }}"></script>
+    <script src="{{ asset('assets/js/admin/customnames/fonts.js') }}?v={{ filemtime(public_path('assets/js/admin/customnames/fonts.js')) }}"></script>
     @endpush
 </x-app-layout>
