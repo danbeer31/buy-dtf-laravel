@@ -441,7 +441,7 @@ class CustomNamesController extends Controller
             return response()->json(['success' => false, 'message' => 'Could not save font temporarily on the web server.'], 500);
         }
 
-        $fullPath = storage_path('app/' . $path);
+        $fullPath = Storage::path($path);
 
         $res = $this->nameNumberService->uploadFont($fullPath);
         @unlink($fullPath);
