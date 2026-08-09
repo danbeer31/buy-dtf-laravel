@@ -58,7 +58,10 @@
             } else {
                 alert(res.message || 'Upload failed');
             }
-        }).fail(() => alert('Upload error'));
+        }).fail(xhr => {
+            const msg = xhr.responseJSON?.message || xhr.responseText || 'Upload error';
+            alert(msg);
+        });
     });
 
     $('#btn-reload-fonts').on('click', function () {
@@ -76,7 +79,10 @@
             } else {
                 alert(res.message || 'Reload failed');
             }
-        }).fail(() => alert('Reload error'));
+        }).fail(xhr => {
+            const msg = xhr.responseJSON?.message || xhr.responseText || 'Reload error';
+            alert(msg);
+        });
     });
 
     $('#btn-refresh-list').on('click', loadList);

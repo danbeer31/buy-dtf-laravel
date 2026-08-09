@@ -386,7 +386,7 @@ class CustomNamesController extends Controller
      */
     public function reloadFonts()
     {
-        $res = $this->nameNumberService->nodeAction('post', '/font/reload');
+        $res = $this->nameNumberService->nodeAction('post', '/fonts/reload');
         if (!($res['success'] ?? false)) return response()->json(['success' => false, 'message' => $res['message'] ?? 'Reload failed'], 400);
         return response()->json(['success' => true, 'message' => 'Reloaded']);
     }

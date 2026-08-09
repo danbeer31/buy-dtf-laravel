@@ -141,7 +141,7 @@
     }
 
     $('#btn-font-refresh').on('click', function () {
-        $.post('/admin/customnames/font/reload', {}, function () {
+        $.post('/admin/customnames/fonts/reload', {}, function () {
             populateFonts();
         }, 'json');
     });
