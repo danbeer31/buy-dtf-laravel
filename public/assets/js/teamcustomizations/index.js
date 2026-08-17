@@ -1440,6 +1440,7 @@ Taylor,12,#FFFFFF`;
         disable(true);
 
         const batchId = Math.random().toString(36).slice(2, 10);
+        let successCount = 0;
         els.log.innerHTML = '';
         setBar(0, TCState.rows.length);
 
@@ -1481,6 +1482,7 @@ Taylor,12,#FFFFFF`;
                     console.error('run_one error', {status: resp.status, json: j});
                 } else {
                     // Success – show preview link/thumb immediately
+                    successCount++;
                     const url = extractImageUrl(j);
                     li.querySelector('span').textContent = `Done ${i + 1}`;
                     if (url && !li.querySelector('img')) {
@@ -1507,6 +1509,12 @@ Taylor,12,#FFFFFF`;
             }
             // Advance progress bar
             setBar(i + 1, TCState.rows.length);
+        }
+
+        if (successCount === TCState.rows.length) {
+            alert('Success! All batch items have been added to your cart.');
+        } else {
+            alert(`Batch finished: ${successCount} of ${TCState.rows.length} items were added to your cart. Check the log for errors.`);
         }
 
         disable(false);

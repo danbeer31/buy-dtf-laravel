@@ -486,6 +486,6 @@
         </script>
         <script src="{{ asset('assets/js/teamcustomizations/colors.js') }}"></script>
         <script src="{{ asset('assets/js/teamcustomizations/templatecards.js') }}"></script>
-        <script src="{{ asset('assets/js/teamcustomizations/index.js') }}"></script>
+        <script src="{{ asset('assets/js/teamcustomizations/index.js') }}?v={{ filemtime(public_path('assets/js/teamcustomizations/index.js')) }}"></script>
     @endpush
 </x-app-layout>
