@@ -163,7 +163,10 @@ class TeamCustomizationController extends Controller
             }
 
             $business = $user->business;
-            $order = $business->open_order();
+            $order = DtfOrder::where('business_id', $business->id)
+                ->where('status', 1)
+                ->orderBy('id', 'desc')
+                ->first();
             if (!$order) {
                 $order = DtfOrder::create([
                     'business_id' => $business->id,

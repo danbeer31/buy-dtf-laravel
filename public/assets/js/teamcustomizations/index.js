@@ -1441,20 +1441,21 @@ Taylor,12,#FFFFFF`;
 
         const batchId = Math.random().toString(36).slice(2, 10);
         let successCount = 0;
+        const batchRows = TCState.rows.map(row => ({...row}));
         els.log.innerHTML = '';
-        setBar(0, TCState.rows.length);
+        setBar(0, batchRows.length);
 
-        for (let i = 0; i < TCState.rows.length; i++) {
+        for (let i = 0; i < batchRows.length; i++) {
             const li = logRow(i, `Rendering ${i + 1}…`, 'secondary');
 
             // Build the same payload used by Preview (HN style)
-            const payload = buildHNPayload(TCState.rows[i]);
+            const payload = buildHNPayload(batchRows[i]);
             payload.batch_id = batchId;
             payload.row_index = i;
             payload.image_name = 'customnames';
 
             // include order quantity
-            const qty = parseInt(TCState.rows[i][ORDER_QTY_KEY], 10);
+            const qty = parseInt(batchRows[i][ORDER_QTY_KEY], 10);
             const finalQty = (Number.isFinite(qty) && qty > 0) ? qty : 1;
             payload.opts = payload.opts || {};
             payload.opts.order_quantity = finalQty;
@@ -1504,17 +1505,14 @@ Taylor,12,#FFFFFF`;
                 console.error('run_one fetch failed', e);
             }
 
-            if (j.success && i === TCState.rows.length - 1) {
-                alert('Success! All batch items have been added to your cart.');
-            }
             // Advance progress bar
-            setBar(i + 1, TCState.rows.length);
+            setBar(i + 1, batchRows.length);
         }
 
-        if (successCount === TCState.rows.length) {
+        if (successCount === batchRows.length) {
             alert('Success! All batch items have been added to your cart.');
         } else {
-            alert(`Batch finished: ${successCount} of ${TCState.rows.length} items were added to your cart. Check the log for errors.`);
+            alert(`Batch finished: ${successCount} of ${batchRows.length} items were added to your cart. Check the log for errors.`);
         }
 
         disable(false);
