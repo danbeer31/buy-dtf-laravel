@@ -262,6 +262,32 @@ class NameNumberService
             if (isset($b['fontSizePx'])) $blk['fontSizePx'] = (float)$b['fontSizePx'];
             if (isset($b['rotationDeg'])) $blk['rotationDeg'] = (float)$b['rotationDeg'];
             if (isset($b['letterSpacing'])) $blk['letterSpacing'] = (float)$b['letterSpacing'];
+            if (isset($b['dyPx'])) $blk['dyPx'] = (float)$b['dyPx'];
+            if (isset($b['vAlign'])) $blk['vAlign'] = (string)$b['vAlign'];
+            if (isset($b['manualScaleX'])) $blk['manualScaleX'] = (float)$b['manualScaleX'];
+            if (isset($b['manualScaleY'])) $blk['manualScaleY'] = (float)$b['manualScaleY'];
+
+            if (array_key_exists('autoFix', $b)) {
+                $blk['autoFix'] = (bool)$b['autoFix'];
+            }
+            if (isset($b['squeezeMode'])) {
+                $blk['squeezeMode'] = (string)$b['squeezeMode'];
+            }
+            if (isset($b['autoFixMode']) && !isset($blk['squeezeMode'])) {
+                $blk['squeezeMode'] = (string)$b['autoFixMode'];
+            }
+            if (isset($b['fitWidthPx'])) {
+                $blk['fitWidthPx'] = (float)$b['fitWidthPx'];
+            }
+            if (isset($b['autoFixWidthPx']) && !isset($blk['fitWidthPx'])) {
+                $blk['fitWidthPx'] = (float)$b['autoFixWidthPx'];
+            }
+            if (isset($b['fitBox']) && is_array($b['fitBox'])) {
+                $blk['fitBox'] = $this->normalizeFitBox($b['fitBox']);
+            }
+            if (isset($b['autoFixBox']) && is_array($b['autoFixBox']) && !isset($blk['fitBox'])) {
+                $blk['fitBox'] = $this->normalizeFitBox($b['autoFixBox']);
+            }
 
             // Styles
             foreach (['fill', 'stroke', 'strokeWidth', 'font'] as $key) {
@@ -288,6 +314,19 @@ class NameNumberService
             }
 
             $out['blocks'][] = $blk;
+        }
+
+        return $out;
+    }
+
+    protected function normalizeFitBox(array $box): array
+    {
+        $out = [];
+
+        foreach (['leftPx', 'rightPx', 'topPx', 'bottomPx'] as $key) {
+            if (isset($box[$key])) {
+                $out[$key] = (float)$box[$key];
+            }
         }
 
         return $out;
