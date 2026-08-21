@@ -119,7 +119,7 @@
             s.fill = q.colors.fill;
             s.stroke = q.colors.outline;
             s.strokeWidth = q.strokeWidth || 30;
-            s.outline2 = {color: q.colors.outline2, widthPx: 45};
+            s.outline2 = {color: q.colors.outline2, widthPx: q.outline2StrokeWidth || 45};
             s.separatedOutline = {outerWidthPx: 0, gapPx: 0};
         }
         if (q.mode === 'ring') {
@@ -256,7 +256,8 @@
             TCState.quick.blocks[slot] = {
                 mode: 'fill',
                 colors: {fill: '#000000', outline: '#FFFFFF', outline2: '#000000', ring: '#000000'},
-                strokeWidth: 30,   // outline / outline2 default
+                strokeWidth: 30,   // first outline default
+                outline2StrokeWidth: 45, // second outline default
                 ringWidth: 80,     // ring default
                 ringGap: 20        // ring default
             };
@@ -305,7 +306,7 @@
                 b.strokeWidth = q.strokeWidth || 20;
                 if (!b.outline2) b.outline2 = {color: '#000000', widthPx: 0};
                 if (q.colors.outline2) b.outline2.color = q.colors.outline2;
-                b.outline2.widthPx = b.outline2.widthPx || 45;
+                b.outline2.widthPx = q.outline2StrokeWidth || 45;
                 if (b.separatedOutline) {
                     b.separatedOutline.outerWidthPx = 0;
                     b.separatedOutline.gapPx = 0;
@@ -621,6 +622,7 @@
                 setVisible(containersByKey.outline2, (m === 'outline2'));
                 setVisible(containersByKey.ring, (m === 'ring'));
                 setVisible(slidersByKey.strokeWidth, (m === 'outline' || m === 'outline2'));
+                setVisible(slidersByKey.outline2StrokeWidth, (m === 'outline2'));
                 setVisible(slidersByKey.ringWidth, (m === 'ring'));
                 setVisible(slidersByKey.ringGap, (m === 'ring'));
             }
@@ -650,8 +652,12 @@
             makeRole('outline2', 'Outline 2', q.colors.outline2);
             makeRole('ring', 'Ring', q.colors.ring);
 
-            const strokeCtl = makeNumberInput('Stroke', q.strokeWidth, v => {
+            const strokeCtl = makeNumberInput('Outline 1 W', q.strokeWidth, v => {
                 q.strokeWidth = v;
+                TCState.activeTemplate = applyQuickToTemplate(TCState.baseTemplate, TCState.quick);
+            });
+            const outline2StrokeCtl = makeNumberInput('Outline 2 W', q.outline2StrokeWidth || 45, v => {
+                q.outline2StrokeWidth = v;
                 TCState.activeTemplate = applyQuickToTemplate(TCState.baseTemplate, TCState.quick);
             });
             const ringWctl = makeNumberInput('Ring W', q.ringWidth, v => {
@@ -664,10 +670,12 @@
             });
 
             slidersByKey.strokeWidth = strokeCtl.wrap;
+            slidersByKey.outline2StrokeWidth = outline2StrokeCtl.wrap;
             slidersByKey.ringWidth = ringWctl.wrap;
             slidersByKey.ringGap = ringGctl.wrap;
 
             tdColors.appendChild(strokeCtl.wrap);
+            tdColors.appendChild(outline2StrokeCtl.wrap);
             tdColors.appendChild(ringWctl.wrap);
             tdColors.appendChild(ringGctl.wrap);
 
@@ -797,7 +805,7 @@
         const q = (TCState.quick.blocks && TCState.quick.blocks[slot]) || {
             mode: 'fill',
             colors: {fill: '#000000', outline: '#FFFFFF', outline2: '#000000', ring: '#000000'},
-            strokeWidth: 30, ringWidth: 80, ringGap: 20
+            strokeWidth: 30, outline2StrokeWidth: 45, ringWidth: 80, ringGap: 20
         };
         const fontId = TCState.quick.fontsBySlot ? TCState.quick.fontsBySlot[slot] : null;
 
@@ -813,7 +821,7 @@
 
             outline2: {
                 color: (q.mode === 'outline2') ? (q.colors.outline2 || null) : null,
-                widthPx: (q.mode === 'outline2') ? 45 : 0
+                widthPx: (q.mode === 'outline2') ? (q.outline2StrokeWidth || 45) : 0
             },
 
             separatedOutline: {
