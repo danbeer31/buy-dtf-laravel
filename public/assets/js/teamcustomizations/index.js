@@ -119,7 +119,7 @@
             s.fill = q.colors.fill;
             s.stroke = q.colors.outline;
             s.strokeWidth = q.strokeWidth || 30;
-            s.outline2 = {color: q.colors.outline2, widthPx: q.outline2StrokeWidth || 45};
+            s.outline2 = {color: q.colors.outline2, widthPx: (q.strokeWidth || 30) + (q.outline2StrokeWidth || 45)};
             s.separatedOutline = {outerWidthPx: 0, gapPx: 0};
         }
         if (q.mode === 'ring') {
@@ -306,7 +306,7 @@
                 b.strokeWidth = q.strokeWidth || 20;
                 if (!b.outline2) b.outline2 = {color: '#000000', widthPx: 0};
                 if (q.colors.outline2) b.outline2.color = q.colors.outline2;
-                b.outline2.widthPx = q.outline2StrokeWidth || 45;
+                b.outline2.widthPx = (q.strokeWidth || 20) + (q.outline2StrokeWidth || 45);
                 if (b.separatedOutline) {
                     b.separatedOutline.outerWidthPx = 0;
                     b.separatedOutline.gapPx = 0;
@@ -821,7 +821,7 @@
 
             outline2: {
                 color: (q.mode === 'outline2') ? (q.colors.outline2 || null) : null,
-                widthPx: (q.mode === 'outline2') ? (q.outline2StrokeWidth || 45) : 0
+                widthPx: (q.mode === 'outline2') ? ((q.strokeWidth || 30) + (q.outline2StrokeWidth || 45)) : 0
             },
 
             separatedOutline: {
