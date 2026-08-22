@@ -177,7 +177,7 @@
                         </div>
                         <div class="d-flex justify-content-between mb-3 pb-3 border-bottom">
                             <span class="text-muted">Tax</span>
-                            <span class="fw-bold">$0.00</span>
+                            <span class="fw-bold" id="display-tax">$0.00</span>
                         </div>
                         <div class="d-flex justify-content-between mb-4">
                             <h5 class="fw-bold mb-0">Total</h5>
@@ -299,8 +299,10 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const subtotal = {{ $order->price }};
+            const salesTaxRate = {{ $estimatedSalesTaxRate ?? 0 }};
             const shippingInputs = document.querySelectorAll('.shipping-rate-input');
             const displayShipping = document.getElementById('display-shipping-cost');
+            const displayTax = document.getElementById('display-tax');
             const displayTotal = document.getElementById('display-total-price');
 
             const stripeDetails = document.getElementById('stripe-payment-details');
@@ -313,8 +315,10 @@
                 const checked = document.querySelector('.shipping-rate-input:checked');
                 if (checked) {
                     const shipping = parseFloat(checked.dataset.amount);
+                    const tax = Math.round((subtotal * salesTaxRate) * 100) / 100;
                     displayShipping.textContent = '$' + shipping.toFixed(2);
-                    displayTotal.textContent = '$' + (subtotal + shipping).toFixed(2);
+                    displayTax.textContent = '$' + tax.toFixed(2);
+                    displayTotal.textContent = '$' + (subtotal + shipping + tax).toFixed(2);
                 }
             }
 

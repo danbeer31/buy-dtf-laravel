@@ -190,7 +190,11 @@ class QboService
             return [];
         }
 
-        return $result['QueryResponse']['Invoice'] ?? [];
+        return array_map(function (array $invoice) {
+            $invoice['PayableBalance'] = $this->getInvoicePayableBalance($invoice);
+
+            return $invoice;
+        }, $result['QueryResponse']['Invoice'] ?? []);
     }
 
     public function getInvoiceHistory($qboCustomerId, $limit = 20)
@@ -206,7 +210,60 @@ class QboService
             return [];
         }
 
-        return $result['QueryResponse']['Invoice'] ?? [];
+        return array_map(function (array $invoice) {
+            $invoice['PayableBalance'] = $this->getInvoicePayableBalance($invoice);
+
+            return $invoice;
+        }, $result['QueryResponse']['Invoice'] ?? []);
+    }
+
+    public function getInvoicePayableBalance(array $invoice): float
+    {
+        $balance = round((float)($invoice['Balance'] ?? 0), 2);
+        if ($balance <= 0) {
+            return 0.0;
+        }
+
+        $totalAmount = round((float)($invoice['TotalAmt'] ?? $balance), 2);
+        $totalTax = round((float)($invoice['TxnTaxDetail']['TotalTax'] ?? 0), 2);
+        $deposit = round((float)($invoice['Deposit'] ?? 0), 2);
+        $difference = round($totalAmount - $balance, 2);
+
+        if (
+            $deposit <= 0
+            && $totalTax > 0
+            && abs($difference - $totalTax) <= 0.01
+            && !$this->invoiceHasAppliedPayment($invoice)
+        ) {
+            return $totalAmount;
+        }
+
+        return $balance;
+    }
+
+    private function invoiceHasAppliedPayment(array $invoice): bool
+    {
+        $linkedTransactions = $invoice['LinkedTxn'] ?? [];
+        if (!is_array($linkedTransactions)) {
+            return false;
+        }
+
+        if (isset($linkedTransactions['TxnType'])) {
+            $linkedTransactions = [$linkedTransactions];
+        }
+
+        $paymentTypes = ['Payment', 'CreditMemo', 'RefundReceipt'];
+        foreach ($linkedTransactions as $transaction) {
+            if (!is_array($transaction)) {
+                continue;
+            }
+
+            if (in_array($transaction['TxnType'] ?? null, $paymentTypes, true)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function getItems()

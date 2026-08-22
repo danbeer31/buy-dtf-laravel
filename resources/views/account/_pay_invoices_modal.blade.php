@@ -24,10 +24,11 @@
                                 @php
                                     $dueDate = \Carbon\Carbon::parse($inv['DueDate']);
                                     $isInvOverdue = $dueDate->isPast() && !$dueDate->isToday();
+                                    $payableBalance = $inv['PayableBalance'] ?? $inv['Balance'];
                                 @endphp
                                 <tr class="{{ $isInvOverdue ? 'table-danger-subtle' : '' }}">
                                     <td>
-                                        <input type="checkbox" class="form-check-input invoice-checkbox" id="check_inv_{{ $inv['Id'] }}" data-id="{{ $inv['Id'] }}" data-amount="{{ $inv['Balance'] }}" checked>
+                                        <input type="checkbox" class="form-check-input invoice-checkbox" id="check_inv_{{ $inv['Id'] }}" data-id="{{ $inv['Id'] }}" data-amount="{{ $payableBalance }}" checked>
                                     </td>
                                     <td class="fw-bold">{{ $inv['DocNumber'] ?? $inv['Id'] }}</td>
                                     <td>{{ \Carbon\Carbon::parse($inv['TxnDate'])->format('m/d/Y') }}</td>
@@ -39,7 +40,7 @@
                                             <span class="badge bg-danger ms-1">OVERDUE</span>
                                         @endif
                                     </td>
-                                    <td class="text-end fw-bold">${{ number_format($inv['Balance'], 2) }}</td>
+                                    <td class="text-end fw-bold">${{ number_format($payableBalance, 2) }}</td>
                                 </tr>
                             @endforeach
                         </tbody>

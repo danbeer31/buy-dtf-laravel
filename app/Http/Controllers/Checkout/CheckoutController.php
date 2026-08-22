@@ -162,7 +162,11 @@ class CheckoutController extends Controller
             }
             Log::error('DEBUG: Final rates count: ' . count($rates));
 
-            return view('checkout.index', compact('order', 'business', 'rates', 'paymentMethods'));
+            $estimatedSalesTaxRate = (bool)($business->tax_exempt ?? false)
+                ? 0.0
+                : $this->getSalesTaxRate($shippingAddress?->state ?? $business->state);
+
+            return view('checkout.index', compact('order', 'business', 'rates', 'paymentMethods', 'estimatedSalesTaxRate'));
         } catch (\Exception $e) {
             Log::error('Checkout: Error during data processing: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
             return redirect()->route('home')->with('error', 'An error occurred during checkout processing. Please try again.');
@@ -232,11 +236,10 @@ class CheckoutController extends Controller
 
             $order->update($updateData);
 
-            // Recalculate total with shipping
-            // Sales tax calculation placeholder (needs porting Helpers_Salestax)
-            $salesTax = 0; // TODO: Implement sales tax
-            $totalPrice = $order->price + $order->shipping_cost + $salesTax;
-            $order->update(['total_price' => $totalPrice, 'sales_tax' => $salesTax]);
+            $orderPrice = $order->get_total();
+            $salesTax = $this->calculateSalesTax($order, $business, $orderPrice);
+            $totalPrice = $orderPrice + $order->shipping_cost + $salesTax;
+            $order->update(['price' => $orderPrice, 'total_price' => $totalPrice, 'sales_tax' => $salesTax]);
 
             // If it's an invoice, we redirect to the disclaimer page
             if ($paymentMethod->payment_controller === 'invoice') {
@@ -299,6 +302,47 @@ class CheckoutController extends Controller
         $order->load(['orderStatus', 'shippingAddress', 'paymentMethod', 'dtfImages']);
 
         return view('checkout.invoice_disclaimer', compact('order', 'business'));
+    }
+
+    private function calculateSalesTax(DtfOrder $order, Business $business, ?float $taxableAmount = null): float
+    {
+        if ((bool)($business->tax_exempt ?? false)) {
+            return 0.0;
+        }
+
+        $state = $order->shippingAddress?->state ?: $business->state;
+        $rate = $this->getSalesTaxRate($state);
+        if ($rate <= 0) {
+            return 0.0;
+        }
+
+        return round(($taxableAmount ?? (float)$order->price) * $rate, 2);
+    }
+
+    private function getSalesTaxRate(?string $state): float
+    {
+        $state = strtoupper(trim((string)$state));
+        if ($state === '') {
+            return 0.0;
+        }
+
+        $fuelDb = config('database.fuel_connection', env('FUEL_DB_CONNECTION', 'fuelmysql'));
+        if ($fuelDb === 'remotefuel') {
+            $fuelDb = 'fuelmysql';
+        }
+
+        $rate = \Illuminate\Support\Facades\DB::connection($fuelDb)
+            ->table('states')
+            ->where('code', $state)
+            ->value('sales_tax');
+
+        if ($rate === null) {
+            return 0.0;
+        }
+
+        $rate = (float)$rate;
+
+        return $rate > 1 ? $rate / 100 : $rate;
     }
 
     public function completeInvoiceOrder(DtfOrder $order)
@@ -600,12 +644,15 @@ class CheckoutController extends Controller
             $total = 0;
             $selectedInvoices = [];
             $selectedDocNumbers = [];
+            $selectedInvoiceAmounts = [];
 
             foreach ($invoices as $inv) {
                 if (in_array($inv['Id'], $invoiceIds)) {
-                    $total += $inv['Balance'];
+                    $payableBalance = $inv['PayableBalance'] ?? $this->qbo->getInvoicePayableBalance($inv);
+                    $total += $payableBalance;
                     $selectedInvoices[] = $inv['Id'];
                     $selectedDocNumbers[] = $inv['DocNumber'] ?? $inv['Id'];
+                    $selectedInvoiceAmounts[$inv['Id']] = number_format($payableBalance, 2, '.', '');
                 }
             }
 
@@ -623,6 +670,7 @@ class CheckoutController extends Controller
                     'business_id' => $business->id,
                     'qbo_invoice_ids' => implode(',', $selectedInvoices),
                     'qbo_invoice_numbers' => implode(',', $selectedDocNumbers),
+                    'qbo_invoice_amounts' => http_build_query($selectedInvoiceAmounts, '', '&'),
                     'payment_type' => 'qbo_invoice_payment'
                 ],
             ]);
@@ -668,6 +716,7 @@ class CheckoutController extends Controller
 
             Log::info("DEBUG: [PROCEED] QBO Payment successful, processing invoices", ['invoices' => $paymentIntent->metadata->qbo_invoice_ids ?? 'MISSING']);
             $invoiceIds = explode(',', $paymentIntent->metadata->qbo_invoice_ids ?? '');
+            parse_str($paymentIntent->metadata->qbo_invoice_amounts ?? '', $invoiceAmounts);
             $businessId = $paymentIntent->metadata->business_id;
             $business = \App\Models\Business::find($businessId);
 
@@ -748,7 +797,7 @@ class CheckoutController extends Controller
                     $invoiceRes = $this->qbo->request('GET', "invoice/{$invoiceId}");
                     if (isset($invoiceRes['Invoice'])) {
                         $invoice = $invoiceRes['Invoice'];
-                        $balance = $invoice['Balance'];
+                        $balance = round((float)($invoiceAmounts[$invoiceId] ?? $this->qbo->getInvoicePayableBalance($invoice)), 2);
                         $qboInvoiceCustomerId = $invoice['CustomerRef']['value'];
 
                         Log::info("DEBUG: Invoice $invoiceId balance: $balance, QBO Customer ID: $qboInvoiceCustomerId");

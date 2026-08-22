@@ -17,7 +17,8 @@
                 @foreach($invoiceHistory as $inv)
                     @php
                         $dueDate = \Carbon\Carbon::parse($inv['DueDate']);
-                        $isPaid = $inv['Balance'] <= 0;
+                        $payableBalance = $inv['PayableBalance'] ?? $inv['Balance'];
+                        $isPaid = $payableBalance <= 0;
                         $isOverdue = !$isPaid && $dueDate->isPast() && !$dueDate->isToday();
                     @endphp
                     <tr>
@@ -34,7 +35,7 @@
                             @endif
                         </td>
                         <td class="text-end">${{ number_format($inv['TotalAmt'], 2) }}</td>
-                        <td class="text-end fw-bold">${{ number_format($inv['Balance'], 2) }}</td>
+                        <td class="text-end fw-bold">${{ number_format($payableBalance, 2) }}</td>
                         <td class="text-end">
                             @if(!$isPaid)
                                 <button type="button" class="btn btn-sm btn-primary py-0 px-2 fw-bold"

@@ -181,7 +181,7 @@
                                         </div>
                                         <div class="d-flex justify-content-between mb-3 pb-3 border-bottom">
                                             <span class="text-muted small">Estimated Tax</span>
-                                            <span class="fw-bold text-dark">$0.00</span>
+                                            <span class="fw-bold text-dark">${{ number_format($order->sales_tax, 2) }}</span>
                                         </div>
                                         <div class="d-flex justify-content-between align-items-center">
                                             <span class="fw-bold text-dark h5 mb-0 font-ubuntu">Order Total</span>

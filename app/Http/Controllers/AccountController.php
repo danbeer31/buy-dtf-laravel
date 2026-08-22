@@ -121,6 +121,13 @@ class AccountController extends Controller
         $qboBalance = $qboData['balance'] ?? 0;
         $unpaidInvoices = $qboData['unpaid_invoices'] ?? [];
         $invoiceHistory = $qboData['invoice_history'] ?? [];
+        $payableBalance = array_sum(array_map(function ($invoice) {
+            return (float)($invoice['PayableBalance'] ?? $invoice['Balance'] ?? 0);
+        }, $unpaidInvoices));
+
+        if ($payableBalance > $qboBalance) {
+            $qboBalance = $payableBalance;
+        }
 
         if ($request->expectsJson()) {
             return response()->json([
