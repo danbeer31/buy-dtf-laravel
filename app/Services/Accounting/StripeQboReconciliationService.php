@@ -53,6 +53,14 @@ class StripeQboReconciliationService
         ];
 
         try {
+            if ($businessId) {
+                throw new \RuntimeException('Business-scoped reconciliation is not supported for Buy-DTF because Stripe/QBO holding is a single global accounting connection.');
+            }
+
+            if ($asOfDate) {
+                throw new \RuntimeException('As-of-date reconciliation is not supported because the QBO account balance helper returns the current balance only.');
+            }
+
             $components = $this->buildExpectedComponents($businessId, $asOfDate);
             $expectedCents = $components['expected_holding_amount_cents'];
 
@@ -118,12 +126,10 @@ class StripeQboReconciliationService
         $adjustmentQ = StripePayoutEntry::query()
             ->whereNotIn('type', ['charge', 'payment', 'refund', 'payout', 'stripe_fee', 'application_fee']);
 
-        // Only include payouts that have a confirmed QBO transfer link.
-        // This prevents expected-holding drift when a payout is marked paid locally
-        // but its transfer was never persisted (or was later disconnected).
+        // Include all paid payouts in expected holding. If a QBO transfer is missing,
+        // the reconciliation should mismatch so the missing transfer is visible.
         $transferQ = StripePayout::query()
-            ->where('status', 'paid')
-            ->whereNotNull('qbo_transfer_id');
+            ->where('status', 'paid');
 
         $unsyncedTransferQ = StripePayout::query()
             ->where('status', 'paid')
@@ -172,7 +178,8 @@ class StripeQboReconciliationService
                     'fee_rows' => (clone $feeQ)->count(),
                     'refund_rows' => (clone $refundQ)->count(),
                     'adjustment_rows' => (clone $adjustmentQ)->count(),
-                    'paid_payout_rows_synced' => (clone $transferQ)->count(),
+                    'paid_payout_rows' => (clone $transferQ)->count(),
+                    'paid_payout_rows_synced' => (clone $transferQ)->whereNotNull('qbo_transfer_id')->count(),
                     'paid_payout_rows_unsynced' => (clone $unsyncedTransferQ)->count(),
                 ],
                 'unsynced_paid_payouts_cents' => $unsyncedTransfersCents,

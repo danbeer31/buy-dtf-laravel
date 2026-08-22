@@ -26,11 +26,11 @@
                         <div class="col-md-6 d-flex gap-2">
                             <button type="submit" class="btn btn-primary">Filter</button>
                             <a href="{{ route('admin.payments.reconciliation.index') }}" class="btn btn-outline-secondary">Reset</a>
-                            <form method="POST" action="{{ route('admin.payments.reconciliation.rerun') }}" class="ms-auto">
-                                @csrf
-                                <button type="submit" class="btn btn-outline-primary">Run Global Check</button>
-                            </form>
                         </div>
+                    </form>
+                    <form method="POST" action="{{ route('admin.payments.reconciliation.rerun') }}" class="mt-3 text-end">
+                        @csrf
+                        <button type="submit" class="btn btn-outline-primary">Run Global Check</button>
                     </form>
                 </div>
             </div>
@@ -109,4 +109,3 @@
         </div>
     </div>
 </x-app-layout>
-

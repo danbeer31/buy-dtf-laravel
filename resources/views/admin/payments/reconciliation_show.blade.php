@@ -92,7 +92,7 @@
                 <div class="alert alert-warning">
                     <strong>Unsynced paid payouts detected:</strong>
                     {{ $unsyncedPaidPayoutRows }} row(s), {{ $unsyncedPaidPayoutsCents }} cents.
-                    These are excluded from expected payout transfers until they have a QBO transfer ID.
+                    These are included in expected payout transfers and should create a mismatch until the QBO transfer ID is present.
                 </div>
             @endif
 
