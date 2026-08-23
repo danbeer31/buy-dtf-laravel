@@ -32,6 +32,7 @@ abstract class TestCase extends BaseTestCase
     {
         parent::setUp();
 
+        $this->withoutVite();
         IsolatedTestDatabase::rebuild($this->app);
         Http::preventStrayRequests();
     }
