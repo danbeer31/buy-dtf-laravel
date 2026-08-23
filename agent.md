@@ -8,12 +8,13 @@
 - Legacy context: mixed Laravel + FuelPHP-era schema/logic patterns are still present.
 
 ## Local Runbook
-- Environment requirement: run `php artisan` and MySQL-related commands in WSL (not native Windows shell).
+- Environment requirement: run application `php artisan` and MySQL-related commands in WSL (not native Windows shell). Run the isolated test suite with a PHP build that has `mbstring`, `pdo_sqlite`, and `sqlite3`.
 - Install: `composer install` and `npm install`
 - Env: copy `.env.example` to `.env`, set app key with `php artisan key:generate`
 - Migrate: `php artisan migrate`
 - Run app stack: `composer run dev` 
 - Build assets: `npm run build`
+- Tests: `composer test` (or `php vendor/bin/phpunit` when Composer is unavailable). Both invoke PHPUnit directly so the fail-closed test bootstrap runs before Laravel. Do not substitute `php artisan test`.
 
 ## Production Server
 - Production URL: `https://buy-dtf.com`
@@ -53,8 +54,9 @@
   - SQL dumps, logs, result files, and backup files
 
 ## Test Status Notes
-- `php artisan test` currently fails in this environment because PHP `mbstring` is missing.
-- Install/enable required PHP extensions before relying on test results.
+- Tests require `mbstring`, `pdo_sqlite`, and `sqlite3`; they abort rather than falling back to a MySQL/Fuel connection when SQLite is unavailable.
+- The current WSL PHP build lacks `pdo_sqlite`. Enable it there or use a compatible native PHP build for `composer test`.
+- The test harness maps every Laravel/Fuel-era connection alias to one isolated in-memory SQLite database and blocks inherited network database settings.
 
 ## Architecture Notes
 - Web routes: `routes/web.php`

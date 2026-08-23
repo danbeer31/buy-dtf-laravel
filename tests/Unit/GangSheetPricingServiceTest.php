@@ -10,14 +10,14 @@ class GangSheetPricingServiceTest extends TestCase
 {
     public function test_non_22x96_uses_fixed_price(): void
     {
-        $svc = new GangSheetPricingService();
+        $svc = new GangSheetPricingService;
         $this->assertSame(22.0, $svc->unitPrice('22x36', 1));
         $this->assertSame(22.0, $svc->unitPrice('22x36', 50));
     }
 
     public function test_22x96_tiers_are_applied(): void
     {
-        $svc = new GangSheetPricingService();
+        $svc = new GangSheetPricingService;
         $this->assertSame(55.0, $svc->unitPrice('22x96', 1));
         $this->assertSame(55.0, $svc->unitPrice('22x96', 2));
         $this->assertSame(52.0, $svc->unitPrice('22x96', 3));
@@ -30,7 +30,19 @@ class GangSheetPricingServiceTest extends TestCase
     public function test_invalid_size_throws(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        (new GangSheetPricingService())->unitPrice('24x24', 1);
+        (new GangSheetPricingService)->unitPrice('24x24', 1);
+    }
+
+    public function test_supported_sizes_preserve_their_print_dimensions_and_base_prices(): void
+    {
+        $this->assertSame([
+            '22x24' => ['width' => 22.0, 'length' => 24.0, 'base_price' => 15.0],
+            '22x36' => ['width' => 22.0, 'length' => 36.0, 'base_price' => 22.0],
+            '22x48' => ['width' => 22.0, 'length' => 48.0, 'base_price' => 29.0],
+            '22x60' => ['width' => 22.0, 'length' => 60.0, 'base_price' => 36.0],
+            '22x72' => ['width' => 22.0, 'length' => 72.0, 'base_price' => 42.0],
+            '22x84' => ['width' => 22.0, 'length' => 84.0, 'base_price' => 48.0],
+            '22x96' => ['width' => 22.0, 'length' => 96.0, 'base_price' => 55.0],
+        ], (new GangSheetPricingService)->sizes());
     }
 }
-
