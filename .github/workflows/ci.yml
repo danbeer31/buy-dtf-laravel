@@ -44,7 +44,24 @@ jobs:
           dependency-versions: locked
 
       - name: Run isolated Laravel tests
-        run: php vendor/bin/phpunit --colors=never
+        shell: bash
+        run: |
+          set -o pipefail
+          php vendor/bin/phpunit --colors=never 2>&1 | tee "$RUNNER_TEMP/phpunit.log"
+
+      - name: Surface PHPUnit failure
+        if: failure()
+        shell: bash
+        run: |
+          if [[ ! -f "$RUNNER_TEMP/phpunit.log" ]]; then
+            exit 0
+          fi
+
+          details="$(tail -n 100 "$RUNNER_TEMP/phpunit.log")"
+          details="${details//'%'/'%25'}"
+          details="${details//$'\r'/'%0D'}"
+          details="${details//$'\n'/'%0A'}"
+          echo "::error file=phpunit.xml,line=1,title=PHPUnit failed::$details"
 
   frontend-build:
     name: Production frontend build (Node 22)
