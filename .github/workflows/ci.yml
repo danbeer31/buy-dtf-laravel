@@ -38,6 +38,9 @@ jobs:
           extensions: mbstring, pdo_sqlite, sqlite3
           coverage: none
 
+      - name: Audit locked PHP dependencies
+        run: composer audit --locked --no-interaction
+
       - name: Install locked PHP dependencies
         uses: ramsey/composer-install@v3
         with:
