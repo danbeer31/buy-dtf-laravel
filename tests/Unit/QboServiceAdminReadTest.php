@@ -45,7 +45,7 @@ class QboServiceAdminReadTest extends TestCase
         $invoices = $service->getAdminRecentInvoices();
 
         $this->assertSame(107.0, $invoices[0]['PayableBalance']);
-        $this->assertStringContainsString('MAXRESULTS 1000', $service->calls[0]['data']['query']);
+        $this->assertStringContainsString('MAXRESULTS 500', $service->calls[0]['data']['query']);
     }
 
     public function test_http_errors_fail_the_refresh_instead_of_replacing_stale_data(): void

@@ -176,8 +176,9 @@ class QboService
      *
      * @return array<int, array<string, mixed>>
      */
-    public function getAdminRecentInvoices(int $limit = 1000): array
+    public function getAdminRecentInvoices(?int $limit = null): array
     {
+        $limit ??= (int) config('services.qbo.admin_invoice_limit', 500);
         $limit = max(1, min(1000, $limit));
         $query = "SELECT * FROM Invoice ORDERBY TxnDate DESC MAXRESULTS {$limit}";
         $result = $this->request(
