@@ -4,9 +4,10 @@ namespace App\Services;
 
 use App\Models\QboToken;
 use App\Models\Setting;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Http;
+use Illuminate\Contracts\Cache\LockTimeoutException;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class QboService
 {
@@ -35,7 +36,26 @@ class QboService
         }
 
         if ($qboToken->isAccessTokenExpired()) {
-            $qboToken = $this->refreshTokens($qboToken);
+            try {
+                $qboToken = Cache::lock(
+                    'qbo:token-refresh',
+                    max(1, (int) config('services.qbo.token_lock_seconds', 30))
+                )->block(
+                    max(1, (int) config('services.qbo.token_lock_wait', 10)),
+                    function () {
+                        $currentToken = QboToken::getTokenRecord();
+                        if (!$currentToken) {
+                            throw new \RuntimeException('No QBO tokens found while waiting for the refresh lock.');
+                        }
+
+                        return $currentToken->isAccessTokenExpired()
+                            ? $this->refreshTokens($currentToken)
+                            : $currentToken;
+                    }
+                );
+            } catch (LockTimeoutException $e) {
+                throw new \RuntimeException('Timed out waiting for another QBO token refresh.', 0, $e);
+            }
         }
 
         $this->accessToken = $qboToken->access_token;
@@ -48,13 +68,16 @@ class QboService
     {
         Log::info('Refreshing QBO tokens...');
 
-        $response = Http::asForm()->withHeaders([
-            'Authorization' => 'Basic ' . base64_encode($this->clientId . ':' . $this->clientSecret),
-            'Accept' => 'application/json',
-        ])->post('https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer', [
-            'grant_type' => 'refresh_token',
-            'refresh_token' => $qboToken->refresh_token,
-        ]);
+        $response = Http::connectTimeout(max(1, (int) config('services.qbo.connect_timeout', 3)))
+            ->timeout(max(1, (int) config('services.qbo.token_refresh_timeout', 15)))
+            ->asForm()
+            ->withHeaders([
+                'Authorization' => 'Basic ' . base64_encode($this->clientId . ':' . $this->clientSecret),
+                'Accept' => 'application/json',
+            ])->post('https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer', [
+                'grant_type' => 'refresh_token',
+                'refresh_token' => $qboToken->refresh_token,
+            ]);
 
         if ($response->failed()) {
             Log::error('Failed to refresh QBO tokens: ' . $response->body());
@@ -73,17 +96,19 @@ class QboService
         return $qboToken;
     }
 
-    public function request($method, $endpoint, $data = [])
+    public function request($method, $endpoint, $data = [], ?int $timeoutSeconds = null)
     {
         $this->init();
 
         $url = $this->baseUrl . $this->realmId . '/' . $endpoint;
 
-        $request = Http::withHeaders([
-            'Authorization' => 'Bearer ' . $this->accessToken,
-            'Accept' => 'application/json',
-            'Content-Type' => 'application/json',
-        ]);
+        $request = Http::connectTimeout(max(1, (int) config('services.qbo.connect_timeout', 3)))
+            ->timeout($timeoutSeconds ?? max(1, (int) config('services.qbo.request_timeout', 30)))
+            ->withHeaders([
+                'Authorization' => 'Bearer ' . $this->accessToken,
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/json',
+            ]);
 
         if ($method === 'GET') {
             $response = $request->get($url, $data);
@@ -102,6 +127,67 @@ class QboService
         }
 
         return $response->json();
+    }
+
+    /**
+     * Fetch all QBO customer balances for the admin snapshot refresh.
+     *
+     * @return array<string, float>
+     */
+    public function getAdminCustomerBalances(): array
+    {
+        $result = $this->request(
+            'GET',
+            'query',
+            ['query' => 'SELECT * FROM Customer MAXRESULTS 1000'],
+            max(1, (int) config('services.qbo.admin_read_timeout', 8))
+        );
+
+        $this->throwForAdminReadError($result, 'customer balances');
+
+        $balances = [];
+        foreach ($result['QueryResponse']['Customer'] ?? [] as $customer) {
+            if (isset($customer['Id'])) {
+                $balances[(string) $customer['Id']] = (float) ($customer['Balance'] ?? 0);
+            }
+        }
+
+        return $balances;
+    }
+
+    /**
+     * Fetch recent QBO invoices once, then group them locally by business.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    public function getAdminRecentInvoices(int $limit = 1000): array
+    {
+        $limit = max(1, min(1000, $limit));
+        $query = "SELECT * FROM Invoice ORDERBY TxnDate DESC MAXRESULTS {$limit}";
+        $result = $this->request(
+            'GET',
+            'query',
+            ['query' => $query],
+            max(1, (int) config('services.qbo.admin_read_timeout', 8))
+        );
+
+        $this->throwForAdminReadError($result, 'invoice history');
+
+        return array_map(function (array $invoice) {
+            $invoice['PayableBalance'] = $this->getInvoicePayableBalance($invoice);
+
+            return $invoice;
+        }, $result['QueryResponse']['Invoice'] ?? []);
+    }
+
+    private function throwForAdminReadError(array $result, string $resource): void
+    {
+        if (!isset($result['error'])) {
+            return;
+        }
+
+        $status = (int) ($result['status'] ?? 0);
+        throw new \RuntimeException("QBO admin read failed for {$resource} (HTTP {$status}).");
     }
 
     public function findOrCreateCustomer($business)

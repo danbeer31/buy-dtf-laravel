@@ -91,11 +91,24 @@
                     <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
                         <div>
                             <h6 class="text-uppercase text-muted fw-bold mb-1">Who Owes Money</h6>
-                            <div class="small text-muted">{{ $owedBusinessesCount ?? 0 }} businesses with an outstanding balance</div>
+                            <div class="small text-muted">
+                                {{ $qboSnapshotCount ?? 0 }} balances checked; {{ $owedBusinessesCount ?? 0 }} with an outstanding balance
+                            </div>
+                            @if(!empty($qboSnapshotStatus['last_success_at']))
+                                <div class="small {{ ($qboSnapshotStatus['state'] ?? null) === 'ok' ? 'text-success' : 'text-warning' }} mt-1">
+                                    <i class="bi bi-clock-history me-1"></i>{{ ($qboSnapshotStatus['state'] ?? null) === 'ok' ? 'QuickBooks updated' : 'QuickBooks refresh delayed; last updated' }} {{ \Carbon\Carbon::parse($qboSnapshotStatus['last_success_at'])->diffForHumans() }}
+                                </div>
+                            @elseif(($qboSnapshotStatus['state'] ?? 'never') !== 'never')
+                                <div class="small text-warning mt-1"><i class="bi bi-exclamation-triangle me-1"></i>QuickBooks data refresh pending</div>
+                            @endif
                         </div>
                         <div class="text-end">
                             <div class="small text-muted text-uppercase fw-bold">Total Owed</div>
-                            <div class="fs-4 fw-bold">${{ number_format($totalOwed ?? 0, 2) }}</div>
+                            @if(($qboSnapshotCount ?? 0) > 0)
+                                <div class="fs-4 fw-bold">${{ number_format($totalOwed ?? 0, 2) }}</div>
+                            @else
+                                <div class="fs-6 fw-bold text-muted">Unavailable</div>
+                            @endif
                         </div>
                     </div>
 
@@ -118,8 +131,10 @@
                                 </tbody>
                             </table>
                         </div>
-                    @else
+                    @elseif(($qboSnapshotCount ?? 0) > 0)
                         <div class="alert alert-success mb-0">No outstanding business balances.</div>
+                    @else
+                        <div class="alert alert-warning mb-0">QuickBooks balances are temporarily unavailable.</div>
                     @endif
                 </div>
             </div>

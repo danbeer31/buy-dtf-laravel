@@ -10,3 +10,7 @@ Artisan::command('inspire', function () {
 
 Schedule::command('stripe:sync-payouts')->hourly();
 Schedule::command('accounting:reconcile-stripe-holding')->dailyAt('01:30');
+Schedule::command('qbo:refresh-admin-cache')
+    ->everyTenMinutes()
+    ->withoutOverlapping(15)
+    ->runInBackground();

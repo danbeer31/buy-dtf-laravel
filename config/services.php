@@ -78,6 +78,13 @@ return [
         'client_secret' => env('QBO_CLIENT_SECRET'),
         'environment' => env('QBO_ENVIRONMENT', 'Development'),
         'redirect_uri' => env('QBO_REDIRECT_URI'),
+        'connect_timeout' => (int) env('QBO_CONNECT_TIMEOUT', 3),
+        'request_timeout' => (int) env('QBO_REQUEST_TIMEOUT', 30),
+        'admin_read_timeout' => (int) env('QBO_ADMIN_READ_TIMEOUT', 8),
+        'admin_circuit_seconds' => (int) env('QBO_ADMIN_CIRCUIT_SECONDS', 300),
+        'token_refresh_timeout' => (int) env('QBO_TOKEN_REFRESH_TIMEOUT', 15),
+        'token_lock_seconds' => (int) env('QBO_TOKEN_LOCK_SECONDS', 30),
+        'token_lock_wait' => (int) env('QBO_TOKEN_LOCK_WAIT', 10),
     ],
 
     'dropbox' => [

@@ -49,6 +49,15 @@
             <!-- Orders Table Card -->
             <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
                 <div class="card-body p-0">
+                    @if(!empty($qboSnapshotStatus['last_success_at']))
+                        <div class="px-4 py-2 border-bottom small {{ ($qboSnapshotStatus['state'] ?? null) === 'ok' ? 'text-muted' : 'text-warning' }}">
+                            <i class="bi bi-clock-history me-1"></i>{{ ($qboSnapshotStatus['state'] ?? null) === 'ok' ? 'QuickBooks updated' : 'QuickBooks refresh delayed; last updated' }} {{ \Carbon\Carbon::parse($qboSnapshotStatus['last_success_at'])->diffForHumans() }}
+                        </div>
+                    @elseif(($qboSnapshotStatus['state'] ?? 'never') !== 'never')
+                        <div class="px-4 py-2 border-bottom small text-warning">
+                            <i class="bi bi-exclamation-triangle me-1"></i>QuickBooks data refresh pending
+                        </div>
+                    @endif
                     <div class="table-responsive">
                         <table class="table align-middle mb-0">
                             <thead class="bg-light">
@@ -76,8 +85,8 @@
                                                     ? $businessQboMap['doc_' . $order->qbo_invoice_number]
                                                     : null
                                             );
-                                        $qboPaid = $qboInvoice ? ((float)($qboInvoice['Balance'] ?? 0) <= 0) : null;
-                                        $isPaid = $qboPaid ?? $order->isPaid();
+                                        $qboPaid = $qboInvoice ? ((float)($qboInvoice['Balance'] ?? 0) <= 0) : false;
+                                        $isPaid = $order->isPaid() || $qboPaid;
                                     @endphp
                                     <tr class="hover-bg-light transition">
                                         <td class="ps-4 py-3 fw-bold">#{{ $order->id }}</td>

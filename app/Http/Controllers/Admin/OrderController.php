@@ -6,9 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\DtfImage;
 use App\Models\DtfOrder;
 use App\Models\OrderStatus;
+use App\Services\QboAdminSnapshotStore;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
@@ -21,7 +21,7 @@ class OrderController extends Controller
         return (int)$order->status === 1 && empty($order->qbo_invoice_id);
     }
 
-    public function index(Request $request)
+    public function index(Request $request, QboAdminSnapshotStore $qboSnapshots)
     {
         $query = DtfOrder::with(['business', 'orderStatus', 'paymentInfo']);
 
@@ -62,8 +62,8 @@ class OrderController extends Controller
                 continue;
             }
 
-            $cacheKey = 'admin_qbo_invoice_history_' . $business->id;
-            $invoiceHistory = Cache::get($cacheKey, []);
+            $snapshot = $qboSnapshots->get((int) $business->id);
+            $invoiceHistory = is_array($snapshot) ? (array) ($snapshot['invoices'] ?? []) : [];
 
             $map = [];
             foreach ((array)$invoiceHistory as $inv) {
@@ -77,7 +77,9 @@ class OrderController extends Controller
             $qboInvoicesMapByBusiness[$business->id] = $map;
         }
 
-        return view('admin.orders.index', compact('orders', 'orderStatuses', 'qboInvoicesMapByBusiness'));
+        $qboSnapshotStatus = $qboSnapshots->status();
+
+        return view('admin.orders.index', compact('orders', 'orderStatuses', 'qboInvoicesMapByBusiness', 'qboSnapshotStatus'));
     }
 
     public function production(Request $request)

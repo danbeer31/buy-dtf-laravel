@@ -6,13 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Models\AccountingReconciliationCheck;
 use App\Models\Business;
 use App\Models\DtfOrder;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Cache;
+use App\Services\QboAdminSnapshotStore;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(QboAdminSnapshotStore $qboSnapshots)
     {
         $salesTimezone = (string) config('app.timezone', 'America/Chicago');
         $now = Carbon::now($salesTimezone);
@@ -143,6 +143,7 @@ class DashboardController extends Controller
         $businessesWhoOwe = [];
         $totalOwed = 0.0;
         $owedBusinessesCount = 0;
+        $qboSnapshotCount = 0;
 
         $businesses = Business::query()
             ->select(['id', 'business_name', 'qbo_customer_id'])
@@ -152,14 +153,13 @@ class DashboardController extends Controller
             ->get();
 
         foreach ($businesses as $business) {
-            $cacheKey = 'qbo_data_' . $business->id;
-            $qboData = Cache::get($cacheKey);
-
-            if (!is_array($qboData) || !array_key_exists('balance', $qboData)) {
+            $snapshot = $qboSnapshots->get((int) $business->id);
+            if (! is_array($snapshot) || ! is_numeric($snapshot['balance'] ?? null)) {
                 continue;
             }
 
-            $balance = (float) ($qboData['balance'] ?? 0);
+            $qboSnapshotCount++;
+            $balance = (float) $snapshot['balance'];
             if ($balance > 0) {
                 $owedBusinessesCount++;
                 $totalOwed += $balance;
@@ -172,6 +172,7 @@ class DashboardController extends Controller
         }
 
         usort($businessesWhoOwe, fn (array $a, array $b) => $b['balance'] <=> $a['balance']);
+        $qboSnapshotStatus = $qboSnapshots->status();
 
         return view('admin.dashboard', compact(
             'weeklyData',
@@ -182,7 +183,9 @@ class DashboardController extends Controller
             'salesSummary',
             'businessesWhoOwe',
             'owedBusinessesCount',
-            'totalOwed'
+            'totalOwed',
+            'qboSnapshotCount',
+            'qboSnapshotStatus'
         ));
     }
 }
