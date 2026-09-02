@@ -6,15 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Models\AccountingReconciliationCheck;
 use App\Models\Business;
 use App\Models\DtfOrder;
-use App\Services\QboService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
-    public function index(QboService $qbo)
+    public function index()
     {
         $salesTimezone = (string) config('app.timezone', 'America/Chicago');
         $now = Carbon::now($salesTimezone);
@@ -158,15 +156,7 @@ class DashboardController extends Controller
             $qboData = Cache::get($cacheKey);
 
             if (!is_array($qboData) || !array_key_exists('balance', $qboData)) {
-                try {
-                    $qboData = [
-                        'balance' => $qbo->getCustomerBalance($business->qbo_customer_id),
-                    ];
-                    Cache::put($cacheKey, $qboData, 600);
-                } catch (\Throwable $e) {
-                    Log::warning("Admin dashboard: failed to fetch QBO balance for business {$business->id}: " . $e->getMessage());
-                    continue;
-                }
+                continue;
             }
 
             $balance = (float) ($qboData['balance'] ?? 0);

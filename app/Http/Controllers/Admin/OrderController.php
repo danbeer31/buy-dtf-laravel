@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\DtfImage;
 use App\Models\DtfOrder;
 use App\Models\OrderStatus;
-use App\Services\QboService;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -22,7 +21,7 @@ class OrderController extends Controller
         return (int)$order->status === 1 && empty($order->qbo_invoice_id);
     }
 
-    public function index(Request $request, QboService $qbo)
+    public function index(Request $request)
     {
         $query = DtfOrder::with(['business', 'orderStatus', 'paymentInfo']);
 
@@ -64,17 +63,7 @@ class OrderController extends Controller
             }
 
             $cacheKey = 'admin_qbo_invoice_history_' . $business->id;
-            $invoiceHistory = Cache::remember($cacheKey, 600, function () use ($qbo, $business) {
-                try {
-                    return $qbo->getInvoiceHistory($business->qbo_customer_id);
-                } catch (\Throwable $e) {
-                    \Illuminate\Support\Facades\Log::warning('Admin orders: failed QBO invoice history fetch', [
-                        'business_id' => $business->id,
-                        'error' => $e->getMessage(),
-                    ]);
-                    return [];
-                }
-            });
+            $invoiceHistory = Cache::get($cacheKey, []);
 
             $map = [];
             foreach ((array)$invoiceHistory as $inv) {
