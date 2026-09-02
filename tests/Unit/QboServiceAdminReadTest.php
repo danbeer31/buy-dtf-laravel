@@ -48,6 +48,30 @@ class QboServiceAdminReadTest extends TestCase
         $this->assertStringContainsString('MAXRESULTS 500', $service->calls[0]['data']['query']);
     }
 
+    public function test_open_invoices_are_filtered_and_normalized_for_admin_balances(): void
+    {
+        config(['services.qbo.admin_read_timeout' => 8]);
+        $service = $this->serviceWithResponses([
+            [
+                'QueryResponse' => [
+                    'Invoice' => [[
+                        'Id' => 'invoice-1',
+                        'Balance' => 100,
+                        'TotalAmt' => 107,
+                        'TxnTaxDetail' => ['TotalTax' => 7],
+                    ]],
+                ],
+            ],
+        ]);
+
+        $invoices = $service->getAdminOpenInvoices();
+
+        $this->assertSame(107.0, $invoices[0]['PayableBalance']);
+        $this->assertStringContainsString("WHERE Balance > '0'", $service->calls[0]['data']['query']);
+        $this->assertStringContainsString('MAXRESULTS 1000', $service->calls[0]['data']['query']);
+        $this->assertSame(8, $service->calls[0]['timeout']);
+    }
+
     public function test_http_errors_fail_the_refresh_instead_of_replacing_stale_data(): void
     {
         $service = $this->serviceWithResponses([

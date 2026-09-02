@@ -11,7 +11,7 @@ class RefreshQboAdminSnapshots extends Command
 {
     protected $signature = 'qbo:refresh-admin-cache {--status : Show the current refresh status}';
 
-    protected $description = 'Refresh cached QBO balances and invoice history used by admin pages';
+    protected $description = 'Refresh cached QBO open invoice balances and invoice history used by admin pages';
 
     public function handle(QboAdminSnapshotRefresher $refresher, QboAdminSnapshotStore $store): int
     {

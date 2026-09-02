@@ -92,7 +92,7 @@
                         <div>
                             <h6 class="text-uppercase text-muted fw-bold mb-1">Who Owes Money</h6>
                             <div class="small text-muted">
-                                {{ $qboSnapshotCount ?? 0 }} balances checked; {{ $owedBusinessesCount ?? 0 }} with an outstanding balance
+                                {{ $qboSnapshotCount ?? 0 }} businesses checked; {{ $owedBusinessesCount ?? 0 }} with open invoices
                             </div>
                             @if(!empty($qboSnapshotStatus['last_success_at']))
                                 <div class="small {{ ($qboSnapshotStatus['state'] ?? null) === 'ok' ? 'text-success' : 'text-warning' }} mt-1">
@@ -103,7 +103,7 @@
                             @endif
                         </div>
                         <div class="text-end">
-                            <div class="small text-muted text-uppercase fw-bold">Total Owed</div>
+                            <div class="small text-muted text-uppercase fw-bold">Total Open Invoices</div>
                             @if(($qboSnapshotCount ?? 0) > 0)
                                 <div class="fs-4 fw-bold">${{ number_format($totalOwed ?? 0, 2) }}</div>
                             @else
@@ -118,7 +118,7 @@
                                 <thead>
                                     <tr>
                                         <th>Business</th>
-                                        <th class="text-end">Balance Owed</th>
+                                        <th class="text-end">Open Invoice Balance</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -132,7 +132,7 @@
                             </table>
                         </div>
                     @elseif(($qboSnapshotCount ?? 0) > 0)
-                        <div class="alert alert-success mb-0">No outstanding business balances.</div>
+                        <div class="alert alert-success mb-0">No open business invoices.</div>
                     @else
                         <div class="alert alert-warning mb-0">QuickBooks balances are temporarily unavailable.</div>
                     @endif

@@ -172,6 +172,29 @@ class QboService
     }
 
     /**
+     * Fetch all open QBO invoices used to calculate admin outstanding balances.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    public function getAdminOpenInvoices(): array
+    {
+        $result = $this->request(
+            'GET',
+            'query',
+            ['query' => "SELECT * FROM Invoice WHERE Balance > '0' ORDERBY TxnDate DESC MAXRESULTS 1000"],
+            max(1, (int) config('services.qbo.admin_read_timeout', 8))
+        );
+
+        $this->throwForAdminReadError($result, 'open invoices');
+
+        return array_map(function (array $invoice) {
+            $invoice['PayableBalance'] = $this->getInvoicePayableBalance($invoice);
+
+            return $invoice;
+        }, $result['QueryResponse']['Invoice'] ?? []);
+    }
+
+    /**
      * Fetch recent QBO invoices once, then group them locally by business.
      *
      * @return array<int, array<string, mixed>>

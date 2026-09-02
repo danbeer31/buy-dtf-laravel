@@ -24,7 +24,11 @@ class QboAdminSnapshotRefresherTest extends TestCase
     public function test_a_successful_refresh_stores_business_snapshots(): void
     {
         $qbo = Mockery::mock(QboService::class);
-        $qbo->shouldReceive('getAdminCustomerBalances')->once()->andReturn(['101' => 88.50]);
+        $qbo->shouldReceive('getAdminOpenInvoices')->once()->andReturn([[
+            'Id' => 'open-invoice-1',
+            'CustomerRef' => ['value' => '101'],
+            'PayableBalance' => 88.50,
+        ]]);
         $qbo->shouldReceive('getAdminRecentInvoices')->once()->andReturn([[
             'Id' => 'invoice-1',
             'CustomerRef' => ['value' => '101'],
@@ -37,6 +41,7 @@ class QboAdminSnapshotRefresherTest extends TestCase
         $result = $refresher->refresh();
 
         $this->assertSame('ok', $result['status']);
+        $this->assertSame(1, $result['open_invoice_count']);
         $this->assertSame(88.50, $store->get(5)['balance']);
         $this->assertSame('invoice-1', $store->get(5)['invoices'][0]['Id']);
         $this->assertSame('ok', $store->status()['state']);
@@ -45,7 +50,7 @@ class QboAdminSnapshotRefresherTest extends TestCase
     public function test_an_outage_opens_the_circuit_and_preserves_stale_data(): void
     {
         $qbo = Mockery::mock(QboService::class);
-        $qbo->shouldReceive('getAdminCustomerBalances')->once()->andThrow(new RuntimeException('QBO timed out'));
+        $qbo->shouldReceive('getAdminOpenInvoices')->once()->andThrow(new RuntimeException('QBO timed out'));
         $qbo->shouldNotReceive('getAdminRecentInvoices');
         $store = new QboAdminSnapshotStore;
         $staleSnapshot = [
@@ -74,7 +79,7 @@ class QboAdminSnapshotRefresherTest extends TestCase
     public function test_an_open_circuit_skips_qbo_calls(): void
     {
         $qbo = Mockery::mock(QboService::class);
-        $qbo->shouldNotReceive('getAdminCustomerBalances');
+        $qbo->shouldNotReceive('getAdminOpenInvoices');
         $qbo->shouldNotReceive('getAdminRecentInvoices');
         $store = new QboAdminSnapshotStore;
         $breaker = new QboAdminReadCircuitBreaker;

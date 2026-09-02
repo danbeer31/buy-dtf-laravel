@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Models\Business;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
-use RuntimeException;
 use Throwable;
 
 class QboAdminSnapshotRefresher
@@ -46,15 +45,11 @@ class QboAdminSnapshotRefresher
         }
 
         try {
-            $balances = $this->qbo->getAdminCustomerBalances();
-            if ($balances === []) {
-                throw new RuntimeException('QBO returned no customers for linked admin businesses.');
-            }
-
+            $openInvoices = $this->qbo->getAdminOpenInvoices();
             $invoices = $this->qbo->getAdminRecentInvoices();
-            $snapshots = $this->builder->build($businesses, $balances, $invoices, now());
+            $snapshots = $this->builder->build($businesses, $openInvoices, $invoices, now());
             if ($snapshots === []) {
-                throw new RuntimeException('QBO returned no matching customers for linked admin businesses.');
+                throw new \RuntimeException('No valid QBO-linked admin businesses were available for snapshots.');
             }
 
             foreach ($snapshots as $businessId => $snapshot) {
@@ -67,6 +62,7 @@ class QboAdminSnapshotRefresher
             Log::info('QBO admin snapshots refreshed', [
                 'linked_businesses' => $businesses->count(),
                 'updated_businesses' => count($snapshots),
+                'open_invoice_count' => count($openInvoices),
                 'invoice_count' => count($invoices),
             ]);
 
@@ -74,6 +70,7 @@ class QboAdminSnapshotRefresher
                 'status' => 'ok',
                 'linked_businesses' => $businesses->count(),
                 'updated_businesses' => count($snapshots),
+                'open_invoice_count' => count($openInvoices),
                 'invoice_count' => count($invoices),
             ];
         } catch (Throwable $exception) {
