@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use App\Services\QboService;
+use Illuminate\Support\Facades\Http;
 use RuntimeException;
 use Tests\TestCase;
 
@@ -57,6 +58,26 @@ class QboServiceAdminReadTest extends TestCase
         $this->expectExceptionMessage('HTTP 503');
 
         $service->getAdminCustomerBalances();
+    }
+
+    public function test_qbo_writes_are_blocked_before_token_or_http_work(): void
+    {
+        config(['services.qbo.pause_writes' => true]);
+        Http::fake();
+
+        $caught = null;
+        try {
+            (new QboService)->request('POST', 'invoice', ['DocNumber' => 'test']);
+        } catch (RuntimeException $exception) {
+            $caught = $exception;
+        }
+
+        $this->assertInstanceOf(RuntimeException::class, $caught);
+        $this->assertSame(
+            'QuickBooks writes are temporarily paused while QBO is unavailable.',
+            $caught->getMessage()
+        );
+        Http::assertNothingSent();
     }
 
     private function serviceWithResponses(array $responses): QboService

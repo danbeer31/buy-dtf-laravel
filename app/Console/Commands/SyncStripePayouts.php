@@ -38,7 +38,12 @@ class SyncStripePayouts extends Command
             $payoutService->syncPayouts($limit);
 
             $payoutSyncCount = 0;
-            if (QboToken::getTokenRecord()) {
+            $qboWritesPaused = $qbo->writesPaused();
+
+            if ($qboWritesPaused) {
+                $this->warn('QBO writes are paused. Stripe payouts were imported; QBO transfers were skipped.');
+                Log::warning('Stripe payout sync skipped QBO transfers because QBO writes are paused.');
+            } elseif (QboToken::getTokenRecord()) {
                 $recentPayouts = StripePayout::whereNull('qbo_transfer_id')
                     ->where('status', 'paid')
                     ->where('arrival_date', '>=', now()->subDays(30))
@@ -62,8 +67,9 @@ class SyncStripePayouts extends Command
                 $this->warn("QBO not connected. Skipping QBO sync.");
             }
 
-            StripeSyncLog::log('cron', 'success', "Synced Stripe payouts (limit {$limit}). Created {$payoutSyncCount} Transfers.");
-            $this->info("Stripe payout sync completed. Created {$payoutSyncCount} Transfers.");
+            $pauseSummary = $qboWritesPaused ? ' QBO writes paused; transfers skipped.' : '';
+            StripeSyncLog::log('cron', 'success', "Synced Stripe payouts (limit {$limit}). Created {$payoutSyncCount} Transfers.{$pauseSummary}");
+            $this->info("Stripe payout sync completed. Created {$payoutSyncCount} Transfers.{$pauseSummary}");
         } catch (\Exception $e) {
             $this->error("Error syncing payouts: " . $e->getMessage());
             Log::error("SyncStripePayouts Command Error: " . $e->getMessage());

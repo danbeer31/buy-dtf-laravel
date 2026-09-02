@@ -98,6 +98,17 @@ class QboService
 
     public function request($method, $endpoint, $data = [], ?int $timeoutSeconds = null)
     {
+        $method = strtoupper((string) $method);
+
+        if ($method !== 'GET' && $this->writesPaused()) {
+            Log::warning('Blocked QBO write while QBO_PAUSE_WRITES is enabled', [
+                'method' => $method,
+                'endpoint' => $endpoint,
+            ]);
+
+            throw new \RuntimeException('QuickBooks writes are temporarily paused while QBO is unavailable.');
+        }
+
         $this->init();
 
         $url = $this->baseUrl . $this->realmId . '/' . $endpoint;
@@ -127,6 +138,11 @@ class QboService
         }
 
         return $response->json();
+    }
+
+    public function writesPaused(): bool
+    {
+        return (bool) config('services.qbo.pause_writes', false);
     }
 
     /**

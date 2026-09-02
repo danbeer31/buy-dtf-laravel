@@ -78,6 +78,7 @@ return [
         'client_secret' => env('QBO_CLIENT_SECRET'),
         'environment' => env('QBO_ENVIRONMENT', 'Development'),
         'redirect_uri' => env('QBO_REDIRECT_URI'),
+        'pause_writes' => (bool) env('QBO_PAUSE_WRITES', false),
         'connect_timeout' => (int) env('QBO_CONNECT_TIMEOUT', 3),
         'request_timeout' => (int) env('QBO_REQUEST_TIMEOUT', 30),
         'admin_read_timeout' => (int) env('QBO_ADMIN_READ_TIMEOUT', 8),
