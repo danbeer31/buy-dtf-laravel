@@ -7,6 +7,8 @@ use App\Models\BatchProgress;
 use App\Models\DtfImage;
 use App\Models\DtfOrder;
 use App\Models\Template;
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -93,7 +95,20 @@ class NameNumberService
             //     'payload' => $payload
             // ]);
             $response = Http::withHeaders(['X-Api-Token' => $this->token])
+                ->connectTimeout(10)
                 ->timeout(60)
+                ->retry(
+                    [250, 750],
+                    when: static function ($exception): bool {
+                        if ($exception instanceof ConnectionException) {
+                            return true;
+                        }
+
+                        return $exception instanceof RequestException
+                            && in_array($exception->response->status(), [500, 502, 503, 504], true);
+                    },
+                    throw: false,
+                )
                 ->post($url, $payload);
 
             if (!$response->successful()) {
