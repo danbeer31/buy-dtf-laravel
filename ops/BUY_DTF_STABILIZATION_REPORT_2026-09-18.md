@@ -10,7 +10,7 @@ The production working files are the source of truth. The detached production Gi
 
 The stabilization candidate preserves the live runtime source. A normalized comparison of 270 production-relevant files found 266 exact matches and four explained differences: `composer.json`, `composer.lock`, `config/database.php`, and `phpunit.xml`. The dependency deployment must therefore be a narrowly scoped `composer.lock` plus staged `vendor/` replacement. It must not use Git, replace production `composer.json`, replace production configuration, run migrations, or restart shared services.
 
-The dependency lock/vendor candidate is credible, but live cutover remains **conditional NO-GO** until a frozen deployment script implements and proves the compare-and-swap, atomic directory exchange, automatic rollback, and OPcache checks specified below. A sequential `vendor/` rename is not acceptable.
+The dependency lock/vendor candidate is credible, and a frozen deployment artifact now implements the compare-and-swap, atomic directory exchange, automatic rollback, and OPcache checks specified below. It passed disposable local-Linux rehearsal. Live cutover remains **conditional NO-GO** until the artifact receives independent review, passes rehearsal on a disposable directory on the actual production filesystem, generates a reviewed staged-release receipt/vendor manifest, and receives a separate low-traffic-window approval. A sequential `vendor/` rename is not acceptable.
 
 The Stripe payout schema correction is prepared and tested locally as a separate change. It binds DDL to the migrator-selected connection and fails unless that active connection is the configured/audited Fuel connection. It must not be applied through a bulk migration.
 
@@ -25,6 +25,8 @@ Completed:
 - Compared the live working files with the stabilization candidate.
 - Audited both production migration ledgers and the corresponding live schemas read-only.
 - Prepared and tested a guarded migration for the missing payout-entry `notes` column locally.
+- Prepared an exact single-migration payout runner with restricted backup, precheck, validated `--pretend`, verification, and rollback receipts.
+- Implemented and locally rehearsed the atomic dependency staging/cutover/recovery artifact.
 - Finalized the incoming-order v1 proposal in a separate contract document.
 
 Not performed:
@@ -100,7 +102,9 @@ Reviewed artifact hashes (SHA-256 over exact file bytes):
 | Live pre-cutover `composer.lock` for rollback | `16eef909889a727717fccf52e9c7c23e8a0d2cc661777f6044abde97713d2579` |
 | Candidate `composer.lock` to deploy | `eeac4637272ca2b9aeaa797a4440cfc8b4e31f5a469619c46ebfa5791c701831` |
 | Live `config/database.php` to retain | `d25ab83243dc255e43ddbaa856991dae93016dd8ff77fa11be20d222693bb8f9` |
-| Candidate payout `notes` migration (separate change) | `665cb4a671079d58218a78d70c91e490bb1580f2fa052719f35a728c05032ff8` |
+| Candidate payout `notes` migration (separate change) | `6bdd43d63d2427af19a2fb65afd1b295b12759ac916d2803d245de2c6f7c1e0c` |
+| Payout execution runner | `80f99eee566a2fc212a17ba34dc55c94db47c6816abe49deca9d78a55cae98b2` |
+| Atomic dependency deployment script | `7d20222e058a7890a095eb00f80695bd2dd0348d105bf0b6a9d9c23e6f6898a5` |
 
 These are preparation-time hashes. A mismatch at cutover is a stop condition, not permission to overwrite the changed live file.
 
@@ -159,8 +163,10 @@ This is a baseline, not proof that payment, upload, or integration requests are 
 
 | Check | Result |
 |---|---|
-| Full isolated PHP suite | 107 tests, 711 assertions, pass (randomized seed `9182026`) |
-| Targeted payout migration regressions | 2 tests, 12 assertions, pass |
+| Full isolated PHP suite | 108 tests, 714 assertions, pass (randomized seed `9182026`) |
+| Targeted payout migration regressions | 3 tests, 15 assertions, pass |
+| Payout artifact self-check | Exact migration/helper hashes, pass |
+| Atomic dependency rehearsal | Success plus post-exchange, post-lock, package-discovery, interruption, and double-exchange recovery scenarios, pass |
 | Composer validation | `composer validate --strict`, pass |
 | Composer audit | Full and `--no-dev`, zero advisories |
 | PHP 8.2 platform check | Pass |
@@ -236,7 +242,9 @@ The migration:
 - is idempotent;
 - intentionally retains the additive column on code rollback.
 
-The regression coverage first reproduces the exact missing-column write failure, applies the migration, proves the write succeeds, runs `up()` again, and proves `down()` preserves the column and data. A separate two-connection test makes a different SQLite connection active, proves the migration refuses it, and proves neither the wrong schema nor the intended Fuel schema was altered.
+The regression coverage first reproduces the exact missing-column write failure, applies the migration, proves the write succeeds, runs `up()` again, and proves `down()` preserves the column and data. A separate two-connection test makes a different SQLite connection active, proves the migration refuses it, and proves neither the wrong schema nor the intended Fuel schema was altered. A third regression proves Laravel pretend mode emits exactly the additive `notes` DDL without changing the schema.
+
+The exact execution artifact and receipts are defined in `ops/PAYOUT_NOTES_EXECUTION_ARTIFACT.md`. Production execution remains separately gated; neither the migration nor its runner has been copied to the live application.
 
 ### Separate future execution plan
 
@@ -256,7 +264,7 @@ Rollback is application-safe by retaining the nullable column. If the applicatio
 
 ## Exact Dependency-Only Deployment Plan
 
-This section is the required behavior for a future frozen deployment script. No such script is authorized to run yet. The production cutover remains a no-go until the script is committed, shell-checked, rehearsed against disposable same-filesystem directories, reviewed with its exact SHA-256, and given a separate GO.
+This section is implemented by `ops/deployment/atomic_dependency_deploy.py` and detailed in `ops/ATOMIC_DEPENDENCY_DEPLOYMENT_ARTIFACT.md`. Its exact reviewed SHA-256 is recorded above. It has not been copied to, staged on, or executed against production. The production cutover remains a no-go until independent review, a disposable rehearsal on the actual production filesystem, staged-release receipt/vendor-manifest approval, and a separate GO.
 
 ### Preconditions and stop conditions
 
@@ -298,7 +306,7 @@ The script must:
 4. With production PHP 8.2.30 and Composer 2.9.3, run a locked install into the staged vendor using `--no-dev --prefer-dist --optimize-autoloader --no-interaction --no-scripts`. Never run `composer update` or `self-update`.
 5. In the stage, run strict validation, locked audit, `check-platform-reqs --no-dev`, package inventory, and checksum capture.
 6. Build a shadow application smoke directory from the exact live runtime files and live `config/database.php`, pointing it at the staged vendor and safe non-network test settings. Run package discovery, framework boot, route discovery, Markdown mail rendering, and the focused mocked integration tests without touching live caches or external providers.
-7. Produce a deterministic staged-vendor manifest of relative path, file type, size, mode, and SHA-256; record its aggregate hash in the frozen script.
+7. Produce a deterministic staged-vendor manifest of relative path, file type, size, mode, and SHA-256; record its aggregate hash in a restricted staged-release receipt. Exit without cutover so that exact receipt SHA-256 and vendor aggregate can be independently approved. Cutover accepts only that approved receipt and requires it to identify the exact deployment-script SHA-256.
 8. Rehearse the script's `renameat2(RENAME_EXCHANGE)` helper and its automatic rollback against disposable directories on the same filesystem. Verify normal cutover, injected lock-swap failure, injected package-discovery failure, and interruption after the exchange.
 9. Preserve the complete staging/rehearsal logs and hashes for approval.
 
@@ -344,8 +352,8 @@ This rollback changes no schema and restores the actual previously running depen
 
 ## Remaining Work Requiring Separate Approval
 
-- Implement, rehearse, hash, and independently review the frozen atomic dependency deployment script; only then request a deployment GO for a low-traffic window.
-- Execute the targeted payout `notes` correction in a separate reviewed window.
+- Independently review the exact payout execution artifact, then approve or reject its separate single-migration window.
+- Independently review the frozen atomic dependency deployment artifact, run its disposable production-filesystem rehearsal only after approval, review its generated staged-release receipt/vendor manifest, and only then request a low-traffic cutover GO.
 - Reconcile the two migration ledgers without running schema migrations.
 - Remove the obsolete `remotefuel` fallback credentials and rotate any once-valid credential.
 - Change production `APP_ENV` from `local` only after reviewing environment-dependent branches.

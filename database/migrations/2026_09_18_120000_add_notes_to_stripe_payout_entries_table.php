@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Schema\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
@@ -12,15 +13,21 @@ return new class extends Migration
         $connection = $this->auditedFuelConnection();
         $schema = Schema::connection($connection);
 
+        // Schema introspection returns no rows while Laravel records pretend
+        // queries. The execution artifact separately proves that the table
+        // exists and the column is absent before requesting this preview.
+        if (DB::connection($connection)->pretending()) {
+            $this->addNotesColumn($schema);
+
+            return;
+        }
+
         if (! $schema->hasTable('stripe_payout_entries')) {
             throw new \RuntimeException('The stripe_payout_entries table is missing on the Fuel connection.');
         }
 
         if (! $schema->hasColumn('stripe_payout_entries', 'notes')) {
-            $schema->table('stripe_payout_entries', function (Blueprint $table): void {
-                // Append the nullable column to keep the production ALTER narrowly scoped.
-                $table->text('notes')->nullable();
-            });
+            $this->addNotesColumn($schema);
         }
     }
 
@@ -52,5 +59,13 @@ return new class extends Migration
         }
 
         return $activeConnection;
+    }
+
+    private function addNotesColumn(Builder $schema): void
+    {
+        $schema->table('stripe_payout_entries', function (Blueprint $table): void {
+            // Append the nullable column to keep the production ALTER narrowly scoped.
+            $table->text('notes')->nullable();
+        });
     }
 };

@@ -133,4 +133,27 @@ class StripePayoutEntryNotesMigrationTest extends TestCase
 
         DB::purge($wrongConnection);
     }
+
+    public function test_pretend_mode_emits_only_the_expected_additive_column_statement(): void
+    {
+        $connection = (string) config('database.fuel_connection');
+        $schema = Schema::connection($connection);
+        $schema->table('stripe_payout_entries', function (Blueprint $table): void {
+            $table->dropColumn('notes');
+        });
+
+        $migration = require database_path('migrations/2026_09_18_120000_add_notes_to_stripe_payout_entries_table.php');
+        $migrator = app('migrator');
+
+        $queries = $migrator->usingConnection(
+            $connection,
+            fn (): array => DB::connection($connection)->pretend(
+                fn () => $migration->up(),
+            ),
+        );
+
+        $this->assertCount(1, $queries);
+        $this->assertStringContainsString('alter table "stripe_payout_entries" add column "notes" text', strtolower($queries[0]['query']));
+        $this->assertFalse($schema->hasColumn('stripe_payout_entries', 'notes'));
+    }
 }
