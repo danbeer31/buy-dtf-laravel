@@ -32,6 +32,8 @@ RELEASE_ROOT = APP_ROOT / "storage/app/private/operations/dependency-releases"
 ROLLBACK_ROOT = APP_ROOT / "storage/app/private/operations/dependency-rollbacks"
 DEPLOYMENT_LOCK = APP_ROOT / "storage/framework/dependency-deployment.lock"
 FPM_SOCKET = Path("/run/php/php8.2-fpm.sock")
+MAINTENANCE_FILE = APP_ROOT / "storage/framework/down"
+MAINTENANCE_PROBE_URL = "https://buy-dtf.com/"
 
 EXPECTED_APP_UID = 1000
 EXPECTED_APP_GID = 1000
@@ -312,33 +314,45 @@ def rename_exchange(first: Path, second: Path) -> None:
         fsync_directory(second.parent)
 
 
+def http_status(url: str, *, cache_buster: bool = False) -> int:
+    target = url
+    if cache_buster:
+        separator = "&" if "?" in target else "?"
+        target = f"{target}{separator}ops_probe={secrets.token_hex(12)}"
+    completed = run(
+        [
+            "/usr/bin/curl",
+            "--silent",
+            "--show-error",
+            "--output",
+            "/dev/null",
+            "--write-out",
+            "%{http_code}",
+            "--header",
+            "Cache-Control: no-cache, no-store",
+            "--header",
+            "Pragma: no-cache",
+            "--connect-timeout",
+            "5",
+            "--max-time",
+            "10",
+            "--max-redirs",
+            "0",
+            target,
+        ],
+        cwd=APP_ROOT,
+        timeout=15,
+    )
+    try:
+        return int(completed.stdout)
+    except ValueError as exception:
+        raise DeploymentError(f"Invalid HTTP status returned for {url}.") from exception
+
+
 def health_snapshot() -> dict[str, int]:
     statuses: dict[str, int] = {}
     for url, allowed in NORMAL_HEALTH_CHECKS:
-        completed = run(
-            [
-                "/usr/bin/curl",
-                "--silent",
-                "--show-error",
-                "--output",
-                "/dev/null",
-                "--write-out",
-                "%{http_code}",
-                "--connect-timeout",
-                "5",
-                "--max-time",
-                "10",
-                "--max-redirs",
-                "0",
-                url,
-            ],
-            cwd=APP_ROOT,
-            timeout=15,
-        )
-        try:
-            status = int(completed.stdout)
-        except ValueError as exception:
-            raise DeploymentError(f"Invalid HTTP status returned for {url}.") from exception
+        status = http_status(url, cache_buster=True)
         if status not in allowed:
             raise DeploymentError(f"Health probe failed for {url} with HTTP {status}.")
         statuses[url] = status
@@ -717,6 +731,165 @@ def artisan(command: str, *arguments: str, timeout: int = 120) -> subprocess.Com
     )
 
 
+def verify_maintenance(expected_secret: str | None = None) -> dict[str, Any]:
+    marker = require_regular_file(MAINTENANCE_FILE)
+    try:
+        payload = json.loads(marker.read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exception:
+        raise DeploymentError("Laravel maintenance marker is unreadable or invalid.") from exception
+    if not isinstance(payload, dict):
+        raise DeploymentError("Laravel maintenance marker has an invalid payload.")
+    if expected_secret is not None:
+        actual_secret = payload.get("secret")
+        if not isinstance(actual_secret, str) or not secrets.compare_digest(
+            actual_secret, expected_secret
+        ):
+            raise DeploymentError("Laravel maintenance marker does not contain the new bypass secret.")
+    status = http_status(MAINTENANCE_PROBE_URL, cache_buster=True)
+    if status != 503:
+        raise DeploymentError(
+            f"Public maintenance probe returned HTTP {status}; expected HTTP 503."
+        )
+    return {
+        "verified_at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "marker_sha256": sha256_file(marker),
+        "public_url": MAINTENANCE_PROBE_URL,
+        "public_status": status,
+    }
+
+
+def restore_reviewed_maintenance_marker(
+    state: dict[str, Any], state_path: Path
+) -> dict[str, Any]:
+    backup_value = state.get("maintenance_marker_backup")
+    backup_sha256 = state.get("maintenance_marker_sha256")
+    marker_mode = state.get("maintenance_marker_mode")
+    if not isinstance(backup_value, str) or not isinstance(backup_sha256, str):
+        raise DeploymentError("No reviewed maintenance-marker backup is available.")
+    if not isinstance(marker_mode, int) or marker_mode < 0o400 or marker_mode > 0o666:
+        raise DeploymentError("Recorded maintenance-marker mode is invalid.")
+    backup = require_regular_file(Path(backup_value), backup_sha256)
+    rollback_root = ROLLBACK_ROOT.resolve(strict=True)
+    state_directory = state_path.resolve(strict=True).parent
+    expected_backup = state_directory / "maintenance-down.before"
+    if (
+        not is_relative_to(state_directory, rollback_root)
+        or backup != expected_backup
+        or not is_relative_to(backup, rollback_root)
+    ):
+        raise DeploymentError("Maintenance-marker backup is outside the rollback root.")
+    atomic_copy(backup, MAINTENANCE_FILE, marker_mode)
+    evidence = verify_maintenance()
+    evidence["method"] = "reviewed_marker_restore"
+    return evidence
+
+
+def reassert_maintenance(
+    state: dict[str, Any], state_path: Path, reason: str
+) -> dict[str, Any]:
+    secret = secrets.token_urlsafe(24)
+    try:
+        artisan("down", f"--secret={secret}")
+        evidence = verify_maintenance(secret)
+        evidence["method"] = "artisan_down"
+    except (DeploymentError, OSError, subprocess.TimeoutExpired):
+        evidence = restore_reviewed_maintenance_marker(state, state_path)
+    evidence["reason"] = reason
+    return evidence
+
+
+def reassert_and_record_maintenance(
+    state: dict[str, Any],
+    state_path: Path,
+    reason: str,
+    *,
+    status: str | None = None,
+    operation: Callable[[dict[str, Any], Path, str], dict[str, Any]] | None = None,
+) -> dict[str, Any]:
+    # Never trust the persisted maintenance_active flag. The public 503 and the
+    # marker are freshly re-established before any rollback mutation.
+    reassertion = operation or reassert_maintenance
+    evidence = reassertion(state, state_path, reason)
+    history = state.setdefault("maintenance_reassertions", [])
+    if not isinstance(history, list):
+        raise DeploymentError("Maintenance reassertion history is invalid.")
+    history.append(evidence)
+    state["maintenance_active"] = True
+    state["maintenance_verified"] = True
+    if status is not None:
+        state["status"] = status
+    write_state(state_path, state)
+    return evidence
+
+
+def contain_cutover_failure(
+    state: dict[str, Any],
+    state_path: Path,
+    exception: BaseException,
+    *,
+    operation: Callable[[dict[str, Any], Path, str], dict[str, Any]] | None = None,
+) -> None:
+    try:
+        reassert_and_record_maintenance(
+            state,
+            state_path,
+            "cutover_failure",
+            status="failure_contained_in_maintenance",
+            operation=operation,
+        )
+    except BaseException as maintenance_exception:
+        state["maintenance_active"] = None
+        state["maintenance_verified"] = False
+        state["failure_class"] = type(exception).__name__
+        state["failure_message"] = str(exception)
+        state["maintenance_failure_class"] = type(maintenance_exception).__name__
+        state["maintenance_failure_message"] = str(maintenance_exception)
+        state["status"] = "failed_maintenance_unverified"
+        write_state(state_path, state)
+        raise DeploymentError(
+            "Cutover failed and public maintenance could not be re-verified; "
+            "automatic rollback was not started."
+        ) from maintenance_exception
+    state["failure_class"] = type(exception).__name__
+    state["failure_message"] = str(exception)
+    state["status"] = "failed_rolling_back"
+    write_state(state_path, state)
+
+
+def contain_rollback_failure(
+    state: dict[str, Any],
+    state_path: Path,
+    exception: BaseException,
+    *,
+    operation: Callable[[dict[str, Any], Path, str], dict[str, Any]] | None = None,
+) -> None:
+    try:
+        reassert_and_record_maintenance(
+            state,
+            state_path,
+            "rollback_failure",
+            status="rollback_failure_in_maintenance",
+            operation=operation,
+        )
+    except BaseException as maintenance_exception:
+        state["maintenance_active"] = None
+        state["maintenance_verified"] = False
+        state["rollback_failure_class"] = type(exception).__name__
+        state["rollback_failure_message"] = str(exception)
+        state["maintenance_failure_class"] = type(maintenance_exception).__name__
+        state["maintenance_failure_message"] = str(maintenance_exception)
+        state["status"] = "rollback_failed_maintenance_unverified"
+        write_state(state_path, state)
+        raise DeploymentError(
+            "Rollback failed and public maintenance could not be re-verified; "
+            "no subsequent rollback step will run."
+        ) from maintenance_exception
+    state["rollback_failure_class"] = type(exception).__name__
+    state["rollback_failure_message"] = str(exception)
+    state["status"] = "rollback_failed_maintenance_verified"
+    write_state(state_path, state)
+
+
 def fpm_probe(expected_laravel: str, expected_guzzle: str) -> dict[str, Any]:
     if not FPM_SOCKET.is_socket():
         raise DeploymentError("The reviewed PHP-FPM socket is unavailable.")
@@ -791,18 +964,24 @@ def write_state(path: Path, state: dict[str, Any]) -> None:
     atomic_json(path, state)
 
 
-def rollback_from_state(state: dict[str, Any], state_path: Path, helper: Path) -> None:
+def rollback_from_state(
+    state: dict[str, Any],
+    state_path: Path,
+    helper: Path,
+    *,
+    failure_injector: Callable[[str], None] | None = None,
+) -> None:
     state["rollback_started"] = True
-    write_state(state_path, state)
     try:
+        reassert_and_record_maintenance(
+            state,
+            state_path,
+            "rollback_start",
+            status="rollback_in_maintenance",
+        )
         require_regular_file(Path(state["old_lock_backup"]), EXPECTED_LIVE_LOCK_SHA256)
         if tree_manifest(Path(state["cache_backup"])) != state["cache_backup_manifest"]:
             raise DeploymentError("Rollback bootstrap cache backup differs from its recorded manifest.")
-        if not state.get("maintenance_active"):
-            secret = secrets.token_urlsafe(24)
-            artisan("down", f"--secret={secret}")
-            state["maintenance_active"] = True
-            write_state(state_path, state)
 
         live_vendor = APP_ROOT / "vendor"
         staged_vendor = Path(state["staged_vendor"])
@@ -835,15 +1014,17 @@ def rollback_from_state(state: dict[str, Any], state_path: Path, helper: Path) -
         time.sleep(OPCACHE_SECOND_PROBE_DELAY_SECONDS)
         second = fpm_probe(OLD_LARAVEL_VERSION, OLD_GUZZLE_VERSION)
         artisan("up")
-        state["maintenance_active"] = False
+        if failure_injector is not None:
+            failure_injector("after_rollback_up")
         state["rollback_fpm_probes"] = [first, second]
         state["rollback_health"] = health_snapshot()
+        state["maintenance_active"] = False
+        state["maintenance_verified"] = False
         state["rollback_complete"] = True
         state["status"] = "rolled_back"
         write_state(state_path, state)
-    except BaseException:
-        state["status"] = "rollback_failed_maintenance_retained"
-        write_state(state_path, state)
+    except BaseException as exception:
+        contain_rollback_failure(state, state_path, exception)
         raise
 
 
@@ -870,6 +1051,7 @@ def cutover(
     before_health = health_snapshot()
     before_runtime = runtime_probe(helper)
     validate_runtime_baseline(before_runtime, laravel=OLD_LARAVEL_VERSION, guzzle=OLD_GUZZLE_VERSION)
+    old_fpm_preflight = fpm_probe(OLD_LARAVEL_VERSION, OLD_GUZZLE_VERSION)
 
     ROLLBACK_ROOT.mkdir(mode=0o700, parents=True, exist_ok=True)
     os.chmod(ROLLBACK_ROOT, 0o700)
@@ -895,7 +1077,10 @@ def cutover(
         "cache_backup_manifest": cache_manifest,
         "health_before": before_health,
         "runtime_before": before_runtime,
+        "old_fpm_preflight": old_fpm_preflight,
         "maintenance_active": False,
+        "maintenance_verified": False,
+        "maintenance_reassertions": [],
         "exchange_intent": False,
         "exchange_complete": False,
         "lock_replaced": False,
@@ -909,10 +1094,18 @@ def cutover(
             failure_injector(stage)
 
     try:
-        secret = secrets.token_urlsafe(24)
-        artisan("down", f"--secret={secret}")
-        state["maintenance_active"] = True
-        state["status"] = "maintenance"
+        reassert_and_record_maintenance(
+            state,
+            state_path,
+            "initial_cutover",
+            status="maintenance",
+        )
+        maintenance_marker_mode = stat.S_IMODE(MAINTENANCE_FILE.stat().st_mode)
+        maintenance_marker_backup = rollback_directory / "maintenance-down.before"
+        atomic_copy(MAINTENANCE_FILE, maintenance_marker_backup, 0o600)
+        state["maintenance_marker_backup"] = str(maintenance_marker_backup)
+        state["maintenance_marker_sha256"] = sha256_file(maintenance_marker_backup)
+        state["maintenance_marker_mode"] = maintenance_marker_mode
         write_state(state_path, state)
         time.sleep(DRAIN_SECONDS)
         after_drain = runtime_probe(helper)
@@ -969,9 +1162,11 @@ def cutover(
         write_state(state_path, state)
 
         artisan("up")
-        state["maintenance_active"] = False
-        state["status"] = "monitoring"
+        inject("after_candidate_up")
         state["health_after"] = health_snapshot()
+        state["maintenance_active"] = False
+        state["maintenance_verified"] = False
+        state["status"] = "monitoring"
         write_state(state_path, state)
 
         monitor_deadline = time.monotonic() + MONITOR_SECONDS
@@ -997,11 +1192,13 @@ def cutover(
         print(f"Dependency cutover complete. State/receipt: {state_path}")
         return state_path
     except BaseException as exception:
-        state["failure_class"] = type(exception).__name__
-        state["failure_message"] = str(exception)
-        state["status"] = "failed_rolling_back"
-        write_state(state_path, state)
-        rollback_from_state(state, state_path, helper)
+        contain_cutover_failure(state, state_path, exception)
+        rollback_from_state(
+            state,
+            state_path,
+            helper,
+            failure_injector=failure_injector,
+        )
         raise
 
 
@@ -1140,6 +1337,151 @@ def rehearse(parent: Path) -> dict[str, Any]:
         if tree_manifest(live)["sha256"] != old_hash or tree_manifest(staged)["sha256"] != candidate_hash:
             raise DeploymentError("Double-exchange rehearsal did not restore both directories.")
         results["scenarios"]["double_exchange_recovery"] = "pass"
+
+        def maintenance_fixture(
+            name: str,
+            *,
+            persisted_active: bool,
+            actually_public: bool,
+        ) -> tuple[
+            dict[str, Any],
+            Path,
+            dict[str, bool],
+            list[str],
+            Callable[[dict[str, Any], Path, str], dict[str, Any]],
+        ]:
+            root = rehearsal_root / name
+            root.mkdir(mode=0o700)
+            state_path = root / "deployment-state.json"
+            state: dict[str, Any] = {
+                "artifact": "maintenance-window-rehearsal-v1",
+                "status": "rehearsing",
+                "maintenance_active": persisted_active,
+                "maintenance_verified": persisted_active,
+                "maintenance_reassertions": [],
+            }
+            runtime = {"public": actually_public}
+            events: list[str] = []
+
+            def modeled_reassert(
+                _state: dict[str, Any], _state_path: Path, reason: str
+            ) -> dict[str, Any]:
+                events.append(f"maintenance_reasserted:{reason}")
+                runtime["public"] = False
+                return {
+                    "verified_at_utc": "rehearsal",
+                    "marker_sha256": "0" * 64,
+                    "public_url": MAINTENANCE_PROBE_URL,
+                    "public_status": 503,
+                    "method": "rehearsal",
+                    "reason": reason,
+                }
+
+            write_state(state_path, state)
+            return state, state_path, runtime, events, modeled_reassert
+
+        state, state_path, runtime, events, modeled_reassert = maintenance_fixture(
+            "stale-maintenance-flag",
+            persisted_active=True,
+            actually_public=True,
+        )
+        reassert_and_record_maintenance(
+            state,
+            state_path,
+            "rollback_start",
+            status="rollback_in_maintenance",
+            operation=modeled_reassert,
+        )
+        if runtime["public"] or events != ["maintenance_reasserted:rollback_start"]:
+            raise DeploymentError("A stale maintenance flag bypassed rollback reassertion.")
+        results["scenarios"]["stale_active_flag_public_recovery"] = "pass"
+
+        state, state_path, runtime, events, modeled_reassert = maintenance_fixture(
+            "candidate-up-interruption",
+            persisted_active=True,
+            actually_public=False,
+        )
+        try:
+            runtime["public"] = True
+            events.append("candidate_up")
+            raise InterruptedError("injected-interruption-immediately-after-candidate-up")
+        except InterruptedError as exception:
+            contain_cutover_failure(
+                state,
+                state_path,
+                exception,
+                operation=modeled_reassert,
+            )
+        if runtime["public"] or events != [
+            "candidate_up",
+            "maintenance_reasserted:cutover_failure",
+        ]:
+            raise DeploymentError("Candidate-up interruption was not contained before recording.")
+        persisted = json.loads(state_path.read_text(encoding="utf-8"))
+        if persisted.get("status") != "failed_rolling_back" or not persisted.get(
+            "maintenance_verified"
+        ):
+            raise DeploymentError("Candidate-up interruption receipt is not fail-closed.")
+        results["scenarios"]["interruption_immediately_after_candidate_up"] = "pass"
+
+        state, state_path, runtime, events, modeled_reassert = maintenance_fixture(
+            "rollback-up-interruption",
+            persisted_active=True,
+            actually_public=False,
+        )
+        try:
+            runtime["public"] = True
+            events.append("rollback_up")
+            raise InterruptedError("injected-interruption-immediately-after-rollback-up")
+        except InterruptedError as exception:
+            contain_rollback_failure(
+                state,
+                state_path,
+                exception,
+                operation=modeled_reassert,
+            )
+        if runtime["public"] or events != [
+            "rollback_up",
+            "maintenance_reasserted:rollback_failure",
+        ]:
+            raise DeploymentError("Rollback-up interruption was not contained before recording.")
+        persisted = json.loads(state_path.read_text(encoding="utf-8"))
+        if persisted.get("status") != "rollback_failed_maintenance_verified" or not persisted.get(
+            "maintenance_verified"
+        ):
+            raise DeploymentError("Rollback-up interruption receipt is not fail-closed.")
+        results["scenarios"]["interruption_immediately_after_rollback_up"] = "pass"
+
+        state, state_path, runtime, events, modeled_reassert = maintenance_fixture(
+            "rollback-health-failure",
+            persisted_active=True,
+            actually_public=False,
+        )
+        try:
+            runtime["public"] = True
+            events.append("rollback_up")
+            events.append("rollback_health_failed")
+            raise DeploymentError("injected-rollback-health-failure")
+        except DeploymentError as exception:
+            contain_rollback_failure(
+                state,
+                state_path,
+                exception,
+                operation=modeled_reassert,
+            )
+        if runtime["public"] or events != [
+            "rollback_up",
+            "rollback_health_failed",
+            "maintenance_reasserted:rollback_failure",
+        ]:
+            raise DeploymentError("Rollback health failure was not contained before recording.")
+        persisted = json.loads(state_path.read_text(encoding="utf-8"))
+        if persisted.get("status") != "rollback_failed_maintenance_verified" or not persisted.get(
+            "maintenance_verified"
+        ):
+            raise DeploymentError("Rollback health-failure receipt is not fail-closed.")
+        results["scenarios"]["rollback_health_failure_reenters_maintenance"] = "pass"
+
         results["status"] = "pass"
         return results
     finally:

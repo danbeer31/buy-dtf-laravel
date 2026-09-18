@@ -10,7 +10,7 @@ The artifact contains no Git command, general migration command, `composer updat
 
 | File/artifact | SHA-256 |
 |---|---|
-| `ops/deployment/atomic_dependency_deploy.py` | `7d20222e058a7890a095eb00f80695bd2dd0348d105bf0b6a9d9c23e6f6898a5` |
+| `ops/deployment/atomic_dependency_deploy.py` | `238e6294ee3542d04d69ed9acf5b5e3d412412d12eff43aa65295739332ab342` |
 | `ops/deployment/dependency_runtime_probe.php` | `deb44c9c1bccc24ec91ee4ea504184000f30525763aa497b415611509d711dae` |
 | Candidate `composer.lock` | `eeac4637272ca2b9aeaa797a4440cfc8b4e31f5a469619c46ebfa5791c701831` |
 | Live `composer.json` to retain | `7098f3a19cb65f88bcc945f019dda0aa7f515737eb5d4918c30705f25c6ad872` |
@@ -67,26 +67,29 @@ python3 atomic_dependency_deploy.py \
 The script then:
 
 1. Repeats the complete checksum/CAS, vendor, health, queue, process, staged-release, and receipt checks. It also requires the receipt to have been created by the exact same deployment-script SHA-256.
-2. Creates a mode-0700 rollback directory and verifies byte-exact copies of the old lock and complete `bootstrap/cache` snapshot.
-3. Enters Laravel maintenance with a random private bypass, waits 65 seconds for request drain, proves business-activity aggregates did not change, requires zero connected FastCGI requests on the reviewed PHP-FPM socket, and repeats the full CAS immediately before exchange.
-4. Performs one libc `renameat2(AT_FDCWD, live_vendor, AT_FDCWD, staged_vendor, RENAME_EXCHANGE)` call. Both directory names exist throughout; sequential renames are not a fallback.
-5. Verifies candidate and retained vendor manifests, then replaces only `composer.lock` using a same-directory temporary file, `fsync`, and atomic `rename(2)`.
-6. Runs only the fixed `package:discover` Artisan operation and verifies CLI runtime versions/paths.
-7. Waits beyond the observed OPcache revalidation/file-protection window, then runs two probes at least three seconds apart through the local PHP-FPM socket. Both must prove Laravel 12.61.1, Guzzle 7.15.2, and reflection paths under the live vendor. The mode-0640 probe is outside the public root and is removed after each call.
-8. Leaves maintenance, runs the public health matrix, and keeps automatic rollback armed during 30 minutes of repeated HTTP/runtime/queue checks.
-9. Retains the old vendor at the reviewed staged-vendor path and records the final state/receipt. It deletes neither the rollback data nor failed candidate evidence.
+2. Before creating rollback artifacts, entering maintenance, or changing any live dependency/cache/lock path, runs a PHP-FPM socket probe that must prove the currently running Laravel 12.46.0 and Guzzle 7.10.0 with reflection paths under the live `vendor/`. Failure stops before cutover.
+3. Creates a mode-0700 rollback directory and verifies byte-exact copies of the old lock and complete `bootstrap/cache` snapshot.
+4. Enters Laravel maintenance with a random private bypass, verifies the exact maintenance marker and a cache-busted public HTTP 503, saves a mode-0600 copy of that marker for fail-closed recovery, waits 65 seconds for request drain, proves business-activity aggregates did not change, requires zero connected FastCGI requests on the reviewed PHP-FPM socket, and repeats the full CAS immediately before exchange.
+5. Performs one libc `renameat2(AT_FDCWD, live_vendor, AT_FDCWD, staged_vendor, RENAME_EXCHANGE)` call. Both directory names exist throughout; sequential renames are not a fallback.
+6. Verifies candidate and retained vendor manifests, then replaces only `composer.lock` using a same-directory temporary file, `fsync`, and atomic `rename(2)`.
+7. Runs only the fixed `package:discover` Artisan operation and verifies CLI runtime versions/paths.
+8. Waits beyond the observed OPcache revalidation/file-protection window, then runs two probes at least three seconds apart through the local PHP-FPM socket. Both must prove Laravel 12.61.1, Guzzle 7.15.2, and reflection paths under the live vendor. The mode-0640 probe is outside the public root and is removed after each call.
+9. Leaves maintenance, runs the public health matrix, and keeps automatic rollback armed during 30 minutes of repeated HTTP/runtime/queue checks. The state is not marked public until that first health matrix succeeds.
+10. Retains the old vendor at the reviewed staged-vendor path and records the final state/receipt. It deletes neither the rollback data nor failed candidate evidence.
 
 ## Automatic Rollback and Recovery
 
 After maintenance begins, every ordinary exception, failed check, SIGINT, or SIGTERM enters rollback. The script:
 
-- retains/re-enters maintenance;
+- immediately re-enters maintenance before recording a cutover failure;
+- unconditionally re-enters and verifies maintenance again at the beginning of every rollback/recovery, ignoring any persisted `maintenance_active` value;
+- requires both a valid Laravel maintenance marker and a cache-busted public HTTP 503 before changing vendor, lock, or cache during rollback; if `artisan down` cannot boot, it may restore only the checksummed marker saved by this run and must still prove HTTP 503;
 - identifies vendor identities by their manifests and atomically exchanges the retained old vendor back;
 - atomically restores the exact old lock;
 - validates and restores the exact old cache snapshot;
 - runs fixed old-vendor package discovery as a boot check, then restores the byte-exact cache snapshot again;
 - verifies old Laravel/Guzzle versions through two PHP-FPM probes;
-- leaves maintenance only after public health passes.
+- leaves maintenance only after public health passes; if rollback `artisan up`, its health check, or its state write fails, it immediately re-enters and re-verifies maintenance before recording the failure.
 
 A restricted state file is fsynced before and after each live mutation. For an uncatchable process/host failure, the same manifest-driven rollback is available through:
 
@@ -97,7 +100,7 @@ python3 atomic_dependency_deploy.py \
   --approval-token RECOVER-BUYDTF-DEPS-16eef909889a7277
 ```
 
-Recovery refuses unknown vendor/lock/cache identities. If rollback cannot be proven, maintenance remains active and the state receipt records `rollback_failed_maintenance_retained`.
+Recovery refuses unknown vendor/lock/cache identities. A verified failed rollback records `rollback_failed_maintenance_verified`. If public maintenance cannot be re-established and verified, the script stops before any subsequent rollback step and records `rollback_failed_maintenance_unverified`; it never reports that maintenance was retained based only on stale state.
 
 ## Rehearsal Evidence
 
@@ -108,9 +111,13 @@ The exact script was exercised on disposable WSL2 Linux ext directories using th
 - injected failure after lock replacement;
 - injected package-discovery/cache failure;
 - simulated interruption after exchange;
-- double-exchange recovery.
+- double-exchange recovery;
+- stale saved state claiming maintenance while the modeled site is public;
+- interruption immediately after candidate `artisan up`;
+- interruption immediately after rollback `artisan up`;
+- rollback public-health failure after `artisan up`.
 
-Final rehearsal script SHA-256: `7d20222e058a7890a095eb00f80695bd2dd0348d105bf0b6a9d9c23e6f6898a5`.
+All ten scenarios passed. Final rehearsal script SHA-256: `238e6294ee3542d04d69ed9acf5b5e3d412412d12eff43aa65295739332ab342`.
 
 GitHub CI repeats the payout artifact self-check and atomic disposable-directory rehearsal on every push.
 

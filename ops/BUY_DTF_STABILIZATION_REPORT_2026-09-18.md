@@ -104,7 +104,7 @@ Reviewed artifact hashes (SHA-256 over exact file bytes):
 | Live `config/database.php` to retain | `d25ab83243dc255e43ddbaa856991dae93016dd8ff77fa11be20d222693bb8f9` |
 | Candidate payout `notes` migration (separate change) | `6bdd43d63d2427af19a2fb65afd1b295b12759ac916d2803d245de2c6f7c1e0c` |
 | Payout execution runner | `80f99eee566a2fc212a17ba34dc55c94db47c6816abe49deca9d78a55cae98b2` |
-| Atomic dependency deployment script | `7d20222e058a7890a095eb00f80695bd2dd0348d105bf0b6a9d9c23e6f6898a5` |
+| Atomic dependency deployment script | `238e6294ee3542d04d69ed9acf5b5e3d412412d12eff43aa65295739332ab342` |
 
 These are preparation-time hashes. A mismatch at cutover is a stop condition, not permission to overwrite the changed live file.
 
@@ -166,7 +166,7 @@ This is a baseline, not proof that payment, upload, or integration requests are 
 | Full isolated PHP suite | 108 tests, 714 assertions, pass (randomized seed `9182026`) |
 | Targeted payout migration regressions | 3 tests, 15 assertions, pass |
 | Payout artifact self-check | Exact migration/helper hashes, pass |
-| Atomic dependency rehearsal | Success plus post-exchange, post-lock, package-discovery, interruption, and double-exchange recovery scenarios, pass |
+| Atomic dependency rehearsal | Ten scenarios pass: success; post-exchange, post-lock, and package-discovery rollback; interruption after exchange; double exchange; stale maintenance flag; interruptions immediately after candidate and rollback `artisan up`; and rollback health failure |
 | Composer validation | `composer validate --strict`, pass |
 | Composer audit | Full and `--no-dev`, zero advisories |
 | PHP 8.2 platform check | Pass |
@@ -307,21 +307,21 @@ The script must:
 5. In the stage, run strict validation, locked audit, `check-platform-reqs --no-dev`, package inventory, and checksum capture.
 6. Build a shadow application smoke directory from the exact live runtime files and live `config/database.php`, pointing it at the staged vendor and safe non-network test settings. Run package discovery, framework boot, route discovery, Markdown mail rendering, and the focused mocked integration tests without touching live caches or external providers.
 7. Produce a deterministic staged-vendor manifest of relative path, file type, size, mode, and SHA-256; record its aggregate hash in a restricted staged-release receipt. Exit without cutover so that exact receipt SHA-256 and vendor aggregate can be independently approved. Cutover accepts only that approved receipt and requires it to identify the exact deployment-script SHA-256.
-8. Rehearse the script's `renameat2(RENAME_EXCHANGE)` helper and its automatic rollback against disposable directories on the same filesystem. Verify normal cutover, injected lock-swap failure, injected package-discovery failure, and interruption after the exchange.
+8. Rehearse the script's `renameat2(RENAME_EXCHANGE)` helper and its automatic rollback against disposable directories on the same filesystem. Verify normal cutover, injected lock-swap failure, injected package-discovery failure, interruption after the exchange, a stale persisted maintenance flag while the site is public, interruptions immediately after candidate and rollback `artisan up`, and rollback health failure.
 9. Preserve the complete staging/rehearsal logs and hashes for approval.
 
 ### Maintenance and atomic cutover
 
 1. Re-run all stop checks and record a timestamped baseline.
 2. Acquire the exclusive deployment lock, repeat the checksum/CAS verification, and keep the lock until final success or completed rollback.
-3. Create an application-scoped rollback directory with mode `0700` on the same filesystem. Back up the exact live `composer.lock` and existing `bootstrap/cache/` files with owners, modes, hashes, and a manifest; verify the copies byte-for-byte.
-4. Enter Laravel maintenance mode with a private bypass secret and verify it. Wait at least the maximum normal request duration, then verify there is no in-flight scoped PHP/artisan process. If requests cannot be drained, use a separately approved web-server-level static maintenance response; do not continue through active traffic.
+3. Before creating rollback artifacts, entering maintenance, or changing live dependency/cache/lock state, run the reviewed PHP-FPM socket probe and require the old Laravel/Guzzle versions plus reflection paths under the current live `vendor/`.
+4. Create an application-scoped rollback directory with mode `0700` on the same filesystem. Back up the exact live `composer.lock` and existing `bootstrap/cache/` files with owners, modes, hashes, and a manifest; verify the copies byte-for-byte. Then enter Laravel maintenance mode with a private bypass secret and verify both the exact marker and a cache-busted public HTTP 503. Save a restricted, checksummed copy of that marker for fail-closed recovery. Wait at least the maximum normal request duration, then verify there is no in-flight scoped PHP/artisan process. If requests cannot be drained, use a separately approved web-server-level static maintenance response; do not continue through active traffic.
 5. Invoke one previously rehearsed `renameat2(AT_FDCWD, live_vendor, AT_FDCWD, staged_vendor, RENAME_EXCHANGE)` syscall. This atomically places the candidate at `vendor/` and the exact old vendor at the staged path; there is never a missing `vendor/` pathname.
 6. Verify the live vendor manifest. Atomically replace only `composer.lock` using a same-directory temporary file plus `rename(2)`, then verify its SHA-256. Leave `composer.json`, `.env`, `config/database.php`, source, assets, and tests untouched.
 7. Run package discovery against the live application. Rebuild only package/cache artifacts that existed before the cutover; do not introduce config or route caching as a new behavior.
 8. With maintenance active, run CLI boot/route checks and loopback HTTP smoke through the private bypass.
 9. Because FPM OPcache has timestamp validation enabled with a two-second revalidation interval and two-second file protection, wait at least five seconds after the exchange. Invoke a reviewed temporary probe outside the public webroot through the local FPM socket/internal-only location; it must report `Illuminate\Foundation\Application::VERSION=12.61.1`, Guzzle `7.15.2` through Composer `InstalledVersions`, and reflection paths under the live vendor. Run it twice at least three seconds apart, alongside `/up`, login, and application-route probes. Both rounds must match the candidate and be 5xx-free, and logs must contain no preload/autoload/redeclare/stale-path error. Remove the probe and verify it is absent before leaving maintenance. If direct FPM verification cannot be isolated from public access or does not prove the candidate versions, roll back; CLI PHP or a CLI OPcache reset is not evidence for FPM.
-10. Leave maintenance mode and run the public smoke matrix: home, `/up`, login, protected redirects, current manifest/assets, authenticated admin/order view, safe cart/upload display, and non-mutating construction checks for mail and integration clients.
+10. Leave maintenance mode and run the public smoke matrix: home, `/up`, login, protected redirects, current manifest/assets, authenticated admin/order view, safe cart/upload display, and non-mutating construction checks for mail and integration clients. Do not record public/monitoring state until this matrix succeeds. Any exception after `artisan up` must first re-enter and verify maintenance before its failure receipt is written.
 11. Mark the state file successful only after all hashes and smoke tests pass. Until then, the automatic rollback trap remains armed.
 12. Monitor HTTP status, Laravel/PHP/nginx logs, checkout/order/payment/upload activity, scheduler freshness, and external-integration errors for at least 30 minutes and through the next scheduler boundary.
 
@@ -340,12 +340,12 @@ Rollback immediately for any of the following:
 
 The frozen script performs these automatically on any failure/signal after the exchange; the operator may also invoke the same idempotent rollback mode explicitly:
 
-1. Enter or retain maintenance mode and hold the deployment lock.
+1. Unconditionally re-enter and verify maintenance mode and hold the deployment lock. Never trust a saved `maintenance_active` flag: require the marker plus a cache-busted public HTTP 503 before any rollback mutation. This applies equally to automatic rollback and an explicit recovery invocation.
 2. If the exchange occurred, call the same `renameat2(RENAME_EXCHANGE)` operation again, returning the exact old vendor atomically to `vendor/`.
 3. Restore the old lock through a same-directory temporary file and atomic `rename(2)`. Restore the exact cache snapshot.
 4. Verify old vendor aggregate manifest, old lock/config/source/cache hashes, owners, modes, and framework boot.
 5. Perform the same five-second wait and two internal FPM-backed probe rounds, this time proving the retained old Laravel/Guzzle versions and live-vendor reflection paths; remove the probe afterward.
-6. Leave maintenance mode only after rollback health passes; otherwise keep the static/maintenance response and escalate.
+6. Leave maintenance mode only after rollback health passes. An interruption immediately after rollback `artisan up` or any failed post-up health/state operation must re-enter and re-verify maintenance before the failure is recorded; otherwise stop as maintenance-unverified and do not claim it was retained.
 7. Preserve the failed candidate tree, state file, and logs; do not delete evidence during the incident.
 
 This rollback changes no schema and restores the actual previously running dependency tree rather than attempting to recreate it.
