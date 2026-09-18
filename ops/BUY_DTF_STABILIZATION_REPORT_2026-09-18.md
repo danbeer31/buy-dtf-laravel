@@ -10,9 +10,9 @@ The production working files are the source of truth. The detached production Gi
 
 The stabilization candidate preserves the live runtime source. A normalized comparison of 270 production-relevant files found 266 exact matches and four explained differences: `composer.json`, `composer.lock`, `config/database.php`, and `phpunit.xml`. The dependency deployment must therefore be a narrowly scoped `composer.lock` plus staged `vendor/` replacement. It must not use Git, replace production `composer.json`, replace production configuration, run migrations, or restart shared services.
 
-The dependency candidate is ready for review and staging. A live cutover should occur only in a low-traffic maintenance window after the pre-cutover stop checks in this document pass.
+The dependency lock/vendor candidate is credible, but live cutover remains **conditional NO-GO** until a frozen deployment script implements and proves the compare-and-swap, atomic directory exchange, automatic rollback, and OPcache checks specified below. A sequential `vendor/` rename is not acceptable.
 
-The Stripe payout schema correction is prepared and tested locally, but is a separate change from the dependency deployment. It must not be applied through a bulk migration.
+The Stripe payout schema correction is prepared and tested locally as a separate change. It binds DDL to the migrator-selected connection and fails unless that active connection is the configured/audited Fuel connection. It must not be applied through a bulk migration.
 
 ## Scope and Guardrails
 
@@ -49,7 +49,7 @@ Candidate commits before this report:
 
 - `e7882cb` - Merge Step 1 and Step 2 security baseline
 - `7c344ea` - security: update CommonMark for September advisories
-- `c0ae1c5` - fix: add guarded Stripe payout entry notes migration
+- `c0ae1c5` - fix: add initial guarded Stripe payout entry notes migration (superseded by the connection hardening in this report's final commit; do not deploy this commit alone)
 
 The final documentation commit and remote branch status are reported in the final handoff after this document is committed.
 
@@ -100,7 +100,7 @@ Reviewed artifact hashes (SHA-256 over exact file bytes):
 | Live pre-cutover `composer.lock` for rollback | `16eef909889a727717fccf52e9c7c23e8a0d2cc661777f6044abde97713d2579` |
 | Candidate `composer.lock` to deploy | `eeac4637272ca2b9aeaa797a4440cfc8b4e31f5a469619c46ebfa5791c701831` |
 | Live `config/database.php` to retain | `d25ab83243dc255e43ddbaa856991dae93016dd8ff77fa11be20d222693bb8f9` |
-| Candidate payout `notes` migration (separate change) | `628bdf45fa5d69d5bb25382eff5464b4578c532a898ef83ebe6ebb9ff56614d6` |
+| Candidate payout `notes` migration (separate change) | `665cb4a671079d58218a78d70c91e490bb1580f2fa052719f35a728c05032ff8` |
 
 These are preparation-time hashes. A mismatch at cutover is a stop condition, not permission to overwrite the changed live file.
 
@@ -159,8 +159,8 @@ This is a baseline, not proof that payment, upload, or integration requests are 
 
 | Check | Result |
 |---|---|
-| Full isolated PHP suite | 106 tests, 705 assertions, pass (randomized seed `9182026`) |
-| Targeted payout migration regression | 1 test, 6 assertions, pass |
+| Full isolated PHP suite | 107 tests, 711 assertions, pass (randomized seed `9182026`) |
+| Targeted payout migration regressions | 2 tests, 12 assertions, pass |
 | Composer validation | `composer validate --strict`, pass |
 | Composer audit | Full and `--no-dev`, zero advisories |
 | PHP 8.2 platform check | Pass |
@@ -216,42 +216,47 @@ Adjudication result: **zero ledger-reported migrations are both genuinely pendin
 
 ### Evidence and cause
 
-The production `stripe_payout_entries` table lacks `notes`, while the deployed model/service writes that field. This caused recurring `SQLSTATE 42S22` payout-processing failures at `StripePayoutService.php` during August. The table is small (approximately 81 rows at audit time).
+The production `stripe_payout_entries` table lacks `notes`, while the deployed model/service writes that field. This caused recurring `SQLSTATE 42S22` payout-processing failures at `StripePayoutService.php` during August. An independent read-only recheck found 85 rows and no payout sync running.
 
 ### Prepared correction
 
-Local commit `c0ae1c5` adds:
+The initial local migration commit `c0ae1c5`, as superseded by this report's final connection-hardening commit, provides:
 
 - `database/migrations/2026_09_18_120000_add_notes_to_stripe_payout_entries_table.php`
 - `tests/Feature/Migrations/StripePayoutEntryNotesMigrationTest.php`
 
 The migration:
 
-- resolves the explicitly configured Fuel connection;
+- uses Laravel's active/default migration connection, which is the connection selected by `--database` while the migrator runs;
+- compares that active connection with `database.fuel_connection` and fails before any schema query when they differ;
+- applies the same connection check during `down()` so a rollback cannot mutate the wrong migration ledger;
 - refuses to continue if the target table is missing;
 - adds one nullable `TEXT notes` column only when absent;
 - appends the column, keeping the alteration narrow;
 - is idempotent;
 - intentionally retains the additive column on code rollback.
 
-The regression test first reproduces the exact missing-column write failure, applies the migration, proves the write succeeds, runs `up()` again, and proves `down()` preserves the column and data.
+The regression coverage first reproduces the exact missing-column write failure, applies the migration, proves the write succeeds, runs `up()` again, and proves `down()` preserves the column and data. A separate two-connection test makes a different SQLite connection active, proves the migration refuses it, and proves neither the wrong schema nor the intended Fuel schema was altered.
 
 ### Separate future execution plan
 
 This must not be combined with the dependency deployment or a bulk migration.
 
-1. Review and approve commit `c0ae1c5` independently.
+1. Review and approve the exact final branch-tip SHA reported in the handoff; do not deploy `c0ae1c5` alone.
 2. Reconfirm the table exists, `notes` is absent, row count is plausible, MySQL is 8.0.x, and no payout sync is running.
 3. Take a timestamped, access-restricted schema/data backup of the payout tables and verify that the dump is nonempty/readable.
 4. Deploy only the reviewed migration file, recording its SHA-256.
-5. Run `--pretend` against the Fuel connection and confirm the only DDL is an additive nullable `notes` column.
-6. Run only the exact migration path with `--database=fuelmysql --path=database/migrations/2026_09_18_120000_add_notes_to_stripe_payout_entries_table.php --force`.
-7. Verify the Fuel ledger entry, column type/nullability, unchanged row count, and public health.
-8. Do not manually trigger a command capable of Stripe/QBO writes merely as a smoke test. Observe the next natural payout event/scheduled sync and verify that the former missing-column error does not recur.
+5. Before `--pretend`, verify that the migrator-selected connection name and `database.fuel_connection` both resolve to the audited `fuelmysql` connection. Any mismatch is a no-go; do not edit configuration to bypass the guard.
+6. Run `--pretend` with the exact Fuel connection/path and confirm the only DDL is an additive nullable `notes` column.
+7. Run only the exact migration path with `--database=fuelmysql --path=database/migrations/2026_09_18_120000_add_notes_to_stripe_payout_entries_table.php --force`.
+8. Verify the Fuel ledger entry, column type/nullability, unchanged row count, and public health.
+9. Do not manually trigger a command capable of Stripe/QBO writes merely as a smoke test. Observe the next natural payout event/scheduled sync and verify that the former missing-column error does not recur.
 
 Rollback is application-safe by retaining the nullable column. If the application must be rolled back, leave the column and ledger entry in place; restoring/dropping it would add risk without restoring useful behavior.
 
 ## Exact Dependency-Only Deployment Plan
+
+This section is the required behavior for a future frozen deployment script. No such script is authorized to run yet. The production cutover remains a no-go until the script is committed, shell-checked, rehearsed against disposable same-filesystem directories, reviewed with its exact SHA-256, and given a separate GO.
 
 ### Preconditions and stop conditions
 
@@ -268,8 +273,22 @@ Do not begin unless all of the following are true immediately before the window:
 - No checkout, order, payment, upload, or production handoff is in flight; choose a low-traffic window away from the top of the hour and the 01:30 accounting task.
 - Disk, ownership, permissions, and same-filesystem atomic rename capability are rechecked.
 - The old vendor rollback tree and exact old lock/cache backup locations are named and verified before maintenance begins.
+- Linux `renameat2(..., RENAME_EXCHANGE)` support is successfully rehearsed on two disposable directories on the same production filesystem. The rehearsal must prove both directory contents exchange in one syscall. If unsupported, stop; sequential renames are not a fallback.
+- A reviewed script contains no Git command, no `composer update`/`self-update`, no migration command, no generic Artisan command supplied by user input, and no service restart.
 
 Any failed condition is a no-go. Do not compensate with Git operations, a broad Composer update, a shared PHP-FPM restart, or an unreviewed source/config change.
+
+### Frozen-script and compare-and-swap requirements
+
+The script must:
+
+1. Run with strict shell error handling, a restrictive umask, an exclusive application deployment lock, fixed absolute paths, and no untrusted/evaluated input.
+2. Embed or receive only reviewed immutable values: live application path, live `composer.json` SHA-256, old lock SHA-256, candidate lock SHA-256, staged vendor manifest hash, expected device ID, owners, and modes.
+3. Resolve every path and fail if the application, live vendor, staged vendor, candidate lock, rollback directory, or cache backup is a symlink or is outside `/var/www/buy-dtf`.
+4. Perform a compare-and-swap preflight immediately before maintenance: all live source/config/Composer hashes, Git-independent source manifest, owner/mode/device, free-space threshold, public health, queue/scheduler state, and no active checkout/upload/payout/artisan process must still equal the approved baseline.
+5. Use a state file plus an exit/error/signal trap. Once any live artifact changes, every non-successful exit automatically exchanges the old vendor back, atomically restores the old lock and cache snapshot, verifies their hashes, and reports rollback health.
+6. Write a timestamped append-only run log containing commands by stable step identifier, hashes, state transitions, smoke results, and rollback result, but no secrets or environment values.
+7. Refuse Git operations, unrestricted `php artisan migrate`, any migration, dependency resolution/update, shared-service restart, or production source/config replacement.
 
 ### Staging
 
@@ -279,21 +298,24 @@ Any failed condition is a no-go. Do not compensate with Git operations, a broad 
 4. With production PHP 8.2.30 and Composer 2.9.3, run a locked install into the staged vendor using `--no-dev --prefer-dist --optimize-autoloader --no-interaction --no-scripts`. Never run `composer update` or `self-update`.
 5. In the stage, run strict validation, locked audit, `check-platform-reqs --no-dev`, package inventory, and checksum capture.
 6. Build a shadow application smoke directory from the exact live runtime files and live `config/database.php`, pointing it at the staged vendor and safe non-network test settings. Run package discovery, framework boot, route discovery, Markdown mail rendering, and the focused mocked integration tests without touching live caches or external providers.
-7. Preserve the complete staging log and hashes for approval.
+7. Produce a deterministic staged-vendor manifest of relative path, file type, size, mode, and SHA-256; record its aggregate hash in the frozen script.
+8. Rehearse the script's `renameat2(RENAME_EXCHANGE)` helper and its automatic rollback against disposable directories on the same filesystem. Verify normal cutover, injected lock-swap failure, injected package-discovery failure, and interruption after the exchange.
+9. Preserve the complete staging/rehearsal logs and hashes for approval.
 
 ### Maintenance and atomic cutover
 
 1. Re-run all stop checks and record a timestamped baseline.
-2. Create an application-scoped rollback directory with mode `0700` on the same filesystem.
-3. Back up the exact live `composer.lock` and all existing files under `bootstrap/cache/`, retaining owners, modes, hashes, and a manifest.
-4. Enter a brief Laravel maintenance window with a private bypass secret and verify the maintenance response. Do not restart nginx, PHP-FPM, MySQL, or other shared services.
-5. Rename live `vendor/` to a timestamped rollback name. Do not delete or reconstruct it.
-6. Rename the fully staged vendor directory to `vendor/` on the same filesystem.
-7. Atomically place only the reviewed `composer.lock`. Leave `composer.json`, `.env`, `config/database.php`, application source, assets, and test configuration untouched.
-8. Run package discovery against the live application. Rebuild only package/cache artifacts that existed before the cutover; do not introduce config or route caching as a new production behavior.
-9. With maintenance still active, run CLI boot/route checks and loopback HTTP smoke checks using the private bypass.
+2. Acquire the exclusive deployment lock, repeat the checksum/CAS verification, and keep the lock until final success or completed rollback.
+3. Create an application-scoped rollback directory with mode `0700` on the same filesystem. Back up the exact live `composer.lock` and existing `bootstrap/cache/` files with owners, modes, hashes, and a manifest; verify the copies byte-for-byte.
+4. Enter Laravel maintenance mode with a private bypass secret and verify it. Wait at least the maximum normal request duration, then verify there is no in-flight scoped PHP/artisan process. If requests cannot be drained, use a separately approved web-server-level static maintenance response; do not continue through active traffic.
+5. Invoke one previously rehearsed `renameat2(AT_FDCWD, live_vendor, AT_FDCWD, staged_vendor, RENAME_EXCHANGE)` syscall. This atomically places the candidate at `vendor/` and the exact old vendor at the staged path; there is never a missing `vendor/` pathname.
+6. Verify the live vendor manifest. Atomically replace only `composer.lock` using a same-directory temporary file plus `rename(2)`, then verify its SHA-256. Leave `composer.json`, `.env`, `config/database.php`, source, assets, and tests untouched.
+7. Run package discovery against the live application. Rebuild only package/cache artifacts that existed before the cutover; do not introduce config or route caching as a new behavior.
+8. With maintenance active, run CLI boot/route checks and loopback HTTP smoke through the private bypass.
+9. Because FPM OPcache has timestamp validation enabled with a two-second revalidation interval and two-second file protection, wait at least five seconds after the exchange. Invoke a reviewed temporary probe outside the public webroot through the local FPM socket/internal-only location; it must report `Illuminate\Foundation\Application::VERSION=12.61.1`, Guzzle `7.15.2` through Composer `InstalledVersions`, and reflection paths under the live vendor. Run it twice at least three seconds apart, alongside `/up`, login, and application-route probes. Both rounds must match the candidate and be 5xx-free, and logs must contain no preload/autoload/redeclare/stale-path error. Remove the probe and verify it is absent before leaving maintenance. If direct FPM verification cannot be isolated from public access or does not prove the candidate versions, roll back; CLI PHP or a CLI OPcache reset is not evidence for FPM.
 10. Leave maintenance mode and run the public smoke matrix: home, `/up`, login, protected redirects, current manifest/assets, authenticated admin/order view, safe cart/upload display, and non-mutating construction checks for mail and integration clients.
-11. Monitor HTTP status, Laravel/PHP/nginx logs, checkout/order/payment/upload activity, scheduler freshness, and external-integration errors for at least 30 minutes and through the next scheduler boundary.
+11. Mark the state file successful only after all hashes and smoke tests pass. Until then, the automatic rollback trap remains armed.
+12. Monitor HTTP status, Laravel/PHP/nginx logs, checkout/order/payment/upload activity, scheduler freshness, and external-integration errors for at least 30 minutes and through the next scheduler boundary.
 
 ### Rollback triggers
 
@@ -308,19 +330,21 @@ Rollback immediately for any of the following:
 
 ### Rollback procedure
 
-1. Enter or retain maintenance mode.
-2. Rename the candidate vendor aside for diagnosis.
-3. Atomically rename the retained old vendor back to `vendor/`.
-4. Atomically restore the exact old `composer.lock` and backed-up `bootstrap/cache/` contents.
-5. Confirm owners, modes, hashes, and old-package discovery/boot.
-6. Leave maintenance mode, repeat the public smoke matrix, and monitor logs.
-7. Preserve the failed candidate tree and logs; do not delete evidence during the incident.
+The frozen script performs these automatically on any failure/signal after the exchange; the operator may also invoke the same idempotent rollback mode explicitly:
+
+1. Enter or retain maintenance mode and hold the deployment lock.
+2. If the exchange occurred, call the same `renameat2(RENAME_EXCHANGE)` operation again, returning the exact old vendor atomically to `vendor/`.
+3. Restore the old lock through a same-directory temporary file and atomic `rename(2)`. Restore the exact cache snapshot.
+4. Verify old vendor aggregate manifest, old lock/config/source/cache hashes, owners, modes, and framework boot.
+5. Perform the same five-second wait and two internal FPM-backed probe rounds, this time proving the retained old Laravel/Guzzle versions and live-vendor reflection paths; remove the probe afterward.
+6. Leave maintenance mode only after rollback health passes; otherwise keep the static/maintenance response and escalate.
+7. Preserve the failed candidate tree, state file, and logs; do not delete evidence during the incident.
 
 This rollback changes no schema and restores the actual previously running dependency tree rather than attempting to recreate it.
 
 ## Remaining Work Requiring Separate Approval
 
-- Execute the dependency-only production cutover in an approved low-traffic window.
+- Implement, rehearse, hash, and independently review the frozen atomic dependency deployment script; only then request a deployment GO for a low-traffic window.
 - Execute the targeted payout `notes` correction in a separate reviewed window.
 - Reconcile the two migration ledgers without running schema migrations.
 - Remove the obsolete `remotefuel` fallback credentials and rotate any once-valid credential.

@@ -51,7 +51,10 @@ class StripePayoutEntryNotesMigrationTest extends TestCase
         $this->assertDatabaseCount('stripe_payout_entries', 0, $connection);
 
         $migration = require database_path('migrations/2026_09_18_120000_add_notes_to_stripe_payout_entries_table.php');
-        $migration->up();
+        $migrator = app('migrator');
+        $migrator->usingConnection($connection, function () use ($migration): void {
+            $migration->up();
+        });
 
         $this->assertTrue($schema->hasColumn('stripe_payout_entries', 'notes'));
 
@@ -67,10 +70,67 @@ class StripePayoutEntryNotesMigrationTest extends TestCase
 
         $this->assertSame('Production-only business label', $entry->fresh()->notes);
 
-        $migration->up();
-        $migration->down();
+        $migrator->usingConnection($connection, function () use ($migration): void {
+            $migration->up();
+            $migration->down();
+        });
 
         $this->assertTrue($schema->hasColumn('stripe_payout_entries', 'notes'));
         $this->assertDatabaseCount('stripe_payout_entries', 1, $connection);
+    }
+
+    public function test_correction_refuses_a_different_active_connection_without_touching_either_schema(): void
+    {
+        $fuelConnection = (string) config('database.fuel_connection');
+        $fuelSchema = Schema::connection($fuelConnection);
+
+        $fuelSchema->table('stripe_payout_entries', function (Blueprint $table): void {
+            $table->dropColumn('notes');
+        });
+
+        $wrongConnection = 'wrong_migration_target';
+        config()->set("database.connections.{$wrongConnection}", [
+            'driver' => 'sqlite',
+            'database' => ':memory:',
+            'prefix' => '',
+            'foreign_key_constraints' => true,
+        ]);
+        DB::purge($wrongConnection);
+
+        $wrongSchema = Schema::connection($wrongConnection);
+        $wrongSchema->create('stripe_payout_entries', function (Blueprint $table): void {
+            $table->id();
+            $table->string('marker')->nullable();
+        });
+
+        $migration = require database_path('migrations/2026_09_18_120000_add_notes_to_stripe_payout_entries_table.php');
+        $migrator = app('migrator');
+
+        try {
+            $migrator->usingConnection($wrongConnection, function () use ($migration): void {
+                $migration->up();
+            });
+
+            $this->fail('The migration must reject a non-Fuel active connection.');
+        } catch (\RuntimeException $exception) {
+            $this->assertStringContainsString('does not match the audited Fuel connection', $exception->getMessage());
+        }
+
+        try {
+            $migrator->usingConnection($wrongConnection, function () use ($migration): void {
+                $migration->down();
+            });
+
+            $this->fail('The rollback must reject a non-Fuel active connection.');
+        } catch (\RuntimeException $exception) {
+            $this->assertStringContainsString('does not match the audited Fuel connection', $exception->getMessage());
+        }
+
+        $this->assertFalse($wrongSchema->hasColumn('stripe_payout_entries', 'notes'));
+        $this->assertTrue($wrongSchema->hasColumn('stripe_payout_entries', 'marker'));
+        $this->assertFalse($fuelSchema->hasColumn('stripe_payout_entries', 'notes'));
+        $this->assertSame($fuelConnection, DB::getDefaultConnection());
+
+        DB::purge($wrongConnection);
     }
 }
