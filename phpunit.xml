@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
-         bootstrap="vendor/autoload.php"
+         bootstrap="tests/bootstrap.php"
          colors="true"
 >
     <testsuites>
@@ -18,18 +18,47 @@
         </include>
     </source>
     <php>
-        <env name="APP_ENV" value="testing"/>
-        <env name="APP_MAINTENANCE_DRIVER" value="file"/>
-        <env name="BCRYPT_ROUNDS" value="4"/>
-        <env name="BROADCAST_CONNECTION" value="null"/>
-        <env name="CACHE_STORE" value="array"/>
-        <env name="DB_CONNECTION" value="sqlite"/>
-        <env name="DB_DATABASE" value=":memory:"/>
-        <env name="MAIL_MAILER" value="array"/>
-        <env name="QUEUE_CONNECTION" value="sync"/>
-        <env name="SESSION_DRIVER" value="array"/>
-        <env name="PULSE_ENABLED" value="false"/>
-        <env name="TELESCOPE_ENABLED" value="false"/>
-        <env name="NIGHTWATCH_ENABLED" value="false"/>
+        <env name="APP_ENV" value="testing" force="true"/>
+        <env name="APP_DEBUG" value="false" force="true"/>
+        <env name="APP_KEY" value="base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=" force="true"/>
+        <env name="APP_URL" value="http://localhost" force="true"/>
+        <env name="APP_MAINTENANCE_DRIVER" value="file" force="true"/>
+        <env name="AUTH_ENABLE_FUEL_LEGACY" value="false" force="true"/>
+        <env name="BCRYPT_ROUNDS" value="4" force="true"/>
+        <env name="BROADCAST_CONNECTION" value="null" force="true"/>
+        <env name="CACHE_STORE" value="array" force="true"/>
+        <env name="DB_CONNECTION" value="sqlite" force="true"/>
+        <env name="DB_DATABASE" value=":memory:" force="true"/>
+        <env name="DB_URL" value="" force="true"/>
+        <env name="FUEL_DB_CONNECTION" value="sqlite" force="true"/>
+        <env name="FUEL_DB_URL" value="" force="true"/>
+        <env name="REMOTE_FUEL_DB_URL" value="" force="true"/>
+        <env name="FILESYSTEM_DISK" value="local" force="true"/>
+        <env name="LOG_CHANNEL" value="&quot;null&quot;" force="true"/>
+        <env name="SHIPPO_TOKEN" value="test-token-never-used" force="true"/>
+        <env name="MAIL_MAILER" value="array" force="true"/>
+        <env name="QUEUE_CONNECTION" value="sync" force="true"/>
+        <env name="SESSION_DRIVER" value="array" force="true"/>
+        <env name="PULSE_ENABLED" value="false" force="true"/>
+        <env name="TELESCOPE_ENABLED" value="false" force="true"/>
+        <env name="NIGHTWATCH_ENABLED" value="false" force="true"/>
+        <env name="AWS_ACCESS_KEY_ID" value="" force="true"/>
+        <env name="AWS_SECRET_ACCESS_KEY" value="" force="true"/>
+        <env name="BUY_DTF_SECRET" value="" force="true"/>
+        <env name="DROPBOX_CLIENT_ID" value="" force="true"/>
+        <env name="DROPBOX_CLIENT_SECRET" value="" force="true"/>
+        <env name="NAMENUMBER_TOKEN" value="" force="true"/>
+        <env name="POSTMARK_API_KEY" value="" force="true"/>
+        <env name="QBO_CLIENT_ID" value="" force="true"/>
+        <env name="QBO_CLIENT_SECRET" value="" force="true"/>
+        <env name="QBO_ENVIRONMENT" value="Development" force="true"/>
+        <env name="RESEND_API_KEY" value="" force="true"/>
+        <env name="SLACK_BOT_USER_OAUTH_TOKEN" value="" force="true"/>
+        <env name="STRIPE_KEY" value="" force="true"/>
+        <env name="STRIPE_SECRET" value="" force="true"/>
+        <env name="STRIPE_WEBHOOK_SECRET" value="" force="true"/>
+        <env name="STRIPE_WEBHOOK_SECRET_DEV" value="" force="true"/>
+        <env name="STRIPE_WEBHOOK_SECRET_PROD" value="" force="true"/>
+        <env name="STRIPE_WEBHOOK_SECRETS" value="" force="true"/>
     </php>
 </phpunit>
