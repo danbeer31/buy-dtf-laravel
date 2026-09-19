@@ -37,7 +37,7 @@ The stage command will be:
 python3 atomic_dependency_deploy.py \
   --stage \
   --candidate-lock /absolute/reviewed/bundle/composer.lock \
-  --approval-token STAGE-BUYDTF-DEPS-eeac4637272ca2b9a
+  --approval-token STAGE-BUYDTF-DEPS-eeac4637272ca2b9
 ```
 
 The script acquires an exclusive application deployment lock and then:
@@ -61,7 +61,7 @@ python3 atomic_dependency_deploy.py \
   --cutover \
   --release-receipt /absolute/release/release-receipt.json \
   --release-receipt-sha256 <independently-approved-receipt-sha256> \
-  --approval-token DEPLOY-BUYDTF-DEPS-eeac4637272ca2b9a
+  --approval-token DEPLOY-BUYDTF-DEPS-eeac4637272ca2b9
 ```
 
 The script then:
