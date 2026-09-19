@@ -10,7 +10,7 @@ The artifact contains no Git command, general migration command, `composer updat
 
 | File/artifact | SHA-256 |
 |---|---|
-| `ops/deployment/atomic_dependency_deploy.py` | `bd901ed59d8fcb68adbeeb52eb472e5ecaa5041d611a38c3149555545288411a` |
+| `ops/deployment/atomic_dependency_deploy.py` | `6f4b481a486883190304659ec6b448aab9e8bb52a1d185ccbe7143c3835bdb38` |
 | `ops/deployment/dependency_runtime_probe.php` | `e664bbff0af18ba07763bfb0fd1f2f4d2f4a5f7f2f2e378caed8daeea3ca31b7` |
 | Embedded static maintenance front controller | `94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03` |
 | Candidate `composer.lock` | `eeac4637272ca2b9aeaa797a4440cfc8b4e31f5a469619c46ebfa5791c701831` |
@@ -81,7 +81,7 @@ python3 atomic_dependency_deploy.py \
 The v2 cutover sequence is:
 
 1. Repeat every checksum/CAS, release, health, queue, process, environment, cache, and old PHP-FPM runtime check.
-2. Create a restricted rollback directory containing verified copies of the old lock, complete old bootstrap cache, and original front controller.
+2. Create a restricted rollback directory containing verified copies of the old lock, complete old bootstrap-cache content/modes, and original front controller. The exact old cache directory—including its ownership—is retained by the later atomic exchange because the non-root deploy user cannot impersonate `www-data` ownership on a copy.
 3. Atomically replace `public/index.php` with an embedded PHP front controller that has no autoload or Laravel dependency. After the OPcache revalidation interval, require HTTP 503, a unique response header, and a fixed response-body sentinel on both `/` and a random application route.
 4. Drain for 65 seconds, prove business activity did not change, require zero connected FastCGI requests, and repeat the full source/vendor/cache/lock CAS while the static gate remains active.
 5. Atomically exchange `vendor/` with the staged candidate using one `renameat2(RENAME_EXCHANGE)` call.
@@ -89,7 +89,7 @@ The v2 cutover sequence is:
 7. Atomically replace only `composer.lock`, then run the first candidate boot through the reviewed runtime helper. No live `package:discover` is needed or run.
 8. Verify candidate Laravel/Guzzle versions and paths twice through PHP-FPM after the OPcache interval.
 9. Atomically restore the exact original front controller, run the public health matrix, and monitor HTTP/runtime/queue state for 30 minutes with rollback still armed.
-10. Retain the old vendor and exact old cache at the staged release paths plus all rollback evidence.
+10. Retain the old vendor and exact old cache (including ownership and modes) at the staged release paths plus the independent restricted cache evidence copy and all rollback evidence.
 
 ## Boot-independent Automatic Rollback and Recovery
 

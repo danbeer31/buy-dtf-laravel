@@ -904,20 +904,20 @@ def copy_cache_snapshot(source: Path, destination: Path) -> dict[str, Any]:
         relative = source_path.relative_to(source)
         destination_path = destination / relative
         metadata = path_metadata(source_path)
-        os.chown(destination_path, int(metadata["uid"]), int(metadata["gid"]))
         os.chmod(destination_path, int(metadata["mode"]))
-    source_root_metadata = source_identity["root_metadata"]
-    os.chown(
-        destination,
-        int(source_root_metadata["uid"]),
-        int(source_root_metadata["gid"]),
-    )
-    os.chmod(destination, int(source_root_metadata["mode"]))
+    # The deploy user cannot and must not impersonate www-data ownership on a
+    # copied directory. The exact old cache (including ownership) is retained
+    # by directory exchange; this restricted copy is independent evidence and
+    # a content/mode backup only.
+    os.chmod(destination, 0o700)
     fsync_directory(destination)
-    destination_identity = cache_identity(destination)
-    if destination_identity != source_identity:
-        raise DeploymentError("Bootstrap-cache rollback copy is not an exact identity match.")
-    return destination_identity
+    copy_identity = cache_identity(destination)
+    if copy_identity["manifest"] != source_identity["manifest"]:
+        raise DeploymentError("Bootstrap-cache evidence copy differs in content or mode.")
+    return {
+        "source_identity": source_identity,
+        "copy_identity": copy_identity,
+    }
 
 
 def probe_static_gate() -> dict[str, Any]:
@@ -1239,8 +1239,11 @@ def rollback_from_state(
         )
         inject("after_rollback_gate_install")
         require_regular_file(Path(state["old_lock_backup"]), EXPECTED_LIVE_LOCK_SHA256)
-        if cache_identity(Path(state["cache_backup"])) != state["cache_backup_identity"]:
+        cache_backup = state["cache_backup_evidence"]
+        if cache_identity(Path(state["cache_backup"])) != cache_backup["copy_identity"]:
             raise DeploymentError("Rollback bootstrap cache backup differs from its recorded manifest.")
+        if cache_backup["source_identity"] != state["retained_cache_identity"]:
+            raise DeploymentError("Rollback cache evidence references a different retained cache.")
         require_regular_file(
             Path(state["front_controller_backup"]),
             state["front_controller_backup_sha256"],
@@ -1360,8 +1363,8 @@ def cutover(
     old_lock_backup = rollback_directory / "composer.lock.before"
     atomic_copy(APP_ROOT / "composer.lock", old_lock_backup, 0o600)
     cache_backup = rollback_directory / "bootstrap-cache-before"
-    cache_backup_identity = copy_cache_snapshot(APP_ROOT / "bootstrap/cache", cache_backup)
-    if cache_backup_identity != baseline["cache"]:
+    cache_backup_evidence = copy_cache_snapshot(APP_ROOT / "bootstrap/cache", cache_backup)
+    if cache_backup_evidence["source_identity"] != baseline["cache"]:
         raise DeploymentError("Bootstrap-cache rollback copy differs from production.")
     front_controller_backup = rollback_directory / "public-index.before.php"
     atomic_copy(FRONT_CONTROLLER, front_controller_backup, 0o600)
@@ -1382,7 +1385,7 @@ def cutover(
         "retained_cache_identity": receipt["retained_cache_identity"],
         "old_lock_backup": str(old_lock_backup),
         "cache_backup": str(cache_backup),
-        "cache_backup_identity": cache_backup_identity,
+        "cache_backup_evidence": cache_backup_evidence,
         "front_controller_backup": str(front_controller_backup),
         "front_controller_backup_sha256": sha256_file(front_controller_backup),
         "front_controller_metadata": baseline["front_controller"]["metadata"],
