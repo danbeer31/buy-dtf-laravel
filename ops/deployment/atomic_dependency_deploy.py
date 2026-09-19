@@ -32,18 +32,23 @@ RELEASE_ROOT = APP_ROOT / "storage/app/private/operations/dependency-releases"
 ROLLBACK_ROOT = APP_ROOT / "storage/app/private/operations/dependency-rollbacks"
 DEPLOYMENT_LOCK = APP_ROOT / "storage/framework/dependency-deployment.lock"
 FPM_SOCKET = Path("/run/php/php8.2-fpm.sock")
-MAINTENANCE_FILE = APP_ROOT / "storage/framework/down"
+LARAVEL_MAINTENANCE_FILE = APP_ROOT / "storage/framework/down"
+FRONT_CONTROLLER = APP_ROOT / "public/index.php"
 MAINTENANCE_PROBE_URL = "https://buy-dtf.com/"
 
 EXPECTED_APP_UID = 1000
 EXPECTED_APP_GID = 1000
+EXPECTED_WEB_GID = 33
 EXPECTED_LIVE_COMPOSER_JSON_SHA256 = "7098f3a19cb65f88bcc945f019dda0aa7f515737eb5d4918c30705f25c6ad872"
 EXPECTED_LIVE_LOCK_SHA256 = "16eef909889a727717fccf52e9c7c23e8a0d2cc661777f6044abde97713d2579"
 CANDIDATE_LOCK_SHA256 = "eeac4637272ca2b9aeaa797a4440cfc8b4e31f5a469619c46ebfa5791c701831"
 EXPECTED_DATABASE_CONFIG_SHA256 = "d25ab83243dc255e43ddbaa856991dae93016dd8ff77fa11be20d222693bb8f9"
 EXPECTED_SOURCE_MANIFEST_SHA256 = "46f6a1ffa03364b550395c89111a0d69a844d1379f3c5aba6ed5c1e17616abca"
 EXPECTED_LIVE_VENDOR_MANIFEST_SHA256 = "738c326e7f8e9199d36d0bb754eff031c38c5f69603bb56baa3cd189c98dbdcc"
-RUNTIME_HELPER_SHA256 = "deb44c9c1bccc24ec91ee4ea504184000f30525763aa497b415611509d711dae"
+EXPECTED_FRONT_CONTROLLER_SHA256 = "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
+EXPECTED_APP_ENVIRONMENT = "local"
+EXPECTED_APP_DEBUG = False
+RUNTIME_HELPER_SHA256 = "e664bbff0af18ba07763bfb0fd1f2f4d2f4a5f7f2f2e378caed8daeea3ca31b7"
 
 OLD_LARAVEL_VERSION = "12.46.0"
 OLD_GUZZLE_VERSION = "7.10.0"
@@ -80,6 +85,42 @@ NORMAL_HEALTH_CHECKS = (
 
 AT_FDCWD = -100
 RENAME_EXCHANGE = 2
+
+REQUIRED_CANDIDATE_CACHE_FILES = frozenset({"packages.php", "services.php"})
+CUTOVER_TRANSITIONS = (
+    "after_gate_install",
+    "after_vendor_exchange",
+    "after_cache_exchange",
+    "after_lock_replacement",
+    "after_candidate_runtime",
+    "after_candidate_fpm_probes",
+    "after_candidate_gate_open",
+    "after_candidate_health",
+)
+ROLLBACK_TRANSITIONS = (
+    "after_rollback_gate_install",
+    "after_rollback_vendor",
+    "after_rollback_cache",
+    "after_rollback_lock",
+    "after_rollback_runtime",
+    "after_rollback_fpm_probes",
+    "after_rollback_gate_open",
+    "after_rollback_health",
+)
+MAINTENANCE_GATE_HEADER = "X-BuyDTF-Dependency-Maintenance: static-v2"
+MAINTENANCE_GATE_SENTINEL = "BUYDTF_DEPENDENCY_MAINTENANCE_STATIC_V2"
+MAINTENANCE_GATE_BYTES = f"""<?php
+declare(strict_types=1);
+
+http_response_code(503);
+header('Content-Type: text/plain; charset=UTF-8');
+header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+header('Pragma: no-cache');
+header('Retry-After: 120');
+header('{MAINTENANCE_GATE_HEADER}');
+echo '{MAINTENANCE_GATE_SENTINEL}';
+""".encode("utf-8")
+MAINTENANCE_GATE_SHA256 = hashlib.sha256(MAINTENANCE_GATE_BYTES).hexdigest()
 
 
 class DeploymentError(RuntimeError):
@@ -187,6 +228,55 @@ def atomic_copy(source: Path, destination: Path, mode: int | None = None) -> Non
         temporary.unlink(missing_ok=True)
 
 
+def path_metadata(path: Path) -> dict[str, int | str]:
+    if path.is_symlink():
+        raise DeploymentError(f"Symbolic path metadata is not allowed: {path}")
+    metadata = path.stat()
+    if stat.S_ISREG(metadata.st_mode):
+        kind = "file"
+    elif stat.S_ISDIR(metadata.st_mode):
+        kind = "directory"
+    else:
+        raise DeploymentError(f"Special path metadata is not allowed: {path}")
+    return {
+        "kind": kind,
+        "mode": stat.S_IMODE(metadata.st_mode),
+        "uid": metadata.st_uid,
+        "gid": metadata.st_gid,
+    }
+
+
+def require_path_metadata(path: Path, expected: dict[str, Any]) -> None:
+    actual = path_metadata(path)
+    if actual != expected:
+        raise DeploymentError(f"Path metadata differs from the approved identity: {path}")
+
+
+def atomic_install_bytes(path: Path, content: bytes, metadata: dict[str, Any]) -> None:
+    parent = require_real_directory(path.parent)
+    if metadata.get("kind") != "file":
+        raise DeploymentError("Atomic file installation requires regular-file metadata.")
+    mode = metadata.get("mode")
+    uid = metadata.get("uid")
+    gid = metadata.get("gid")
+    if not all(isinstance(value, int) for value in (mode, uid, gid)):
+        raise DeploymentError("Atomic file installation metadata is invalid.")
+    temporary = path.with_name(f".{path.name}.tmp-{os.getpid()}-{secrets.token_hex(4)}")
+    descriptor = os.open(temporary, os.O_WRONLY | os.O_CREAT | os.O_EXCL, mode)
+    try:
+        os.fchown(descriptor, uid, gid)
+        os.fchmod(descriptor, mode)
+        with os.fdopen(descriptor, "wb") as handle:
+            handle.write(content)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temporary, path)
+        fsync_directory(parent)
+        require_path_metadata(path, metadata)
+    finally:
+        temporary.unlink(missing_ok=True)
+
+
 def run(
     command: list[str],
     *,
@@ -254,6 +344,71 @@ def tree_manifest(root: Path) -> dict[str, Any]:
         "directories": directory_count,
         "bytes": total_bytes,
     }
+
+
+def cache_identity(root: Path) -> dict[str, Any]:
+    root = require_real_directory(root)
+    entries: dict[str, dict[str, Any]] = {}
+    for path in sorted(root.rglob("*"), key=lambda item: item.as_posix()):
+        if path.is_symlink():
+            raise DeploymentError(f"Bootstrap cache contains a symbolic path: {path}")
+        relative = path.relative_to(root).as_posix()
+        metadata = path_metadata(path)
+        if metadata["kind"] == "file":
+            metadata = {
+                **metadata,
+                "bytes": path.stat().st_size,
+                "sha256": sha256_file(path),
+            }
+        entries[relative] = metadata
+    return {
+        "manifest": tree_manifest(root),
+        "root_metadata": path_metadata(root),
+        "entries": entries,
+    }
+
+
+def require_cache_identity(root: Path, expected: dict[str, Any]) -> None:
+    if cache_identity(root) != expected:
+        raise DeploymentError(f"Bootstrap cache differs from its approved identity: {root}")
+
+
+def normalize_candidate_cache(root: Path) -> dict[str, Any]:
+    root = require_real_directory(root)
+    entries = list(root.iterdir())
+    names = {entry.name for entry in entries}
+    if names != REQUIRED_CANDIDATE_CACHE_FILES:
+        raise DeploymentError("Candidate bootstrap cache has an unexpected file set.")
+    os.chown(root, EXPECTED_APP_UID, EXPECTED_WEB_GID)
+    os.chmod(root, 0o2775)
+    for entry in entries:
+        require_regular_file(entry)
+        if b"Pail" in entry.read_bytes():
+            raise DeploymentError("Candidate bootstrap cache references the dev-only Pail provider.")
+        os.chown(entry, EXPECTED_APP_UID, EXPECTED_WEB_GID)
+        os.chmod(entry, 0o664)
+    fsync_directory(root)
+    identity = cache_identity(root)
+    if identity["root_metadata"] != {
+        "kind": "directory",
+        "mode": 0o2775,
+        "uid": EXPECTED_APP_UID,
+        "gid": EXPECTED_WEB_GID,
+    }:
+        raise DeploymentError("Candidate bootstrap cache metadata could not be normalized.")
+    return identity
+
+
+def require_candidate_cache(root: Path, expected: dict[str, Any]) -> None:
+    root = require_real_directory(root)
+    entries = list(root.iterdir())
+    if {entry.name for entry in entries} != REQUIRED_CANDIDATE_CACHE_FILES:
+        raise DeploymentError("Staged candidate bootstrap cache file set changed.")
+    for entry in entries:
+        require_regular_file(entry)
+        if b"Pail" in entry.read_bytes():
+            raise DeploymentError("Staged candidate bootstrap cache references Pail.")
+    require_cache_identity(root, expected)
 
 
 def source_manifest(app_root: Path) -> dict[str, Any]:
@@ -400,6 +555,10 @@ def runtime_probe(helper: Path) -> dict[str, Any]:
 
 
 def validate_runtime_baseline(payload: dict[str, Any], *, laravel: str, guzzle: str) -> None:
+    if payload.get("app_environment") != EXPECTED_APP_ENVIRONMENT:
+        raise DeploymentError("The live application environment differs from the reported baseline.")
+    if payload.get("app_debug") is not EXPECTED_APP_DEBUG:
+        raise DeploymentError("The live application debug setting differs from the reported baseline.")
     if payload.get("queue_connection") != "sync":
         raise DeploymentError("The live queue connection is no longer sync.")
     queue_tables = payload.get("queue_tables")
@@ -443,7 +602,12 @@ def validate_toolchain() -> None:
         raise DeploymentError("Composer differs from the reviewed 2.9.3 baseline.")
 
 
-def assert_production_baseline(helper: Path, *, check_old_vendor: bool = True) -> dict[str, Any]:
+def assert_production_baseline(
+    helper: Path,
+    *,
+    check_old_vendor: bool = True,
+    expected_front_controller_sha256: str = EXPECTED_FRONT_CONTROLLER_SHA256,
+) -> dict[str, Any]:
     if os.geteuid() == 0:
         raise DeploymentError("Refusing to run application deployment as root.")
     validate_toolchain()
@@ -455,13 +619,32 @@ def assert_production_baseline(helper: Path, *, check_old_vendor: bool = True) -
     require_regular_file(APP_ROOT / "composer.lock", EXPECTED_LIVE_LOCK_SHA256)
     require_regular_file(APP_ROOT / "config/database.php", EXPECTED_DATABASE_CONFIG_SHA256)
     require_regular_file(helper, RUNTIME_HELPER_SHA256)
+    require_regular_file(FRONT_CONTROLLER, expected_front_controller_sha256)
+    front_controller_metadata = path_metadata(FRONT_CONTROLLER)
+    if front_controller_metadata != {
+        "kind": "file",
+        "mode": 0o644,
+        "uid": EXPECTED_APP_UID,
+        "gid": EXPECTED_APP_GID,
+    }:
+        raise DeploymentError("The production front-controller metadata differs from baseline.")
+    if LARAVEL_MAINTENANCE_FILE.exists():
+        raise DeploymentError("Laravel maintenance mode is unexpectedly active.")
     source = source_manifest(APP_ROOT)
     if source["sha256"] != EXPECTED_SOURCE_MANIFEST_SHA256:
         raise DeploymentError("Production runtime-source CAS manifest differs from the approved baseline.")
     vendor = tree_manifest(APP_ROOT / "vendor")
     if check_old_vendor and vendor["sha256"] != EXPECTED_LIVE_VENDOR_MANIFEST_SHA256:
         raise DeploymentError("Live vendor manifest differs from the retained rollback baseline.")
-    return {"source": source, "vendor": vendor}
+    return {
+        "source": source,
+        "vendor": vendor,
+        "cache": cache_identity(APP_ROOT / "bootstrap/cache"),
+        "front_controller": {
+            "sha256": expected_front_controller_sha256,
+            "metadata": front_controller_metadata,
+        },
+    }
 
 
 def safe_environment(composer_home: Path) -> dict[str, str]:
@@ -529,6 +712,8 @@ def stage_release(candidate_lock: Path, approval_token: str, helper: Path) -> Pa
     if scoped_processes():
         raise DeploymentError("A scoped Artisan/payout process is active; staging stopped.")
     before_health = health_snapshot()
+    before_runtime = runtime_probe(helper)
+    validate_runtime_baseline(before_runtime, laravel=OLD_LARAVEL_VERSION, guzzle=OLD_GUZZLE_VERSION)
 
     RELEASE_ROOT.mkdir(mode=0o700, parents=True, exist_ok=True)
     os.chmod(RELEASE_ROOT, 0o700)
@@ -630,6 +815,7 @@ def stage_release(candidate_lock: Path, approval_token: str, helper: Path) -> Pa
     command_receipts["shadow_routes"] = write_command_result(logs / "shadow-routes.txt", routes)
 
     vendor = tree_manifest(shadow / "vendor")
+    candidate_cache = normalize_candidate_cache(shadow / "bootstrap/cache")
     installed = json.loads((shadow / "vendor/composer/installed.json").read_text(encoding="utf-8"))
     packages = installed.get("packages", installed) if isinstance(installed, dict) else installed
     versions = {
@@ -641,9 +827,13 @@ def stage_release(candidate_lock: Path, approval_token: str, helper: Path) -> Pa
         raise DeploymentError("Staged Laravel version is not the approved candidate.")
     if not str(versions.get("guzzlehttp/guzzle", "")).startswith(NEW_GUZZLE_VERSION):
         raise DeploymentError("Staged Guzzle version is not the approved candidate.")
+    if "laravel/pail" in versions:
+        raise DeploymentError("The no-dev candidate unexpectedly contains Laravel Pail.")
+    if (shadow / "vendor/laravel/pail").exists():
+        raise DeploymentError("The no-dev candidate contains a Laravel Pail directory.")
 
     receipt = {
-        "artifact": "buy-dtf-dependency-release-v1",
+        "artifact": "buy-dtf-dependency-release-v2",
         "status": "staged",
         "created_at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "release_path": str(release),
@@ -652,15 +842,21 @@ def stage_release(candidate_lock: Path, approval_token: str, helper: Path) -> Pa
         "live_composer_json_sha256": EXPECTED_LIVE_COMPOSER_JSON_SHA256,
         "approved_source_manifest": baseline["source"],
         "retained_vendor_manifest": baseline["vendor"],
+        "retained_cache_identity": baseline["cache"],
+        "candidate_cache_identity": candidate_cache,
         "candidate_vendor_manifest": vendor,
+        "front_controller": baseline["front_controller"],
+        "maintenance_gate_sha256": MAINTENANCE_GATE_SHA256,
         "command_receipts": command_receipts,
         "health_before": before_health,
+        "runtime_before": before_runtime,
         "script_sha256": sha256_file(Path(__file__).resolve()),
         "runtime_helper_sha256": RUNTIME_HELPER_SHA256,
         "versions": {
             "laravel/framework": NEW_LARAVEL_VERSION,
             "guzzlehttp/guzzle": NEW_GUZZLE_VERSION,
         },
+        "no_dev": True,
     }
     receipt_path = release / "release-receipt.json"
     atomic_json(receipt_path, receipt)
@@ -677,7 +873,7 @@ def load_approved_release(receipt_path: Path, approved_sha256: str) -> tuple[dic
         receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
     except json.JSONDecodeError as exception:
         raise DeploymentError("Release receipt is invalid JSON.") from exception
-    if receipt.get("artifact") != "buy-dtf-dependency-release-v1" or receipt.get("status") != "staged":
+    if receipt.get("artifact") != "buy-dtf-dependency-release-v2" or receipt.get("status") != "staged":
         raise DeploymentError("Release receipt is not an approved staged release.")
     if receipt.get("candidate_lock_sha256") != CANDIDATE_LOCK_SHA256:
         raise DeploymentError("Release receipt references a different candidate lock.")
@@ -687,6 +883,14 @@ def load_approved_release(receipt_path: Path, approved_sha256: str) -> tuple[dic
     vendor = tree_manifest(shadow / "vendor")
     if vendor != receipt.get("candidate_vendor_manifest"):
         raise DeploymentError("Staged vendor differs from the approved release receipt.")
+    candidate_cache = receipt.get("candidate_cache_identity")
+    if not isinstance(candidate_cache, dict):
+        raise DeploymentError("Release receipt has no candidate bootstrap-cache identity.")
+    require_candidate_cache(shadow / "bootstrap/cache", candidate_cache)
+    if receipt.get("maintenance_gate_sha256") != MAINTENANCE_GATE_SHA256:
+        raise DeploymentError("Release receipt references a different static maintenance gate.")
+    if receipt.get("no_dev") is not True:
+        raise DeploymentError("Release receipt does not prove a no-dev dependency install.")
     return receipt, shadow
 
 
@@ -694,111 +898,115 @@ def copy_cache_snapshot(source: Path, destination: Path) -> dict[str, Any]:
     source = require_real_directory(source, within=APP_ROOT)
     if destination.exists():
         raise DeploymentError("Cache backup destination already exists.")
+    source_identity = cache_identity(source)
     shutil.copytree(source, destination, symlinks=False)
-    os.chmod(destination, 0o700)
-    return tree_manifest(destination)
-
-
-def restore_cache_snapshot(snapshot: Path, destination: Path) -> None:
-    snapshot = require_real_directory(snapshot, within=ROLLBACK_ROOT)
-    destination = require_real_directory(destination, within=APP_ROOT)
-    for child in destination.iterdir():
-        if child.is_symlink():
-            raise DeploymentError(f"Refusing to remove symbolic cache entry: {child}")
-        if child.is_dir():
-            shutil.rmtree(child)
-        elif child.is_file():
-            child.unlink()
-        else:
-            raise DeploymentError(f"Refusing to remove special cache entry: {child}")
-    for child in snapshot.iterdir():
-        target = destination / child.name
-        if child.is_dir():
-            shutil.copytree(child, target, symlinks=False)
-        else:
-            shutil.copy2(child, target, follow_symlinks=False)
-    fsync_directory(destination)
-
-
-def artisan(command: str, *arguments: str, timeout: int = 120) -> subprocess.CompletedProcess[str]:
-    allowed = {"down", "up", "package:discover"}
-    if command not in allowed:
-        raise DeploymentError(f"Refusing non-allowlisted Artisan command: {command}")
-    return run(
-        ["/usr/bin/php", "artisan", command, *arguments, "--no-ansi"],
-        cwd=APP_ROOT,
-        timeout=timeout,
+    for source_path in sorted(source.rglob("*"), key=lambda item: item.as_posix()):
+        relative = source_path.relative_to(source)
+        destination_path = destination / relative
+        metadata = path_metadata(source_path)
+        os.chown(destination_path, int(metadata["uid"]), int(metadata["gid"]))
+        os.chmod(destination_path, int(metadata["mode"]))
+    source_root_metadata = source_identity["root_metadata"]
+    os.chown(
+        destination,
+        int(source_root_metadata["uid"]),
+        int(source_root_metadata["gid"]),
     )
+    os.chmod(destination, int(source_root_metadata["mode"]))
+    fsync_directory(destination)
+    destination_identity = cache_identity(destination)
+    if destination_identity != source_identity:
+        raise DeploymentError("Bootstrap-cache rollback copy is not an exact identity match.")
+    return destination_identity
 
 
-def verify_maintenance(expected_secret: str | None = None) -> dict[str, Any]:
-    marker = require_regular_file(MAINTENANCE_FILE)
-    try:
-        payload = json.loads(marker.read_text(encoding="utf-8"))
-    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exception:
-        raise DeploymentError("Laravel maintenance marker is unreadable or invalid.") from exception
-    if not isinstance(payload, dict):
-        raise DeploymentError("Laravel maintenance marker has an invalid payload.")
-    if expected_secret is not None:
-        actual_secret = payload.get("secret")
-        if not isinstance(actual_secret, str) or not secrets.compare_digest(
-            actual_secret, expected_secret
-        ):
-            raise DeploymentError("Laravel maintenance marker does not contain the new bypass secret.")
-    status = http_status(MAINTENANCE_PROBE_URL, cache_buster=True)
-    if status != 503:
-        raise DeploymentError(
-            f"Public maintenance probe returned HTTP {status}; expected HTTP 503."
+def probe_static_gate() -> dict[str, Any]:
+    statuses: dict[str, int] = {}
+    for target in (
+        MAINTENANCE_PROBE_URL,
+        f"https://buy-dtf.com/__dependency_gate_{secrets.token_hex(12)}",
+    ):
+        completed = run(
+            [
+                "/usr/bin/curl",
+                "--silent",
+                "--show-error",
+                "--dump-header",
+                "-",
+                "--output",
+                "-",
+                "--header",
+                "Cache-Control: no-cache, no-store",
+                "--header",
+                "Pragma: no-cache",
+                "--connect-timeout",
+                "5",
+                "--max-time",
+                "10",
+                "--max-redirs",
+                "0",
+                target,
+            ],
+            cwd=APP_ROOT,
+            timeout=15,
         )
+        output = completed.stdout.replace("\r\n", "\n")
+        first_line = output.splitlines()[0] if output.splitlines() else ""
+        if " 503 " not in first_line:
+            raise DeploymentError("Static maintenance gate did not return HTTP 503.")
+        if MAINTENANCE_GATE_HEADER.lower() not in output.lower():
+            raise DeploymentError("Static maintenance gate response header is missing.")
+        if MAINTENANCE_GATE_SENTINEL not in output:
+            raise DeploymentError("Static maintenance gate response body is missing.")
+        statuses[target] = 503
     return {
         "verified_at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-        "marker_sha256": sha256_file(marker),
-        "public_url": MAINTENANCE_PROBE_URL,
-        "public_status": status,
+        "gate_sha256": sha256_file(FRONT_CONTROLLER),
+        "public_statuses": statuses,
     }
 
 
-def restore_reviewed_maintenance_marker(
-    state: dict[str, Any], state_path: Path
+def install_static_gate(
+    state: dict[str, Any], _state_path: Path, reason: str
 ) -> dict[str, Any]:
-    backup_value = state.get("maintenance_marker_backup")
-    backup_sha256 = state.get("maintenance_marker_sha256")
-    marker_mode = state.get("maintenance_marker_mode")
-    if not isinstance(backup_value, str) or not isinstance(backup_sha256, str):
-        raise DeploymentError("No reviewed maintenance-marker backup is available.")
-    if not isinstance(marker_mode, int) or marker_mode < 0o400 or marker_mode > 0o666:
-        raise DeploymentError("Recorded maintenance-marker mode is invalid.")
-    backup = require_regular_file(Path(backup_value), backup_sha256)
-    rollback_root = ROLLBACK_ROOT.resolve(strict=True)
-    state_directory = state_path.resolve(strict=True).parent
-    expected_backup = state_directory / "maintenance-down.before"
-    if (
-        not is_relative_to(state_directory, rollback_root)
-        or backup != expected_backup
-        or not is_relative_to(backup, rollback_root)
-    ):
-        raise DeploymentError("Maintenance-marker backup is outside the rollback root.")
-    atomic_copy(backup, MAINTENANCE_FILE, marker_mode)
-    evidence = verify_maintenance()
-    evidence["method"] = "reviewed_marker_restore"
-    return evidence
-
-
-def reassert_maintenance(
-    state: dict[str, Any], state_path: Path, reason: str
-) -> dict[str, Any]:
-    secret = secrets.token_urlsafe(24)
-    try:
-        artisan("down", f"--secret={secret}")
-        evidence = verify_maintenance(secret)
-        evidence["method"] = "artisan_down"
-    except (DeploymentError, OSError, subprocess.TimeoutExpired):
-        evidence = restore_reviewed_maintenance_marker(state, state_path)
+    metadata = state.get("front_controller_metadata")
+    if not isinstance(metadata, dict):
+        raise DeploymentError("Front-controller metadata is unavailable for the static gate.")
+    atomic_install_bytes(FRONT_CONTROLLER, MAINTENANCE_GATE_BYTES, metadata)
+    require_regular_file(FRONT_CONTROLLER, MAINTENANCE_GATE_SHA256)
+    time.sleep(OPCACHE_WAIT_SECONDS)
+    evidence = probe_static_gate()
+    evidence["method"] = "atomic_static_front_controller"
     evidence["reason"] = reason
     return evidence
 
 
-def reassert_and_record_maintenance(
+def restore_front_controller(state: dict[str, Any], state_path: Path) -> dict[str, Any]:
+    backup_value = state.get("front_controller_backup")
+    backup_sha256 = state.get("front_controller_backup_sha256")
+    metadata = state.get("front_controller_metadata")
+    if not isinstance(backup_value, str) or not isinstance(backup_sha256, str):
+        raise DeploymentError("Front-controller rollback backup is unavailable.")
+    if not isinstance(metadata, dict):
+        raise DeploymentError("Front-controller rollback metadata is unavailable.")
+    backup = require_regular_file(Path(backup_value), backup_sha256)
+    state_directory = state_path.resolve(strict=True).parent
+    expected_backup = state_directory / "public-index.before.php"
+    if (
+        not is_relative_to(state_directory, ROLLBACK_ROOT.resolve(strict=True))
+        or backup != expected_backup
+    ):
+        raise DeploymentError("Front-controller rollback backup is outside the state directory.")
+    atomic_install_bytes(FRONT_CONTROLLER, backup.read_bytes(), metadata)
+    require_regular_file(FRONT_CONTROLLER, EXPECTED_FRONT_CONTROLLER_SHA256)
+    time.sleep(OPCACHE_WAIT_SECONDS)
+    return {
+        "restored_at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "front_controller_sha256": sha256_file(FRONT_CONTROLLER),
+    }
+
+
+def reassert_and_record_gate(
     state: dict[str, Any],
     state_path: Path,
     reason: str,
@@ -806,16 +1014,16 @@ def reassert_and_record_maintenance(
     status: str | None = None,
     operation: Callable[[dict[str, Any], Path, str], dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
-    # Never trust the persisted maintenance_active flag. The public 503 and the
-    # marker are freshly re-established before any rollback mutation.
-    reassertion = operation or reassert_maintenance
+    # Never trust persisted gate state. Reinstall and verify the boot-independent
+    # front controller before every rollback or recovery mutation.
+    reassertion = operation or install_static_gate
     evidence = reassertion(state, state_path, reason)
-    history = state.setdefault("maintenance_reassertions", [])
+    history = state.setdefault("gate_reassertions", [])
     if not isinstance(history, list):
-        raise DeploymentError("Maintenance reassertion history is invalid.")
+        raise DeploymentError("Static-gate reassertion history is invalid.")
     history.append(evidence)
-    state["maintenance_active"] = True
-    state["maintenance_verified"] = True
+    state["gate_active"] = True
+    state["gate_verified"] = True
     if status is not None:
         state["status"] = status
     write_state(state_path, state)
@@ -830,26 +1038,26 @@ def contain_cutover_failure(
     operation: Callable[[dict[str, Any], Path, str], dict[str, Any]] | None = None,
 ) -> None:
     try:
-        reassert_and_record_maintenance(
+        reassert_and_record_gate(
             state,
             state_path,
             "cutover_failure",
-            status="failure_contained_in_maintenance",
+            status="failure_contained_by_static_gate",
             operation=operation,
         )
-    except BaseException as maintenance_exception:
-        state["maintenance_active"] = None
-        state["maintenance_verified"] = False
+    except BaseException as gate_exception:
+        state["gate_active"] = None
+        state["gate_verified"] = False
         state["failure_class"] = type(exception).__name__
         state["failure_message"] = str(exception)
-        state["maintenance_failure_class"] = type(maintenance_exception).__name__
-        state["maintenance_failure_message"] = str(maintenance_exception)
-        state["status"] = "failed_maintenance_unverified"
+        state["gate_failure_class"] = type(gate_exception).__name__
+        state["gate_failure_message"] = str(gate_exception)
+        state["status"] = "failed_static_gate_unverified"
         write_state(state_path, state)
         raise DeploymentError(
-            "Cutover failed and public maintenance could not be re-verified; "
+            "Cutover failed and the boot-independent 503 gate could not be re-verified; "
             "automatic rollback was not started."
-        ) from maintenance_exception
+        ) from gate_exception
     state["failure_class"] = type(exception).__name__
     state["failure_message"] = str(exception)
     state["status"] = "failed_rolling_back"
@@ -864,29 +1072,29 @@ def contain_rollback_failure(
     operation: Callable[[dict[str, Any], Path, str], dict[str, Any]] | None = None,
 ) -> None:
     try:
-        reassert_and_record_maintenance(
+        reassert_and_record_gate(
             state,
             state_path,
             "rollback_failure",
-            status="rollback_failure_in_maintenance",
+            status="rollback_failure_contained_by_static_gate",
             operation=operation,
         )
-    except BaseException as maintenance_exception:
-        state["maintenance_active"] = None
-        state["maintenance_verified"] = False
+    except BaseException as gate_exception:
+        state["gate_active"] = None
+        state["gate_verified"] = False
         state["rollback_failure_class"] = type(exception).__name__
         state["rollback_failure_message"] = str(exception)
-        state["maintenance_failure_class"] = type(maintenance_exception).__name__
-        state["maintenance_failure_message"] = str(maintenance_exception)
-        state["status"] = "rollback_failed_maintenance_unverified"
+        state["gate_failure_class"] = type(gate_exception).__name__
+        state["gate_failure_message"] = str(gate_exception)
+        state["status"] = "rollback_failed_static_gate_unverified"
         write_state(state_path, state)
         raise DeploymentError(
-            "Rollback failed and public maintenance could not be re-verified; "
+            "Rollback failed and the boot-independent 503 gate could not be re-verified; "
             "no subsequent rollback step will run."
-        ) from maintenance_exception
+        ) from gate_exception
     state["rollback_failure_class"] = type(exception).__name__
     state["rollback_failure_message"] = str(exception)
-    state["status"] = "rollback_failed_maintenance_verified"
+    state["status"] = "rollback_failed_static_gate_verified"
     write_state(state_path, state)
 
 
@@ -964,6 +1172,50 @@ def write_state(path: Path, state: dict[str, Any]) -> None:
     atomic_json(path, state)
 
 
+def validate_rollback_state_paths(state: dict[str, Any], state_path: Path) -> None:
+    state_path = require_regular_file(state_path)
+    state_directory = state_path.parent.resolve(strict=True)
+    if not is_relative_to(state_directory, ROLLBACK_ROOT.resolve(strict=True)):
+        raise DeploymentError("Rollback state directory is outside the fixed rollback root.")
+    expected_files = {
+        "old_lock_backup": state_directory / "composer.lock.before",
+        "front_controller_backup": state_directory / "public-index.before.php",
+    }
+    for field, expected in expected_files.items():
+        value = state.get(field)
+        if not isinstance(value, str) or Path(value).resolve(strict=True) != expected:
+            raise DeploymentError(f"Rollback state has an invalid {field} path.")
+    cache_value = state.get("cache_backup")
+    if not isinstance(cache_value, str):
+        raise DeploymentError("Rollback state has no cache-backup path.")
+    cache_backup = require_real_directory(Path(cache_value), within=ROLLBACK_ROOT)
+    if cache_backup != state_directory / "bootstrap-cache-before":
+        raise DeploymentError("Rollback cache backup is outside the state directory.")
+
+    receipt_value = state.get("release_receipt")
+    receipt_sha256 = state.get("release_receipt_sha256")
+    if not isinstance(receipt_value, str) or not isinstance(receipt_sha256, str):
+        raise DeploymentError("Rollback state has no approved release receipt.")
+    receipt_path = require_regular_file(Path(receipt_value), receipt_sha256)
+    if not is_relative_to(receipt_path, RELEASE_ROOT.resolve(strict=True)):
+        raise DeploymentError("Rollback release receipt is outside the fixed release root.")
+    try:
+        receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exception:
+        raise DeploymentError("Rollback release receipt is invalid JSON.") from exception
+    if receipt.get("artifact") != "buy-dtf-dependency-release-v2":
+        raise DeploymentError("Rollback release receipt has an unexpected artifact identity.")
+    shadow = require_real_directory(Path(str(receipt.get("shadow_path", ""))), within=RELEASE_ROOT)
+    if Path(str(state.get("staged_vendor", ""))).resolve(strict=True) != shadow / "vendor":
+        raise DeploymentError("Rollback staged-vendor path differs from its release receipt.")
+    if Path(str(state.get("staged_cache", ""))).resolve(strict=True) != shadow / "bootstrap/cache":
+        raise DeploymentError("Rollback staged-cache path differs from its release receipt.")
+    if state.get("script_sha256") != sha256_file(Path(__file__).resolve()):
+        raise DeploymentError("Rollback state was created by a different deployment script.")
+    if state.get("runtime_helper_sha256") != RUNTIME_HELPER_SHA256:
+        raise DeploymentError("Rollback state references a different runtime helper.")
+
+
 def rollback_from_state(
     state: dict[str, Any],
     state_path: Path,
@@ -971,17 +1223,28 @@ def rollback_from_state(
     *,
     failure_injector: Callable[[str], None] | None = None,
 ) -> None:
+    validate_rollback_state_paths(state, state_path)
     state["rollback_started"] = True
+
+    def inject(stage: str) -> None:
+        if failure_injector is not None:
+            failure_injector(stage)
+
     try:
-        reassert_and_record_maintenance(
+        reassert_and_record_gate(
             state,
             state_path,
             "rollback_start",
-            status="rollback_in_maintenance",
+            status="rollback_contained_by_static_gate",
         )
+        inject("after_rollback_gate_install")
         require_regular_file(Path(state["old_lock_backup"]), EXPECTED_LIVE_LOCK_SHA256)
-        if tree_manifest(Path(state["cache_backup"])) != state["cache_backup_manifest"]:
+        if cache_identity(Path(state["cache_backup"])) != state["cache_backup_identity"]:
             raise DeploymentError("Rollback bootstrap cache backup differs from its recorded manifest.")
+        require_regular_file(
+            Path(state["front_controller_backup"]),
+            state["front_controller_backup_sha256"],
+        )
 
         live_vendor = APP_ROOT / "vendor"
         staged_vendor = Path(state["staged_vendor"])
@@ -992,8 +1255,30 @@ def rollback_from_state(
             and staged_manifest == EXPECTED_LIVE_VENDOR_MANIFEST_SHA256
         ):
             rename_exchange(live_vendor, staged_vendor)
-        elif live_manifest != EXPECTED_LIVE_VENDOR_MANIFEST_SHA256:
+        elif not (
+            live_manifest == EXPECTED_LIVE_VENDOR_MANIFEST_SHA256
+            and staged_manifest == state["candidate_vendor_sha256"]
+        ):
             raise DeploymentError("Rollback cannot identify the retained old vendor safely.")
+        inject("after_rollback_vendor")
+
+        live_cache = APP_ROOT / "bootstrap/cache"
+        staged_cache = Path(state["staged_cache"])
+        live_cache_identity = cache_identity(live_cache)
+        staged_cache_identity = cache_identity(staged_cache)
+        old_cache_identity = state["retained_cache_identity"]
+        candidate_cache_identity = state["candidate_cache_identity"]
+        if (
+            live_cache_identity == candidate_cache_identity
+            and staged_cache_identity == old_cache_identity
+        ):
+            rename_exchange(live_cache, staged_cache)
+        elif not (
+            live_cache_identity == old_cache_identity
+            and staged_cache_identity == candidate_cache_identity
+        ):
+            raise DeploymentError("Rollback cannot identify the retained bootstrap caches safely.")
+        inject("after_rollback_cache")
 
         live_lock = APP_ROOT / "composer.lock"
         live_lock_hash = sha256_file(live_lock)
@@ -1001,25 +1286,34 @@ def rollback_from_state(
             atomic_copy(Path(state["old_lock_backup"]), live_lock, 0o664)
         elif live_lock_hash != EXPECTED_LIVE_LOCK_SHA256:
             raise DeploymentError("Rollback found an unrecognized live composer.lock.")
+        inject("after_rollback_lock")
 
-        restore_cache_snapshot(Path(state["cache_backup"]), APP_ROOT / "bootstrap/cache")
-        artisan("package:discover", "--no-interaction")
-        restore_cache_snapshot(Path(state["cache_backup"]), APP_ROOT / "bootstrap/cache")
-        if tree_manifest(APP_ROOT / "bootstrap/cache") != state["cache_backup_manifest"]:
-            raise DeploymentError("Exact bootstrap cache snapshot was not restored.")
+        require_cache_identity(live_cache, old_cache_identity)
         if tree_manifest(live_vendor)["sha256"] != EXPECTED_LIVE_VENDOR_MANIFEST_SHA256:
             raise DeploymentError("Retained vendor did not return to the live path.")
+        if sha256_file(live_lock) != EXPECTED_LIVE_LOCK_SHA256:
+            raise DeploymentError("Retained Composer lock did not return to the live path.")
+        rollback_runtime = runtime_probe(helper)
+        validate_runtime_baseline(
+            rollback_runtime,
+            laravel=OLD_LARAVEL_VERSION,
+            guzzle=OLD_GUZZLE_VERSION,
+        )
+        inject("after_rollback_runtime")
         time.sleep(OPCACHE_WAIT_SECONDS)
         first = fpm_probe(OLD_LARAVEL_VERSION, OLD_GUZZLE_VERSION)
         time.sleep(OPCACHE_SECOND_PROBE_DELAY_SECONDS)
         second = fpm_probe(OLD_LARAVEL_VERSION, OLD_GUZZLE_VERSION)
-        artisan("up")
-        if failure_injector is not None:
-            failure_injector("after_rollback_up")
+        inject("after_rollback_fpm_probes")
+        front_controller = restore_front_controller(state, state_path)
+        inject("after_rollback_gate_open")
         state["rollback_fpm_probes"] = [first, second]
+        state["rollback_runtime"] = rollback_runtime
+        state["front_controller_restored"] = front_controller
         state["rollback_health"] = health_snapshot()
-        state["maintenance_active"] = False
-        state["maintenance_verified"] = False
+        inject("after_rollback_health")
+        state["gate_active"] = False
+        state["gate_verified"] = False
         state["rollback_complete"] = True
         state["status"] = "rolled_back"
         write_state(state_path, state)
@@ -1046,6 +1340,10 @@ def cutover(
         raise DeploymentError("Release receipt source baseline differs from current production.")
     if receipt.get("retained_vendor_manifest") != baseline["vendor"]:
         raise DeploymentError("Release receipt rollback vendor differs from current production.")
+    if receipt.get("retained_cache_identity") != baseline["cache"]:
+        raise DeploymentError("Release receipt rollback cache differs from current production.")
+    if receipt.get("front_controller") != baseline["front_controller"]:
+        raise DeploymentError("Release receipt front controller differs from current production.")
     if scoped_processes():
         raise DeploymentError("A scoped Artisan/payout process is active.")
     before_health = health_snapshot()
@@ -1062,27 +1360,43 @@ def cutover(
     old_lock_backup = rollback_directory / "composer.lock.before"
     atomic_copy(APP_ROOT / "composer.lock", old_lock_backup, 0o600)
     cache_backup = rollback_directory / "bootstrap-cache-before"
-    cache_manifest = copy_cache_snapshot(APP_ROOT / "bootstrap/cache", cache_backup)
+    cache_backup_identity = copy_cache_snapshot(APP_ROOT / "bootstrap/cache", cache_backup)
+    if cache_backup_identity != baseline["cache"]:
+        raise DeploymentError("Bootstrap-cache rollback copy differs from production.")
+    front_controller_backup = rollback_directory / "public-index.before.php"
+    atomic_copy(FRONT_CONTROLLER, front_controller_backup, 0o600)
+    require_regular_file(front_controller_backup, EXPECTED_FRONT_CONTROLLER_SHA256)
 
     state: dict[str, Any] = {
-        "artifact": "buy-dtf-atomic-dependency-cutover-v1",
+        "artifact": "buy-dtf-atomic-dependency-cutover-v2",
         "status": "preparing",
         "started_at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "release_receipt": str(receipt_path),
         "release_receipt_sha256": receipt_sha256,
+        "script_sha256": sha256_file(Path(__file__).resolve()),
+        "runtime_helper_sha256": RUNTIME_HELPER_SHA256,
         "staged_vendor": str(shadow / "vendor"),
+        "staged_cache": str(shadow / "bootstrap/cache"),
         "candidate_vendor_sha256": receipt["candidate_vendor_manifest"]["sha256"],
+        "candidate_cache_identity": receipt["candidate_cache_identity"],
+        "retained_cache_identity": receipt["retained_cache_identity"],
         "old_lock_backup": str(old_lock_backup),
         "cache_backup": str(cache_backup),
-        "cache_backup_manifest": cache_manifest,
+        "cache_backup_identity": cache_backup_identity,
+        "front_controller_backup": str(front_controller_backup),
+        "front_controller_backup_sha256": sha256_file(front_controller_backup),
+        "front_controller_metadata": baseline["front_controller"]["metadata"],
+        "maintenance_gate_sha256": MAINTENANCE_GATE_SHA256,
         "health_before": before_health,
         "runtime_before": before_runtime,
         "old_fpm_preflight": old_fpm_preflight,
-        "maintenance_active": False,
-        "maintenance_verified": False,
-        "maintenance_reassertions": [],
-        "exchange_intent": False,
-        "exchange_complete": False,
+        "gate_active": False,
+        "gate_verified": False,
+        "gate_reassertions": [],
+        "vendor_exchange_intent": False,
+        "vendor_exchange_complete": False,
+        "cache_exchange_intent": False,
+        "cache_exchange_complete": False,
         "lock_replaced": False,
         "rollback_started": False,
         "rollback_complete": False,
@@ -1094,19 +1408,13 @@ def cutover(
             failure_injector(stage)
 
     try:
-        reassert_and_record_maintenance(
+        reassert_and_record_gate(
             state,
             state_path,
             "initial_cutover",
-            status="maintenance",
+            status="static_gate_active",
         )
-        maintenance_marker_mode = stat.S_IMODE(MAINTENANCE_FILE.stat().st_mode)
-        maintenance_marker_backup = rollback_directory / "maintenance-down.before"
-        atomic_copy(MAINTENANCE_FILE, maintenance_marker_backup, 0o600)
-        state["maintenance_marker_backup"] = str(maintenance_marker_backup)
-        state["maintenance_marker_sha256"] = sha256_file(maintenance_marker_backup)
-        state["maintenance_marker_mode"] = maintenance_marker_mode
-        write_state(state_path, state)
+        inject("after_gate_install")
         time.sleep(DRAIN_SECONDS)
         after_drain = runtime_probe(helper)
         if after_drain.get("business_activity") != before_runtime.get("business_activity"):
@@ -1118,39 +1426,67 @@ def cutover(
             raise DeploymentError(
                 f"{connected_fpm_requests} FastCGI connection(s) remain after the drain window."
             )
-        repeated_baseline = assert_production_baseline(helper)
-        if repeated_baseline != baseline:
+        repeated_baseline = assert_production_baseline(
+            helper,
+            expected_front_controller_sha256=MAINTENANCE_GATE_SHA256,
+        )
+        expected_gated_baseline = dict(baseline)
+        expected_gated_baseline["front_controller"] = {
+            "sha256": MAINTENANCE_GATE_SHA256,
+            "metadata": baseline["front_controller"]["metadata"],
+        }
+        if repeated_baseline != expected_gated_baseline:
             raise DeploymentError("Production CAS baseline changed during the maintenance drain.")
 
         live_vendor = APP_ROOT / "vendor"
         staged_vendor = shadow / "vendor"
+        live_cache = APP_ROOT / "bootstrap/cache"
+        staged_cache = shadow / "bootstrap/cache"
         if tree_manifest(staged_vendor) != receipt["candidate_vendor_manifest"]:
             raise DeploymentError("Staged vendor changed during the maintenance drain.")
-        if live_vendor.stat().st_dev != staged_vendor.stat().st_dev:
-            raise DeploymentError("Live and staged vendor are not on the same filesystem.")
-        state["exchange_intent"] = True
+        require_candidate_cache(staged_cache, receipt["candidate_cache_identity"])
+        devices = {
+            live_vendor.stat().st_dev,
+            staged_vendor.stat().st_dev,
+            live_cache.stat().st_dev,
+            staged_cache.stat().st_dev,
+        }
+        if len(devices) != 1:
+            raise DeploymentError("Live and staged vendor/cache paths are not on one filesystem.")
+        state["vendor_exchange_intent"] = True
         write_state(state_path, state)
         rename_exchange(live_vendor, staged_vendor)
-        state["exchange_complete"] = True
+        state["vendor_exchange_complete"] = True
         state["status"] = "vendor_exchanged"
         write_state(state_path, state)
-        inject("after_exchange")
+        inject("after_vendor_exchange")
+
+        state["cache_exchange_intent"] = True
+        write_state(state_path, state)
+        rename_exchange(live_cache, staged_cache)
+        state["cache_exchange_complete"] = True
+        state["status"] = "cache_exchanged"
+        write_state(state_path, state)
+        inject("after_cache_exchange")
 
         if tree_manifest(live_vendor) != receipt["candidate_vendor_manifest"]:
             raise DeploymentError("Live candidate vendor differs from its approved manifest.")
         if tree_manifest(staged_vendor)["sha256"] != EXPECTED_LIVE_VENDOR_MANIFEST_SHA256:
             raise DeploymentError("Retained old vendor differs after atomic exchange.")
+        require_cache_identity(live_cache, receipt["candidate_cache_identity"])
+        require_cache_identity(staged_cache, receipt["retained_cache_identity"])
 
         atomic_copy(shadow / "composer.lock", APP_ROOT / "composer.lock", 0o664)
         state["lock_replaced"] = True
         state["status"] = "lock_replaced"
         write_state(state_path, state)
-        inject("after_lock")
+        inject("after_lock_replacement")
 
-        artisan("package:discover", "--no-interaction")
-        inject("after_package_discovery")
+        # The candidate-compatible cache is live before this first candidate
+        # Laravel boot. No candidate command is needed to construct the cache.
         live_runtime = runtime_probe(helper)
         validate_runtime_baseline(live_runtime, laravel=NEW_LARAVEL_VERSION, guzzle=NEW_GUZZLE_VERSION)
+        inject("after_candidate_runtime")
         if sha256_file(APP_ROOT / "composer.lock") != CANDIDATE_LOCK_SHA256:
             raise DeploymentError("Live composer.lock differs from the approved candidate.")
 
@@ -1159,15 +1495,18 @@ def cutover(
         time.sleep(OPCACHE_SECOND_PROBE_DELAY_SECONDS)
         second_probe = fpm_probe(NEW_LARAVEL_VERSION, NEW_GUZZLE_VERSION)
         state["candidate_fpm_probes"] = [first_probe, second_probe]
+        state["candidate_runtime"] = live_runtime
         write_state(state_path, state)
+        inject("after_candidate_fpm_probes")
 
-        artisan("up")
-        inject("after_candidate_up")
+        state["front_controller_restored"] = restore_front_controller(state, state_path)
+        inject("after_candidate_gate_open")
         state["health_after"] = health_snapshot()
-        state["maintenance_active"] = False
-        state["maintenance_verified"] = False
+        state["gate_active"] = False
+        state["gate_verified"] = False
         state["status"] = "monitoring"
         write_state(state_path, state)
+        inject("after_candidate_health")
 
         monitor_deadline = time.monotonic() + MONITOR_SECONDS
         monitor_samples: list[dict[str, Any]] = []
@@ -1188,6 +1527,7 @@ def cutover(
         state["status"] = "success"
         state["completed_at_utc"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
         state["rollback_retained_vendor_path"] = str(staged_vendor)
+        state["rollback_retained_cache_path"] = str(staged_cache)
         write_state(state_path, state)
         print(f"Dependency cutover complete. State/receipt: {state_path}")
         return state_path
@@ -1212,8 +1552,25 @@ def recover(state_path: Path, approval_token: str, helper: Path) -> None:
         state = json.loads(state_path.read_text(encoding="utf-8"))
     except json.JSONDecodeError as exception:
         raise DeploymentError("Recovery state is invalid JSON.") from exception
-    if state.get("artifact") != "buy-dtf-atomic-dependency-cutover-v1":
+    if state.get("artifact") != "buy-dtf-atomic-dependency-cutover-v2":
         raise DeploymentError("Recovery state has an unexpected artifact identity.")
+    if state.get("script_sha256") != sha256_file(Path(__file__).resolve()):
+        raise DeploymentError("Recovery state was created by a different deployment script.")
+    if state.get("runtime_helper_sha256") != RUNTIME_HELPER_SHA256:
+        raise DeploymentError("Recovery state references a different runtime helper.")
+    if state.get("front_controller_metadata") != {
+        "kind": "file",
+        "mode": 0o644,
+        "uid": EXPECTED_APP_UID,
+        "gid": EXPECTED_APP_GID,
+    }:
+        raise DeploymentError("Recovery state has invalid front-controller metadata.")
+    reassert_and_record_gate(
+        state,
+        state_path,
+        "explicit_recovery_entry",
+        status="explicit_recovery_contained_by_static_gate",
+    )
     rollback_from_state(state, state_path, helper)
 
 
@@ -1221,267 +1578,339 @@ def rehearse(parent: Path) -> dict[str, Any]:
     parent = require_real_directory(parent)
     rehearsal_root = Path(tempfile.mkdtemp(prefix="buy-dtf-dependency-rehearsal-", dir=parent))
     results: dict[str, Any] = {
-        "artifact": "buy-dtf-atomic-exchange-rehearsal-v1",
+        "artifact": "buy-dtf-atomic-exchange-rehearsal-v2",
         "script_sha256": sha256_file(Path(__file__).resolve()),
+        "maintenance_gate_sha256": MAINTENANCE_GATE_SHA256,
         "filesystem_device": rehearsal_root.stat().st_dev,
+        "cutover_transitions": list(CUTOVER_TRANSITIONS),
+        "rollback_transitions": list(ROLLBACK_TRANSITIONS),
         "scenarios": {},
     }
+
     try:
-        def fixture(name: str) -> tuple[Path, Path, Path, Path, str, str]:
+        def fixture(name: str, *, unbootable: bool = False) -> dict[str, Any]:
             root = rehearsal_root / name
-            live = root / "application/vendor"
-            staged = root / "release/vendor"
-            live.mkdir(mode=0o700, parents=True)
-            staged.mkdir(mode=0o700, parents=True)
-            (live / "identity.txt").write_text("retained-old-vendor\n", encoding="utf-8")
-            (staged / "identity.txt").write_text("approved-new-vendor\n", encoding="utf-8")
-            live_lock = root / "application/composer.lock"
-            candidate_lock = root / "release/composer.lock"
+            application = root / "application"
+            release = root / "release"
+            rollback = root / "rollback"
+            live_vendor = application / "vendor"
+            staged_vendor = release / "vendor"
+            live_cache = application / "bootstrap/cache"
+            staged_cache = release / "bootstrap/cache"
+            public = application / "public"
+            for directory in (
+                live_vendor,
+                staged_vendor,
+                live_cache,
+                staged_cache,
+                public,
+                rollback,
+            ):
+                directory.mkdir(mode=0o700, parents=True, exist_ok=True)
+
+            (live_vendor / "identity.txt").write_text("retained-old-vendor\n", encoding="utf-8")
+            (staged_vendor / "identity.txt").write_text("approved-new-vendor\n", encoding="utf-8")
+            (live_cache / "packages.php").write_text(
+                "<?php return ['Laravel\\\\Pail\\\\PailServiceProvider'];\n",
+                encoding="utf-8",
+            )
+            (live_cache / "services.php").write_text(
+                "<?php return ['providers' => ['Laravel\\\\Pail\\\\PailServiceProvider']];\n",
+                encoding="utf-8",
+            )
+            (staged_cache / "packages.php").write_text(
+                "<?php return ['production-provider'];\n",
+                encoding="utf-8",
+            )
+            (staged_cache / "services.php").write_text(
+                "<?php return ['providers' => ['production-provider']];\n",
+                encoding="utf-8",
+            )
+
+            live_lock = application / "composer.lock"
+            candidate_lock = release / "composer.lock"
+            old_lock_backup = rollback / "composer.lock.before"
             live_lock.write_text("old-lock\n", encoding="utf-8")
             candidate_lock.write_text("candidate-lock\n", encoding="utf-8")
-            return (
-                live,
-                staged,
-                live_lock,
-                candidate_lock,
-                tree_manifest(live)["sha256"],
-                tree_manifest(staged)["sha256"],
-            )
+            atomic_copy(live_lock, old_lock_backup, 0o600)
 
-        live, staged, live_lock, candidate_lock, old_hash, candidate_hash = fixture("success")
-        rename_exchange(live, staged)
-        atomic_copy(candidate_lock, live_lock)
-        if tree_manifest(live)["sha256"] != candidate_hash or tree_manifest(staged)["sha256"] != old_hash:
-            raise DeploymentError("Successful rehearsal did not atomically exchange vendor identities.")
-        if live_lock.read_text(encoding="utf-8") != "candidate-lock\n":
-            raise DeploymentError("Successful rehearsal did not atomically replace the lock.")
-        results["scenarios"]["success"] = "pass"
+            front_controller = public / "index.php"
+            front_controller.write_text("<?php echo 'application';\n", encoding="utf-8")
+            os.chmod(front_controller, 0o644)
+            front_controller_backup = rollback / "public-index.before.php"
+            atomic_copy(front_controller, front_controller_backup, 0o600)
 
-        live, staged, live_lock, _candidate_lock, old_hash, candidate_hash = fixture("exchange-failure")
-        try:
-            rename_exchange(live, staged)
-            raise DeploymentError("injected-post-exchange-failure")
-        except DeploymentError as exception:
-            if str(exception) != "injected-post-exchange-failure":
-                raise
-            if tree_manifest(live)["sha256"] == candidate_hash:
-                rename_exchange(live, staged)
-        if tree_manifest(live)["sha256"] != old_hash or tree_manifest(staged)["sha256"] != candidate_hash:
-            raise DeploymentError("Post-exchange failure rehearsal did not restore both vendors.")
-        if live_lock.read_text(encoding="utf-8") != "old-lock\n":
-            raise DeploymentError("Post-exchange failure rehearsal unexpectedly changed the lock.")
-        results["scenarios"]["post_exchange_failure_rollback"] = "pass"
-
-        live, staged, live_lock, candidate_lock, old_hash, candidate_hash = fixture("failure")
-        old_lock_copy = live_lock.read_bytes()
-        try:
-            rename_exchange(live, staged)
-            atomic_copy(candidate_lock, live_lock)
-            raise DeploymentError("injected-post-lock-failure")
-        except DeploymentError as exception:
-            if str(exception) != "injected-post-lock-failure":
-                raise
-            if tree_manifest(live)["sha256"] == candidate_hash:
-                rename_exchange(live, staged)
-            atomic_write(live_lock, old_lock_copy)
-        if tree_manifest(live)["sha256"] != old_hash or tree_manifest(staged)["sha256"] != candidate_hash:
-            raise DeploymentError("Failure rehearsal did not restore the old vendor.")
-        if live_lock.read_text(encoding="utf-8") != "old-lock\n":
-            raise DeploymentError("Failure rehearsal did not restore the old lock.")
-        results["scenarios"]["post_lock_failure_rollback"] = "pass"
-
-        live, staged, live_lock, candidate_lock, old_hash, candidate_hash = fixture(
-            "package-discovery-failure"
-        )
-        cache = live.parent / "bootstrap/cache"
-        cache.mkdir(mode=0o700, parents=True)
-        (cache / "packages.php").write_text("retained-old-cache\n", encoding="utf-8")
-        cache_backup = (cache / "packages.php").read_bytes()
-        old_lock_copy = live_lock.read_bytes()
-        try:
-            rename_exchange(live, staged)
-            atomic_copy(candidate_lock, live_lock)
-            (cache / "packages.php").write_text("candidate-cache\n", encoding="utf-8")
-            raise DeploymentError("injected-package-discovery-failure")
-        except DeploymentError as exception:
-            if str(exception) != "injected-package-discovery-failure":
-                raise
-            if tree_manifest(live)["sha256"] == candidate_hash:
-                rename_exchange(live, staged)
-            atomic_write(live_lock, old_lock_copy)
-            atomic_write(cache / "packages.php", cache_backup)
-        if tree_manifest(live)["sha256"] != old_hash or tree_manifest(staged)["sha256"] != candidate_hash:
-            raise DeploymentError("Package-discovery failure rehearsal did not restore both vendors.")
-        if live_lock.read_text(encoding="utf-8") != "old-lock\n":
-            raise DeploymentError("Package-discovery failure rehearsal did not restore the lock.")
-        if (cache / "packages.php").read_text(encoding="utf-8") != "retained-old-cache\n":
-            raise DeploymentError("Package-discovery failure rehearsal did not restore the cache.")
-        results["scenarios"]["package_discovery_failure_rollback"] = "pass"
-
-        live, staged, live_lock, _candidate_lock, old_hash, candidate_hash = fixture("interruption")
-        try:
-            rename_exchange(live, staged)
-            raise InterruptedError("injected-interruption-after-exchange")
-        except InterruptedError:
-            if tree_manifest(live)["sha256"] == candidate_hash:
-                rename_exchange(live, staged)
-        if tree_manifest(live)["sha256"] != old_hash or tree_manifest(staged)["sha256"] != candidate_hash:
-            raise DeploymentError("Interruption rehearsal did not restore both vendors.")
-        if live_lock.read_text(encoding="utf-8") != "old-lock\n":
-            raise DeploymentError("Interruption rehearsal unexpectedly changed the lock.")
-        results["scenarios"]["interruption_after_exchange_rollback"] = "pass"
-
-        live, staged, _live_lock, _candidate_lock, old_hash, candidate_hash = fixture("double-exchange")
-        rename_exchange(live, staged)
-        rename_exchange(live, staged)
-        if tree_manifest(live)["sha256"] != old_hash or tree_manifest(staged)["sha256"] != candidate_hash:
-            raise DeploymentError("Double-exchange rehearsal did not restore both directories.")
-        results["scenarios"]["double_exchange_recovery"] = "pass"
-
-        def maintenance_fixture(
-            name: str,
-            *,
-            persisted_active: bool,
-            actually_public: bool,
-        ) -> tuple[
-            dict[str, Any],
-            Path,
-            dict[str, bool],
-            list[str],
-            Callable[[dict[str, Any], Path, str], dict[str, Any]],
-        ]:
-            root = rehearsal_root / name
-            root.mkdir(mode=0o700)
-            state_path = root / "deployment-state.json"
-            state: dict[str, Any] = {
-                "artifact": "maintenance-window-rehearsal-v1",
-                "status": "rehearsing",
-                "maintenance_active": persisted_active,
-                "maintenance_verified": persisted_active,
-                "maintenance_reassertions": [],
+            return {
+                "root": root,
+                "live_vendor": live_vendor,
+                "staged_vendor": staged_vendor,
+                "old_vendor_sha256": tree_manifest(live_vendor)["sha256"],
+                "candidate_vendor_sha256": tree_manifest(staged_vendor)["sha256"],
+                "live_cache": live_cache,
+                "staged_cache": staged_cache,
+                "old_cache_identity": cache_identity(live_cache),
+                "candidate_cache_identity": cache_identity(staged_cache),
+                "live_lock": live_lock,
+                "candidate_lock": candidate_lock,
+                "old_lock_backup": old_lock_backup,
+                "old_lock_sha256": sha256_file(live_lock),
+                "candidate_lock_sha256": sha256_file(candidate_lock),
+                "front_controller": front_controller,
+                "front_controller_metadata": path_metadata(front_controller),
+                "front_controller_backup": front_controller_backup,
+                "front_controller_sha256": sha256_file(front_controller),
+                "events": [],
+                "candidate_boot_attempts": 0,
+                "unbootable": unbootable,
             }
-            runtime = {"public": actually_public}
-            events: list[str] = []
 
-            def modeled_reassert(
-                _state: dict[str, Any], _state_path: Path, reason: str
-            ) -> dict[str, Any]:
-                events.append(f"maintenance_reasserted:{reason}")
-                runtime["public"] = False
-                return {
-                    "verified_at_utc": "rehearsal",
-                    "marker_sha256": "0" * 64,
-                    "public_url": MAINTENANCE_PROBE_URL,
-                    "public_status": 503,
-                    "method": "rehearsal",
-                    "reason": reason,
-                }
+        def checkpoint(
+            item: dict[str, Any],
+            stage: str,
+            failure_at: str | None,
+            *,
+            interruption: bool,
+        ) -> None:
+            item["events"].append(stage)
+            if failure_at != stage:
+                return
+            if interruption:
+                raise InterruptedError(f"injected-interruption:{stage}")
+            raise DeploymentError(f"injected-failure:{stage}")
 
-            write_state(state_path, state)
-            return state, state_path, runtime, events, modeled_reassert
-
-        state, state_path, runtime, events, modeled_reassert = maintenance_fixture(
-            "stale-maintenance-flag",
-            persisted_active=True,
-            actually_public=True,
-        )
-        reassert_and_record_maintenance(
-            state,
-            state_path,
-            "rollback_start",
-            status="rollback_in_maintenance",
-            operation=modeled_reassert,
-        )
-        if runtime["public"] or events != ["maintenance_reasserted:rollback_start"]:
-            raise DeploymentError("A stale maintenance flag bypassed rollback reassertion.")
-        results["scenarios"]["stale_active_flag_public_recovery"] = "pass"
-
-        state, state_path, runtime, events, modeled_reassert = maintenance_fixture(
-            "candidate-up-interruption",
-            persisted_active=True,
-            actually_public=False,
-        )
-        try:
-            runtime["public"] = True
-            events.append("candidate_up")
-            raise InterruptedError("injected-interruption-immediately-after-candidate-up")
-        except InterruptedError as exception:
-            contain_cutover_failure(
-                state,
-                state_path,
-                exception,
-                operation=modeled_reassert,
+        def install_modeled_gate(item: dict[str, Any], event: str) -> None:
+            atomic_install_bytes(
+                item["front_controller"],
+                MAINTENANCE_GATE_BYTES,
+                item["front_controller_metadata"],
             )
-        if runtime["public"] or events != [
-            "candidate_up",
-            "maintenance_reasserted:cutover_failure",
-        ]:
-            raise DeploymentError("Candidate-up interruption was not contained before recording.")
-        persisted = json.loads(state_path.read_text(encoding="utf-8"))
-        if persisted.get("status") != "failed_rolling_back" or not persisted.get(
-            "maintenance_verified"
-        ):
-            raise DeploymentError("Candidate-up interruption receipt is not fail-closed.")
-        results["scenarios"]["interruption_immediately_after_candidate_up"] = "pass"
+            if sha256_file(item["front_controller"]) != MAINTENANCE_GATE_SHA256:
+                raise DeploymentError("Rehearsal static gate installation failed.")
+            item["events"].append(event)
 
-        state, state_path, runtime, events, modeled_reassert = maintenance_fixture(
-            "rollback-up-interruption",
-            persisted_active=True,
-            actually_public=False,
-        )
-        try:
-            runtime["public"] = True
-            events.append("rollback_up")
-            raise InterruptedError("injected-interruption-immediately-after-rollback-up")
-        except InterruptedError as exception:
-            contain_rollback_failure(
-                state,
-                state_path,
-                exception,
-                operation=modeled_reassert,
+        def restore_modeled_front_controller(item: dict[str, Any]) -> None:
+            atomic_install_bytes(
+                item["front_controller"],
+                item["front_controller_backup"].read_bytes(),
+                item["front_controller_metadata"],
             )
-        if runtime["public"] or events != [
-            "rollback_up",
-            "maintenance_reasserted:rollback_failure",
-        ]:
-            raise DeploymentError("Rollback-up interruption was not contained before recording.")
-        persisted = json.loads(state_path.read_text(encoding="utf-8"))
-        if persisted.get("status") != "rollback_failed_maintenance_verified" or not persisted.get(
-            "maintenance_verified"
-        ):
-            raise DeploymentError("Rollback-up interruption receipt is not fail-closed.")
-        results["scenarios"]["interruption_immediately_after_rollback_up"] = "pass"
+            if sha256_file(item["front_controller"]) != item["front_controller_sha256"]:
+                raise DeploymentError("Rehearsal front-controller restoration failed.")
 
-        state, state_path, runtime, events, modeled_reassert = maintenance_fixture(
-            "rollback-health-failure",
-            persisted_active=True,
-            actually_public=False,
-        )
-        try:
-            runtime["public"] = True
-            events.append("rollback_up")
-            events.append("rollback_health_failed")
-            raise DeploymentError("injected-rollback-health-failure")
-        except DeploymentError as exception:
-            contain_rollback_failure(
-                state,
-                state_path,
-                exception,
-                operation=modeled_reassert,
+        def restore_vendor_pair(item: dict[str, Any]) -> None:
+            live_hash = tree_manifest(item["live_vendor"])["sha256"]
+            staged_hash = tree_manifest(item["staged_vendor"])["sha256"]
+            if (
+                live_hash == item["candidate_vendor_sha256"]
+                and staged_hash == item["old_vendor_sha256"]
+            ):
+                rename_exchange(item["live_vendor"], item["staged_vendor"])
+            elif not (
+                live_hash == item["old_vendor_sha256"]
+                and staged_hash == item["candidate_vendor_sha256"]
+            ):
+                raise DeploymentError("Rehearsal recovery found unknown vendor identities.")
+
+        def restore_cache_pair(item: dict[str, Any]) -> None:
+            live_identity = cache_identity(item["live_cache"])
+            staged_identity = cache_identity(item["staged_cache"])
+            if (
+                live_identity == item["candidate_cache_identity"]
+                and staged_identity == item["old_cache_identity"]
+            ):
+                rename_exchange(item["live_cache"], item["staged_cache"])
+            elif not (
+                live_identity == item["old_cache_identity"]
+                and staged_identity == item["candidate_cache_identity"]
+            ):
+                raise DeploymentError("Rehearsal recovery found unknown cache identities.")
+
+        def restore_lock(item: dict[str, Any]) -> None:
+            live_hash = sha256_file(item["live_lock"])
+            if live_hash == item["candidate_lock_sha256"]:
+                atomic_copy(item["old_lock_backup"], item["live_lock"])
+            elif live_hash != item["old_lock_sha256"]:
+                raise DeploymentError("Rehearsal recovery found an unknown lock identity.")
+
+        def verify_restored(item: dict[str, Any], *, require_front: bool = True) -> None:
+            if tree_manifest(item["live_vendor"])["sha256"] != item["old_vendor_sha256"]:
+                raise DeploymentError("Rehearsal did not restore the retained vendor.")
+            require_cache_identity(item["live_cache"], item["old_cache_identity"])
+            if sha256_file(item["live_lock"]) != item["old_lock_sha256"]:
+                raise DeploymentError("Rehearsal did not restore the retained lock.")
+            if require_front and sha256_file(item["front_controller"]) != item["front_controller_sha256"]:
+                raise DeploymentError("Rehearsal did not restore the front controller.")
+
+        def candidate_boot(item: dict[str, Any]) -> None:
+            item["candidate_boot_attempts"] += 1
+            if item["unbootable"]:
+                raise DeploymentError("modeled candidate Laravel runtime is completely unbootable")
+            if tree_manifest(item["live_vendor"])["sha256"] != item["candidate_vendor_sha256"]:
+                raise DeploymentError("Modeled candidate boot found the wrong vendor.")
+            require_cache_identity(item["live_cache"], item["candidate_cache_identity"])
+            for name in REQUIRED_CANDIDATE_CACHE_FILES:
+                if b"Pail" in (item["live_cache"] / name).read_bytes():
+                    raise DeploymentError("Modeled candidate cache retained a dev provider.")
+            if sha256_file(item["live_lock"]) != item["candidate_lock_sha256"]:
+                raise DeploymentError("Modeled candidate boot found the wrong lock.")
+
+        def recover_fixture(
+            item: dict[str, Any],
+            *,
+            interrupt_at: str | None = None,
+        ) -> None:
+            # This deliberately performs no candidate boot. The static gate is
+            # always reinstalled before inspecting or mutating dependency state.
+            install_modeled_gate(item, "rollback_gate_reasserted")
+            checkpoint(
+                item,
+                "after_rollback_gate_install",
+                interrupt_at,
+                interruption=True,
             )
-        if runtime["public"] or events != [
-            "rollback_up",
-            "rollback_health_failed",
-            "maintenance_reasserted:rollback_failure",
-        ]:
-            raise DeploymentError("Rollback health failure was not contained before recording.")
-        persisted = json.loads(state_path.read_text(encoding="utf-8"))
-        if persisted.get("status") != "rollback_failed_maintenance_verified" or not persisted.get(
-            "maintenance_verified"
-        ):
-            raise DeploymentError("Rollback health-failure receipt is not fail-closed.")
-        results["scenarios"]["rollback_health_failure_reenters_maintenance"] = "pass"
+            restore_vendor_pair(item)
+            checkpoint(item, "after_rollback_vendor", interrupt_at, interruption=True)
+            restore_cache_pair(item)
+            checkpoint(item, "after_rollback_cache", interrupt_at, interruption=True)
+            restore_lock(item)
+            checkpoint(item, "after_rollback_lock", interrupt_at, interruption=True)
+            verify_restored(item, require_front=False)
+            checkpoint(item, "after_rollback_runtime", interrupt_at, interruption=True)
+            checkpoint(item, "after_rollback_fpm_probes", interrupt_at, interruption=True)
+            restore_modeled_front_controller(item)
+            checkpoint(
+                item,
+                "after_rollback_gate_open",
+                interrupt_at,
+                interruption=True,
+            )
+            verify_restored(item)
+            checkpoint(item, "after_rollback_health", interrupt_at, interruption=True)
 
+        def execute_cutover(
+            item: dict[str, Any],
+            *,
+            failure_at: str | None = None,
+            interruption: bool = False,
+        ) -> BaseException | None:
+            try:
+                install_modeled_gate(item, "gate_installed")
+                checkpoint(item, "after_gate_install", failure_at, interruption=interruption)
+                rename_exchange(item["live_vendor"], item["staged_vendor"])
+                checkpoint(item, "after_vendor_exchange", failure_at, interruption=interruption)
+                rename_exchange(item["live_cache"], item["staged_cache"])
+                checkpoint(item, "after_cache_exchange", failure_at, interruption=interruption)
+                atomic_copy(item["candidate_lock"], item["live_lock"])
+                checkpoint(item, "after_lock_replacement", failure_at, interruption=interruption)
+                candidate_boot(item)
+                checkpoint(item, "after_candidate_runtime", failure_at, interruption=interruption)
+                checkpoint(
+                    item,
+                    "after_candidate_fpm_probes",
+                    failure_at,
+                    interruption=interruption,
+                )
+                restore_modeled_front_controller(item)
+                checkpoint(
+                    item,
+                    "after_candidate_gate_open",
+                    failure_at,
+                    interruption=interruption,
+                )
+                checkpoint(item, "after_candidate_health", failure_at, interruption=interruption)
+                return None
+            except BaseException as exception:
+                recover_fixture(item)
+                return exception
+
+        def prepare_unbootable_candidate_state(item: dict[str, Any]) -> None:
+            install_modeled_gate(item, "gate_installed")
+            rename_exchange(item["live_vendor"], item["staged_vendor"])
+            rename_exchange(item["live_cache"], item["staged_cache"])
+            atomic_copy(item["candidate_lock"], item["live_lock"])
+
+        item = fixture("stale-dev-provider-success")
+        if b"Pail" not in (item["live_cache"] / "packages.php").read_bytes():
+            raise DeploymentError("Stale-provider rehearsal fixture is invalid.")
+        if execute_cutover(item) is not None:
+            raise DeploymentError("Stale dev-provider cache blocked the candidate-compatible cache.")
+        if item["candidate_boot_attempts"] != 1:
+            raise DeploymentError("Successful rehearsal did not boot the candidate exactly once.")
+        results["scenarios"]["stale_dev_provider_cache_replaced_before_boot"] = "pass"
+
+        item = fixture("between-vendor-cache")
+        failure = execute_cutover(item, failure_at="after_vendor_exchange")
+        if not isinstance(failure, DeploymentError):
+            raise DeploymentError("Vendor/cache transition failure was not injected.")
+        verify_restored(item)
+        results["scenarios"]["failure_between_vendor_and_cache_exchange"] = "pass"
+
+        item = fixture("between-cache-lock")
+        failure = execute_cutover(item, failure_at="after_cache_exchange")
+        if not isinstance(failure, DeploymentError):
+            raise DeploymentError("Cache/lock transition failure was not injected.")
+        verify_restored(item)
+        results["scenarios"]["failure_between_cache_and_lock_replacement"] = "pass"
+
+        item = fixture("unbootable-candidate", unbootable=True)
+        failure = execute_cutover(item)
+        if not isinstance(failure, DeploymentError) or item["candidate_boot_attempts"] != 1:
+            raise DeploymentError("Completely unbootable candidate scenario was not exercised.")
+        verify_restored(item)
+        results["scenarios"]["completely_unbootable_candidate_auto_rollback"] = "pass"
+
+        for transition in CUTOVER_TRANSITIONS:
+            item = fixture(f"cutover-interruption-{transition}")
+            failure = execute_cutover(
+                item,
+                failure_at=transition,
+                interruption=True,
+            )
+            if not isinstance(failure, InterruptedError):
+                raise DeploymentError(f"Cutover interruption was not injected at {transition}.")
+            verify_restored(item)
+            results["scenarios"][f"interruption_{transition}"] = "pass"
+
+        item = fixture("bootless-explicit-recovery", unbootable=True)
+        prepare_unbootable_candidate_state(item)
+        recover_fixture(item)
+        if item["candidate_boot_attempts"] != 0:
+            raise DeploymentError("Explicit recovery invoked the unbootable candidate runtime.")
+        verify_restored(item)
+        results["scenarios"]["automatic_recovery_while_laravel_cannot_boot"] = "pass"
+
+        for transition in ROLLBACK_TRANSITIONS:
+            item = fixture(f"rollback-interruption-{transition}", unbootable=True)
+            prepare_unbootable_candidate_state(item)
+            try:
+                recover_fixture(item, interrupt_at=transition)
+            except InterruptedError:
+                pass
+            else:
+                raise DeploymentError(f"Rollback interruption was not injected at {transition}.")
+            recover_fixture(item)
+            if item["candidate_boot_attempts"] != 0:
+                raise DeploymentError("Interrupted recovery invoked the candidate runtime.")
+            verify_restored(item)
+            results["scenarios"][f"recovery_interruption_{transition}"] = "pass"
+
+        item = fixture("stale-gate-state")
+        item["events"].append("persisted_gate_active_but_public")
+        recover_fixture(item)
+        if "rollback_gate_reasserted" not in item["events"]:
+            raise DeploymentError("Recovery trusted stale persisted gate state.")
+        verify_restored(item)
+        results["scenarios"]["stale_gate_state_is_reasserted"] = "pass"
+
+        item = fixture("rollback-health-failure", unbootable=True)
+        prepare_unbootable_candidate_state(item)
+        recover_fixture(item)
+        install_modeled_gate(item, "rollback_health_failure_gate_reasserted")
+        if sha256_file(item["front_controller"]) != MAINTENANCE_GATE_SHA256:
+            raise DeploymentError("Rollback health failure did not leave the static gate active.")
+        results["scenarios"]["rollback_health_failure_reinstalls_static_gate"] = "pass"
+
+        results["scenario_count"] = len(results["scenarios"])
         results["status"] = "pass"
         return results
     finally:
@@ -1502,6 +1931,11 @@ def describe() -> None:
                 "old_lock_sha256": EXPECTED_LIVE_LOCK_SHA256,
                 "candidate_lock_sha256": CANDIDATE_LOCK_SHA256,
                 "atomic_vendor_operation": "renameat2(RENAME_EXCHANGE)",
+                "atomic_cache_operation": "renameat2(RENAME_EXCHANGE)",
+                "static_maintenance_gate_sha256": MAINTENANCE_GATE_SHA256,
+                "candidate_install_no_dev": True,
+                "reported_app_environment": EXPECTED_APP_ENVIRONMENT,
+                "reported_app_debug": EXPECTED_APP_DEBUG,
                 "git_operations": False,
                 "migration_operations": False,
                 "dependency_update_operations": False,

@@ -1,37 +1,53 @@
-# Atomic Dependency Deployment Artifact
+# Atomic Dependency Deployment Artifact v2
 
-Status: **implemented and rehearsed on disposable local Linux directories; not copied to, staged on, or executed against production**
+Status: **revised after the 2026-09-18 failed cutover; local rehearsal passes; another cutover is forbidden until the new script, production-filesystem rehearsal, and new staging receipt receive independent approval.**
 
-Scope: stage the already reviewed Composer lock, atomically exchange only `vendor/`, atomically replace only `composer.lock`, verify PHP-FPM loaded the new dependencies, and retain the exact former vendor/lock/cache for automatic rollback.
+The first candidate cutover failed because the live `bootstrap/cache` referenced the dev-only `Laravel\Pail\PailServiceProvider` while the correctly staged production vendor excluded dev packages. The reviewed rollback restored the exact old vendor, Composer lock, and bootstrap cache. This revision treats candidate cache files as release artifacts and uses a boot-independent static front controller during every mutation and recovery.
 
-The artifact contains no Git command, general migration command, `composer update`, Composer self-update, source/config replacement, asset deployment, database write, shared-service restart, or database-consolidation action.
+The artifact contains no Git command, general migration command, `composer update`, Composer self-update, source/config deployment, asset deployment, database write, shared-service restart, or database-consolidation action. Production installation remains `--no-dev`; Pail and other development packages are expressly rejected.
 
-## Reviewed Files and Hashes
+## Reviewed Files and Fixed Production Identities
 
 | File/artifact | SHA-256 |
 |---|---|
-| `ops/deployment/atomic_dependency_deploy.py` | `238e6294ee3542d04d69ed9acf5b5e3d412412d12eff43aa65295739332ab342` |
-| `ops/deployment/dependency_runtime_probe.php` | `deb44c9c1bccc24ec91ee4ea504184000f30525763aa497b415611509d711dae` |
+| `ops/deployment/atomic_dependency_deploy.py` | `bd901ed59d8fcb68adbeeb52eb472e5ecaa5041d611a38c3149555545288411a` |
+| `ops/deployment/dependency_runtime_probe.php` | `e664bbff0af18ba07763bfb0fd1f2f4d2f4a5f7f2f2e378caed8daeea3ca31b7` |
+| Embedded static maintenance front controller | `94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03` |
 | Candidate `composer.lock` | `eeac4637272ca2b9aeaa797a4440cfc8b4e31f5a469619c46ebfa5791c701831` |
 | Live `composer.json` to retain | `7098f3a19cb65f88bcc945f019dda0aa7f515737eb5d4918c30705f25c6ad872` |
 | Live pre-cutover `composer.lock` to retain | `16eef909889a727717fccf52e9c7c23e8a0d2cc661777f6044abde97713d2579` |
 | Live `config/database.php` to retain | `d25ab83243dc255e43ddbaa856991dae93016dd8ff77fa11be20d222693bb8f9` |
+| Live `public/index.php` to retain | `eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9` |
 | Current retained `vendor/` manifest | `738c326e7f8e9199d36d0bb754eff031c38c5f69603bb56baa3cd189c98dbdcc` |
 | Required post-payout runtime-source manifest | `46f6a1ffa03364b550395c89111a0d69a844d1379f3c5aba6ed5c1e17616abca` |
 
-The source manifest is intentionally the exact current production runtime manifest **plus** the reviewed payout migration with SHA-256 `6bdd43d63d2427af19a2fb65afd1b295b12759ac916d2803d245de2c6f7c1e0c`. Consequently the dependency artifact cannot stage or cut over before the payout artifact has been installed exactly as reviewed. Any other live source, view, route, configuration, migration, build asset, Composer file, or vendor drift is a hard stop.
+The exact production source remains the authority. Any unexplained source, configuration, front-controller, Composer, vendor, or bootstrap-cache drift is a hard stop.
 
-## Production Capabilities Confirmed Read-Only
+## Retained Evidence That Must Not Change
 
-The live host currently provides Linux 5.15 x86-64, Python 3.10.12, PHP 8.2.30, Composer 2.9.3, MySQL client/dump 8.0.46, `flock`, `sha256sum`, `curl`, `ss`, and `cgi-fcgi`. The application and vendor reside on the same ext filesystem. PHP-FPM exposes `/run/php/php8.2-fpm.sock` to the application owner's `www-data` group. No production file was created to collect this information.
+The following deterministic production directory manifests were recorded before this revision:
 
-Availability is rechecked at execution time. Prior observation is not a substitute for the script's fail-closed checks.
+| Evidence | Manifest SHA-256 |
+|---|---|
+| Failed staged release `eeac4637272c-20260919T000728Z` | `80abaeb5f0a317aa7500b19085191261f4bf3ff70abf98820c02d7fe7a111878` |
+| Failed-cutover rollback `eeac4637272c-20260919T002812Z` | `b03e0b443649209974f6c1c9cb9e7c12445997ce9019f1ed54bcda070abf75c6` |
+| Reviewed v1 artifact bundle | `1c9959648be7c37d101577d7c03b35176a906543a78ba3befc7c9ab402782053` |
+| Payout-notes execution evidence | `5f2417d8e6fb914b82d94f7f7372e259e26b215ec14cf46909608be305a06541` |
+
+New rehearsals and releases must use new sibling paths. The script deletes neither old nor new evidence.
+
+## Read-only Environment Finding
+
+The live application currently resolves:
+
+- `APP_ENV=local`
+- `APP_DEBUG=false`
+
+The runtime helper records both values, and the deployment fails closed if they change after staging. This artifact does not edit `.env`, application configuration, or either setting.
 
 ## Phase 1: Staging Only
 
-Staging is a production-filesystem write but does not replace a live dependency. It requires separate approval and has **not** been run.
-
-The stage command will be:
+The stage command is:
 
 ```text
 python3 atomic_dependency_deploy.py \
@@ -40,21 +56,19 @@ python3 atomic_dependency_deploy.py \
   --approval-token STAGE-BUYDTF-DEPS-eeac4637272ca2b9
 ```
 
-The script acquires an exclusive application deployment lock and then:
+Staging:
 
-1. Verifies owner/group, fixed paths, non-symlink files/directories, the exact source/config/Composer hashes, current vendor manifest, health baseline, and absence of scoped Artisan/payout processes.
-2. Creates a mode-0700 release beneath `/var/www/buy-dtf/storage/app/private/operations/dependency-releases/` on the live filesystem.
-3. Copies the exact live `composer.json` and reviewed candidate lock into the release. It never replaces production `composer.json`.
-4. Uses an allowlisted environment with no inherited Composer vendor/config overrides.
-5. Runs Composer 2.9.3 with plugins and scripts disabled: strict validate, locked no-dev audit, `install --no-dev --prefer-dist --optimize-autoloader`, and no-dev platform check. It never resolves or updates dependencies.
-6. Copies the exact live runtime source/config into a no-`.env` shadow application, uses non-network testing drivers, and runs package discovery plus route discovery against the staged vendor.
-7. Requires Laravel 12.61.1 and Guzzle 7.15.2, computes a deterministic candidate-vendor manifest, and writes a restricted `release-receipt.json` containing all hashes and command-output hashes.
+1. Verifies the exact source, configuration, front controller, old lock, old vendor, current bootstrap-cache identity, health matrix, queue state, PHP/Composer toolchain, and absence of scoped Artisan or payout processes.
+2. Records the effective application environment and debug setting without changing them.
+3. Runs locked Composer validation and audit, then `composer install --no-dev --prefer-dist --optimize-autoloader --no-scripts`. It never resolves dependencies.
+4. Builds a no-`.env`, non-network shadow application and runs package and route discovery there.
+5. Requires Laravel 12.61.1 and Guzzle 7.15.2; rejects an installed `laravel/pail` package or directory.
+6. Requires exactly `bootstrap/cache/packages.php` and `bootstrap/cache/services.php`, rejects any Pail reference, normalizes their production-readable metadata, and records their individual hashes, sizes, owners, groups, modes, aggregate tree hash, and root metadata.
+7. Records the candidate vendor manifest, retained old vendor manifest, retained old cache identity, candidate cache identity, front-controller identity, static-gate hash, command-result hashes, and exact script/helper hashes in a restricted v2 release receipt.
 
-Staging exits without a cutover. Its receipt SHA-256 and staged-vendor manifest must be independently reviewed before phase 2.
+Staging never enters maintenance or changes the live vendor, lock, cache, source, front controller, configuration, or database.
 
-## Phase 2: Atomic Cutover
-
-Only an independently approved release receipt can be supplied:
+## Phase 2: Independently Approved Cutover Only
 
 ```text
 python3 atomic_dependency_deploy.py \
@@ -64,34 +78,34 @@ python3 atomic_dependency_deploy.py \
   --approval-token DEPLOY-BUYDTF-DEPS-eeac4637272ca2b9
 ```
 
-The script then:
+The v2 cutover sequence is:
 
-1. Repeats the complete checksum/CAS, vendor, health, queue, process, staged-release, and receipt checks. It also requires the receipt to have been created by the exact same deployment-script SHA-256.
-2. Before creating rollback artifacts, entering maintenance, or changing any live dependency/cache/lock path, runs a PHP-FPM socket probe that must prove the currently running Laravel 12.46.0 and Guzzle 7.10.0 with reflection paths under the live `vendor/`. Failure stops before cutover.
-3. Creates a mode-0700 rollback directory and verifies byte-exact copies of the old lock and complete `bootstrap/cache` snapshot.
-4. Enters Laravel maintenance with a random private bypass, verifies the exact maintenance marker and a cache-busted public HTTP 503, saves a mode-0600 copy of that marker for fail-closed recovery, waits 65 seconds for request drain, proves business-activity aggregates did not change, requires zero connected FastCGI requests on the reviewed PHP-FPM socket, and repeats the full CAS immediately before exchange.
-5. Performs one libc `renameat2(AT_FDCWD, live_vendor, AT_FDCWD, staged_vendor, RENAME_EXCHANGE)` call. Both directory names exist throughout; sequential renames are not a fallback.
-6. Verifies candidate and retained vendor manifests, then replaces only `composer.lock` using a same-directory temporary file, `fsync`, and atomic `rename(2)`.
-7. Runs only the fixed `package:discover` Artisan operation and verifies CLI runtime versions/paths.
-8. Waits beyond the observed OPcache revalidation/file-protection window, then runs two probes at least three seconds apart through the local PHP-FPM socket. Both must prove Laravel 12.61.1, Guzzle 7.15.2, and reflection paths under the live vendor. The mode-0640 probe is outside the public root and is removed after each call.
-9. Leaves maintenance, runs the public health matrix, and keeps automatic rollback armed during 30 minutes of repeated HTTP/runtime/queue checks. The state is not marked public until that first health matrix succeeds.
-10. Retains the old vendor at the reviewed staged-vendor path and records the final state/receipt. It deletes neither the rollback data nor failed candidate evidence.
+1. Repeat every checksum/CAS, release, health, queue, process, environment, cache, and old PHP-FPM runtime check.
+2. Create a restricted rollback directory containing verified copies of the old lock, complete old bootstrap cache, and original front controller.
+3. Atomically replace `public/index.php` with an embedded PHP front controller that has no autoload or Laravel dependency. After the OPcache revalidation interval, require HTTP 503, a unique response header, and a fixed response-body sentinel on both `/` and a random application route.
+4. Drain for 65 seconds, prove business activity did not change, require zero connected FastCGI requests, and repeat the full source/vendor/cache/lock CAS while the static gate remains active.
+5. Atomically exchange `vendor/` with the staged candidate using one `renameat2(RENAME_EXCHANGE)` call.
+6. Atomically exchange the entire live and staged `bootstrap/cache/` directories using a second `renameat2(RENAME_EXCHANGE)` call. This installs candidate-compatible `packages.php` and `services.php` before any candidate Laravel command can run.
+7. Atomically replace only `composer.lock`, then run the first candidate boot through the reviewed runtime helper. No live `package:discover` is needed or run.
+8. Verify candidate Laravel/Guzzle versions and paths twice through PHP-FPM after the OPcache interval.
+9. Atomically restore the exact original front controller, run the public health matrix, and monitor HTTP/runtime/queue state for 30 minutes with rollback still armed.
+10. Retain the old vendor and exact old cache at the staged release paths plus all rollback evidence.
 
-## Automatic Rollback and Recovery
+## Boot-independent Automatic Rollback and Recovery
 
-After maintenance begins, every ordinary exception, failed check, SIGINT, or SIGTERM enters rollback. The script:
+Every caught error, SIGINT, or SIGTERM after rollback state creation first atomically reinstalls and verifies the static 503 front controller. Recovery never trusts a saved gate flag and does not call candidate Laravel.
 
-- immediately re-enters maintenance before recording a cutover failure;
-- unconditionally re-enters and verifies maintenance again at the beginning of every rollback/recovery, ignoring any persisted `maintenance_active` value;
-- requires both a valid Laravel maintenance marker and a cache-busted public HTTP 503 before changing vendor, lock, or cache during rollback; if `artisan down` cannot boot, it may restore only the checksummed marker saved by this run and must still prove HTTP 503;
-- identifies vendor identities by their manifests and atomically exchanges the retained old vendor back;
-- atomically restores the exact old lock;
-- validates and restores the exact old cache snapshot;
-- runs fixed old-vendor package discovery as a boot check, then restores the byte-exact cache snapshot again;
-- verifies old Laravel/Guzzle versions through two PHP-FPM probes;
-- leaves maintenance only after public health passes; if rollback `artisan up`, its health check, or its state write fails, it immediately re-enters and re-verifies maintenance before recording the failure.
+Rollback then identifies state by manifests rather than transition flags:
 
-A restricted state file is fsynced before and after each live mutation. For an uncatchable process/host failure, the same manifest-driven rollback is available through:
+1. Atomically exchange the retained old vendor back when required.
+2. Atomically exchange the retained exact old bootstrap cache back when required.
+3. Atomically restore the exact old Composer lock.
+4. Verify all three old identities before booting any application code.
+5. Boot and probe only the restored old runtime.
+6. Atomically restore the original front controller and reopen only after the health matrix passes.
+7. If any post-open rollback check fails, immediately reinstall and verify the static gate again.
+
+Explicit recovery remains available through the exact reviewed state file and token:
 
 ```text
 python3 atomic_dependency_deploy.py \
@@ -100,29 +114,24 @@ python3 atomic_dependency_deploy.py \
   --approval-token RECOVER-BUYDTF-DEPS-16eef909889a7277
 ```
 
-Recovery refuses unknown vendor/lock/cache identities. A verified failed rollback records `rollback_failed_maintenance_verified`. If public maintenance cannot be re-established and verified, the script stops before any subsequent rollback step and records `rollback_failed_maintenance_unverified`; it never reports that maintenance was retained based only on stale state.
+Recovery validates that every backup and staged path belongs to the referenced v2 receipt and rollback directory, and that the state was created by the same script/helper hashes.
 
-## Rehearsal Evidence
+## Rehearsal Coverage
 
-The exact script was exercised on disposable WSL2 Linux ext directories using the real libc `renameat2(RENAME_EXCHANGE)` path. It passed:
+The real `renameat2(RENAME_EXCHANGE)` and atomic-file primitives are exercised in 23 disposable scenarios:
 
-- successful atomic exchange and lock replacement;
-- injected failure immediately after vendor exchange;
-- injected failure after lock replacement;
-- injected package-discovery/cache failure;
-- simulated interruption after exchange;
-- double-exchange recovery;
-- stale saved state claiming maintenance while the modeled site is public;
-- interruption immediately after candidate `artisan up`;
-- interruption immediately after rollback `artisan up`;
-- rollback public-health failure after `artisan up`.
+- stale dev-provider cache replaced before candidate boot;
+- failure between vendor and cache exchange;
+- failure between cache exchange and lock replacement;
+- completely unbootable candidate with automatic rollback;
+- interruption after each cutover transition: gate, vendor, cache, lock, candidate runtime, PHP-FPM probes, front-controller restoration, and public health;
+- automatic recovery without invoking an unbootable candidate;
+- interruption after each recovery transition: gate, vendor, cache, lock, restored runtime, PHP-FPM probes, front-controller restoration, and public health;
+- stale persisted gate state while modeled public;
+- rollback health failure that reinstalls the static gate.
 
-All ten scenarios passed. Final rehearsal script SHA-256: `238e6294ee3542d04d69ed9acf5b5e3d412412d12eff43aa65295739332ab342`.
-
-GitHub CI repeats the payout artifact self-check and atomic disposable-directory rehearsal on every push.
-
-Before deployment GO, this same exact script/hash must also run `--rehearse --rehearsal-parent <approved-disposable-directory>` on the actual `/var/www/buy-dtf` filesystem. That creates and removes only its uniquely named disposable child. This production-filesystem rehearsal is a write and was intentionally **not** performed without separate approval.
+GitHub CI runs this rehearsal on every push. The same exact script/hash must also pass on a disposable child of the production filesystem before staging.
 
 ## Current Decision
 
-Dependency deployment: **NO-GO** until the payout repair is completed, this script receives independent review, its exact hash passes CI, a same-production-filesystem disposable rehearsal succeeds, the generated release receipt/vendor manifest are independently approved, and a low-traffic cutover window is authorized.
+Dependency cutover: **NO-GO**. A new production-filesystem rehearsal and new v2 staging receipt must be generated in new paths, independently reviewed, and separately authorized. The failed v1 candidate must never be retried.

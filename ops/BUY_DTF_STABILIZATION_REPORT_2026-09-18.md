@@ -2,7 +2,9 @@
 
 Date: 2026-09-18 (America/Chicago)
 
-Status: **local preparation complete; no production write or deployment performed**
+Status: **historical baseline; superseded for dependency operations**
+
+> **2026-09-19 dependency-operation update:** The v1 dependency cutover described below was staged and attempted, failed on a stale dev-provider bootstrap cache, and was validly rolled back to the exact old vendor, lock, and cache. Production is healthy. Do not reuse the v1 script hash, staged receipt, or cutover procedure in this historical report. The authoritative replacement is `ops/ATOMIC_DEPENDENCY_DEPLOYMENT_ARTIFACT.md` v2, which remains NO-GO for cutover pending a new rehearsal, staging receipt, and independent approval. The payout-notes repair and all failed-cutover evidence remain retained.
 
 ## Decision
 

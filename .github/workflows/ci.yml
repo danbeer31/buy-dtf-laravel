@@ -48,6 +48,9 @@ jobs:
           extensions: mbstring, pdo_sqlite, sqlite3
           coverage: none
 
+      - name: Lint dependency runtime helper
+        run: php -l ops/deployment/dependency_runtime_probe.php
+
       - name: Audit locked PHP dependencies
         run: composer audit --locked --no-interaction
 

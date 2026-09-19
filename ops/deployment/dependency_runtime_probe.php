@@ -66,6 +66,7 @@ foreach (['jobs', 'failed_jobs'] as $table) {
 
 $payload = [
     'app_environment' => (string) $app->environment(),
+    'app_debug' => (bool) config('app.debug'),
     'config_cached' => $app->configurationIsCached(),
     'queue_connection' => (string) config('queue.default'),
     'default_database_connection' => $defaultConnection,
