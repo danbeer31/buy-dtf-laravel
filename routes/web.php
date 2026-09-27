@@ -1,16 +1,16 @@
 <?php
 
-use App\Http\Controllers\AccountController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ContactController;
 use App\Http\Controllers\AboutController;
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\CartController;
-use App\Http\Controllers\ImageEditorController;
-use App\Http\Controllers\TeamCustomizationController;
-use App\Http\Controllers\HeatpressController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\GangSheetController;
+use App\Http\Controllers\HeatpressController;
+use App\Http\Controllers\ImageEditorController;
 use App\Http\Controllers\ImageRequirementsController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TeamCustomizationController;
 use App\Http\Controllers\Webhooks\ShippoWebhookController;
 use Illuminate\Support\Facades\Route;
 
@@ -38,38 +38,42 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware(['auth', 'verified', 'customer'])->group(function () {
-    Route::get('/test-dropbox-refresh', function() {
-        if (!auth()->user()->isAdmin()) {
+    Route::get('/test-dropbox-refresh', function () {
+        if (! auth()->user()->isAdmin()) {
             abort(403);
         }
         try {
-            $service = new \App\Services\DropboxService();
+            $service = new \App\Services\DropboxService;
             $token = \App\Models\DropboxToken::first();
-            if (!$token) return response()->json(['error' => 'No token record found']);
+            if (! $token) {
+                return response()->json(['error' => 'No token record found']);
+            }
             $service->refreshTokens($token);
+
             return response()->json(['success' => true, 'token_id' => $token->id, 'updated_at' => $token->updated_at]);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()], 500);
         }
     });
 
-    Route::get('/test-dropbox-upload', function() {
-        if (!auth()->user()->isAdmin()) {
+    Route::get('/test-dropbox-upload', function () {
+        if (! auth()->user()->isAdmin()) {
             abort(403);
         }
         try {
-            $service = new \App\Services\DropboxService();
+            $service = new \App\Services\DropboxService;
             $tempFile = tempnam(sys_get_temp_dir(), 'dbtest');
-            file_put_contents($tempFile, 'Dropbox test upload at ' . date('Y-m-d H:i:s'));
-            $remotePath = '/test_upload_' . time() . '.txt';
+            file_put_contents($tempFile, 'Dropbox test upload at '.date('Y-m-d H:i:s'));
+            $remotePath = '/test_upload_'.time().'.txt';
             $result = $service->upload($tempFile, $remotePath);
             unlink($tempFile);
+
             return response()->json(['success' => true, 'remote_path' => $result]);
         } catch (\Exception $e) {
             return response()->json([
                 'error' => $e->getMessage(),
                 'class' => get_class($e),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ], 500);
         }
     });
@@ -112,8 +116,9 @@ Route::middleware(['auth', 'verified', 'customer'])->group(function () {
     Route::get('/cart/quick_search', [CartController::class, 'myImages'])->name('cart.quick_search');
     Route::post('/cart/use_saved', [CartController::class, 'useSaved'])->name('cart.use_saved');
 
-    Route::get('/debug-user', function() {
+    Route::get('/debug-user', function () {
         $user = auth()->user();
+
         return response()->json([
             'id' => $user->id,
             'name' => $user->name,
@@ -129,15 +134,14 @@ Route::middleware(['auth', 'verified', 'customer'])->group(function () {
     Route::get('/account/invoices', [AccountController::class, 'invoices'])->name('account.invoices');
     Route::get('/account/images', [AccountController::class, 'images'])->name('account.images');
     Route::get('/account/images/{image}/download', [AccountController::class, 'downloadImage'])->name('account.images.download');
-    Route::delete('/account/images/{image}', [AccountController::class, 'deleteImage'])->name('account.images.delete');
 
-    Route::get('/orders', function() {
+    Route::get('/orders', function () {
         return redirect()->route('account');
     })->name('orders.index');
 
     Route::get('/orders/new', [\App\Http\Controllers\OrderController::class, 'newOrder'])->name('orders.new');
     Route::get('/orders/neworder', [\App\Http\Controllers\OrderController::class, 'newOrder']); // Legacy alias
-    Route::get('/orders/order/{id}', function() {
+    Route::get('/orders/order/{id}', function () {
         return redirect()->route('cart.index');
     })->name('orders.show');
     Route::get('/orders/place/{id}', [\App\Http\Controllers\OrderController::class, 'placeOrder'])->name('orders.place');

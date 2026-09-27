@@ -6,6 +6,8 @@ Audience: BuyDTF Codie
 
 This handoff supersedes the earlier proposal to append a printed label strip to the artwork. Do not implement the old `printed_strip` design.
 
+Review delta: the independent review dated 2026-09-27 supersedes this handoff's customer-deletion implementation items. The receiver rollout keeps API asset records, permanent retention defaults, and the report-only retention command; customer deletion requires a separate future contract and rollout review and is not implemented here.
+
 ## Verified starting point
 
 - BuyDTF production security dependencies were successfully cut over on 2026-09-18 at 9:45 p.m. Central.
@@ -26,7 +28,7 @@ This handoff supersedes the earlier proposal to append a printed label strip to 
    - the normal production artwork PNG/JHDR using the requested artwork dimensions and quantity; and
    - a separate job-card PNG/JHDR with quantity `1`.
 4. Upload the job card alongside its artwork during the production handoff.
-5. The job card contains the displayed order number, product, SKU when available, color, size, placement, and total quantity. It must contain no customer name, email, phone number, address, notes, or personalization roster.
+5. The job card contains the displayed order number, product, SKU when available, color, size, placement, originating `shop_domain` labeled **Shop**, and total quantity. It must contain no customer name, email, phone number, address, notes, or personalization roster.
 6. The job card does not change artwork dimensions, artwork pricing, copy count, or material calculations.
 7. Use stable correlated filenames and idempotent overwrite/retry behavior. Do not mark the production handoff complete until both required files are successfully generated and uploaded.
 8. Working scope: one job card per unique API print job/production group. Jobs with different card metadata must never be grouped together.
@@ -37,15 +39,15 @@ This handoff supersedes the earlier proposal to append a printed label strip to 
 The fail-safe retention behavior is **keep forever**.
 
 - Every existing `dtfimages` and `savedimages` record remains permanent.
-- Artwork uploaded directly through the BuyDTF cart remains permanent unless its owning customer explicitly deletes it.
-- Saved customer artwork remains permanent unless its owning customer explicitly deletes it.
+- Artwork uploaded directly through the BuyDTF cart remains permanent in this rollout.
+- Saved customer artwork remains permanent in this rollout.
 - Missing, unknown, or unclassified retention data means permanent retention.
 - Do not infer origin from filenames. Both the cart uploader and current API use `DTF_API_` filenames.
 - Automatic expiration applies only to future API assets that have an explicit API retention record.
 - Existing API artwork remains permanent unless a later reviewed migration can identify it from authoritative data.
 - Retention durations must be configurable and must remain disabled until Daniel selects and enables them.
 
-Customer deletion must:
+Deferred future customer deletion must, after its own contract and rollout review:
 
 1. Remove the artwork from Saved Images and prior-order artwork search results for that customer.
 2. Defer physical deletion while an open cart or active production job uses the file.
@@ -77,8 +79,6 @@ Customer deletion must:
 - Different job-card metadata cannot merge into one production group.
 - A required card failure leaves the production handoff retryable and incomplete.
 - Existing and direct-cart customer artwork can never be selected by the automatic cleanup command.
-- Customer deletion is business-scoped and cannot remove artwork owned by another customer.
-- Shared physical files are removed only after every active reference is clear.
 - Cleanup has dry-run output showing candidate rows, files, and bytes before deletion is enabled.
 - Logs contain no shared secret, signature, signed URL query, raw label/card text, or customer PII.
 
@@ -86,5 +86,6 @@ Customer deletion must:
 
 - Do not deploy job-card capability as enabled.
 - Do not modify ShopNLTees sends until BuyDTF receiver behavior is deployed and verified.
+- Do not implement or deploy customer artwork deletion in this receiver rollout.
 - Do not purge or backfill any existing artwork.
 - Do not implement the old appended `0.3500`-inch strip.

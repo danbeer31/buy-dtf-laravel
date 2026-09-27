@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Api;
 
+use App\Exceptions\ArtworkFetchException;
 use App\Models\Business;
 use App\Models\DtfImage;
 use App\Models\IncomingOrderJob;
@@ -261,6 +262,106 @@ class IncomingOrderV1ReceiverTest extends TestCase
         $this->assertDatabaseCount('dtfimages', 1, 'fuelmysql');
     }
 
+    public function test_expired_url_can_be_refreshed_after_retryable_403_without_idempotency_conflict(): void
+    {
+        $bytes = $this->artworkBytes;
+        $fetcher = new class($bytes) extends BoundedArtworkFetcher
+        {
+            public int $calls = 0;
+
+            public function __construct(private readonly string $bytes) {}
+
+            public function fetch(
+                string $initialUrl,
+                string $owner,
+                ?callable $heartbeat = null,
+                ?int $deadlineNs = null,
+            ): FetchedArtwork {
+                $this->calls++;
+                if ($this->calls === 1) {
+                    throw new ArtworkFetchException('artwork_source_unavailable', true);
+                }
+                $directory = storage_path('app/private/incoming-orders/tmp/'.$owner);
+                if (! is_dir($directory)) {
+                    mkdir($directory, 0700, true);
+                }
+                $path = $directory.DIRECTORY_SEPARATOR.'refreshed-fixture.png';
+                file_put_contents($path, $this->bytes);
+                $heartbeat && $heartbeat();
+
+                return new FetchedArtwork($path, 'artifacts.example.test', strlen($this->bytes), 'image/png');
+            }
+        };
+        $this->app->instance(BoundedArtworkFetcher::class, $fetcher);
+
+        $payload = $this->payload();
+        $this->submit($payload)
+            ->assertStatus(503)
+            ->assertJsonPath('error.reason', 'artwork_source_unavailable');
+
+        $payload['sent_at'] = '2026-09-27T12:02:00Z';
+        $payload['design']['image_url'] = 'https://artifacts.example.test/refreshed.png?token=two';
+        $this->submit($payload)
+            ->assertOk()
+            ->assertJsonPath('receiver.attempt_count', 2)
+            ->assertJsonPath('receiver.status', 'completed');
+
+        $this->assertSame(2, $fetcher->calls);
+        $this->assertDatabaseCount('incoming_order_jobs', 1, 'fuelmysql');
+        $this->assertDatabaseCount('dtfimages', 1, 'fuelmysql');
+    }
+
+    public function test_valid_ignored_label_replays_after_capability_enablement_with_omitted_required_default(): void
+    {
+        config()->set('incoming_order.job_label_enabled', false);
+        $this->bindArtworkFetcher();
+        $payload = $this->payload();
+        unset($payload['job_label']['required']);
+
+        $first = $this->submit($payload)
+            ->assertOk()
+            ->assertJsonPath('job_label.status', 'ignored')
+            ->assertJsonPath('job_label.reason', 'capability_disabled');
+        $fingerprint = $first->json('receiver.request_fingerprint');
+
+        config()->set('incoming_order.job_label_enabled', true);
+        $payload['sent_at'] = '2026-09-27T12:03:00Z';
+        $payload['design']['image_url'] = 'https://artifacts.example.test/refreshed.png?token=three';
+        $this->submit($payload)
+            ->assertOk()
+            ->assertJsonPath('receiver.replayed', true)
+            ->assertJsonPath('receiver.request_fingerprint', $fingerprint)
+            ->assertJsonPath('job_label.status', 'ignored')
+            ->assertJsonPath('job_label.reason', 'capability_disabled');
+    }
+
+    public function test_attempt_exhaustion_status_and_reason_are_stable_on_every_later_retry(): void
+    {
+        config()->set('incoming_order.max_attempts', 1);
+        $fetcher = new class extends BoundedArtworkFetcher
+        {
+            public function fetch(
+                string $initialUrl,
+                string $owner,
+                ?callable $heartbeat = null,
+                ?int $deadlineNs = null,
+            ): FetchedArtwork {
+                throw new ArtworkFetchException('artwork_source_unavailable', true);
+            }
+        };
+        $this->app->instance(BoundedArtworkFetcher::class, $fetcher);
+        $payload = $this->payload();
+
+        $this->submit($payload)->assertStatus(503);
+        foreach ([2, 3] as $attempt) {
+            $this->submit($payload)
+                ->assertStatus(503)
+                ->assertHeader('Retry-After', '60')
+                ->assertJsonPath('error.code', 'receiver_unavailable')
+                ->assertJsonPath('error.reason', 'idempotency_attempts_exhausted');
+        }
+    }
+
     public function test_same_key_with_changed_semantic_payload_returns_409_without_fetch(): void
     {
         $fetcher = $this->bindArtworkFetcher();
@@ -379,6 +480,44 @@ class IncomingOrderV1ReceiverTest extends TestCase
         $this->assertDatabaseCount('incoming_order_jobs', 0, 'fuelmysql');
     }
 
+    public function test_json_content_type_accepts_parameters_but_rejects_prefix_and_suffix_types(): void
+    {
+        $this->bindArtworkFetcher();
+        $raw = json_encode($this->signedPayload($this->payload()), JSON_THROW_ON_ERROR);
+
+        $this->call('POST', '/api/incomingorder', [], [], [], [
+            'CONTENT_TYPE' => 'application/json; charset=UTF-8',
+        ], $raw)->assertOk();
+
+        $payload = $this->payload();
+        $payload['idempotency_key'] = 'shopnltees:dispatch:00000000-0000-4000-8000-000000000099';
+        $badRaw = json_encode($this->signedPayload($payload), JSON_THROW_ON_ERROR);
+        foreach (['application/jsonx', 'application/json-patch+json'] as $contentType) {
+            $this->call('POST', '/api/incomingorder', [], [], [], [
+                'CONTENT_TYPE' => $contentType,
+            ], $badRaw)
+                ->assertStatus(415)
+                ->assertJsonPath('error.code', 'unsupported_media_type')
+                ->assertJsonPath('error.reason', 'application_json_required');
+        }
+    }
+
+    public function test_v1_signature_failures_use_the_structured_error_contract(): void
+    {
+        $payload = $this->payload();
+        $payload['signature'] = str_repeat('0', 64);
+
+        $this->postJson('/api/incomingorder', $payload)
+            ->assertStatus(401)
+            ->assertExactJson([
+                'success' => false,
+                'error' => [
+                    'code' => 'authentication_failed',
+                    'reason' => 'invalid_signature',
+                ],
+            ]);
+    }
+
     public function test_unknown_v1_envelope_field_is_rejected_without_fetch(): void
     {
         $fetcher = $this->bindArtworkFetcher();
@@ -444,6 +583,12 @@ class IncomingOrderV1ReceiverTest extends TestCase
 
     private function submit(array $payload): TestResponse
     {
+        return $this->postJson('/api/incomingorder', $this->signedPayload($payload));
+    }
+
+    /** @return array<string, mixed> */
+    private function signedPayload(array $payload): array
+    {
         $signingObject = json_decode(json_encode($payload, JSON_THROW_ON_ERROR), false, 64, JSON_THROW_ON_ERROR);
         $payload['signature'] = hash_hmac(
             'sha256',
@@ -451,7 +596,7 @@ class IncomingOrderV1ReceiverTest extends TestCase
             (string) config('incoming_order.shared_secret'),
         );
 
-        return $this->postJson('/api/incomingorder', $payload);
+        return $payload;
     }
 
     private function bindArtworkFetcher(): BoundedArtworkFetcher
@@ -463,8 +608,12 @@ class IncomingOrderV1ReceiverTest extends TestCase
 
             public function __construct(private readonly string $bytes) {}
 
-            public function fetch(string $initialUrl, string $owner, ?callable $heartbeat = null): FetchedArtwork
-            {
+            public function fetch(
+                string $initialUrl,
+                string $owner,
+                ?callable $heartbeat = null,
+                ?int $deadlineNs = null,
+            ): FetchedArtwork {
                 $this->calls++;
                 $directory = storage_path('app/private/incoming-orders/tmp/'.$owner);
                 if (! is_dir($directory)) {

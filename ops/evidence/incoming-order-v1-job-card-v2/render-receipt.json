@@ -1,0 +1,40 @@
+{
+    "evidence_version": 1,
+    "renderer_readiness": {
+        "ready": true,
+        "reason": null,
+        "renderer_version": "separate-job-card-v2",
+        "font_sha256": "ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280",
+        "width_px": 1500,
+        "height_px": 900,
+        "dpi": 300
+    },
+    "cases": {
+        "normal": {
+            "file": "buy-dtf-job-card-review-normal.png",
+            "sha256": "fa4d42b35ddf99736345d76a8a65c5275c1980b1af323a794b5678d889b5b136",
+            "bytes": 58002,
+            "width_px": 1500,
+            "height_px": 900,
+            "x_ppm": 11811,
+            "y_ppm": 11811,
+            "x_dpi": 299.9994,
+            "y_dpi": 299.9994,
+            "font_sha256": "ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280",
+            "renderer_version": "separate-job-card-v2"
+        },
+        "maximum-fields": {
+            "file": "buy-dtf-job-card-review-maximum-fields.png",
+            "sha256": "cadf92ae4e1f7b2b0b6496e66d2f426e9701ad5617986e8abebaef0b32258ddf",
+            "bytes": 44527,
+            "width_px": 1500,
+            "height_px": 900,
+            "x_ppm": 11811,
+            "y_ppm": 11811,
+            "x_dpi": 299.9994,
+            "y_dpi": 299.9994,
+            "font_sha256": "ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280",
+            "renderer_version": "separate-job-card-v2"
+        }
+    }
+}

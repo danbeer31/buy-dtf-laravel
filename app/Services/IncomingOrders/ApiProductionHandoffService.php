@@ -7,8 +7,10 @@ use App\Helpers\ProductionHelper;
 use App\Models\ApiAssetRecord;
 use App\Models\DtfImage;
 use App\Models\IncomingOrderJob;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use RuntimeException;
 use Throwable;
 
@@ -48,6 +50,7 @@ class ApiProductionHandoffService
         if (! is_array($metadata)) {
             throw new RuntimeException('Frozen job-card metadata is unavailable.');
         }
+
         $dimensions = $jobs->map(fn (IncomingOrderJob $job): string => $job->art_width_in.'x'.$job->art_height_in)
             ->unique()
             ->values();
@@ -66,19 +69,42 @@ class ApiProductionHandoffService
         }
         $totalQuantity = $frozenTotalQuantity;
 
+        $sourceHashes = $jobs->map(function (IncomingOrderJob $job): string {
+            return (string) ($job->actual_art_sha256
+                ?: $job->original_asset_sha256
+                ?: $job->expected_art_sha256);
+        })->unique()->values();
+        if ($sourceHashes->count() !== 1
+            || ! preg_match('/^[a-f0-9]{64}$/D', (string) $sourceHashes->first())) {
+            throw new RuntimeException('Frozen source-artwork identity is unavailable or inconsistent.');
+        }
+        $sourceHash = (string) $sourceHashes->first();
+        $expectedCardHash = $this->frozenDerivedHash($jobs, 'job_card_asset_sha256');
+        $expectedProductionHash = $this->frozenDerivedHash($jobs, 'normalized_asset_sha256');
+
         $groupKey = hash('sha256', implode('|', [
             (string) $representative->dtforder_id,
             (string) $representative->image,
             number_format($artWidth, 4, '.', ''),
             number_format($artHeight, 4, '.', ''),
+            $sourceHash,
             $fingerprint,
-            (string) $jobs->first()->renderer_version,
+            $rendererVersion,
             (string) max(1, $totalQuantity),
         ]));
         $connection = (string) config('database.fuel_connection');
         $jobIds = $jobs->pluck('id')->map(fn ($id): int => (int) $id)->sort()->values()->all();
+        $owner = (string) Str::uuid();
+        $leaseSeconds = max(30, (int) config('incoming_order.job_card.production_lease_seconds', 300));
 
-        DB::connection($connection)->transaction(function () use ($jobIds, $groupKey): void {
+        DB::connection($connection)->transaction(function () use (
+            $jobIds,
+            $groupKey,
+            $owner,
+            $leaseSeconds,
+            $connection,
+        ): void {
+            $now = $this->databaseNow($connection);
             $lockedJobs = IncomingOrderJob::query()
                 ->whereIn('id', $jobIds)
                 ->orderBy('id')
@@ -88,37 +114,71 @@ class ApiProductionHandoffService
                 throw new RuntimeException('Production group changed before handoff.');
             }
 
-            $leaseSeconds = max(30, (int) config('incoming_order.job_card.production_lease_seconds', 300));
-            $activeCutoff = now()->subSeconds($leaseSeconds);
             if ($lockedJobs->contains(fn (IncomingOrderJob $job): bool => $job->production_state === 'processing'
-                && $job->production_started_at !== null
-                && $job->production_started_at->greaterThan($activeCutoff))) {
+                && $job->production_lease_expires_at !== null
+                && $job->production_lease_expires_at->greaterThan($now))) {
                 throw new RuntimeException('Production handoff is already processing.');
             }
 
-            IncomingOrderJob::query()->whereIn('id', $jobIds)->update([
+            $affected = IncomingOrderJob::query()->whereIn('id', $jobIds)->update([
                 'production_state' => 'processing',
                 'production_group_key' => $groupKey,
+                'production_owner' => $owner,
                 'production_attempt_count' => DB::raw('production_attempt_count + 1'),
-                'production_started_at' => now(),
+                'production_started_at' => $now,
+                'production_heartbeat_at' => $now,
+                'production_lease_expires_at' => $now->addSeconds($leaseSeconds),
                 'production_completed_at' => null,
                 'last_error_code' => null,
+                'updated_at' => $now,
             ]);
-        });
+            if ($affected !== count($jobIds)) {
+                throw new RuntimeException('Production group could not be claimed atomically.');
+            }
+        }, 3);
+
+        $heartbeat = function () use (
+            $jobIds,
+            $owner,
+            $groupKey,
+            $connection,
+            $leaseSeconds,
+        ): void {
+            $now = $this->databaseNow($connection);
+            $affected = IncomingOrderJob::query()
+                ->whereIn('id', $jobIds)
+                ->where('production_state', 'processing')
+                ->where('production_owner', $owner)
+                ->where('production_group_key', $groupKey)
+                ->update([
+                    'production_heartbeat_at' => $now,
+                    'production_lease_expires_at' => $now->addSeconds($leaseSeconds),
+                    'updated_at' => $now,
+                ]);
+            if ($affected !== count($jobIds)) {
+                throw new RuntimeException('Production handoff claim was lost.');
+            }
+        };
 
         try {
+            $heartbeat();
+            $productionArt = $this->buildProductionArtwork(
+                $representative,
+                $groupKey,
+                $artWidth,
+                $artHeight,
+                $sourceHash,
+                $expectedProductionHash,
+                $heartbeat,
+            );
             $card = $this->jobCardRenderer->render(
                 (int) $jobs->first()->id,
                 $fingerprint,
                 $metadata,
                 max(1, $totalQuantity),
                 $rendererVersion,
-            );
-            $productionArt = $this->buildProductionArtwork(
-                $representative,
-                $groupKey,
-                $artWidth,
-                $artHeight,
+                $expectedCardHash,
+                $heartbeat,
             );
 
             $sourceBase = pathinfo(basename((string) $representative->image), PATHINFO_FILENAME);
@@ -132,6 +192,7 @@ class ApiProductionHandoffService
                 'width_in' => $artWidth,
                 'height_in' => $artHeight,
                 'remote_image_name' => sprintf('%s--art-%s.png', $sourceBase, $correlation),
+                'heartbeat' => $heartbeat,
             ]);
 
             $cardBase = sprintf(
@@ -145,6 +206,7 @@ class ApiProductionHandoffService
                 $cardBase,
                 (float) $card['width_in'],
                 (float) $card['height_in'],
+                ['heartbeat' => $heartbeat],
             );
 
             $result = [
@@ -153,28 +215,59 @@ class ApiProductionHandoffService
                 'job_card_quantity' => 1,
                 'total_artwork_quantity' => max(1, $totalQuantity),
                 'renderer_version' => $card['renderer_version'],
+                'job_card_sha256' => $card['sha256'],
+                'production_artwork_sha256' => $productionArt['sha256'],
+                'job_card_dpi' => $card['dpi'],
+                'job_card_font_sha256' => $card['font_sha256'],
             ];
 
             DB::connection($connection)->transaction(function () use (
-                $jobs,
                 $jobIds,
+                $owner,
+                $groupKey,
                 $card,
                 $productionArt,
                 $result,
+                $connection,
             ): void {
-                IncomingOrderJob::query()->whereIn('id', $jobIds)->update([
-                    'job_label_status' => 'rendered',
-                    'job_card_asset_path' => $card['relative_path'],
-                    'job_card_asset_sha256' => $card['sha256'],
-                    'normalized_asset_path' => $productionArt['relative_path'],
-                    'normalized_asset_sha256' => $productionArt['sha256'],
-                    'production_state' => 'completed',
-                    'production_result' => json_encode($result, JSON_THROW_ON_ERROR),
-                    'production_completed_at' => now(),
-                    'last_error_code' => null,
-                ]);
+                $now = $this->databaseNow($connection);
+                $lockedJobs = IncomingOrderJob::query()
+                    ->whereIn('id', $jobIds)
+                    ->orderBy('id')
+                    ->lockForUpdate()
+                    ->get();
+                if ($lockedJobs->count() !== count($jobIds)
+                    || $lockedJobs->contains(fn (IncomingOrderJob $job): bool => $job->production_state !== 'processing'
+                        || ! hash_equals((string) $job->production_owner, $owner)
+                        || ! hash_equals((string) $job->production_group_key, $groupKey))) {
+                    throw new RuntimeException('Production handoff claim was lost before completion.');
+                }
 
-                foreach ($jobs as $job) {
+                $affected = IncomingOrderJob::query()
+                    ->whereIn('id', $jobIds)
+                    ->where('production_state', 'processing')
+                    ->where('production_owner', $owner)
+                    ->where('production_group_key', $groupKey)
+                    ->update([
+                        'job_label_status' => 'rendered',
+                        'job_card_asset_path' => $card['relative_path'],
+                        'job_card_asset_sha256' => $card['sha256'],
+                        'normalized_asset_path' => $productionArt['relative_path'],
+                        'normalized_asset_sha256' => $productionArt['sha256'],
+                        'production_state' => 'completed',
+                        'production_owner' => null,
+                        'production_heartbeat_at' => null,
+                        'production_lease_expires_at' => null,
+                        'production_result' => json_encode($result, JSON_THROW_ON_ERROR),
+                        'production_completed_at' => $now,
+                        'last_error_code' => null,
+                        'updated_at' => $now,
+                    ]);
+                if ($affected !== count($jobIds)) {
+                    throw new RuntimeException('Production handoff completion lost ownership.');
+                }
+
+                foreach ($lockedJobs as $job) {
                     $this->recordAsset($job, 'production_artwork', $productionArt);
                     $this->recordAsset($job, 'job_card', $card);
                 }
@@ -182,20 +275,36 @@ class ApiProductionHandoffService
 
             return $result;
         } catch (Throwable $exception) {
-            IncomingOrderJob::query()->whereIn('id', $jobIds)->update([
-                'production_state' => 'retryable_failure',
-                'last_error_code' => 'job_card_handoff_failed',
-            ]);
+            $now = $this->databaseNow($connection);
+            IncomingOrderJob::query()
+                ->whereIn('id', $jobIds)
+                ->where('production_state', 'processing')
+                ->where('production_owner', $owner)
+                ->where('production_group_key', $groupKey)
+                ->update([
+                    'production_state' => 'retryable_failure',
+                    'production_owner' => null,
+                    'production_heartbeat_at' => null,
+                    'production_lease_expires_at' => null,
+                    'last_error_code' => 'job_card_handoff_failed',
+                    'updated_at' => $now,
+                ]);
             throw $exception;
         }
     }
 
-    /** @return array{relative_path: string, absolute_path: string, sha256: string, bytes: int} */
+    /**
+     * @param  callable(): void  $heartbeat
+     * @return array{relative_path: string, absolute_path: string, sha256: string, bytes: int}
+     */
     private function buildProductionArtwork(
         DtfImage $image,
         string $groupKey,
         float $widthIn,
         float $heightIn,
+        string $expectedSourceHash,
+        ?string $expectedExistingHash,
+        callable $heartbeat,
     ): array {
         $relative = sprintf('incoming-orders/production/%d/%s.png', $image->id, $groupKey);
         $absolute = storage_path('app/private/'.$relative);
@@ -204,11 +313,21 @@ class ApiProductionHandoffService
             throw new RuntimeException('Unable to create production-artwork directory.');
         }
 
-        if (! is_file($absolute)) {
-            $source = public_path(ltrim((string) $image->image, '/'));
-            if (! is_file($source)) {
-                throw new RuntimeException('Immutable source artwork is missing.');
-            }
+        $source = public_path(ltrim((string) $image->image, '/'));
+        if (! is_file($source)) {
+            throw new RuntimeException('Immutable source artwork is missing.');
+        }
+        $heartbeat();
+        $sourceHashBefore = hash_file('sha256', $source);
+        if (! is_string($sourceHashBefore) || ! hash_equals($expectedSourceHash, $sourceHashBefore)) {
+            throw new RuntimeException('Immutable source artwork hash does not match the frozen job.');
+        }
+
+        $reuse = is_string($expectedExistingHash)
+            && preg_match('/^[a-f0-9]{64}$/D', $expectedExistingHash)
+            && is_file($absolute)
+            && hash_equals($expectedExistingHash, (string) hash_file('sha256', $absolute));
+        if (! $reuse) {
             $temporary = $absolute.'.'.bin2hex(random_bytes(8)).'.tmp.png';
             try {
                 $prepared = ImageHelper::prepareForProductionAspectSafe(
@@ -221,19 +340,26 @@ class ApiProductionHandoffService
                 if (! ($prepared['success'] ?? false)) {
                     throw new RuntimeException('Unable to generate aspect-safe production artwork.');
                 }
-                if (! @rename($temporary, $absolute)) {
-                    throw new RuntimeException('Unable to finalize production artwork.');
+                $heartbeat();
+                $sourceHashAfter = hash_file('sha256', $source);
+                if (! is_string($sourceHashAfter) || ! hash_equals($expectedSourceHash, $sourceHashAfter)) {
+                    throw new RuntimeException('Immutable source artwork changed during production preparation.');
                 }
+                $this->publishAtomically($temporary, $absolute, 'production artwork');
                 @chmod($absolute, 0640);
             } finally {
                 @unlink($temporary);
             }
         }
 
+        $heartbeat();
         $hash = hash_file('sha256', $absolute);
         $bytes = filesize($absolute);
         if (! is_string($hash) || $bytes === false) {
             throw new RuntimeException('Production artwork verification failed.');
+        }
+        if (is_string($expectedExistingHash) && ! hash_equals($expectedExistingHash, $hash)) {
+            throw new RuntimeException('Frozen production artwork hash changed.');
         }
 
         return [
@@ -242,6 +368,56 @@ class ApiProductionHandoffService
             'sha256' => $hash,
             'bytes' => (int) $bytes,
         ];
+    }
+
+    /**
+     * @param  EloquentCollection<int, IncomingOrderJob>  $jobs
+     */
+    private function frozenDerivedHash(EloquentCollection $jobs, string $column): ?string
+    {
+        $hashes = $jobs->pluck($column)->filter()->unique()->values();
+        if ($hashes->count() > 1) {
+            throw new RuntimeException('Frozen production derivative identities are inconsistent.');
+        }
+        if ($hashes->isEmpty()) {
+            return null;
+        }
+
+        $hash = (string) $hashes->first();
+        if (! preg_match('/^[a-f0-9]{64}$/D', $hash)) {
+            throw new RuntimeException('Frozen production derivative identity is invalid.');
+        }
+
+        return $hash;
+    }
+
+    private function publishAtomically(string $temporary, string $absolute, string $description): void
+    {
+        if (is_file($absolute)) {
+            $temporaryHash = hash_file('sha256', $temporary);
+            $existingHash = hash_file('sha256', $absolute);
+            if (is_string($temporaryHash)
+                && is_string($existingHash)
+                && hash_equals($temporaryHash, $existingHash)) {
+                return;
+            }
+        }
+
+        if (! @rename($temporary, $absolute)) {
+            throw new RuntimeException("Unable to atomically finalize {$description}.");
+        }
+    }
+
+    private function databaseNow(string $connection): CarbonImmutable
+    {
+        $database = DB::connection($connection);
+        $sql = $database->getDriverName() === 'mysql'
+            ? 'SELECT UTC_TIMESTAMP(6) AS current_time'
+            : 'SELECT CURRENT_TIMESTAMP AS current_time';
+        $row = $database->selectOne($sql);
+        $value = is_object($row) ? ($row->current_time ?? null) : null;
+
+        return CarbonImmutable::parse((string) $value, 'UTC')->utc();
     }
 
     /** @param array<string, mixed> $asset */

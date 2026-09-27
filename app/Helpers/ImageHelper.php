@@ -23,8 +23,8 @@ class ImageHelper
         $ppmY = max(1, (int) round($dpiY * 39.3700787402));
         $physData = pack('NNC', $ppmX, $ppmY, 1);
         $physType = 'pHYs';
-        $physCrc = (int) sprintf('%u', crc32($physType . $physData));
-        $physChunk = pack('N', strlen($physData)) . $physType . $physData . pack('N', $physCrc);
+        $physCrc = (int) sprintf('%u', crc32($physType.$physData));
+        $physChunk = pack('N', strlen($physData)).$physType.$physData.pack('N', $physCrc);
 
         $out = substr($bytes, 0, 8);
         $offset = 8;
@@ -44,7 +44,7 @@ class ImageHelper
             }
 
             // Insert pHYs immediately after IHDR.
-            if (!$inserted && $type === 'IHDR') {
+            if (! $inserted && $type === 'IHDR') {
                 $out .= $physChunk;
                 $inserted = true;
             }
@@ -52,17 +52,56 @@ class ImageHelper
             $offset += $chunkTotal;
         }
 
-        if (!$inserted) {
+        if (! $inserted) {
             return ['success' => false, 'message' => 'IHDR not found in PNG'];
         }
 
         $ok = @file_put_contents($file, $out);
+
         return ($ok !== false) ? ['success' => true] : ['success' => false, 'message' => 'Failed to write PNG pHYs chunk'];
+    }
+
+    /** @return array{x_ppm: int, y_ppm: int, unit: int, x_dpi: float, y_dpi: float}|null */
+    public static function pngResolution(string $file): ?array
+    {
+        $bytes = @file_get_contents($file);
+        if (! is_string($bytes) || substr($bytes, 0, 8) !== "\x89PNG\x0D\x0A\x1A\x0A") {
+            return null;
+        }
+
+        $offset = 8;
+        $length = strlen($bytes);
+        while ($offset + 12 <= $length) {
+            $chunkLength = unpack('Nlength', substr($bytes, $offset, 4));
+            $chunkLength = is_array($chunkLength) ? (int) $chunkLength['length'] : -1;
+            $type = substr($bytes, $offset + 4, 4);
+            if ($chunkLength < 0 || $offset + 12 + $chunkLength > $length) {
+                return null;
+            }
+            if ($type === 'pHYs' && $chunkLength === 9) {
+                $values = unpack('Nx/Ny/Cunit', substr($bytes, $offset + 8, 9));
+                if (! is_array($values)) {
+                    return null;
+                }
+
+                return [
+                    'x_ppm' => (int) $values['x'],
+                    'y_ppm' => (int) $values['y'],
+                    'unit' => (int) $values['unit'],
+                    'x_dpi' => (float) $values['x'] / 39.3700787402,
+                    'y_dpi' => (float) $values['y'] / 39.3700787402,
+                ];
+            }
+
+            $offset += 12 + $chunkLength;
+        }
+
+        return null;
     }
 
     protected static function trimTransparentBorderGd(string $inputFile, int $guard = 2, int $leave = 0): array
     {
-        if (!function_exists('imagecreatefromstring')) {
+        if (! function_exists('imagecreatefromstring')) {
             return ['success' => false, 'message' => 'GD not available for trim fallback'];
         }
 
@@ -72,7 +111,7 @@ class ImageHelper
         }
 
         $src = @imagecreatefromstring($raw);
-        if (!$src) {
+        if (! $src) {
             return ['success' => false, 'message' => 'GD could not decode image'];
         }
 
@@ -80,6 +119,7 @@ class ImageHelper
         $h = imagesy($src);
         if ($w <= 0 || $h <= 0) {
             imagedestroy($src);
+
             return ['success' => false, 'message' => 'Invalid source dimensions for GD trim'];
         }
 
@@ -93,16 +133,25 @@ class ImageHelper
                 $rgba = imagecolorat($src, $x, $y);
                 $alpha = ($rgba >> 24) & 0x7F;
                 if ($alpha < 127) {
-                    if ($x < $minX) $minX = $x;
-                    if ($y < $minY) $minY = $y;
-                    if ($x > $maxX) $maxX = $x;
-                    if ($y > $maxY) $maxY = $y;
+                    if ($x < $minX) {
+                        $minX = $x;
+                    }
+                    if ($y < $minY) {
+                        $minY = $y;
+                    }
+                    if ($x > $maxX) {
+                        $maxX = $x;
+                    }
+                    if ($y > $maxY) {
+                        $maxY = $y;
+                    }
                 }
             }
         }
 
         if ($maxX < 0 || $maxY < 0) {
             imagedestroy($src);
+
             return ['success' => true, 'message' => 'Fully transparent image; nothing to trim'];
         }
 
@@ -115,8 +164,9 @@ class ImageHelper
         $newH = max(1, $maxY - $minY + 1);
 
         $dst = imagecreatetruecolor($newW, $newH);
-        if (!$dst) {
+        if (! $dst) {
             imagedestroy($src);
+
             return ['success' => false, 'message' => 'GD could not allocate destination image'];
         }
 
@@ -154,18 +204,18 @@ class ImageHelper
      */
     protected static function prepareForProductionWithGd(string $inputFile, string $outputFile, int $widthPx, int $heightPx, int $dpi = 300): array
     {
-        if (!function_exists('imagecreatefromstring') || !function_exists('imagecreatetruecolor')) {
+        if (! function_exists('imagecreatefromstring') || ! function_exists('imagecreatetruecolor')) {
             return ['success' => false, 'message' => 'GD extension not available'];
         }
 
         $srcInfo = @getimagesize($inputFile);
-        if (!is_array($srcInfo) || !isset($srcInfo[0], $srcInfo[1])) {
+        if (! is_array($srcInfo) || ! isset($srcInfo[0], $srcInfo[1])) {
             return ['success' => false, 'message' => 'Unable to read source image dimensions'];
         }
 
-        $srcPixels = (int)$srcInfo[0] * (int)$srcInfo[1];
-        $dstPixels = (int)$widthPx * (int)$heightPx;
-        $maxPixels = (int)env('PRODUCTION_GD_MAX_PIXELS', 75000000);
+        $srcPixels = (int) $srcInfo[0] * (int) $srcInfo[1];
+        $dstPixels = (int) $widthPx * (int) $heightPx;
+        $maxPixels = (int) env('PRODUCTION_GD_MAX_PIXELS', 75000000);
         if ($srcPixels > $maxPixels || $dstPixels > $maxPixels) {
             return ['success' => false, 'message' => 'GD fallback pixel budget exceeded'];
         }
@@ -176,13 +226,14 @@ class ImageHelper
         }
 
         $src = @imagecreatefromstring($raw);
-        if (!$src) {
+        if (! $src) {
             return ['success' => false, 'message' => 'GD could not decode source image'];
         }
 
         $dst = imagecreatetruecolor($widthPx, $heightPx);
-        if (!$dst) {
+        if (! $dst) {
             imagedestroy($src);
+
             return ['success' => false, 'message' => 'GD could not allocate destination image'];
         }
 
@@ -209,13 +260,13 @@ class ImageHelper
         imagedestroy($src);
         imagedestroy($dst);
 
-        if (!$okWrite) {
+        if (! $okWrite) {
             return ['success' => false, 'message' => 'GD failed to write output PNG'];
         }
 
         $phys = self::upsertPngPhysChunk($outputFile, $dpi, $dpi);
-        if (!($phys['success'] ?? false)) {
-            return ['success' => false, 'message' => 'GD wrote PNG but failed to set pHYs: ' . ($phys['message'] ?? 'Unknown error')];
+        if (! ($phys['success'] ?? false)) {
+            return ['success' => false, 'message' => 'GD wrote PNG but failed to set pHYs: '.($phys['message'] ?? 'Unknown error')];
         }
 
         return ['success' => true, 'fallback' => 'gd'];
@@ -226,7 +277,7 @@ class ImageHelper
      */
     public static function trimTransparentBorder(string $inputFile, int $guard = 2, int $leave = 0): array
     {
-        if (!extension_loaded('imagick')) {
+        if (! extension_loaded('imagick')) {
             return ['success' => false, 'message' => 'Imagick not available'];
         }
 
@@ -243,7 +294,7 @@ class ImageHelper
 
             $im = new Imagick($inputFile);
 
-            if (!$im->getImageAlphaChannel()) {
+            if (! $im->getImageAlphaChannel()) {
                 $im->setImageAlphaChannel(Imagick::ALPHACHANNEL_SET);
             }
 
@@ -272,8 +323,10 @@ class ImageHelper
                 if ($gd['success'] ?? false) {
                     return $gd;
                 }
-                return ['success' => false, 'message' => 'Imagick trim failed; GD fallback failed: ' . ($gd['message'] ?? 'Unknown error')];
+
+                return ['success' => false, 'message' => 'Imagick trim failed; GD fallback failed: '.($gd['message'] ?? 'Unknown error')];
             }
+
             return ['success' => false, 'message' => 'Exception: '.$msg];
         }
     }
@@ -283,7 +336,7 @@ class ImageHelper
      */
     public static function thresholdAlphaMask(string $inputFile, int $threshold = 128): array
     {
-        if (!extension_loaded('imagick')) {
+        if (! extension_loaded('imagick')) {
             return ['success' => false, 'message' => 'Imagick extension not available.'];
         }
 
@@ -291,7 +344,7 @@ class ImageHelper
             $img = new Imagick($inputFile);
             self::normalizeCmykToRgb($img);
 
-            if (!$img->getImageAlphaChannel()) {
+            if (! $img->getImageAlphaChannel()) {
                 $img->setImageAlphaChannel(Imagick::ALPHACHANNEL_SET);
             }
 
@@ -316,7 +369,7 @@ class ImageHelper
      */
     public static function setPngDpi(string $file, int $dpiX, int $dpiY): array
     {
-        if (!extension_loaded('imagick')) {
+        if (! extension_loaded('imagick')) {
             return self::upsertPngPhysChunk($file, $dpiX, $dpiY);
         }
 
@@ -328,19 +381,28 @@ class ImageHelper
             $im->setImageUnits(Imagick::RESOLUTION_PIXELSPERINCH);
             $im->setImageResolution(max(1, $dpiX), max(1, $dpiY));
             $im->setImageProperty('png:pHYs', "x={$dpiX},y={$dpiY},units=1");
-            $im->setImageProperty('density', max(1, $dpiX) . 'x' . max(1, $dpiY));
+            $im->setImageProperty('density', max(1, $dpiX).'x'.max(1, $dpiY));
             $ok = $im->writeImage($file);
             $im->clear();
             $im->destroy();
-            return $ok ? ['success' => true] : ['success' => false];
+            if (! $ok) {
+                return ['success' => false];
+            }
+
+            // ImageMagick builds differ in whether resolution properties are
+            // serialized as a PNG pHYs chunk. Canonicalize the bytes so every
+            // renderer and RIP sees the same physical resolution.
+            return self::upsertPngPhysChunk($file, $dpiX, $dpiY);
         } catch (\Exception $e) {
             $fallback = self::upsertPngPhysChunk($file, $dpiX, $dpiY);
             if ($fallback['success'] ?? false) {
                 return ['success' => true, 'fallback' => 'png_chunk'];
             }
-            return ['success' => false, 'message' => $e->getMessage() . '; fallback failed: ' . ($fallback['message'] ?? 'Unknown error')];
+
+            return ['success' => false, 'message' => $e->getMessage().'; fallback failed: '.($fallback['message'] ?? 'Unknown error')];
         }
     }
+
     /**
      * Prepare image for production in hard-edge mode:
      * - nearest-neighbor resize (no anti-aliasing)
@@ -354,21 +416,20 @@ class ImageHelper
         float $heightIn,
         int $dpi = 300,
         ?int $alphaThreshold = null
-    ): array
-    {
-        if (!extension_loaded('imagick')) {
+    ): array {
+        if (! extension_loaded('imagick')) {
             return ['success' => false, 'message' => 'Imagick not available'];
         }
 
         $widthPx = max(1, (int) round($widthIn * $dpi));
         $heightPx = max(1, (int) round($heightIn * $dpi));
-        $allowFallback = (bool)filter_var(env('PRODUCTION_PREP_ALLOW_FALLBACK', true), FILTER_VALIDATE_BOOL);
+        $allowFallback = (bool) filter_var(env('PRODUCTION_PREP_ALLOW_FALLBACK', true), FILTER_VALIDATE_BOOL);
 
         try {
             $im = new Imagick($inputFile);
 
             // Ensure alpha channel exists
-            if (!$im->getImageAlphaChannel()) {
+            if (! $im->getImageAlphaChannel()) {
                 $im->setImageAlphaChannel(Imagick::ALPHACHANNEL_SET);
             }
 
@@ -435,12 +496,11 @@ class ImageHelper
         float $widthIn,
         float $heightIn,
         int $dpi = 300
-    ): array
-    {
+    ): array {
         $targetWidth = max(1, (int) round($widthIn * $dpi));
         $targetHeight = max(1, (int) round($heightIn * $dpi));
 
-        if (!extension_loaded('imagick')) {
+        if (! extension_loaded('imagick')) {
             return self::prepareForProductionAspectSafeWithGd(
                 $inputFile,
                 $outputFile,
@@ -457,7 +517,7 @@ class ImageHelper
             }
             $source->setIteratorIndex(0);
             self::normalizeCmykToRgb($source);
-            if (!$source->getImageAlphaChannel()) {
+            if (! $source->getImageAlphaChannel()) {
                 $source->setImageAlphaChannel(Imagick::ALPHACHANNEL_SET);
             }
 
@@ -476,7 +536,7 @@ class ImageHelper
             }
             $source->resizeImage($scaledWidth, $scaledHeight, Imagick::FILTER_POINT, 1);
 
-            $canvas = new Imagick();
+            $canvas = new Imagick;
             $canvas->newImage($targetWidth, $targetHeight, new ImagickPixel('transparent'), 'png');
             $canvas->setImageAlphaChannel(Imagick::ALPHACHANNEL_SET);
             $canvas->compositeImage(
@@ -499,7 +559,7 @@ class ImageHelper
             $canvas->clear();
             $canvas->destroy();
 
-            if (!$ok) {
+            if (! $ok) {
                 return ['success' => false, 'message' => 'Failed to write aspect-safe production image'];
             }
 
@@ -525,15 +585,14 @@ class ImageHelper
         int $targetWidth,
         int $targetHeight,
         int $dpi
-    ): array
-    {
-        if (!function_exists('imagecreatefromstring') || !function_exists('imagecreatetruecolor')) {
+    ): array {
+        if (! function_exists('imagecreatefromstring') || ! function_exists('imagecreatetruecolor')) {
             return ['success' => false, 'message' => 'No supported image renderer is available'];
         }
 
         $raw = @file_get_contents($inputFile);
         $source = is_string($raw) ? @imagecreatefromstring($raw) : false;
-        if (!$source) {
+        if (! $source) {
             return ['success' => false, 'message' => 'GD could not decode source artwork'];
         }
 
@@ -541,6 +600,7 @@ class ImageHelper
         $sourceHeight = imagesy($source);
         if ($sourceWidth < 1 || $sourceHeight < 1) {
             imagedestroy($source);
+
             return ['success' => false, 'message' => 'Artwork has invalid pixel dimensions'];
         }
         $scale = min($targetWidth / $sourceWidth, $targetHeight / $sourceHeight);
@@ -548,8 +608,9 @@ class ImageHelper
         $scaledHeight = max(1, min($targetHeight, (int) round($sourceHeight * $scale)));
 
         $canvas = imagecreatetruecolor($targetWidth, $targetHeight);
-        if (!$canvas) {
+        if (! $canvas) {
             imagedestroy($source);
+
             return ['success' => false, 'message' => 'GD could not allocate production canvas'];
         }
         imagealphablending($canvas, false);
@@ -571,7 +632,7 @@ class ImageHelper
         imagedestroy($source);
         imagedestroy($canvas);
 
-        if (!$ok) {
+        if (! $ok) {
             return ['success' => false, 'message' => 'GD failed to write production canvas'];
         }
         $dpiResult = self::upsertPngPhysChunk($outputFile, $dpi, $dpi);
@@ -593,7 +654,7 @@ class ImageHelper
      */
     public static function generateThumbnail(string $inputFile, string $outputFile, int $maxWidth = 300, int $maxHeight = 300): array
     {
-        if (!extension_loaded('imagick')) {
+        if (! extension_loaded('imagick')) {
             return self::generateThumbnailWithGd($inputFile, $outputFile, $maxWidth, $maxHeight);
         }
 
@@ -624,26 +685,26 @@ class ImageHelper
                 return $gd;
             }
 
-            return ['success' => false, 'message' => $e->getMessage() . '; GD fallback failed: ' . ($gd['message'] ?? 'Unknown error')];
+            return ['success' => false, 'message' => $e->getMessage().'; GD fallback failed: '.($gd['message'] ?? 'Unknown error')];
         }
     }
 
     protected static function generateThumbnailWithGd(string $inputFile, string $outputFile, int $maxWidth = 300, int $maxHeight = 300): array
     {
-        if (!function_exists('imagecreatefromstring') || !function_exists('imagecreatetruecolor')) {
+        if (! function_exists('imagecreatefromstring') || ! function_exists('imagecreatetruecolor')) {
             return ['success' => false, 'message' => 'GD extension not available'];
         }
 
         $srcInfo = @getimagesize($inputFile);
-        if (!is_array($srcInfo) || empty($srcInfo[0]) || empty($srcInfo[1])) {
+        if (! is_array($srcInfo) || empty($srcInfo[0]) || empty($srcInfo[1])) {
             return ['success' => false, 'message' => 'Unable to read source image dimensions'];
         }
 
-        $srcW = (int)$srcInfo[0];
-        $srcH = (int)$srcInfo[1];
+        $srcW = (int) $srcInfo[0];
+        $srcH = (int) $srcInfo[1];
         $scale = min($maxWidth / $srcW, $maxHeight / $srcH, 1);
-        $dstW = max(1, (int)round($srcW * $scale));
-        $dstH = max(1, (int)round($srcH * $scale));
+        $dstW = max(1, (int) round($srcW * $scale));
+        $dstH = max(1, (int) round($srcH * $scale));
 
         $raw = @file_get_contents($inputFile);
         if ($raw === false) {
@@ -651,13 +712,14 @@ class ImageHelper
         }
 
         $src = @imagecreatefromstring($raw);
-        if (!$src) {
+        if (! $src) {
             return ['success' => false, 'message' => 'GD could not decode source image'];
         }
 
         $dst = imagecreatetruecolor($dstW, $dstH);
-        if (!$dst) {
+        if (! $dst) {
             imagedestroy($src);
+
             return ['success' => false, 'message' => 'GD could not allocate thumbnail'];
         }
 

@@ -22,7 +22,7 @@ This contract supersedes every earlier `printed_strip` proposal. BuyDTF never ap
 
 ## Signing and JSON rules
 
-V1 requests use `Content-Type: application/json`. The body must be one JSON object.
+V1 requests use exactly `Content-Type: application/json`, with optional valid media-type parameters such as `charset=UTF-8`. Prefix/suffix media types such as `application/jsonx` and `application/json-patch+json` are rejected. The body must be one JSON object.
 
 1. Reject invalid JSON and duplicate keys at every object depth.
 2. Reject unknown v1 envelope, `design`, and `job_label` fields.
@@ -43,7 +43,7 @@ Both applications must pin and run `contracts/incoming_order_v1_vectors.json`. I
   "sent_at": "2026-09-27T12:00:00Z",
   "idempotency_key": "shopnltees:dispatch:00000000-0000-4000-8000-000000000001",
   "design": {
-    "image_url": "https://approved-host.example/art.png?temporary-token=...",
+    "image_url": "https://shopnltest.com/api/production-artifacts/example?temporary-token=...",
     "sha256": "0101010101010101010101010101010101010101010101010101010101010101",
     "width": "10.7500",
     "height": "11.1220",
@@ -126,7 +126,7 @@ The semantic fingerprint is SHA-256 over RFC 8785 canonical JSON containing:
 - contract identifier;
 - `source_order_id`, `file_name`, and `shop`;
 - immutable artwork SHA-256, four-decimal requested dimensions, and quantity; and
-- normalized accepted label metadata, `null` when absent, or the submitted optional label when its ignored result must remain reproducible.
+- normalized valid label metadata (including the default `required:false`) regardless of whether the label capability is enabled, `null` when absent, or the submitted invalid optional label when its ignored result must remain reproducible.
 
 The fingerprint deliberately excludes `idempotency_key`, `sent_at`, `design.image_url`, and `signature`. A sender may refresh an expired signed URL while retaining the same dispatch key and immutable artwork hash.
 
@@ -137,7 +137,7 @@ The key identifies one durable ShopNLTees dispatch operation:
 - same key and same fingerprint: replay the original frozen response;
 - same key and different fingerprint: return `409 idempotency_conflict` and create nothing new.
 
-Processing has a database-time lease, heartbeat, attempt count, bounded stale-owner recovery, and maximum-attempt state. A live owner returns `202` plus `Retry-After`; a stale owner can be reclaimed. Completed responses and permanent failures are frozen. Database completion occurs only after the immutable original has been durably promoted and its hash reverified, preventing a completed job from pointing to a failed move.
+Processing has a database-time lease, heartbeat, attempt count, bounded stale-owner recovery, and maximum-attempt state. A live owner returns `202` plus `Retry-After`; a stale owner can be reclaimed. Completed responses and permanent failures are frozen. Once attempts are exhausted, every later request returns the same `503 receiver_unavailable / idempotency_attempts_exhausted` outcome. Database completion occurs only after the immutable original has been durably promoted and its hash reverified, preventing a completed job from pointing to a failed move.
 
 ## Artwork transport and integrity
 
@@ -146,16 +146,16 @@ The receiver:
 - rejects v1 request bodies larger than the advertised 128 KiB default before canonicalization;
 - permits only HTTPS and exact configured hosts;
 - rejects URL credentials and fragments;
-- resolves and pins public addresses and rejects private, loopback, link-local, multicast, reserved, and other non-public destinations;
+- normalizes IPv4, IPv6, and IPv4-mapped IPv6; denies private, loopback, link-local metadata, multicast, reserved, documentation, transition, and NAT64 prefixes before destination pinning;
 - revalidates every redirect, with at most three redirects;
-- streams into an owner-scoped temporary path with a 10-second connection timeout, 30-second transfer timeout, 60-second receiver budget, and 50 MiB default byte limit;
+- streams into an owner-scoped temporary path with a 10-second connection cap, 30-second transfer cap, one monotonic 60-second cumulative receiver deadline across DNS, redirects, HTTP, streaming, inspection, promotion, and completion, and a 50 MiB default byte limit;
 - accepts single-frame PNG, JPEG, or WebP only;
 - enforces declared/detected MIME agreement;
 - enforces default limits of 30,000 pixels per side and 100,000,000 decoded pixels;
 - verifies downloaded bytes against `design.sha256`; and
 - preserves the exact original bytes in a content-addressed source asset.
 
-The sender timeout must be at least 75 seconds. A transport failure may be retryable; hash, format, frame, dimension, or aspect failures are permanent for that semantic request.
+The sender timeout must be at least 75 seconds. Source access responses (including `401`, `403`, and `404`), redirect exhaustion, empty bodies, DNS failure, destination changes, and cumulative-deadline failures are retryable within the attempt limit so a sender can provide a refreshed URL. URL-policy, hash, format, frame, dimension, size, or aspect failures are permanent for that semantic request.
 
 ## Physical dimensions and no-distortion rule
 
@@ -167,11 +167,10 @@ The immutable original is never changed. Production artwork is generated separat
 
 The additive migration creates:
 
-- `incoming_order_jobs`: idempotency state, artwork identity, four-decimal dimensions, frozen label result/metadata, renderer version, production grouping, and handoff state;
-- `api_asset_records`: explicit origin, role, path identity, checksums, sizes, and fail-safe retention state; and
-- `customer_artwork_removals`: business-scoped deletion and purge receipts.
+- `incoming_order_jobs`: idempotency state, artwork identity, four-decimal dimensions, frozen label result/metadata, renderer version, production grouping, and owner-scoped production lease/heartbeat state; and
+- `api_asset_records`: explicit origin, role, path identity, checksums, sizes, and fail-safe retention state.
 
-Legacy rows are neither altered nor backfilled. The migration refuses to run unless Laravel's active/default migration connection exactly matches the audited Fuel connection. Its `down()` intentionally retains data so code rollback cannot discard frozen idempotency, label, asset, or deletion records.
+Legacy rows are neither altered nor backfilled. The migration refuses to run unless Laravel's active/default migration connection exactly matches the audited Fuel connection. Its `down()` intentionally retains data so code rollback cannot discard frozen idempotency, label, or asset records. Customer artwork deletion schema and behavior are expressly outside this rollout.
 
 Different accepted label fingerprints produce different production grouping keys even when artwork bytes and dimensions are identical. Physical artwork deduplication may share immutable bytes, but it cannot merge or discard incoming-job metadata.
 
@@ -179,19 +178,20 @@ Different accepted label fingerprints produce different production grouping keys
 
 Receipt validates and freezes metadata; it does not render a card. When an operator selects **Add to Production** for an accepted job:
 
-1. Lock and verify the incoming job and its label-aware production group.
-2. Verify the immutable source artwork.
+1. Lock and verify the incoming job and its label-aware production group, assigning an opaque owner token and database-time lease.
+2. Hash the immutable source artwork again and compare it with the frozen receipt hash.
 3. Uniformly render the normal production artwork to the requested 300-DPI dimensions without distortion.
 4. Render a separate job-card PNG using the frozen metadata and pinned renderer version.
 5. Create a normal artwork JHDR using the requested artwork quantity.
 6. Create a separate job-card JHDR using quantity `1`.
 7. Upload artwork and card using stable correlated filenames and idempotent overwrite/retry behavior.
-8. Use a locked production claim to reject concurrent active handoffs and recover a stale claim after the configured lease.
-9. Record both derived assets and mark the handoff complete only after every required local render and remote upload succeeds.
+8. Heartbeat the owner-scoped claim during rendering and around every upload. Every heartbeat, completion, and failure update is conditional on both owner and group key; an expired worker cannot overwrite its successor.
+9. Reuse a derived file only when its bytes match a previously frozen hash. Otherwise regenerate to a temporary file and publish it with a same-filesystem atomic rename.
+10. Record both derived assets and mark the handoff complete only after every required local render and remote upload succeeds.
 
-The card displays only order number, product, SKU when present, color, size, placement, and total quantity. A required card failure leaves the production handoff incomplete and retryable. It never falls back to artwork without its card.
+The card displays only order number, product, SKU when present, color, size, placement, **Shop** (`shop_domain`), and total quantity. Grapheme-aware wrapping and deterministic adaptive type sizing keep every accepted maximum-length field inside the printable border. A required card failure leaves the production handoff incomplete and retryable. It never falls back to artwork without its card.
 
-The initial card canvas is configurable and provisionally defaults to 5 by 3 inches at 300 DPI. Its font and physical readability require an operator-approved sample before the label capability can be enabled.
+The provisional card is 5 by 3 inches (1500 by 900 pixels) with a verified PNG `pHYs` value of 11,811 pixels/metre on both axes (300 PPI). Renderer `separate-job-card-v2` pins DejaVu Sans to SHA-256 `ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280`; a font or layout change requires a new renderer version. The capability readiness result verifies Imagick and this exact font. Physical readability still requires an operator-approved sample before label enablement.
 
 ## Success response
 
@@ -251,30 +251,30 @@ An optional invalid or disabled label returns `status: ignored`, a stable machin
 | `202` | Identical request is owned by another live processing lease. Retry after the supplied interval. |
 | `503` | Capability disabled, receiver unavailable, retryable fetch/processing failure, or attempts exhausted. |
 
-Machine-readable error responses use `error.code` and `error.reason`. Logs for v1 contain only correlation IDs, hashes, internal IDs, state, and exception class. They do not contain the secret, signature, signed URL query, raw label/card text, or customer PII.
+Machine-readable error responses use `error.code` and `error.reason`, including signature failures as `401` with `authentication_failed / invalid_signature`. Logs for v1 contain only correlation IDs, hashes, internal IDs, state, and exception class. They do not contain the secret, signature, signed URL query, raw label/card text, or customer PII.
 
 ## Capability discovery
 
 `GET /api/incomingorder/capabilities` is unsigned, read-only, and returns `Cache-Control: public, max-age=60`.
 
 - `receiver_idempotency_v1.enabled` is controlled by `INCOMING_ORDER_V1_ENABLED` and defaults to `false`.
-- `job_label_metadata_v1.enabled` requires both the receiver and `INCOMING_ORDER_JOB_LABEL_ENABLED`; both default to `false`.
-- The response advertises supported modes, fingerprint scheme, artwork-hash requirement, timeouts, dimension precision, aspect tolerance, image limits, metadata limits, separate-card semantics, and quantity one.
+- `job_label_metadata_v1.enabled` requires the receiver flag, `INCOMING_ORDER_JOB_LABEL_ENABLED`, and successful renderer readiness; both flags default to `false`.
+- The response advertises supported modes, fingerprint scheme, artwork-hash requirement, timeouts, dimension precision, aspect tolerance, image limits, metadata limits, separate-card semantics, quantity one, renderer/font identities, readiness, and configured artifact hosts.
 
 ShopNLTees may adopt key-only v1 after `receiver_idempotency_v1` is deployed, smoke-tested, and enabled. It may send `job_label` only after both capabilities are observed enabled. On rollback, disable the capability, wait longer than the 60-second cache lifetime, verify ShopNLTees has observed the disabled state, and only then remove receiver support.
 
-## Retention and customer removal
+## Retention and deferred customer removal
 
 Fail-safe retention is `forever`.
 
 - Every legacy `dtfimages` and `savedimages` record remains permanent.
-- Direct-cart and saved customer artwork remains permanent unless its owning customer explicitly removes it.
+- Direct-cart and saved customer artwork remains permanent.
 - Missing, unknown, or unclassified origin/retention data means permanent retention.
 - Origin is never inferred from a filename.
 - Automatic expiration applies only to a future API asset with an explicit API asset record and separately enabled retention policy.
 - The cleanup command is report-only/dry-run in this change. Retention is disabled by default.
 
-Customer removal is a separate, disabled-by-default feature. It is scoped to the authenticated business, immediately hides the path from Saved Images and that customer's prior-order artwork results, defers physical deletion while an open cart or active production job references it, checks all known database path references, and records `customer_deleted_at` and `purged_at`. Shared source, thumbnail, and applicable derivative files are removed only after active references clear. Historical order metadata remains.
+Customer artwork deletion is not implemented by this branch. Its route, UI, service, processor, configuration, and schema were removed from this rollout and require a separate contract and deployment review. Until then, every customer and legacy asset remains permanent. That later design must also prove that an external URL can never be interpreted as a local public-file path during physical purge.
 
 ## Deployment and rollback gates
 
@@ -283,7 +283,7 @@ Before production review:
 1. Review the exact branch commit, migration, shared vectors, test results, and production drift.
 2. Confirm approved artwork hosts, shared-secret placement, and production PHP/Imagick/font support without changing configuration.
 3. Review a migration `--pretend` result against the audited Fuel connection and take an exact database backup.
-4. Deploy schema and code with every new capability and purge setting disabled.
+4. Deploy schema and code with every new capability and retention expiration disabled.
 5. Smoke-test using non-production jobs.
 6. Enable receiver idempotency first; only then update ShopNLTees.
 7. Enable label metadata only after receiver and sender behavior are proven and a physical job-card sample is approved.
@@ -294,6 +294,7 @@ Code rollback disables the capability flags first and preserves all additive tab
 
 - Generate a durable dispatch-operation key. Reuse it for transport retries and use a new key for each intentional reprint.
 - Compute the exact frozen artwork SHA-256 before sending and keep it stable across refreshed URLs.
+- Stage every customization render and ordinary design artifact at a canonical direct `https://shopnltest.com/...` URL. Do not use tenant-derived hosts or cross-host redirects. `shopnltest.com` is the only initial allowlist entry.
 - Use the shared canonicalization vectors and HMAC rules.
 - Preserve current `source_order_id`, `shop`, and `sent_at` meanings.
 - Send only allowlisted production metadata and no customer PII.

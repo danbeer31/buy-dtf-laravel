@@ -153,7 +153,11 @@ class ApiJobCardHandoffTest extends TestCase
         [$admin, , $first, $second, $sourcePath] = $this->createLabeledGroup();
         IncomingOrderJob::query()->whereIn('dtfimage_id', [$first->id, $second->id])->update([
             'production_state' => 'processing',
+            'production_owner' => '00000000-0000-4000-8000-000000000001',
+            'production_group_key' => str_repeat('a', 64),
             'production_started_at' => now(),
+            'production_heartbeat_at' => now(),
+            'production_lease_expires_at' => now()->addMinutes(5),
         ]);
 
         try {
@@ -171,6 +175,78 @@ class ApiJobCardHandoffTest extends TestCase
         } finally {
             $this->cleanupFiles([$sourcePath]);
         }
+    }
+
+    #[RunInSeparateProcess]
+    #[PreserveGlobalState(false)]
+    public function test_production_handoff_reverifies_frozen_source_hash_before_any_upload(): void
+    {
+        [$admin, , $first, $second, $sourcePath] = $this->createLabeledGroup();
+        file_put_contents($sourcePath, 'tampered-after-api-receipt');
+        [$previousErrorLog, $isolatedErrorLog] = $this->isolateErrorLog();
+
+        $dropbox = Mockery::mock('overload:App\Services\DropboxService');
+        $dropbox->shouldNotReceive('upload');
+
+        try {
+            $this->actingAs($admin)
+                ->postJson(route('admin.orders.add-to-production'), ['image_id' => $first->id])
+                ->assertStatus(500)
+                ->assertJsonPath('message', 'Immutable source artwork hash does not match the frozen job.');
+
+            foreach (IncomingOrderJob::all() as $job) {
+                $this->assertSame('retryable_failure', $job->production_state);
+                $this->assertNull($job->production_owner);
+                $this->assertNull($job->production_lease_expires_at);
+            }
+            $this->assertSame(0, (int) $first->fresh()->production);
+            $this->assertSame(0, (int) $second->fresh()->production);
+        } finally {
+            $this->restoreErrorLog($previousErrorLog, $isolatedErrorLog);
+            $this->cleanupFiles([$sourcePath]);
+        }
+    }
+
+    #[RunInSeparateProcess]
+    #[PreserveGlobalState(false)]
+    public function test_stale_owner_cannot_complete_or_fail_after_a_new_owner_reclaims_the_group(): void
+    {
+        [, , $first, $second, $sourcePath] = $this->createLabeledGroup();
+        $replacementOwner = '00000000-0000-4000-8000-000000000099';
+        $imageHelper = Mockery::mock('alias:App\Helpers\ImageHelper');
+        $imageHelper->shouldReceive('prepareForProductionAspectSafe')
+            ->once()
+            ->andReturnUsing(function (string $source, string $output) use ($replacementOwner): array {
+                copy($source, $output);
+                IncomingOrderJob::query()->update([
+                    'production_owner' => $replacementOwner,
+                    'production_heartbeat_at' => now(),
+                    'production_lease_expires_at' => now()->addMinutes(5),
+                ]);
+
+                return ['success' => true];
+            });
+        $renderer = Mockery::mock(JobCardRenderer::class);
+        $renderer->shouldNotReceive('render');
+        $this->app->instance(JobCardRenderer::class, $renderer);
+
+        try {
+            app(\App\Services\IncomingOrders\ApiProductionHandoffService::class)->handoff(
+                new \Illuminate\Database\Eloquent\Collection([$first, $second]),
+                4,
+            );
+            $this->fail('A worker that lost its claim must stop.');
+        } catch (RuntimeException $exception) {
+            $this->assertSame('Production handoff claim was lost.', $exception->getMessage());
+        }
+
+        foreach (IncomingOrderJob::all() as $job) {
+            $this->assertSame('processing', $job->production_state);
+            $this->assertSame($replacementOwner, $job->production_owner);
+            $this->assertNotNull($job->production_lease_expires_at);
+            $this->assertNull($job->last_error_code);
+        }
+        $this->cleanupFiles([$sourcePath]);
     }
 
     /** @return array{User, DtfOrder, DtfImage, DtfImage, string} */
@@ -262,7 +338,7 @@ class ApiJobCardHandoffTest extends TestCase
             'job_label_fingerprint' => hash('sha256', $fingerprint),
             'art_width_in' => '4.0000',
             'art_height_in' => '2.0000',
-            'renderer_version' => 'separate-job-card-v1',
+            'renderer_version' => 'separate-job-card-v2',
             'production_state' => 'pending',
         ]);
     }
@@ -278,11 +354,12 @@ class ApiJobCardHandoffTest extends TestCase
         $renderer = Mockery::mock(JobCardRenderer::class);
         $renderer->shouldReceive('render')
             ->once()
-            ->withArgs(fn (int $jobId, string $fingerprint, array $metadata, int $quantity, string $rendererVersion): bool => $jobId > 0
+            ->withArgs(fn (int $jobId, string $fingerprint, array $metadata, int $quantity, string $rendererVersion, ?string $expectedHash, callable $heartbeat): bool => $jobId > 0
                 && strlen($fingerprint) === 64
                 && $metadata['order_number'] === '1725'
                 && $quantity === 4
-                && $rendererVersion === 'separate-job-card-v1')
+                && $rendererVersion === 'separate-job-card-v2'
+                && $expectedHash === null)
             ->andReturn([
                 'relative_path' => 'testing/'.basename($cardPath),
                 'absolute_path' => $cardPath,
@@ -290,7 +367,11 @@ class ApiJobCardHandoffTest extends TestCase
                 'bytes' => filesize($cardPath),
                 'width_in' => '5.0000',
                 'height_in' => '3.0000',
-                'renderer_version' => 'separate-job-card-v1',
+                'renderer_version' => 'separate-job-card-v2',
+                'dpi' => 300,
+                'x_ppm' => 11811,
+                'y_ppm' => 11811,
+                'font_sha256' => 'ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280',
             ]);
         $this->app->instance(JobCardRenderer::class, $renderer);
 

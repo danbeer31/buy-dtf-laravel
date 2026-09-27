@@ -23,8 +23,7 @@ class IncomingOrderV1MigrationTest extends TestCase
 
         $this->assertTrue($schema->hasTable('incoming_order_jobs'));
         $this->assertTrue($schema->hasTable('api_asset_records'));
-        $this->assertTrue($schema->hasTable('customer_artwork_removals'));
-        foreach (['integration_client', 'idempotency_key', 'job_label_metadata', 'production_state'] as $column) {
+        foreach (['integration_client', 'idempotency_key', 'job_label_metadata', 'production_state', 'production_owner', 'production_lease_expires_at'] as $column) {
             $this->assertTrue($schema->hasColumn('incoming_order_jobs', $column));
         }
 
@@ -82,7 +81,6 @@ class IncomingOrderV1MigrationTest extends TestCase
         $this->assertTrue($wrongSchema->hasTable('marker'));
         $this->assertFalse($wrongSchema->hasTable('incoming_order_jobs'));
         $this->assertFalse($wrongSchema->hasTable('api_asset_records'));
-        $this->assertFalse($wrongSchema->hasTable('customer_artwork_removals'));
         DB::purge($wrong);
     }
 
@@ -107,7 +105,6 @@ class IncomingOrderV1MigrationTest extends TestCase
 
     private function dropNewTables($schema): void
     {
-        $schema->dropIfExists('customer_artwork_removals');
         $schema->dropIfExists('api_asset_records');
         $schema->dropIfExists('incoming_order_jobs');
     }

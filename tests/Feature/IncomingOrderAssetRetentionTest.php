@@ -3,14 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\ApiAssetRecord;
-use App\Models\Business;
-use App\Models\CustomerArtworkRemoval;
-use App\Models\DtfImage;
-use App\Models\DtfOrder;
 use App\Models\IncomingOrderJob;
-use App\Models\SavedImage;
-use App\Models\User;
-use App\Services\IncomingOrders\CustomerArtworkRemovalService;
 use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
 
@@ -74,113 +67,6 @@ class IncomingOrderAssetRetentionTest extends TestCase
         $this->assertDatabaseCount('api_asset_records', 2, 'fuelmysql');
     }
 
-    public function test_customer_removal_hides_business_artwork_and_saved_copy_but_defaults_to_no_physical_purge(): void
-    {
-        [$user, $business, $order, $image, $path] = $this->customerArtwork(status: 4);
-        SavedImage::create([
-            'business_id' => $business->id,
-            'image' => $image->image,
-            'image_name' => 'Saved copy',
-            'date_uploaded' => now(),
-        ]);
-        config()->set('incoming_order.customer_artwork.deletion_enabled', true);
-        config()->set('incoming_order.customer_artwork.physical_purge_enabled', false);
-
-        $this->actingAs($user)
-            ->deleteJson(route('account.images.delete', $image))
-            ->assertOk()
-            ->assertJsonPath('state', 'deferred')
-            ->assertJsonPath('deferred_reason', 'physical_purge_disabled');
-
-        $this->assertFileExists($path);
-        $this->assertDatabaseMissing('savedimages', [
-            'business_id' => $business->id,
-            'image' => $image->image,
-        ], 'fuelmysql');
-        $this->assertDatabaseHas('customer_artwork_removals', [
-            'business_id' => $business->id,
-            'asset_path' => $image->image,
-            'state' => 'deferred',
-        ], 'fuelmysql');
-        $this->actingAs($user)->getJson(route('account.images'))
-            ->assertOk()
-            ->assertDontSee('Customer artwork');
-        $this->actingAs($user)->getJson(route('cart.my_images'))
-            ->assertOk()
-            ->assertJsonCount(0, 'items');
-        $this->assertDatabaseHas('dtfimages', ['id' => $image->id], 'fuelmysql');
-        $this->assertSame(4, (int) $order->fresh()->status);
-    }
-
-    public function test_physical_purge_waits_for_active_work_then_deletes_source_after_recheck(): void
-    {
-        [$user, $business, $order, $image, $path] = $this->customerArtwork(status: 1);
-        config()->set('incoming_order.customer_artwork.deletion_enabled', true);
-        config()->set('incoming_order.customer_artwork.physical_purge_enabled', true);
-
-        $this->actingAs($user)
-            ->deleteJson(route('account.images.delete', $image))
-            ->assertOk()
-            ->assertJsonPath('state', 'deferred')
-            ->assertJsonPath('deferred_reason', 'active_reference');
-        $this->assertFileExists($path);
-
-        $order->update(['status' => 4]);
-        $removal = CustomerArtworkRemoval::firstOrFail();
-        $processed = app(CustomerArtworkRemovalService::class)->attemptPhysicalPurge($removal);
-
-        $this->assertSame('purged', $processed->state);
-        $this->assertNotNull($processed->purged_at);
-        $this->assertFileDoesNotExist($path);
-        $this->assertDatabaseHas('dtfimages', ['id' => $image->id], 'fuelmysql');
-    }
-
-    public function test_shared_or_api_managed_path_is_never_physically_deleted_by_customer_removal(): void
-    {
-        [$user, $business, $order, $image, $path] = $this->customerArtwork(status: 4);
-        $other = Business::create([
-            'business_name' => 'Other Business',
-            'email' => 'other-business@example.test',
-            'status' => 1,
-        ]);
-        $otherOrder = DtfOrder::create([
-            'business_id' => $other->id,
-            'status' => 4,
-            'order_date' => now(),
-        ]);
-        DtfImage::create([
-            'dtforder_id' => $otherOrder->id,
-            'image' => $image->image,
-            'width' => 1,
-            'height' => 1,
-            'quantity' => 1,
-            'production' => 1,
-        ]);
-        config()->set('incoming_order.customer_artwork.deletion_enabled', true);
-        config()->set('incoming_order.customer_artwork.physical_purge_enabled', true);
-
-        $this->actingAs($user)
-            ->deleteJson(route('account.images.delete', $image))
-            ->assertOk()
-            ->assertJsonPath('state', 'deferred')
-            ->assertJsonPath('deferred_reason', 'shared_reference');
-
-        $this->assertFileExists($path);
-    }
-
-    public function test_customer_cannot_delete_another_business_artwork(): void
-    {
-        [$user] = $this->customerArtwork(status: 4);
-        [, , , $otherImage] = $this->customerArtwork(status: 4, suffix: 'other');
-        config()->set('incoming_order.customer_artwork.deletion_enabled', true);
-
-        $this->actingAs($user)
-            ->deleteJson(route('account.images.delete', $otherImage))
-            ->assertForbidden();
-
-        $this->assertDatabaseCount('customer_artwork_removals', 0, 'fuelmysql');
-    }
-
     private function incomingJob(): IncomingOrderJob
     {
         return IncomingOrderJob::create([
@@ -193,40 +79,6 @@ class IncomingOrderAssetRetentionTest extends TestCase
             'art_width_in' => '1.0000',
             'art_height_in' => '1.0000',
         ]);
-    }
-
-    /** @return array{User, Business, DtfOrder, DtfImage, string} */
-    private function customerArtwork(int $status, string $suffix = 'primary'): array
-    {
-        $business = Business::create([
-            'business_name' => 'Customer '.$suffix,
-            'email' => 'customer-'.$suffix.'-'.uniqid().'@example.test',
-            'status' => 1,
-        ]);
-        $user = User::factory()->create([
-            'role' => 'customer',
-            'fuel_business_id' => $business->id,
-            'email' => $business->email,
-        ]);
-        $order = DtfOrder::create([
-            'business_id' => $business->id,
-            'status' => $status,
-            'order_date' => now(),
-        ]);
-        $path = $this->publicFixture('customer-artwork-'.$suffix.'-'.uniqid().'.png');
-        $relative = '/'.str_replace('\\', '/', substr($path, strlen(public_path()) + 1));
-        $image = DtfImage::create([
-            'dtforder_id' => $order->id,
-            'image' => $relative,
-            'image_name' => 'Customer artwork '.$suffix,
-            'width' => 1,
-            'height' => 1,
-            'quantity' => 1,
-            'production' => $status >= 4 ? 1 : 0,
-            'date_uploaded' => now(),
-        ]);
-
-        return [$user, $business, $order, $image, $path];
     }
 
     private function publicFixture(string $name): string

@@ -8,12 +8,10 @@ use App\Models\DtfImage;
 use App\Models\DtfOrder;
 use App\Models\SavedImage;
 use App\Services\GangSheetPricingService;
-use App\Services\IncomingOrders\CustomerArtworkRemovalService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Imagick;
 use ImagickPixel;
@@ -25,7 +23,7 @@ class CartController extends Controller
         $user = Auth::user();
         $business = $user->business;
 
-        if (!$business) {
+        if (! $business) {
             return redirect()->route('home')->with('error', 'No business found for the current user.');
         }
 
@@ -51,8 +49,8 @@ class CartController extends Controller
                 ->get();
 
             foreach ($rows as $im) {
-                $w = (float)$im->width;
-                $h = (float)$im->height;
+                $w = (float) $im->width;
+                $h = (float) $im->height;
                 $rat = ($h > 0.0001) ? ($w / $h) : 1.0;
 
                 $price = null;
@@ -80,20 +78,20 @@ class CartController extends Controller
                             break;
                         }
                     }
-                    if (!$is_duplicate) {
+                    if (! $is_duplicate) {
                         $filtered_sizes[] = $os;
                     }
                 }
 
                 $items[] = [
-                    'id' => (int)$im->id,
-                    'image' => (string)$im->image,
-                    'thumbnail' => $im->thumbnail ?: (string)$im->image,
+                    'id' => (int) $im->id,
+                    'image' => (string) $im->image,
+                    'thumbnail' => $im->thumbnail ?: (string) $im->image,
                     'item_type' => $im->item_type ?: 'standard',
                     'item_meta' => $im->getGangSheetMeta(),
-                    'name' => (string)$im->image_name ?: 'Customer Upload',
-                    'notes' => (string)$im->image_notes,
-                    'qty' => (int)$im->quantity,
+                    'name' => (string) $im->image_name ?: 'Customer Upload',
+                    'notes' => (string) $im->image_notes,
+                    'qty' => (int) $im->quantity,
                     'width' => $w,
                     'height' => $h,
                     'ratio' => $rat,
@@ -102,7 +100,7 @@ class CartController extends Controller
                     'price' => $price,
                     'extended' => $extended,
                     'price_error' => $price_err,
-                    'other_sizes' => $filtered_sizes
+                    'other_sizes' => $filtered_sizes,
                 ];
             }
         }
@@ -110,23 +108,23 @@ class CartController extends Controller
         return view('cart.index', [
             'items' => $items,
             'cfg' => $cfg,
-            'order_id' => $order ? (int)$order->id : 0,
+            'order_id' => $order ? (int) $order->id : 0,
         ]);
     }
 
     public function preflight(Request $request)
     {
         $name = $request->input('name');
-        $size = (int)$request->input('size');
+        $size = (int) $request->input('size');
         $mime = $request->input('mime');
 
         $accept = ['image/png', 'image/x-png', 'image/svg+xml', 'application/pdf'];
         $max_mb = 50; // increased back to 50 as requested
 
-        if (!$name || !$mime || $size <= 0) {
+        if (! $name || ! $mime || $size <= 0) {
             return response()->json(['success' => false, 'message' => 'Missing file metadata'], 422);
         }
-        if (!in_array($mime, $accept)) {
+        if (! in_array($mime, $accept)) {
             return response()->json(['success' => false, 'message' => 'Unsupported file type'], 415);
         }
         if ($size > ($max_mb * 1024 * 1024)) {
@@ -160,13 +158,13 @@ class CartController extends Controller
         $pending = Session::get('uploader_pending', []);
 
         $file = $request->file('file');
-        if (!$file) {
+        if (! $file) {
             return response()->json(['success' => false, 'message' => 'Upload failed'], 400);
         }
 
         $business = Auth::user()->business;
         $clientName = $request->input('name', $file->getClientOriginalName());
-        $clientSize = (int)$request->input('size', $file->getSize());
+        $clientSize = (int) $request->input('size', $file->getSize());
         $mime = $request->input('mime', $file->getMimeType());
         $sourceOrderId = $request->input('source_order_id', '');
 
@@ -201,7 +199,7 @@ class CartController extends Controller
             ]);
 
         } catch (\Throwable $e) {
-            Log::error('Upload processing failed: ' . $e->getMessage(), [
+            Log::error('Upload processing failed: '.$e->getMessage(), [
                 'user_id' => Auth::id(),
                 'business_id' => $business->id ?? null,
                 'email' => Auth::user()->email ?? null,
@@ -215,6 +213,7 @@ class CartController extends Controller
                 $pending[$upload_id]['error'] = $e->getMessage();
                 Session::put('uploader_pending', $pending);
             }
+
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
@@ -231,6 +230,7 @@ class CartController extends Controller
                 'error' => $data['error'] ?? null,
             ];
         }
+
         return response()->json(['items' => $items]);
     }
 
@@ -241,7 +241,7 @@ class CartController extends Controller
             ->orderBy('id', 'desc')
             ->first();
 
-        if (!$order) {
+        if (! $order) {
             $order = DtfOrder::create([
                 'business_id' => $business_id,
                 'status' => 1,
@@ -251,21 +251,21 @@ class CartController extends Controller
 
         $shaOriginal = @hash_file('sha256', $tmpPath) ?: null;
 
-        $workPng = storage_path('app/tmp/' . Str::ulid() . '.png');
-        if (!is_dir(dirname($workPng))) {
+        $workPng = storage_path('app/tmp/'.Str::ulid().'.png');
+        if (! is_dir(dirname($workPng))) {
             mkdir(dirname($workPng), 0777, true);
         }
         $skipHeavyCleanup = false;
         $maxCleanupMegapixels = (float) env('UPLOAD_CLEANUP_MAX_MEGAPIXELS', 40);
 
         if ($mime === 'image/png' || $mime === 'image/x-png') {
-            if (!@copy($tmpPath, $workPng)) {
+            if (! @copy($tmpPath, $workPng)) {
                 throw new \RuntimeException('Failed to stage uploaded PNG.');
             }
 
             // Validate decode early, but treat Imagick cache exhaustion as a "large file" path.
             try {
-                $probe = new Imagick();
+                $probe = new Imagick;
                 $probe->pingImage($workPng);
                 $probe->clear();
                 $probe->destroy();
@@ -280,7 +280,7 @@ class CartController extends Controller
                     ]);
                 } else {
                     $sizeProbe = @getimagesize($workPng);
-                    if (!is_array($sizeProbe) || !isset($sizeProbe[0], $sizeProbe[1])) {
+                    if (! is_array($sizeProbe) || ! isset($sizeProbe[0], $sizeProbe[1])) {
                         @unlink($workPng);
                         throw new \RuntimeException('Uploaded PNG appears corrupted or incomplete. Please re-export and upload again.');
                     }
@@ -304,7 +304,7 @@ class CartController extends Controller
                 }
             }
         } elseif ($mime === 'image/svg+xml') {
-            $im = new Imagick();
+            $im = new Imagick;
             $im->setBackgroundColor(new ImagickPixel('transparent'));
             $im->readImage($tmpPath);
             $im->setImageFormat('png32');
@@ -314,9 +314,9 @@ class CartController extends Controller
             $im->clear();
             $im->destroy();
         } elseif ($mime === 'application/pdf') {
-            $im = new Imagick();
+            $im = new Imagick;
             $im->setResolution(300, 300);
-            $im->readImage($tmpPath . '[0]');
+            $im->readImage($tmpPath.'[0]');
             $im->setImageFormat('png32');
             $im->setImageAlphaChannel(Imagick::ALPHACHANNEL_SET);
             $im->writeImage($workPng);
@@ -328,26 +328,26 @@ class CartController extends Controller
 
         // Always trim transparent border (required for accurate print dimensions).
         $trimResult = ImageHelper::trimTransparentBorder($workPng);
-        if (!($trimResult['success'] ?? false)) {
-            throw new \RuntimeException('Failed while trimming transparent border: ' . ($trimResult['message'] ?? 'Unknown error'));
+        if (! ($trimResult['success'] ?? false)) {
+            throw new \RuntimeException('Failed while trimming transparent border: '.($trimResult['message'] ?? 'Unknown error'));
         }
 
         // Heavy cleanup (alpha threshold) can be skipped for very large rasters.
-        if (!$skipHeavyCleanup) {
+        if (! $skipHeavyCleanup) {
             $alphaResult = ImageHelper::thresholdAlphaMask($workPng);
-            if (!($alphaResult['success'] ?? false)) {
-                throw new \RuntimeException('Failed while cleaning PNG alpha channel: ' . ($alphaResult['message'] ?? 'Unknown error'));
+            if (! ($alphaResult['success'] ?? false)) {
+                throw new \RuntimeException('Failed while cleaning PNG alpha channel: '.($alphaResult['message'] ?? 'Unknown error'));
             }
         }
 
         // Always set pHYs/300 DPI metadata so downstream RIP/software dimensions stay correct.
         $dpiResult = ImageHelper::setPngDpi($workPng, 300, 300);
-        if (!($dpiResult['success'] ?? false)) {
-            throw new \RuntimeException('Failed while setting PNG DPI metadata: ' . ($dpiResult['message'] ?? 'Unknown error'));
+        if (! ($dpiResult['success'] ?? false)) {
+            throw new \RuntimeException('Failed while setting PNG DPI metadata: '.($dpiResult['message'] ?? 'Unknown error'));
         }
 
         $imgSize = @getimagesize($workPng);
-        if (!is_array($imgSize) || !isset($imgSize[0], $imgSize[1])) {
+        if (! is_array($imgSize) || ! isset($imgSize[0], $imgSize[1])) {
             throw new \RuntimeException('Unable to read image dimensions after processing.');
         }
         $pxW = (int) $imgSize[0];
@@ -358,24 +358,24 @@ class CartController extends Controller
         $widthIn = $pxW > 0 ? round($pxW / $inDpi, 3) : 0.000;
         $heightIn = $pxH > 0 ? round($pxH / $inDpi, 3) : 0.000;
 
-        $prefixId = ($sourceOrderId !== '') ? $sourceOrderId : (string)$order->id;
-        $relativeName = 'uploads/images/' . uniqid('DTF_API_' . $prefixId . '_') . '.png';
+        $prefixId = ($sourceOrderId !== '') ? $sourceOrderId : (string) $order->id;
+        $relativeName = 'uploads/images/'.uniqid('DTF_API_'.$prefixId.'_').'.png';
         $publicPath = public_path($relativeName);
 
-        if (!is_dir(dirname($publicPath))) {
+        if (! is_dir(dirname($publicPath))) {
             mkdir(dirname($publicPath), 0777, true);
         }
 
         copy($workPng, $publicPath);
 
         // Generate thumbnail
-        $thumbRelativeName = 'uploads/images/thumbs/' . basename($relativeName);
+        $thumbRelativeName = 'uploads/images/thumbs/'.basename($relativeName);
         $thumbPublicPath = public_path($thumbRelativeName);
-        if (!is_dir(dirname($thumbPublicPath))) {
+        if (! is_dir(dirname($thumbPublicPath))) {
             mkdir(dirname($thumbPublicPath), 0777, true);
         }
         $thumbOk = ImageHelper::generateThumbnail($workPng, $thumbPublicPath);
-        if (!($thumbOk['success'] ?? false)) {
+        if (! ($thumbOk['success'] ?? false)) {
             // Fall back to using the original file as thumbnail reference.
             $thumbRelativeName = $relativeName;
         }
@@ -383,12 +383,14 @@ class CartController extends Controller
         @unlink($workPng);
 
         $nativeBase = strtolower(basename($clientName));
-        if ($clientSize <= 0) $clientSize = (int)@filesize($tmpPath);
+        if ($clientSize <= 0) {
+            $clientSize = (int) @filesize($tmpPath);
+        }
 
         $img = DtfImage::createUsingExistingColumns([
             'dtforder_id' => $order->id,
-            'image' => '/' . $relativeName,
-            'thumbnail' => '/' . $thumbRelativeName,
+            'image' => '/'.$relativeName,
+            'thumbnail' => '/'.$thumbRelativeName,
             'upload_mime' => $mime,
             'item_type' => 'standard',
             'image_name' => $this->deriveImageName($clientName),
@@ -413,7 +415,7 @@ class CartController extends Controller
                 'width_in' => $widthIn,
                 'height_in' => $heightIn,
                 'cleanup_skipped' => $skipHeavyCleanup,
-            ]
+            ],
         ];
     }
 
@@ -421,6 +423,7 @@ class CartController extends Controller
     {
         $name = basename($clientName);
         $name = preg_replace('/\.(png|svg|pdf)$/i', '', $name);
+
         return Str::limit($name, 100);
     }
 
@@ -431,7 +434,7 @@ class CartController extends Controller
             abort(403);
         }
 
-        $quantity = max(1, (int)$request->input('quantity', $img->quantity));
+        $quantity = max(1, (int) $request->input('quantity', $img->quantity));
         $updates = [
             'quantity' => $quantity,
             'image_name' => $request->input('image_name', $img->image_name),
@@ -440,16 +443,16 @@ class CartController extends Controller
 
         if ($img->isGangSheet()) {
             $meta = $img->getGangSheetMeta();
-            $sizeKey = (string)($meta['size_key'] ?? '');
+            $sizeKey = (string) ($meta['size_key'] ?? '');
             $sizes = app(GangSheetPricingService::class)->sizes();
             if (isset($sizes[$sizeKey])) {
-                $updates['width'] = (float)$sizes[$sizeKey]['width'];
-                $updates['height'] = (float)$sizes[$sizeKey]['length'];
+                $updates['width'] = (float) $sizes[$sizeKey]['width'];
+                $updates['height'] = (float) $sizes[$sizeKey]['length'];
             }
             $updates['price'] = app(GangSheetPricingService::class)->unitPrice($sizeKey, $quantity);
         } else {
-            $updates['width'] = (float)$request->input('width', $img->width);
-            $updates['height'] = (float)$request->input('height', $img->height);
+            $updates['width'] = (float) $request->input('width', $img->width);
+            $updates['height'] = (float) $request->input('height', $img->height);
         }
 
         $img->update($updates);
@@ -522,20 +525,15 @@ class CartController extends Controller
     {
         $business = Auth::user()->business;
         $q = $request->input('q');
-        $hiddenPaths = app(CustomerArtworkRemovalService::class)->hiddenPaths((int)$business->id);
-
         // We want to find unique images from both SavedImage and DtfImage tables
         // Deduplicate by the 'image' path, taking the most recent one.
 
         // 1. Get SavedImages
         $savedQuery = SavedImage::where('business_id', $business->id);
-        if ($hiddenPaths->isNotEmpty()) {
-            $savedQuery->whereNotIn('image', $hiddenPaths->all());
-        }
         if ($q) {
             $savedQuery->where('image_name', 'like', "%{$q}%");
         }
-        $savedImages = $savedQuery->get()->map(function($img) {
+        $savedImages = $savedQuery->get()->map(function ($img) {
             return [
                 'id' => $img->id,
                 'dtfimage_id' => null,
@@ -543,21 +541,18 @@ class CartController extends Controller
                 'image' => $img->image,
                 'thumbnail' => $img->thumbnail,
                 'date' => $img->created_at,
-                'source' => 'saved'
+                'source' => 'saved',
             ];
         });
 
         // 2. Get DtfImages from all orders of this business
-        $dtfQuery = DtfImage::whereHas('dtfOrder', function($query) use ($business) {
+        $dtfQuery = DtfImage::whereHas('dtfOrder', function ($query) use ($business) {
             $query->where('business_id', $business->id);
         });
-        if ($hiddenPaths->isNotEmpty()) {
-            $dtfQuery->whereNotIn('image', $hiddenPaths->all());
-        }
         if ($q) {
             $dtfQuery->where('image_name', 'like', "%{$q}%");
         }
-        $dtfImages = $dtfQuery->orderBy('id', 'desc')->get()->map(function($img) {
+        $dtfImages = $dtfQuery->orderBy('id', 'desc')->get()->map(function ($img) {
             return [
                 'id' => null,
                 'dtfimage_id' => $img->id,
@@ -565,21 +560,21 @@ class CartController extends Controller
                 'image' => $img->image,
                 'thumbnail' => $img->thumbnail,
                 'date' => $img->date_uploaded,
-                'source' => 'ordered'
+                'source' => 'ordered',
             ];
         });
 
         // 3. Merge and Deduplicate by image path
         $allImages = $savedImages->concat($dtfImages)
-            ->sortByDesc(function($item) {
+            ->sortByDesc(function ($item) {
                 return $item['date'] ? $item['date']->timestamp : 0;
             })
             ->unique('image')
             ->values();
 
         // 4. Paginate manually
-        $perPage = (int)$request->input('per_page', 10);
-        $page = (int)$request->input('page', 1);
+        $perPage = (int) $request->input('per_page', 10);
+        $page = (int) $request->input('page', 1);
         $offset = ($page - 1) * $perPage;
 
         $pagedItems = $allImages->slice($offset, $perPage);
@@ -587,7 +582,7 @@ class CartController extends Controller
 
         return response()->json([
             'success' => true,
-            'items' => $pagedItems->map(function($img) {
+            'items' => $pagedItems->map(function ($img) {
                 return [
                     'id' => $img['id'],
                     'dtfimage_id' => $img['dtfimage_id'],
@@ -605,11 +600,11 @@ class CartController extends Controller
     public function useSaved(Request $request)
     {
         $business = Auth::user()->business;
-        $saved_id = (int)$request->input('saved_id');
+        $saved_id = (int) $request->input('saved_id');
         $saved = SavedImage::where('id', $saved_id)->where('business_id', $business->id)->firstOrFail();
 
         $order = $business->open_order();
-        if (!$order) {
+        if (! $order) {
             $order = DtfOrder::create([
                 'business_id' => $business->id,
                 'status' => 1,
@@ -684,16 +679,16 @@ class CartController extends Controller
         $img = DtfImage::findOrFail($id);
 
         $it = [
-            'id' => (int)$img->id,
-            'image' => (string)$img->image,
-            'thumbnail' => $img->thumbnail ?: (string)$img->image,
+            'id' => (int) $img->id,
+            'image' => (string) $img->image,
+            'thumbnail' => $img->thumbnail ?: (string) $img->image,
             'item_type' => $img->item_type ?: 'standard',
             'item_meta' => $img->getGangSheetMeta(),
-            'name' => (string)$img->image_name ?: 'Customer Upload',
-            'notes' => (string)$img->image_notes,
-            'qty' => (int)$img->quantity,
-            'width' => (float)$img->width,
-            'height' => (float)$img->height,
+            'name' => (string) $img->image_name ?: 'Customer Upload',
+            'notes' => (string) $img->image_notes,
+            'qty' => (int) $img->quantity,
+            'width' => (float) $img->width,
+            'height' => (float) $img->height,
             'ratio' => $img->height > 0 ? $img->width / $img->height : 1,
             'uploaded' => $img->date_uploaded,
             'saved' => SavedImage::where('business_id', Auth::user()->business->id)->where('image', $img->image)->exists(),
@@ -706,8 +701,8 @@ class CartController extends Controller
             $it['price_error'] = $e->getMessage();
         }
 
-        $w = (float)$img->width;
-        $h = (float)$img->height;
+        $w = (float) $img->width;
+        $h = (float) $img->height;
 
         $other_sizes_raw = DtfImage::where('image', $img->image)
             ->selectRaw('width, height, count(*) as count')
@@ -724,7 +719,7 @@ class CartController extends Controller
                     break;
                 }
             }
-            if (!$is_duplicate) {
+            if (! $is_duplicate) {
                 $filtered_sizes[] = $os;
             }
         }
@@ -743,20 +738,20 @@ class CartController extends Controller
     {
         $business = Auth::user()->business;
         $filename = $request->input('filename');
-        $size = (int)$request->input('size');
+        $size = (int) $request->input('size');
 
-        $matches = DtfImage::whereHas('dtfOrder', function($q) use ($business) {
+        $matches = DtfImage::whereHas('dtfOrder', function ($q) use ($business) {
             $q->where('business_id', $business->id);
         })
-        ->where('native_filename', strtolower(basename($filename)))
-        ->where('file_size', $size)
-        ->orderBy('id', 'desc')
-        ->get()
-        ->unique('image');
+            ->where('native_filename', strtolower(basename($filename)))
+            ->where('file_size', $size)
+            ->orderBy('id', 'desc')
+            ->get()
+            ->unique('image');
 
         return response()->json([
             'success' => true,
-            'matches' => $matches->map(function($m) {
+            'matches' => $matches->map(function ($m) {
                 return [
                     'id' => $m->id,
                     'image_name' => $m->image_name,
@@ -767,7 +762,7 @@ class CartController extends Controller
                     'uploaded' => $m->date_uploaded ? $m->date_uploaded->format('Y-m-d H:i:s') : '',
                     'sha256' => $m->sha256_original,
                 ];
-            })->values()
+            })->values(),
         ]);
     }
 
@@ -776,17 +771,17 @@ class CartController extends Controller
         $business = Auth::user()->business;
         $sha256 = $request->input('sha256');
 
-        $matches = DtfImage::whereHas('dtfOrder', function($q) use ($business) {
+        $matches = DtfImage::whereHas('dtfOrder', function ($q) use ($business) {
             $q->where('business_id', $business->id);
         })
-        ->where('sha256_original', $sha256)
-        ->orderBy('id', 'desc')
-        ->get()
-        ->unique('image');
+            ->where('sha256_original', $sha256)
+            ->orderBy('id', 'desc')
+            ->get()
+            ->unique('image');
 
         return response()->json([
             'success' => true,
-            'matches' => $matches->map(function($m) {
+            'matches' => $matches->map(function ($m) {
                 return [
                     'id' => $m->id,
                     'image_name' => $m->image_name,
@@ -797,7 +792,7 @@ class CartController extends Controller
                     'uploaded' => $m->date_uploaded ? $m->date_uploaded->format('Y-m-d H:i:s') : '',
                     'sha256' => $m->sha256_original,
                 ];
-            })->values()
+            })->values(),
         ]);
     }
 
@@ -812,7 +807,7 @@ class CartController extends Controller
         }
 
         $order = $business->open_order();
-        if (!$order) {
+        if (! $order) {
             $order = DtfOrder::create([
                 'business_id' => $business->id,
                 'status' => 1,
@@ -854,12 +849,17 @@ class CartController extends Controller
     public function indicator()
     {
         $business = Auth::user()->business;
-        if (!$business) return response()->json(['count' => 0]);
+        if (! $business) {
+            return response()->json(['count' => 0]);
+        }
 
         $order = $business->open_order();
-        if (!$order) return response()->json(['count' => 0]);
+        if (! $order) {
+            return response()->json(['count' => 0]);
+        }
 
         $count = DtfImage::where('dtforder_id', $order->id)->sum('quantity');
-        return response()->json(['count' => (int)$count]);
+
+        return response()->json(['count' => (int) $count]);
     }
 }

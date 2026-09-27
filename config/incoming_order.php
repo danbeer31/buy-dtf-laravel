@@ -40,11 +40,20 @@ return [
     'sheet_width_in' => 21.9,
 
     'job_card' => [
-        'renderer_version' => 'separate-job-card-v1',
+        // Font or layout changes require a new renderer version so retries and
+        // historical production groups remain reproducible.
+        'renderer_version' => 'separate-job-card-v2',
         'width_in' => (float) env('INCOMING_ORDER_JOB_CARD_WIDTH_IN', 5.0),
         'height_in' => (float) env('INCOMING_ORDER_JOB_CARD_HEIGHT_IN', 3.0),
         'dpi' => (int) env('INCOMING_ORDER_JOB_CARD_DPI', 300),
-        'font' => env('INCOMING_ORDER_JOB_CARD_FONT'),
+        'font' => (string) env(
+            'INCOMING_ORDER_JOB_CARD_FONT',
+            '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',
+        ),
+        'font_sha256' => (string) env(
+            'INCOMING_ORDER_JOB_CARD_FONT_SHA256',
+            'ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280',
+        ),
         'production_lease_seconds' => (int) env('INCOMING_ORDER_PRODUCTION_LEASE_SECONDS', 300),
     ],
 
@@ -56,8 +65,4 @@ return [
             : null,
     ],
 
-    'customer_artwork' => [
-        'deletion_enabled' => (bool) env('CUSTOMER_ARTWORK_DELETION_ENABLED', false),
-        'physical_purge_enabled' => (bool) env('CUSTOMER_ARTWORK_PHYSICAL_PURGE_ENABLED', false),
-    ],
 ];

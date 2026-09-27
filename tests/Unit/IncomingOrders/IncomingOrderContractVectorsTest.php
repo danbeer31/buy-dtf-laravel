@@ -11,7 +11,7 @@ use Tests\TestCase;
 
 class IncomingOrderContractVectorsTest extends TestCase
 {
-    private const PINNED_FIXTURE_SHA256 = 'a449cc7aece5a6555b0979bfa824495703e19f85bd06028be12f01d73658c7b2';
+    private const PINNED_FIXTURE_SHA256 = '5cae7f7af7636f891c39aea7d958aa73caf8f3f289175d156ba02088ffc7fd8b';
 
     public function test_shared_fixture_hash_and_every_pinned_vector(): void
     {
@@ -85,6 +85,14 @@ class IncomingOrderContractVectorsTest extends TestCase
         $this->assertSame(
             $results['base']['expected_semantic_sha256'],
             $results['refreshed_transport']['expected_semantic_sha256'],
+        );
+        $this->assertSame(
+            $results['base']['expected_semantic_sha256'],
+            $results['omitted_optional_required']['expected_semantic_sha256'],
+        );
+        $this->assertNotSame(
+            $results['base']['expected_hmac_sha256'],
+            $results['omitted_optional_required']['expected_hmac_sha256'],
         );
         $this->assertNotSame(
             $results['base']['expected_semantic_sha256'],

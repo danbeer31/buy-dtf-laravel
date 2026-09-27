@@ -7,16 +7,16 @@ use App\Models\Business;
 use App\Models\DtfImage;
 use App\Models\DtfOrder;
 use App\Services\IncomingOrders\IncomingOrderV1Receiver;
+use App\Services\IncomingOrders\JobCardRenderer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class IncomingOrderController extends Controller
 {
     public function store(Request $request, IncomingOrderV1Receiver $receiver)
     {
-        $rawBody = (string)$request->getContent();
+        $rawBody = (string) $request->getContent();
         if ($this->isV1Request($request, $rawBody)) {
             return $receiver->handle($request, $rawBody);
         }
@@ -24,10 +24,13 @@ class IncomingOrderController extends Controller
         return $this->storeLegacy($request);
     }
 
-    public function capabilities()
+    public function capabilities(JobCardRenderer $jobCardRenderer)
     {
-        $receiverEnabled = (bool)config('incoming_order.receiver_enabled', false);
-        $labelEnabled = $receiverEnabled && (bool)config('incoming_order.job_label_enabled', false);
+        $receiverEnabled = (bool) config('incoming_order.receiver_enabled', false);
+        $rendererReadiness = $jobCardRenderer->readiness();
+        $labelEnabled = $receiverEnabled
+            && (bool) config('incoming_order.job_label_enabled', false)
+            && $rendererReadiness['ready'];
 
         return response()->json([
             'endpoint' => '/api/incomingorder',
@@ -39,12 +42,12 @@ class IncomingOrderController extends Controller
                     'fingerprint' => 'sha256-rfc8785-semantic',
                     'artwork_sha256_required' => true,
                     'conflict_status' => 409,
-                    'lease_seconds' => (int)config('incoming_order.lease_seconds', 90),
-                    'heartbeat_seconds' => (int)config('incoming_order.heartbeat_seconds', 20),
-                    'max_attempts' => (int)config('incoming_order.max_attempts', 10),
-                    'fetch_timeout_seconds' => (int)config('incoming_order.fetch.timeout_seconds', 30),
-                    'receiver_request_timeout_seconds' => (int)config('incoming_order.request_budget_seconds', 60),
-                    'request_max_bytes' => (int)config('incoming_order.request_max_bytes', 131_072),
+                    'lease_seconds' => (int) config('incoming_order.lease_seconds', 90),
+                    'heartbeat_seconds' => (int) config('incoming_order.heartbeat_seconds', 20),
+                    'max_attempts' => (int) config('incoming_order.max_attempts', 10),
+                    'fetch_timeout_seconds' => (int) config('incoming_order.fetch.timeout_seconds', 30),
+                    'receiver_request_timeout_seconds' => (int) config('incoming_order.request_budget_seconds', 60),
+                    'request_max_bytes' => (int) config('incoming_order.request_max_bytes', 131_072),
                     'sender_minimum_timeout_seconds' => 75,
                 ],
                 'job_label_metadata_v1' => [
@@ -55,17 +58,21 @@ class IncomingOrderController extends Controller
                     'production_artifact' => 'separate_job_card',
                     'artwork_modified' => false,
                     'job_card_quantity' => 1,
-                    'production_lease_seconds' => (int)config('incoming_order.job_card.production_lease_seconds', 300),
+                    'production_lease_seconds' => (int) config('incoming_order.job_card.production_lease_seconds', 300),
+                    'renderer_version' => (string) config('incoming_order.job_card.renderer_version'),
+                    'renderer_font_sha256' => (string) config('incoming_order.job_card.font_sha256'),
+                    'renderer_readiness' => $rendererReadiness,
+                    'artwork_hosts' => (array) config('incoming_order.allowed_hosts', []),
                     'optional_failure_status' => 'ignored',
                     'dimension_precision_decimals' => 4,
                     'aspect_ratio_max_relative_error' => '0.0010',
                     'limits' => [
-                        'download_bytes' => (int)config('incoming_order.fetch.max_bytes', 52_428_800),
-                        'decoded_width_px' => (int)config('incoming_order.fetch.max_width_px', 30_000),
-                        'decoded_height_px' => (int)config('incoming_order.fetch.max_height_px', 30_000),
-                        'decoded_area_px' => (int)config('incoming_order.fetch.max_area_px', 100_000_000),
+                        'download_bytes' => (int) config('incoming_order.fetch.max_bytes', 52_428_800),
+                        'decoded_width_px' => (int) config('incoming_order.fetch.max_width_px', 30_000),
+                        'decoded_height_px' => (int) config('incoming_order.fetch.max_height_px', 30_000),
+                        'decoded_area_px' => (int) config('incoming_order.fetch.max_area_px', 100_000_000),
                         'frames' => 1,
-                        'formats' => (array)config('incoming_order.fetch.formats', ['png', 'jpeg', 'webp']),
+                        'formats' => (array) config('incoming_order.fetch.formats', ['png', 'jpeg', 'webp']),
                         'order_number' => 64,
                         'product_name' => 160,
                         'product_sku' => 80,
@@ -95,7 +102,7 @@ class IncomingOrderController extends Controller
             return true;
         }
 
-        return (bool)preg_match('/"(?:idempotency_key|job_label|sha256)"\s*:/', $rawBody);
+        return (bool) preg_match('/"(?:idempotency_key|job_label|sha256)"\s*:/', $rawBody);
     }
 
     private function addHmacCandidate(array &$candidates, string $payload, ?string $secret): void
@@ -183,13 +190,14 @@ class IncomingOrderController extends Controller
             }
         }
 
-        if (!$matched) {
+        if (! $matched) {
             Log::error('API Signature mismatch', [
                 'computed' => $computedCandidates[0] ?? null,
                 'computed_candidates' => array_values(array_unique($computedCandidates)),
                 'provided' => $providedSig,
-                'data' => $data
+                'data' => $data,
             ]);
+
             return response()->json(['error' => 'Invalid signature'], 401);
         }
 
@@ -197,13 +205,13 @@ class IncomingOrderController extends Controller
             // --- open/in-progress order
             // The FuelPHP code used find(1), which is hardcoded for a specific business.
             $business = Business::find(1);
-            if (!$business) {
+            if (! $business) {
                 return response()->json(['error' => 'Business not found'], 404);
             }
 
             $order = $business->open_order();
-            if (!$order) {
-                $order = new DtfOrder();
+            if (! $order) {
+                $order = new DtfOrder;
                 $order->business_id = $business->id;
                 $order->status = 1;
                 $order->order_date = now();
@@ -260,16 +268,16 @@ class IncomingOrderController extends Controller
             if ($dims === false) {
                 return response()->json(['error' => 'Invalid image format'], 400);
             }
-            $pxW = (int)$dims[0];
-            $pxH = (int)$dims[1];
+            $pxW = (int) $dims[0];
+            $pxH = (int) $dims[1];
 
             $DPI = 300;
             $origWidth = $pxW > 0 ? round($pxW / $DPI, 4) : null;
             $origHeight = $pxH > 0 ? round($pxH / $DPI, 4) : null;
 
             // requested print size from payload (inches)
-            $reqW = isset($design['width']) ? (float)$design['width'] : null;
-            $reqH = isset($design['height']) ? (float)$design['height'] : null;
+            $reqW = isset($design['width']) ? (float) $design['width'] : null;
+            $reqH = isset($design['height']) ? (float) $design['height'] : null;
 
             // scale ratios
             $widthRatio = ($reqW && $origWidth > 0) ? round($reqW / $origWidth, 6) : null;
@@ -282,7 +290,7 @@ class IncomingOrderController extends Controller
                 ->first();
 
             $duplicate = false;
-            if ($existing && !empty($existing->image)) {
+            if ($existing && ! empty($existing->image)) {
                 $absExisting = public_path(ltrim($existing->image, '/'));
                 if (file_exists($absExisting)) {
                     $relative = ltrim($existing->image, '/');
@@ -290,12 +298,12 @@ class IncomingOrderController extends Controller
                 }
             }
 
-            if (!$duplicate) {
-                $relative = 'uploads/images/' . uniqid('DTF_API_' . ($data['source_order_id'] ?? 'api') . '_') . '.png';
+            if (! $duplicate) {
+                $relative = 'uploads/images/'.uniqid('DTF_API_'.($data['source_order_id'] ?? 'api').'_').'.png';
                 $absPath = public_path($relative);
                 $directory = dirname($absPath);
 
-                if (!is_dir($directory)) {
+                if (! is_dir($directory)) {
                     @mkdir($directory, 0775, true);
                 }
 
@@ -305,10 +313,10 @@ class IncomingOrderController extends Controller
             }
 
             // --- persist row
-            $dtfImage = new DtfImage();
+            $dtfImage = new DtfImage;
             $dtfImage->dtforder_id = $order->id;
-            $dtfImage->image = '/' . $relative;
-            $dtfImage->image_notes = 'Image for Invoice# ' . ($data['source_order_id'] ?? '');
+            $dtfImage->image = '/'.$relative;
+            $dtfImage->image_notes = 'Image for Invoice# '.($data['source_order_id'] ?? '');
             $dtfImage->image_name = $data['file_name'] ?? $data['shop'] ?? '';
             $dtfImage->width = $reqW;
             $dtfImage->height = $reqH;
@@ -328,7 +336,7 @@ class IncomingOrderController extends Controller
             return response()->json([
                 'success' => true,
                 'duplicate' => $duplicate,
-                'file' => '/' . $relative,
+                'file' => '/'.$relative,
                 'order_id' => $order->id,
                 'dtfimage_id' => $dtfImage->id,
                 'job_id' => $data['source_order_id'] ?? null,
@@ -342,8 +350,9 @@ class IncomingOrderController extends Controller
         } catch (\Exception $e) {
             Log::error('API Error', [
                 'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
+
             return response()->json(['error' => 'Internal Server Error', 'message' => $e->getMessage()], 500);
         }
     }

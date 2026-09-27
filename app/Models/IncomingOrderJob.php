@@ -24,6 +24,8 @@ class IncomingOrderJob extends FuelModel
         'heartbeat_at' => 'datetime',
         'last_attempt_at' => 'datetime',
         'production_started_at' => 'datetime',
+        'production_heartbeat_at' => 'datetime',
+        'production_lease_expires_at' => 'datetime',
         'production_completed_at' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',

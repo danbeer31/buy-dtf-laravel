@@ -36,10 +36,11 @@ class IncomingOrderV1Receiver
 
     public function handle(Request $request, string $rawBody): JsonResponse
     {
-        $startedAt = hrtime(true);
+        $deadlineNs = hrtime(true)
+            + (max(1, (int) config('incoming_order.request_budget_seconds', 60)) * 1_000_000_000);
         $correlationId = (string) Str::uuid();
 
-        if (! str_starts_with(strtolower((string) $request->header('Content-Type')), 'application/json')) {
+        if (! $this->isJsonContentType((string) $request->header('Content-Type'))) {
             return $this->error(415, 'unsupported_media_type', 'application_json_required');
         }
         if (strlen($rawBody) > max(1024, (int) config('incoming_order.request_max_bytes', 128 * 1024))) {
@@ -60,7 +61,7 @@ class IncomingOrderV1Receiver
 
         $providedSignature = $decoded->signature ?? null;
         if (! is_string($providedSignature) || ! preg_match('/^[a-f0-9]{64}$/D', $providedSignature)) {
-            return response()->json(['error' => 'Invalid signature'], 401);
+            return $this->error(401, 'authentication_failed', 'invalid_signature');
         }
 
         $signingObject = clone $decoded;
@@ -85,7 +86,7 @@ class IncomingOrderV1Receiver
                 'correlation_id' => $correlationId,
             ]);
 
-            return response()->json(['error' => 'Invalid signature'], 401);
+            return $this->error(401, 'authentication_failed', 'invalid_signature');
         }
 
         if (! (bool) config('incoming_order.receiver_enabled', false)) {
@@ -98,6 +99,10 @@ class IncomingOrderV1Receiver
                 throw new IncomingOrderValidationException('validation_failed', 'object_required');
             }
             $validated = $this->validator->validate($data);
+            $this->assertBeforeDeadline($deadlineNs);
+        } catch (ArtworkFetchException $exception) {
+            return $this->error(503, 'receiver_unavailable', $exception->reason)
+                ->header('Retry-After', '5');
         } catch (IncomingOrderValidationException $exception) {
             return $this->error($exception->status, $exception->errorCode, $exception->reason);
         } catch (Throwable) {
@@ -140,6 +145,9 @@ class IncomingOrderV1Receiver
             ], 202)->header('Retry-After', (string) ($claim->retryAfter ?? 5));
         }
         if ($claim->outcome === 'permanent_failure') {
+            if ($claim->job->last_error_code === 'idempotency_attempts_exhausted') {
+                return $this->attemptsExhaustedResponse();
+            }
             if (is_array($claim->job->response_payload)) {
                 return response()->json($claim->job->response_payload, 422);
             }
@@ -147,8 +155,7 @@ class IncomingOrderV1Receiver
             return $this->error(422, 'artwork_invalid', (string) ($claim->job->last_error_code ?: 'permanent_failure'));
         }
         if ($claim->outcome === 'attempts_exhausted') {
-            return $this->error(503, 'receiver_unavailable', 'idempotency_attempts_exhausted')
-                ->header('Retry-After', '60');
+            return $this->attemptsExhaustedResponse();
         }
 
         $owner = (string) $claim->owner;
@@ -156,16 +163,23 @@ class IncomingOrderV1Receiver
         $fetched = null;
 
         try {
-            $this->assertWithinBudget($startedAt);
+            $this->assertBeforeDeadline($deadlineNs);
             $heartbeat = function () use ($claim, $owner): void {
                 if (! $this->idempotency->heartbeat((int) $claim->job->id, $owner)) {
                     throw new RuntimeException('Incoming-order processing lease was lost.');
                 }
             };
 
-            $fetched = $this->fetcher->fetch($validated['design']['image_url'], $owner, $heartbeat);
+            $fetched = $this->fetcher->fetch(
+                $validated['design']['image_url'],
+                $owner,
+                $heartbeat,
+                $deadlineNs,
+            );
             $heartbeat();
+            $this->assertBeforeDeadline($deadlineNs);
             $artwork = $this->inspector->inspect($fetched);
+            $this->assertBeforeDeadline($deadlineNs);
             if (! hash_equals($validated['design']['sha256'], $artwork->sha256)) {
                 throw new ArtworkValidationException('artwork_hash_mismatch');
             }
@@ -174,12 +188,20 @@ class IncomingOrderV1Receiver
                 $validated['design']['width_in'],
                 $validated['design']['height_in'],
             );
-            $this->assertWithinBudget($startedAt);
+            $this->assertBeforeDeadline($deadlineNs);
             $promoted = $this->assetStore->promoteOriginal($artwork);
             $fetched = null;
             $heartbeat();
+            $this->assertBeforeDeadline($deadlineNs);
 
-            $response = $this->completeJob($claim->job, $owner, $validated, $artwork, $promoted);
+            $response = $this->completeJob(
+                $claim->job,
+                $owner,
+                $validated,
+                $artwork,
+                $promoted,
+                $deadlineNs,
+            );
             Log::info('Incoming order v1 completed.', [
                 'correlation_id' => $correlationId,
                 'idempotency_key_hash' => $keyHash,
@@ -262,7 +284,7 @@ class IncomingOrderV1Receiver
             'job_label_metadata' => $label['metadata'],
             'job_label_fingerprint' => $label['fingerprint'],
             'renderer_version' => $label['status'] === 'accepted'
-                ? (string) config('incoming_order.job_card.renderer_version', 'separate-job-card-v1')
+                ? (string) config('incoming_order.job_card.renderer_version', 'separate-job-card-v2')
                 : null,
             'production_state' => $label['status'] === 'accepted' ? 'pending' : null,
         ];
@@ -278,6 +300,7 @@ class IncomingOrderV1Receiver
         array $validated,
         InspectedArtwork $artwork,
         array $promoted,
+        int $deadlineNs,
     ): array {
         $connection = (string) config('database.fuel_connection');
 
@@ -287,7 +310,9 @@ class IncomingOrderV1Receiver
             $validated,
             $artwork,
             $promoted,
+            $deadlineNs,
         ): array {
+            $this->assertBeforeDeadline($deadlineNs);
             $job = IncomingOrderJob::query()->whereKey($reservedJob->id)->lockForUpdate()->firstOrFail();
             if ($job->state !== 'processing' || ! hash_equals((string) $job->lease_owner, $owner)) {
                 throw new RuntimeException('Incoming-order processing lease was lost before completion.');
@@ -296,6 +321,7 @@ class IncomingOrderV1Receiver
                 || ! hash_equals($artwork->sha256, (string) hash_file('sha256', $promoted['absolute_path']))) {
                 throw new RuntimeException('Immutable artwork verification failed before database completion.');
             }
+            $this->assertBeforeDeadline($deadlineNs);
 
             $business = Business::query()
                 ->whereKey((int) config('incoming_order.business_id', 1))
@@ -316,6 +342,7 @@ class IncomingOrderV1Receiver
                     'order_date' => now(),
                 ]);
             }
+            $this->assertBeforeDeadline($deadlineNs);
 
             $origWidth = round($artwork->widthPx / 300, 4);
             $origHeight = round($artwork->heightPx / 300, 4);
@@ -389,6 +416,7 @@ class IncomingOrderV1Receiver
                 'retention_days' => null,
                 'expires_at' => null,
             ]);
+            $this->assertBeforeDeadline($deadlineNs);
 
             return $response;
         }, 3);
@@ -432,12 +460,25 @@ class IncomingOrderV1Receiver
         ];
     }
 
-    private function assertWithinBudget(int $startedAt): void
+    private function assertBeforeDeadline(int $deadlineNs): void
     {
-        $elapsed = (hrtime(true) - $startedAt) / 1_000_000_000;
-        if ($elapsed >= max(1, (int) config('incoming_order.request_budget_seconds', 60))) {
+        if (hrtime(true) >= $deadlineNs) {
             throw new ArtworkFetchException('receiver_request_budget_exceeded', true);
         }
+    }
+
+    private function isJsonContentType(string $contentType): bool
+    {
+        return preg_match(
+            '/^\s*application\/json(?:\s*;\s*[!#$%&\'*+.^_`|~0-9A-Za-z-]+=(?:"[^"\r\n]*"|[!#$%&\'*+.^_`|~0-9A-Za-z-]+))*\s*$/Di',
+            $contentType,
+        ) === 1;
+    }
+
+    private function attemptsExhaustedResponse(): JsonResponse
+    {
+        return $this->error(503, 'receiver_unavailable', 'idempotency_attempts_exhausted')
+            ->header('Retry-After', '60');
     }
 
     private function removeTemporary(?FetchedArtwork $fetched): void

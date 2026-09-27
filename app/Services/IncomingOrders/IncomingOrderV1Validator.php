@@ -189,7 +189,12 @@ class IncomingOrderV1Validator
                     throw $this->invalid('capability_disabled');
                 }
 
-                return $this->ignoredLabel($rawLabel, 'capability_disabled', $requiredValue);
+                return $this->ignoredLabel(
+                    $rawLabel,
+                    'capability_disabled',
+                    $requiredValue,
+                    $metadata,
+                );
             }
 
             return [
@@ -281,9 +286,15 @@ class IncomingOrderV1Validator
         ];
     }
 
-    private function ignoredLabel(array $raw, string $reason, bool $required): array
-    {
+    /** @param array<string, mixed>|null $normalizedSemantic */
+    private function ignoredLabel(
+        array $raw,
+        string $reason,
+        bool $required,
+        ?array $normalizedSemantic = null,
+    ): array {
         $mode = isset($raw['mode']) && $raw['mode'] === 'metadata_only' ? 'metadata_only' : null;
+        $semantic = $normalizedSemantic ?? $raw;
 
         return [
             'status' => 'ignored',
@@ -291,8 +302,8 @@ class IncomingOrderV1Validator
             'mode' => $mode,
             'required' => $required,
             'metadata' => null,
-            'fingerprint' => hash('sha256', $this->canonicalizer->canonicalize($raw)),
-            'semantic' => $raw,
+            'fingerprint' => hash('sha256', $this->canonicalizer->canonicalize($semantic)),
+            'semantic' => $semantic,
         ];
     }
 

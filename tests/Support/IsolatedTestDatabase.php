@@ -381,6 +381,9 @@ final class IsolatedTestDatabase
             $table->string('production_state', 32)->nullable();
             $table->unsignedInteger('production_attempt_count')->default(0);
             $table->char('production_group_key', 64)->nullable();
+            $table->char('production_owner', 36)->nullable()->collation('BINARY');
+            $table->dateTime('production_heartbeat_at')->nullable();
+            $table->dateTime('production_lease_expires_at')->nullable();
             $table->json('production_result')->nullable();
             $table->dateTime('production_started_at')->nullable();
             $table->dateTime('production_completed_at')->nullable();
@@ -391,6 +394,10 @@ final class IsolatedTestDatabase
             $table->index(['state', 'lease_expires_at'], 'incoming_jobs_state_lease_index');
             $table->index('job_label_status', 'incoming_jobs_label_status_index');
             $table->index('production_state', 'incoming_jobs_production_state_index');
+            $table->index(
+                ['production_state', 'production_lease_expires_at'],
+                'incoming_jobs_production_lease_index',
+            );
         });
 
         $schema->create('api_asset_records', function (Blueprint $table): void {
@@ -417,21 +424,6 @@ final class IsolatedTestDatabase
             $table->index('path_hash', 'api_assets_path_hash_index');
         });
 
-        $schema->create('customer_artwork_removals', function (Blueprint $table): void {
-            $table->id();
-            $table->unsignedBigInteger('business_id');
-            $table->string('asset_path', 1024);
-            $table->char('path_hash', 64);
-            $table->string('thumbnail_path', 1024)->nullable();
-            $table->string('state', 32)->default('requested');
-            $table->string('deferred_reason', 64)->nullable();
-            $table->dateTime('customer_deleted_at');
-            $table->dateTime('purged_at')->nullable();
-            $table->timestamps();
-
-            $table->unique(['business_id', 'path_hash'], 'customer_artwork_business_path_unique');
-            $table->index(['state', 'purged_at'], 'customer_artwork_state_index');
-        });
     }
 
     private static function createPaymentAndWebhookSchema(Builder $schema): void
