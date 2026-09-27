@@ -346,6 +346,92 @@ final class IsolatedTestDatabase
             $table->dateTime('date_uploaded')->nullable();
             $table->timestamps();
         });
+
+        $schema->create('incoming_order_jobs', function (Blueprint $table): void {
+            $table->id();
+            $table->unsignedBigInteger('dtfimage_id')->nullable()->unique();
+            $table->string('integration_client', 64)->collation('BINARY');
+            $table->string('idempotency_key', 128)->collation('BINARY');
+            $table->char('request_fingerprint', 64);
+            $table->char('expected_art_sha256', 64);
+            $table->char('actual_art_sha256', 64)->nullable();
+            $table->string('state', 32);
+            $table->char('lease_owner', 36)->nullable()->collation('BINARY');
+            $table->dateTime('lease_expires_at')->nullable();
+            $table->dateTime('heartbeat_at')->nullable();
+            $table->unsignedInteger('attempt_count')->default(0);
+            $table->dateTime('last_attempt_at')->nullable();
+            $table->json('response_payload')->nullable();
+            $table->unsignedSmallInteger('job_label_version')->nullable();
+            $table->boolean('job_label_required')->nullable();
+            $table->string('job_label_mode', 32)->nullable();
+            $table->string('job_label_status', 32)->nullable();
+            $table->string('job_label_reason', 64)->nullable();
+            $table->json('job_label_metadata')->nullable();
+            $table->char('job_label_fingerprint', 64)->nullable();
+            $table->decimal('art_width_in', 10, 4);
+            $table->decimal('art_height_in', 10, 4);
+            $table->string('original_asset_path', 1024)->nullable();
+            $table->char('original_asset_sha256', 64)->nullable();
+            $table->string('normalized_asset_path', 1024)->nullable();
+            $table->char('normalized_asset_sha256', 64)->nullable();
+            $table->string('job_card_asset_path', 1024)->nullable();
+            $table->char('job_card_asset_sha256', 64)->nullable();
+            $table->string('renderer_version', 64)->nullable();
+            $table->string('production_state', 32)->nullable();
+            $table->unsignedInteger('production_attempt_count')->default(0);
+            $table->char('production_group_key', 64)->nullable();
+            $table->json('production_result')->nullable();
+            $table->dateTime('production_started_at')->nullable();
+            $table->dateTime('production_completed_at')->nullable();
+            $table->string('last_error_code', 64)->nullable();
+            $table->timestamps();
+
+            $table->unique(['integration_client', 'idempotency_key'], 'incoming_jobs_client_key_unique');
+            $table->index(['state', 'lease_expires_at'], 'incoming_jobs_state_lease_index');
+            $table->index('job_label_status', 'incoming_jobs_label_status_index');
+            $table->index('production_state', 'incoming_jobs_production_state_index');
+        });
+
+        $schema->create('api_asset_records', function (Blueprint $table): void {
+            $table->id();
+            $table->unsignedBigInteger('incoming_order_job_id');
+            $table->unsignedBigInteger('dtfimage_id')->nullable();
+            $table->string('origin', 64);
+            $table->string('asset_role', 64);
+            $table->string('storage_scope', 32);
+            $table->string('asset_path', 1024);
+            $table->char('path_hash', 64);
+            $table->char('sha256', 64)->nullable();
+            $table->unsignedBigInteger('bytes')->nullable();
+            $table->string('retention_policy', 32)->default('forever');
+            $table->boolean('retention_enabled')->default(false);
+            $table->unsignedInteger('retention_days')->nullable();
+            $table->dateTime('expires_at')->nullable();
+            $table->dateTime('customer_deleted_at')->nullable();
+            $table->dateTime('purged_at')->nullable();
+            $table->timestamps();
+
+            $table->unique(['incoming_order_job_id', 'asset_role', 'path_hash'], 'api_assets_job_role_path_unique');
+            $table->index(['retention_enabled', 'expires_at', 'purged_at'], 'api_assets_retention_index');
+            $table->index('path_hash', 'api_assets_path_hash_index');
+        });
+
+        $schema->create('customer_artwork_removals', function (Blueprint $table): void {
+            $table->id();
+            $table->unsignedBigInteger('business_id');
+            $table->string('asset_path', 1024);
+            $table->char('path_hash', 64);
+            $table->string('thumbnail_path', 1024)->nullable();
+            $table->string('state', 32)->default('requested');
+            $table->string('deferred_reason', 64)->nullable();
+            $table->dateTime('customer_deleted_at');
+            $table->dateTime('purged_at')->nullable();
+            $table->timestamps();
+
+            $table->unique(['business_id', 'path_hash'], 'customer_artwork_business_path_unique');
+            $table->index(['state', 'purged_at'], 'customer_artwork_state_index');
+        });
     }
 
     private static function createPaymentAndWebhookSchema(Builder $schema): void

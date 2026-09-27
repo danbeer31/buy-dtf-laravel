@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Business;
 use App\Models\DtfImage;
 use App\Models\DtfOrder;
+use App\Services\IncomingOrders\IncomingOrderV1Receiver;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -13,6 +14,90 @@ use Illuminate\Support\Str;
 
 class IncomingOrderController extends Controller
 {
+    public function store(Request $request, IncomingOrderV1Receiver $receiver)
+    {
+        $rawBody = (string)$request->getContent();
+        if ($this->isV1Request($request, $rawBody)) {
+            return $receiver->handle($request, $rawBody);
+        }
+
+        return $this->storeLegacy($request);
+    }
+
+    public function capabilities()
+    {
+        $receiverEnabled = (bool)config('incoming_order.receiver_enabled', false);
+        $labelEnabled = $receiverEnabled && (bool)config('incoming_order.job_label_enabled', false);
+
+        return response()->json([
+            'endpoint' => '/api/incomingorder',
+            'capabilities' => [
+                'receiver_idempotency_v1' => [
+                    'enabled' => $receiverEnabled,
+                    'key_max_length' => 128,
+                    'key_collation' => 'ascii_bin',
+                    'fingerprint' => 'sha256-rfc8785-semantic',
+                    'artwork_sha256_required' => true,
+                    'conflict_status' => 409,
+                    'lease_seconds' => (int)config('incoming_order.lease_seconds', 90),
+                    'heartbeat_seconds' => (int)config('incoming_order.heartbeat_seconds', 20),
+                    'max_attempts' => (int)config('incoming_order.max_attempts', 10),
+                    'fetch_timeout_seconds' => (int)config('incoming_order.fetch.timeout_seconds', 30),
+                    'receiver_request_timeout_seconds' => (int)config('incoming_order.request_budget_seconds', 60),
+                    'request_max_bytes' => (int)config('incoming_order.request_max_bytes', 131_072),
+                    'sender_minimum_timeout_seconds' => 75,
+                ],
+                'job_label_metadata_v1' => [
+                    'enabled' => $labelEnabled,
+                    'version' => 1,
+                    'supported_modes' => ['metadata_only'],
+                    'modes' => $labelEnabled ? ['metadata_only'] : [],
+                    'production_artifact' => 'separate_job_card',
+                    'artwork_modified' => false,
+                    'job_card_quantity' => 1,
+                    'production_lease_seconds' => (int)config('incoming_order.job_card.production_lease_seconds', 300),
+                    'optional_failure_status' => 'ignored',
+                    'dimension_precision_decimals' => 4,
+                    'aspect_ratio_max_relative_error' => '0.0010',
+                    'limits' => [
+                        'download_bytes' => (int)config('incoming_order.fetch.max_bytes', 52_428_800),
+                        'decoded_width_px' => (int)config('incoming_order.fetch.max_width_px', 30_000),
+                        'decoded_height_px' => (int)config('incoming_order.fetch.max_height_px', 30_000),
+                        'decoded_area_px' => (int)config('incoming_order.fetch.max_area_px', 100_000_000),
+                        'frames' => 1,
+                        'formats' => (array)config('incoming_order.fetch.formats', ['png', 'jpeg', 'webp']),
+                        'order_number' => 64,
+                        'product_name' => 160,
+                        'product_sku' => 80,
+                        'color' => 80,
+                        'size' => 40,
+                        'placement' => 80,
+                        'quantity_max' => 10_000,
+                        'shop_domain' => 253,
+                    ],
+                ],
+            ],
+        ])->header('Cache-Control', 'public, max-age=60');
+    }
+
+    private function isV1Request(Request $request, string $rawBody): bool
+    {
+        $decoded = json_decode($rawBody, true);
+        if (is_array($decoded)) {
+            return array_key_exists('idempotency_key', $decoded)
+                || array_key_exists('job_label', $decoded)
+                || (isset($decoded['design'])
+                    && is_array($decoded['design'])
+                    && array_key_exists('sha256', $decoded['design']));
+        }
+
+        if ($request->has('idempotency_key') || $request->has('job_label') || $request->has('design.sha256')) {
+            return true;
+        }
+
+        return (bool)preg_match('/"(?:idempotency_key|job_label|sha256)"\s*:/', $rawBody);
+    }
+
     private function addHmacCandidate(array &$candidates, string $payload, ?string $secret): void
     {
         if ($payload === '' || $secret === null || $secret === '') {
@@ -45,7 +130,7 @@ class IncomingOrderController extends Controller
         return trim((string) $withoutSignature, '&');
     }
 
-    public function store(Request $request)
+    private function storeLegacy(Request $request)
     {
         $rawBody = (string) $request->getContent();
         $decoded = json_decode($rawBody, true);

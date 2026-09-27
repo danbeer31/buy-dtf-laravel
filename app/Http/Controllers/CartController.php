@@ -8,6 +8,7 @@ use App\Models\DtfImage;
 use App\Models\DtfOrder;
 use App\Models\SavedImage;
 use App\Services\GangSheetPricingService;
+use App\Services\IncomingOrders\CustomerArtworkRemovalService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -521,12 +522,16 @@ class CartController extends Controller
     {
         $business = Auth::user()->business;
         $q = $request->input('q');
+        $hiddenPaths = app(CustomerArtworkRemovalService::class)->hiddenPaths((int)$business->id);
 
         // We want to find unique images from both SavedImage and DtfImage tables
         // Deduplicate by the 'image' path, taking the most recent one.
 
         // 1. Get SavedImages
         $savedQuery = SavedImage::where('business_id', $business->id);
+        if ($hiddenPaths->isNotEmpty()) {
+            $savedQuery->whereNotIn('image', $hiddenPaths->all());
+        }
         if ($q) {
             $savedQuery->where('image_name', 'like', "%{$q}%");
         }
@@ -546,6 +551,9 @@ class CartController extends Controller
         $dtfQuery = DtfImage::whereHas('dtfOrder', function($query) use ($business) {
             $query->where('business_id', $business->id);
         });
+        if ($hiddenPaths->isNotEmpty()) {
+            $dtfQuery->whereNotIn('image', $hiddenPaths->all());
+        }
         if ($q) {
             $dtfQuery->where('image_name', 'like', "%{$q}%");
         }

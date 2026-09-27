@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\DtfImage;
 use App\Models\DtfOrder;
 use App\Models\OrderStatus;
+use App\Services\IncomingOrders\ApiProductionHandoffService;
 use App\Services\QboAdminSnapshotStore;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Http\Request;
@@ -97,10 +98,10 @@ class OrderController extends Controller
 
     public function show(DtfOrder $order)
     {
-        $order->load(['business', 'orderStatus', 'dtfImages', 'shippingAddress', 'paymentMethod', 'paymentInfo']);
+        $order->load(['business', 'orderStatus', 'dtfImages.incomingOrderJob', 'shippingAddress', 'paymentMethod', 'paymentInfo']);
         if ((int)$order->status === 1 && empty($order->qbo_invoice_id)) {
             $this->refreshOrderTotals($order);
-            $order->refresh()->load(['business', 'orderStatus', 'dtfImages', 'shippingAddress', 'paymentMethod', 'paymentInfo']);
+            $order->refresh()->load(['business', 'orderStatus', 'dtfImages.incomingOrderJob', 'shippingAddress', 'paymentMethod', 'paymentInfo']);
         }
         $orderStatuses = \App\Models\OrderStatus::orderBy('sort_order', 'asc')->get();
         return view('admin.orders.show', compact('order', 'orderStatuses'));
@@ -108,7 +109,7 @@ class OrderController extends Controller
 
     public function productionOrder(DtfOrder $order)
     {
-        $order->load(['business', 'orderStatus', 'dtfImages', 'shippingAddress', 'paymentMethod', 'paymentInfo']);
+        $order->load(['business', 'orderStatus', 'dtfImages.incomingOrderJob', 'shippingAddress', 'paymentMethod', 'paymentInfo']);
         $orderStatuses = OrderStatus::orderBy('sort_order', 'asc')->get();
         return view('admin.orders.production_order', compact('order', 'orderStatuses'));
     }
@@ -433,20 +434,13 @@ class OrderController extends Controller
 
     private function productionDuplicateKey(DtfImage $image): string
     {
-        if ($image->item_type === 'gang_sheet') {
-            return 'gang_sheet:' . $image->id;
-        }
-
-        return implode('|', [
-            (string)$image->image,
-            number_format((float)$image->width, 2, '.', ''),
-            number_format((float)$image->height, 2, '.', ''),
-        ]);
+        return $image->productionGroupingKey();
     }
 
     private function productionDuplicateGroup(DtfImage $image, bool $includeAlreadyProduced = false): EloquentCollection
     {
-        $query = DtfImage::where('dtforder_id', $image->dtforder_id)
+        $query = DtfImage::with('incomingOrderJob')
+            ->where('dtforder_id', $image->dtforder_id)
             ->get()
             ->filter(fn (DtfImage $candidate) => $candidate->item_type !== 'gang_sheet')
             ->filter(fn (DtfImage $candidate) => $this->productionDuplicateKey($candidate) === $this->productionDuplicateKey($image));
@@ -461,7 +455,25 @@ class OrderController extends Controller
 
     private function productionGroupQuantity($groupRows): int
     {
-        return max(1, (int)collect($groupRows)->sum(fn (DtfImage $image) => max(0, (int)$image->quantity)));
+        $rows = collect($groupRows);
+        $incomingJobs = $rows
+            ->map(function (DtfImage $image) {
+                return $image->relationLoaded('incomingOrderJob')
+                    ? $image->incomingOrderJob
+                    : $image->incomingOrderJob()->first();
+            })
+            ->filter()
+            ->values();
+
+        if ($incomingJobs->count() === $rows->count()
+            && $incomingJobs->every(fn ($job) => $job->hasAcceptedJobCard())) {
+            return max(1, (int)$incomingJobs->sum(function ($job): int {
+                $metadata = $job->job_label_metadata;
+                return is_array($metadata) ? max(0, (int)($metadata['quantity'] ?? 0)) : 0;
+            }));
+        }
+
+        return max(1, (int)$rows->sum(fn (DtfImage $image) => max(0, (int)$image->quantity)));
     }
 
     private function addProductionGroup($groupRows): void
@@ -473,9 +485,17 @@ class OrderController extends Controller
             return;
         }
 
-        \App\Helpers\ProductionHelper::addToProduction($representative, [
-            'quantity' => $this->productionGroupQuantity($groupRows),
-        ]);
+        $representative->loadMissing('incomingOrderJob');
+        if ($representative->incomingOrderJob?->hasAcceptedJobCard()) {
+            app(ApiProductionHandoffService::class)->handoff(
+                $groupRows,
+                $this->productionGroupQuantity($groupRows)
+            );
+        } else {
+            \App\Helpers\ProductionHelper::addToProduction($representative, [
+                'quantity' => $this->productionGroupQuantity($groupRows),
+            ]);
+        }
 
         DtfImage::whereIn('id', $groupRows->pluck('id')->all())->update(['production' => 1]);
     }

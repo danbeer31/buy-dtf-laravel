@@ -1,48 +1,50 @@
-# BuyDTF Incoming Order v1 Contract Proposal
+# BuyDTF Incoming Order v1 and Separate Job Card Contract
 
-Status: **revised proposal for final review; not implemented or deployed**
+Date: 2026-09-27 (America/Chicago)
 
-Consumers: ShopNLTees and BuyDTF
+Status: implemented on a review branch only. Nothing in this document authorizes a production deployment, migration, capability enablement, retention purge, or ShopNLTees sender change.
 
-Transport boundary: HTTPS API only. Shared databases and direct filesystem coupling are prohibited even when both applications run on the same infrastructure.
+This contract supersedes every earlier `printed_strip` proposal. BuyDTF never appends a label to artwork. The wire field remains named `job_label` for integration compatibility, but an accepted label becomes frozen production metadata and, later, a completely separate job-card artifact.
 
-## Compatibility Rule
+## Endpoint and compatibility boundary
 
-The existing endpoint remains:
+- Receipt endpoint: `POST /api/incomingorder`
+- Capability endpoint: `GET /api/incomingorder/capabilities`
+- Legacy requests remain on the existing controller path with their existing response and persistence behavior.
+- A request is treated as v1 when it contains `idempotency_key`, `job_label`, or `design.sha256`.
+- A v1-shaped request never falls through to the legacy receiver. If v1 is disabled it receives an explicit `503 capability_disabled` response.
+- `integration_client` is receiver configuration, not a caller-controlled request field. The initial configured identity is `shopnltees`.
+- Existing sender semantics are retained explicitly:
+  - `source_order_id` is ShopNLTees' database order ID, not the displayed order number.
+  - `shop` is the existing human-readable shop name.
+  - `sent_at` remains a signed transport timestamp.
+  - `job_label.order_number` is the displayed order number.
 
-```text
-POST /api/incomingorder
-```
+## Signing and JSON rules
 
-A legacy request contains none of the v1-only fields: no top-level `idempotency_key`, no `design.sha256`, and no top-level `job_label`. It must follow the current code path and preserve its current validation, persistence, status codes, and response shape exactly. No additive `job_label`, capability, or receiver field may appear in that legacy response.
+V1 requests use `Content-Type: application/json`. The body must be one JSON object.
 
-The presence of any v1-only field opts the complete request into v1 validation. Every v1 request must then contain both a valid top-level `idempotency_key` and a valid `design.sha256`; `job_label` remains optional. A request cannot fall back to legacy processing after opting into v1. A key-only v1 request opts into receiver idempotency and artwork-integrity protections while otherwise preserving the legacy job semantics. ShopNLTees may adopt key-only requests once `receiver_idempotency_v1` is enabled. It may send `job_label` only after both `receiver_idempotency_v1` and `job_label_metadata_v1` are enabled.
+1. Reject invalid JSON and duplicate keys at every object depth.
+2. Reject unknown v1 envelope, `design`, and `job_label` fields.
+3. Remove the top-level `signature` member.
+4. Canonicalize the remaining object using RFC 8785 JSON Canonicalization Scheme semantics.
+5. Compute lowercase hexadecimal `HMAC-SHA256(canonical_bytes, shared_secret)`.
+6. Compare the result with the 64-character lowercase top-level `signature` in constant time.
 
-## Authentication and Signing
+Both applications must pin and run `contracts/incoming_order_v1_vectors.json`. Its repository companion file records the fixture SHA-256. The test secret is synthetic and must never be used outside tests.
 
-- Content type for an opt-in v1 request is `application/json; charset=utf-8`.
-- Reject a v1 document before HMAC verification if it contains a duplicate JSON object key at any nesting level. The receiver must use a parser capable of detecting duplicates rather than silently keeping the first or last value.
-- The current HMAC-SHA256 shared-secret mechanism remains the authentication method for this version.
-- Legacy signing and verification remain unchanged for legacy requests.
-- For an opted-in v1 request, `signature` is excluded from the signing object; every other top-level field, including `idempotency_key` and the complete `job_label` object, is included.
-- ShopNLTees signs the RFC 8785 JSON Canonicalization Scheme serialization of that signing object. The signature is a lowercase, 64-character hexadecimal HMAC-SHA256.
-- BuyDTF verifies the signature before validation, network fetches, filesystem writes, or database work.
-- The receiver must never log a signature, shared secret, raw payload, image URL query string, or raw label text. It may log a request correlation ID, hashed idempotency key, payload fingerprint, status, and enumerated reason code.
-
-## Request Contract
-
-Existing sender semantics are intentionally preserved. `source_order_id` is the ShopNLTees database order ID, not the displayed order number. `shop` is the existing human-readable shop name, not a hostname. `sent_at` remains a signed transport timestamp. The v1 additions are `idempotency_key`, `design.sha256`, and optional `job_label`.
+## Request contract
 
 ```json
 {
   "source_order_id": 853,
   "file_name": "production-art.png",
   "shop": "Urey Local School Gear",
-  "sent_at": "2026-09-18T21:15:30Z",
-  "idempotency_key": "shopnltees:dispatch:01995f6a-2ba1-7b22-a1c4-12f25b48f291",
+  "sent_at": "2026-09-27T12:00:00Z",
+  "idempotency_key": "shopnltees:dispatch:00000000-0000-4000-8000-000000000001",
   "design": {
-    "image_url": "https://example.invalid/signed-art-url",
-    "sha256": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+    "image_url": "https://approved-host.example/art.png?temporary-token=...",
+    "sha256": "0101010101010101010101010101010101010101010101010101010101010101",
     "width": "10.7500",
     "height": "11.1220",
     "quantity": 1
@@ -62,282 +64,157 @@ Existing sender semantics are intentionally preserved. `source_order_id` is the 
     "quantity": 1,
     "shop_domain": "urey.localschoolgear.com"
   },
-  "signature": "0000000000000000000000000000000000000000000000000000000000000000"
+  "signature": "lowercase-hex-hmac-sha256"
 }
 ```
 
-For opted-in v1 requests, the complete envelope has these constraints:
+### Envelope
 
-| Field | Type | Required | Limit/rule |
-|---|---|---:|---|
-| `source_order_id` | positive integer | yes | Existing ShopNLTees database order ID; not the displayed order number |
-| `file_name` | string | yes | 1-255 characters; basename/display value only, never a filesystem path |
-| `shop` | string or null | no | Existing human-readable shop name, 1-160 NFC characters; it is not treated as a hostname |
-| `sent_at` | string or null | no | Existing signed RFC 3339 transport timestamp, maximum 64 characters; excluded from the semantic fingerprint |
-| `idempotency_key` | string | yes | Required for every v1 request; rules below |
-| `design` | object | yes | No unknown fields in v1 |
-| `design.image_url` | string | yes | Valid HTTPS URL on an approved host; maximum 2,048 characters |
-| `design.sha256` | string | yes | Lowercase 64-character SHA-256 of the exact immutable submitted artwork bytes |
-| `design.width` | decimal string or JSON number | yes | Greater than 0 and at most 120 inches; normalized to four decimals |
-| `design.height` | decimal string or JSON number | yes | Greater than 0 and at most 120 inches; normalized to four decimals |
-| `design.quantity` | integer | yes | 1-10,000 |
-| `job_label` | object or absent | no | Exact schema below |
-| `signature` | string | yes | Lowercase 64-character hexadecimal HMAC-SHA256 |
+| Field | Rule |
+| --- | --- |
+| `source_order_id` | Required positive JSON integer. This is the ShopNLTees database order ID. |
+| `file_name` | Required UTF-8 NFC string, 1-255 characters, basename only. |
+| `shop` | Optional nullable UTF-8 NFC human-readable shop name, at most 160 characters. |
+| `sent_at` | Optional nullable RFC 3339 timestamp, at most 64 characters. Signed but not used for semantic idempotency. |
+| `idempotency_key` | Required, case-sensitive ASCII, 1-128 characters, pattern `[A-Za-z0-9][A-Za-z0-9._:-]*`. |
+| `design` | Required object described below. |
+| `job_label` | Optional object described below. |
+| `signature` | Required 64-character lowercase hexadecimal HMAC. |
 
-The only permitted v1 envelope keys are `source_order_id`, `file_name`, `shop`, `sent_at`, `idempotency_key`, `design`, `job_label`, and `signature`. The only permitted `design` keys are `image_url`, `sha256`, `width`, `height`, and `quantity`. Unknown envelope/design fields are a 422 error for every v1 request; `required=false` does not relax envelope or artwork-integrity validation.
+### Design
 
-At least one of the two artwork dimensions must be no greater than the production sheet width of 21.9000 inches so the artwork can be oriented to fit. Decimal strings may not use exponential notation. NaN and infinity are invalid. After download, BuyDTF computes SHA-256 over the exact received bytes and compares it with `design.sha256` before decoding or persistence. A mismatch returns 422 `artwork_hash_mismatch` and creates no job.
+| Field | Rule |
+| --- | --- |
+| `image_url` | Required HTTPS URL, maximum 2048 bytes, no credentials or fragment, exact host allowlist match. It is transport information and may be refreshed on a retry. |
+| `sha256` | Required lowercase SHA-256 of the exact downloaded artwork bytes. This is immutable artwork identity. |
+| `width` | Required positive decimal inches, normalized and persisted to four decimal places. Maximum 120 inches. |
+| `height` | Required positive decimal inches, normalized and persisted to four decimal places. Maximum 120 inches. |
+| `quantity` | Required positive JSON integer, maximum 10,000. |
 
-### `idempotency_key`
+At least one requested dimension must fit the configured 21.9-inch sheet width so rotation remains possible. The target 300-DPI area and decoded source image must remain within advertised limits.
 
-- Required for every v1 request and for any label to be accepted.
-- String length: 1-128 ASCII characters.
-- Pattern: `^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$`.
-- Identifies one durable ShopNLTees **dispatch/send operation**, not merely an order item or production-print snapshot.
-- Transport retry of the same dispatch uses the same key. An explicit reprint, including a reprint of the same `production_print_snapshot_id`, creates a new dispatch record and uses a new key. A changed semantic payload under the same key returns 409.
-- Scoped to the authenticated integration client. The database uniqueness key is `(integration_client, idempotency_key)`.
-- Must not contain a customer name, email, phone, address, or other PII.
+### Optional `job_label`
 
-Missing or invalid `idempotency_key` or `design.sha256` is a core v1 envelope failure: return 422 before any fetch, file, order, or job creation, regardless of `job_label.required`. It is not an optional label-specific failure and must never fall through to the legacy artwork path.
+Allowed metadata is production-only. Customer name, email, phone, postal address, notes, personalization rosters, and unknown fields are prohibited.
 
-The recommended key is `shopnltees:dispatch:<immutable dispatch UUID>`. A snapshot-derived key such as `shopnltees:print-snapshot:31` is invalid operational practice because it cannot distinguish a deliberate reprint from a transport retry.
+| Field | Rule |
+| --- | --- |
+| `version` | Required integer `1`. |
+| `required` | Optional boolean, default `false`. Invalid type fails closed. |
+| `mode` | Required literal `metadata_only`. `printed_strip` is unsupported. |
+| `order_number` | Required UTF-8 NFC string, 1-64 characters. Displayed order number. |
+| `order_item_id` | Required positive JSON integer. |
+| `production_print_snapshot_id` | Required positive JSON integer. |
+| `product_name` | Required UTF-8 NFC string, 1-160 characters. |
+| `product_sku` | Optional nullable UTF-8 NFC string, at most 80 characters. |
+| `color` | Required UTF-8 NFC string, 1-80 characters. |
+| `size` | Required UTF-8 NFC string, 1-40 characters. |
+| `placement` | Required UTF-8 NFC string, 1-80 characters. |
+| `quantity` | Required positive JSON integer, maximum 10,000, exactly equal to `design.quantity`. |
+| `shop_domain` | Required lowercase hostname, at most 253 characters. |
 
-### `job_label`
+Control characters, bidirectional override/isolate characters, malformed UTF-8, recognized email addresses, phone-like values, and address-like values are rejected. These checks are defense in depth; ShopNLTees must also allowlist fields before sending.
 
-`job_label` is optional. When present, only the following fields are allowed; unknown fields invalidate the complete label.
+If `required=false`, a label-specific validation or capability failure does not block the artwork job. BuyDTF freezes an `ignored` result and a reason; it never silently omits the result. If `required=true`, BuyDTF validates label support before creating the `dtfimages` row and returns `422` atomically if it cannot honor the label. Artwork-integrity failures are never relaxed by `required=false`.
 
-| Field | Type | Required | Limit/rule |
-|---|---|---:|---|
-| `version` | integer | yes | Must equal `1` |
-| `required` | boolean | no | Defaults to `false` |
-| `mode` | string | yes | `metadata_only` or `printed_strip` |
-| `order_number` | string | yes | 1-64 characters |
-| `order_item_id` | integer | yes | Positive signed 64-bit integer |
-| `production_print_snapshot_id` | integer | yes | Positive signed 64-bit integer |
-| `product_name` | string | yes | 1-160 characters; catalog/production description only |
-| `product_sku` | string or null | no | Null or 1-80 characters |
-| `color` | string | yes | 1-80 characters |
-| `size` | string | yes | 1-40 characters |
-| `placement` | string | yes | 1-80 characters |
-| `quantity` | integer | yes | 1-10,000 and must equal `design.quantity` |
-| `shop_domain` | string | yes | Lowercase ASCII/IDNA hostname, maximum 253 characters; no scheme, path, query, fragment, credentials, or port |
+## Semantic fingerprint and idempotency
 
-Text is normalized to Unicode NFC. NUL, C0/C1 controls, newlines, invalid UTF-8, bidi override/isolate controls, and unpaired surrogates are rejected. Values are always rendered as escaped text, never interpreted as HTML, XML, Blade, shell syntax, a filename, or a filesystem path.
+The server-scoped tuple `(integration_client, idempotency_key)` uses a case-sensitive `ascii_bin` database collation.
 
-Allowed metadata is production-only. Customer names, email addresses, phone numbers, shipping/billing addresses, free-form customer notes, and personalization rosters are prohibited. ShopNLTees must source `product_name`, `color`, `size`, and `placement` from catalog/production fields rather than customer-entered text. BuyDTF rejects unknown keys and obvious email/phone/address payload patterns, but the sender remains responsible for not supplying PII that cannot be reliably inferred by software.
+The semantic fingerprint is SHA-256 over RFC 8785 canonical JSON containing:
 
-## Validation and Atomicity
+- contract identifier;
+- `source_order_id`, `file_name`, and `shop`;
+- immutable artwork SHA-256, four-decimal requested dimensions, and quantity; and
+- normalized accepted label metadata, `null` when absent, or the submitted optional label when its ignored result must remain reproducible.
 
-For an opt-in v1 request, processing order is fixed:
+The fingerprint deliberately excludes `idempotency_key`, `sent_at`, `design.image_url`, and `signature`. A sender may refresh an expired signed URL while retaining the same dispatch key and immutable artwork hash.
 
-1. Parse JSON with duplicate-key detection, validate the exact v1 envelope/design key allowlists, and verify HMAC.
-2. Validate the idempotency key, core types, and complete label. For an optional label-specific failure, retain only an invalid-label hash and enumerated reason, not rejected raw metadata.
-3. Canonicalize the semantic payload and compute its fingerprint.
-4. Atomically insert or claim the idempotency row and its processing lease. Resolve completed, conflicting, actively processing, stale, and retryable states as specified below.
-5. Fetch the artwork into an owner-specific non-public temporary file using the bounded fetch policy.
-6. Compute SHA-256 over the exact downloaded bytes and compare it with signed `design.sha256`. On mismatch, delete the temporary file and return 422 without a job.
-7. Decode, enforce pixel/frame/resource limits, normalize, and trim the artwork without creating an order or DTF image/job.
-8. Validate physical dimensions and aspect ratio from the normalized pixels. An artwork-integrity failure is always 422 for v1, irrespective of `job_label.required`.
-9. Confirm that the requested label mode can be honored. `required=false` relaxes only label-specific failures.
-10. Uniformly resample the normalized artwork to the requested 300-DPI dimensions. Never scale width and height independently.
-11. If `printed_strip` is required, render and validate the strip derivative before a success response can be committed. Optional printed strips may be rendered synchronously or remain `accepted` for the production stage.
-12. Fsync and atomically promote immutable/content-addressed original, normalized, and any required rendered temporary assets. Re-read their sizes/hashes after promotion.
-13. In one database transaction, create/reuse the open order as required, create the distinct `dtfimages` job row, attach the frozen incoming-job/label snapshot, verify that every referenced required asset exists with the expected hash, and mark the idempotency row `completed` with its frozen response.
+The key identifies one durable ShopNLTees dispatch operation:
 
-A completed database job may never reference a file that failed to promote. If asset promotion fails, no order/job completion transaction runs. If the database transaction fails after a content-addressed asset was promoted, the job remains incomplete and the unreferenced asset is safe to reuse by hash or remove later through a grace-period garbage collector. Required-label or artwork validation failures create no order, `dtfimages` row, permanent job-specific file, label record, or completed idempotency result; the receiver may retain the non-PII reservation/error code for retry control.
+- transport retry: reuse the same key;
+- explicit reprint: create a new dispatch and use a new key;
+- same key and same fingerprint: replay the original frozen response;
+- same key and different fingerprint: return `409 idempotency_conflict` and create nothing new.
 
-### Bounded artwork fetch
+Processing has a database-time lease, heartbeat, attempt count, bounded stale-owner recovery, and maximum-attempt state. A live owner returns `202` plus `Retry-After`; a stale owner can be reclaimed. Completed responses and permanent failures are frozen. Database completion occurs only after the immutable original has been durably promoted and its hash reverified, preventing a completed job from pointing to a failed move.
 
-The new v1 path must replace unrestricted native URL fetching with a controlled client:
+## Artwork transport and integrity
 
-- HTTPS only.
-- Host allowlist configured for approved ShopNLTees storefront/artifact hosts.
-- DNS resolution checked against loopback, link-local, private, multicast, and metadata-network ranges on every connection/redirect.
-- At most three redirects, each revalidated and restricted to an approved host.
-- 10-second connect timeout and 30-second total timeout.
-- Maximum 50 MiB response, streamed to a temporary file.
-- Exactly one image/frame/page; animated or multi-page content is rejected.
-- Maximum decoded width or height of 30,000 pixels and maximum decoded area of 100,000,000 pixels.
-- Maximum normalized or printed-strip output area of 100,000,000 pixels.
-- Initial v1 formats are single-frame PNG, JPEG, and WebP. Declared MIME, detected format, decoded dimensions, and actual content must agree.
-- Decoder/Imagick memory, map, disk, thread, and execution resource limits are set explicitly so compressed-image bombs fail closed.
+The receiver:
 
-These restrictions apply only to the opted-in v1 path; legacy requests remain unchanged until separately migrated.
+- rejects v1 request bodies larger than the advertised 128 KiB default before canonicalization;
+- permits only HTTPS and exact configured hosts;
+- rejects URL credentials and fragments;
+- resolves and pins public addresses and rejects private, loopback, link-local, multicast, reserved, and other non-public destinations;
+- revalidates every redirect, with at most three redirects;
+- streams into an owner-scoped temporary path with a 10-second connection timeout, 30-second transfer timeout, 60-second receiver budget, and 50 MiB default byte limit;
+- accepts single-frame PNG, JPEG, or WebP only;
+- enforces declared/detected MIME agreement;
+- enforces default limits of 30,000 pixels per side and 100,000,000 decoded pixels;
+- verifies downloaded bytes against `design.sha256`; and
+- preserves the exact original bytes in a content-addressed source asset.
 
-The complete receiver request budget is 60 seconds. Without a verified durable background owner, the request stops starting new phases before that deadline, records `retryable_failure`, releases its lease, cleans owner-scoped temporary files, and returns 503 plus `Retry-After`; it must not return 202 after abandoning the lease. ShopNLTees uses a minimum 75-second client timeout and retries an ambiguous transport failure with the same dispatch key.
+The sender timeout must be at least 75 seconds. A transport failure may be retryable; hash, format, frame, dimension, or aspect failures are permanent for that semantic request.
 
-## Canonical Payload Fingerprint
+## Physical dimensions and no-distortion rule
 
-BuyDTF computes a SHA-256 fingerprint; ShopNLTees does not supply it. The fingerprint input is an RFC 8785 JSON Canonicalization Scheme serialization of this semantic object for a valid request:
+Requested dimensions are persisted to four decimal places. Before creating the business job, BuyDTF compares the decoded artwork aspect ratio with `width / height`. Relative error greater than `0.0010` returns `422 artwork_dimension_mismatch` for every v1 request, regardless of label optionality.
 
-```json
-{
-  "contract": "incoming_order_v1",
-  "source_order_id": 853,
-  "file_name": "production-art.png",
-  "shop": "Urey Local School Gear",
-  "design": {
-    "sha256": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
-    "width_in": "10.7500",
-    "height_in": "11.1220",
-    "quantity": 1
-  },
-  "job_label": {
-    "color": "Black/Light Oxford",
-    "mode": "metadata_only",
-    "order_item_id": 1671,
-    "order_number": "1725",
-    "placement": "Full Back",
-    "product_name": "Urey Cheer Port Authority Jacket",
-    "product_sku": null,
-    "production_print_snapshot_id": 31,
-    "quantity": 1,
-    "required": false,
-    "shop_domain": "urey.localschoolgear.com",
-    "size": "S",
-    "version": 1
-  }
-}
-```
+The immutable original is never changed. Production artwork is generated separately by uniform resampling onto the exact requested 300-DPI transparent canvas. There is no independent X/Y stretch. The job card is another independent file and never contributes to artwork dimensions, pricing, copy count, grouping dimensions, or material calculations.
 
-Rules:
+## Persistence and grouping
 
-- `signature`, `sent_at`, and `design.image_url` are transport-only and excluded. They remain covered by the request HMAC.
-- `idempotency_key` is the lookup key and is excluded from its associated payload fingerprint.
-- `design.sha256` is the immutable artwork identity included in the semantic fingerprint. A refreshed signed URL with the same expected hash does not change the fingerprint; changing the expected hash does.
-- Strings use validated NFC form; `shop_domain` is lowercase IDNA ASCII while `shop` retains its normalized human-readable value.
-- IDs are normalized as shown by their contract types.
-- Dimensions are decimal strings rounded half-up to exactly four fractional digits; exponential notation, NaN, and infinity are invalid.
-- Missing optional values are represented explicitly as `null` in the canonical object.
-- Object keys are canonicalized by RFC 8785; array ordering, if introduced by a future contract version, is significant.
-- For an ignored optional label, the fingerprint covers its complete supplied RFC 8785 representation so changing any rejected key/value under the same idempotency key produces a conflict. Rejected raw metadata is not retained after its fingerprint and reason are recorded.
+The additive migration creates:
 
-Before either capability is enabled, both repositories must contain the same versioned `contracts/incoming_order_v1_vectors.json` fixture and assert its file SHA-256 in CI. Each vector contains raw JSON, expected duplicate-key decision, expected RFC 8785 signing bytes, expected HMAC for a clearly synthetic fixed test secret, expected semantic-fingerprint object/bytes, and expected SHA-256. Required vectors cover key reordering, integer/decimal normalization, NFC Unicode, escaping, an unknown field, a duplicate key, changed `sent_at`, a refreshed `image_url` with the same artwork hash, and a changed artwork hash. The refreshed URL/timestamp vectors must change the request HMAC but retain the same semantic fingerprint; a changed artwork hash must change the fingerprint.
+- `incoming_order_jobs`: idempotency state, artwork identity, four-decimal dimensions, frozen label result/metadata, renderer version, production grouping, and handoff state;
+- `api_asset_records`: explicit origin, role, path identity, checksums, sizes, and fail-safe retention state; and
+- `customer_artwork_removals`: business-scoped deletion and purge receipts.
 
-Idempotency behavior:
+Legacy rows are neither altered nor backfilled. The migration refuses to run unless Laravel's active/default migration connection exactly matches the audited Fuel connection. Its `down()` intentionally retains data so code rollback cannot discard frozen idempotency, label, asset, or deletion records.
 
-- New dispatch key: atomically insert `processing`, set `attempt_count=1`, assign a random lease-owner token, and set a 90-second lease expiry.
-- The owner heartbeats at least every 20 seconds during fetch/normalization/rendering, extending the lease to 90 seconds from heartbeat time using a compare-and-swap on its owner token.
-- Existing key plus identical fingerprint and completed job: return the original job IDs, files, dimensions, label snapshot, and outcome; set only `receiver.replayed=true`.
-- Existing key plus identical fingerprint and an unexpired processing lease owned by another request: return 202 with `receiver.status="processing"`, a bounded `Retry-After` value, and create nothing new.
-- Existing key plus identical fingerprint and an expired processing lease: a new request may recover it only through an atomic conditional update on the old owner/expiry. It assigns a new owner, increments `attempt_count`, cleans only temporary files namespaced to the expired owner, and resumes from the first durable incomplete phase.
-- Existing key plus `retryable_failure`: a new identical request may atomically claim a new lease and resume. A completed job/response and frozen label metadata are immutable.
-- Existing key plus `permanent_failure`: return the frozen non-PII failure without retrying unless an operator performs a separately audited recovery.
-- Existing key plus different fingerprint: return 409 `idempotency_conflict`; create/change nothing and do not fetch artwork.
-- Cap automatic attempts at 10. Exceeding the cap records `permanent_failure` and returns a stable 503 `idempotency_attempts_exhausted` for operator review; it never silently creates a new key/job.
-- A transport retry reuses the dispatch key. An explicit reprint creates a new ShopNLTees dispatch operation and a new key even when its snapshot and artwork hash are unchanged.
+Different accepted label fingerprints produce different production grouping keys even when artwork bytes and dimensions are identical. Physical artwork deduplication may share immutable bytes, but it cannot merge or discard incoming-job metadata.
 
-The 90/20-second values and attempt limit are advertised by `receiver_idempotency_v1`. Clock comparisons use the database server's UTC time. Every lease transition, completion, and failure is a single conditional database statement or transaction; an application-memory lock is insufficient.
+## Production job-card workflow
 
-## Physical-Dimension Contract
+Receipt validates and freezes metadata; it does not render a card. When an operator selects **Add to Production** for an accepted job:
 
-- Store and calculate all v1 physical dimensions as `DECIMAL(10,4)` or higher precision.
-- Return dimension values as fixed four-decimal strings in inches.
-- Decode the source and complete existing normalization/trimming before validating label rendering.
-- Let `source_ratio = normalized_pixel_width / normalized_pixel_height` and `requested_ratio = width_in / height_in`.
-- The request is aspect-compatible only when `abs(requested_ratio / source_ratio - 1) <= 0.001` (0.10%).
-- Values must also map to positive integer pixel dimensions at 300 DPI.
-- The v1 production path must preserve a single uniform scale. Independent width/height scaling, stretching, squashing, and hard distortion are prohibited.
-- Every aspect-incompatible opt-in v1 request returns 422 `artwork_dimension_mismatch` without a job, including requests with no label or `job_label.required=false`. Artwork integrity is not a label-specific fallback.
-- `required=false` may ignore only label-specific problems such as unsupported label mode/content, strip readability limits, or unavailable optional rendering. It never allows hash, decode, pixel-limit, physical-dimension, aspect-ratio, or uniform-scaling validation to fall through to the legacy hard-resize path.
+1. Lock and verify the incoming job and its label-aware production group.
+2. Verify the immutable source artwork.
+3. Uniformly render the normal production artwork to the requested 300-DPI dimensions without distortion.
+4. Render a separate job-card PNG using the frozen metadata and pinned renderer version.
+5. Create a normal artwork JHDR using the requested artwork quantity.
+6. Create a separate job-card JHDR using quantity `1`.
+7. Upload artwork and card using stable correlated filenames and idempotent overwrite/retry behavior.
+8. Use a locked production claim to reject concurrent active handoffs and recover a stale claim after the configured lease.
+9. Record both derived assets and mark the handoff complete only after every required local render and remote upload succeeds.
 
-The original submitted file remains immutable and separately addressable. Normalized artwork and any labeled output are derived assets with their own path, SHA-256, renderer version, dimensions, and timestamps. No derived render may overwrite the original.
+The card displays only order number, product, SKU when present, color, size, placement, and total quantity. A required card failure leaves the production handoff incomplete and retryable. It never falls back to artwork without its card.
 
-## Mode Semantics
+The initial card canvas is configurable and provisionally defaults to 5 by 3 inches at 300 DPI. Its font and physical readability require an operator-approved sample before the label capability can be enabled.
 
-### `metadata_only`
+## Success response
 
-- Freeze and display the validated metadata on the BuyDTF job/admin production view.
-- Do not alter printable pixels.
-- `art_width_in == output_width_in`.
-- `art_height_in == output_height_in`.
-- `label_height_in == "0.0000"`.
-- Status is `accepted` once the job and immutable metadata snapshot are committed.
-
-### `printed_strip`
-
-- Preserve the immutable original bytes first.
-- Complete normal artwork normalization and trimming.
-- Uniformly resample the artwork region once to its requested 300-DPI dimensions. The aspect check must already have passed, and width/height may not be scaled independently.
-- Create a new derived output canvas at 300 DPI and copy that final artwork region pixel-for-pixel at `(0, 0)` without any further resampling.
-- Append the proposed `0.3500` inch (105 pixel at 300 DPI) identification strip beneath the artwork, never over it.
-- Output width equals artwork width. Output height equals artwork height plus `0.3500` inch.
-- Render escaped production metadata plus a clear `CUT OFF LABEL STRIP` instruction inside the strip. Text/layout may be reduced or wrapped, but the renderer must reject rather than clip or overlap content.
-- Supported artwork width for v1 printed strips is `3.0000` through `21.9000` inches. Outside that range, a required label returns 422; an optional label is ignored with `reason="printed_strip_width_out_of_range"`.
-- Store the derived file separately from both the immutable original and normalized unlabeled artwork.
-- For `required=true`, a 200 success is forbidden until the derived strip exists, its checksum/dimensions/renderer version are verified, and the database completion transaction is committed with `job_label.status="rendered"`. An active concurrent owner may return 202 `processing`; `accepted` is not a required-label success state.
-- For `required=false`, `accepted` may represent frozen metadata awaiting the ordinary production stage. Rendering changes it to `rendered`; a label-specific rendering failure changes it to `ignored` without changing artwork integrity.
-- Without a verified durable background renderer, the owning request renders synchronously. A 202 response is not permission to abandon work without a live lease owner; crash recovery follows the lease state machine.
-- Production layout/material calculations use output dimensions. Initial v1 customer pricing remains based on artwork dimensions only; billing for strip material requires a future reviewed contract version.
-
-The `0.3500`-inch value is a candidate, not yet an enabled production promise. Before `printed_strip` may appear in the capability's `modes`, BuyDTF must print at least a minimum-width production sample on the actual printer/media and record operator sign-off that all required text and `CUT OFF LABEL STRIP` are readable, the strip measures 0.3500 inch within one 300-DPI pixel, and the artwork region's measured dimensions are unchanged. If it fails, revise this contract/capability value and repeat review rather than silently increasing or shrinking the strip.
-
-## Persistence and Production Grouping
-
-Use a dedicated additive Fuel-database table named `incoming_order_jobs`, rather than overloading `dtfimages.item_meta`. It is one-to-one with the BuyDTF `dtfimages` job. The reviewed implementation migration must create these fields:
-
-- `id` unsigned big integer primary key;
-- `dtfimage_id` unsigned integer/big integer matching the audited live key type, nullable until commit, then unique;
-- `integration_client` ASCII `VARCHAR(64) COLLATE ascii_bin`;
-- `idempotency_key` ASCII `VARCHAR(128) COLLATE ascii_bin` so MySQL uniqueness is explicitly byte-for-byte case-sensitive;
-- `request_fingerprint` ASCII `CHAR(64)`;
-- `expected_art_sha256` and `actual_art_sha256` ASCII `CHAR(64)`;
-- `state` `VARCHAR(32)` (`processing`, `completed`, `retryable_failure`, or `permanent_failure`);
-- `lease_owner` ASCII `CHAR(36) COLLATE ascii_bin` nullable, `lease_expires_at` and `heartbeat_at` UTC timestamps nullable;
-- `attempt_count` unsigned integer defaulting to zero and `last_attempt_at` UTC timestamp nullable;
-- `response_payload` JSON nullable, containing only the frozen non-PII response;
-- `label_version` unsigned small integer nullable;
-- `label_required` boolean nullable;
-- `label_mode` `VARCHAR(32)` nullable;
-- `label_status` `VARCHAR(32)` nullable;
-- `label_reason` `VARCHAR(64)` nullable;
-- `label_metadata` JSON nullable, populated only with validated allowlisted metadata;
-- `label_fingerprint` ASCII `CHAR(64)` nullable;
-- `art_width_in`, `art_height_in`, `output_width_in`, `output_height_in`, and `label_height_in` as `DECIMAL(10,4)`;
-- immutable original, normalized artwork, and derived label paths as bounded strings plus separate ASCII `CHAR(64)` SHA-256 columns;
-- `renderer_version` `VARCHAR(64)` nullable;
-- `last_error_code` `VARCHAR(64)` nullable;
-- `rendered_at`, `created_at`, and `updated_at` timestamps.
-
-Required indexes are a unique case-sensitive `(integration_client, idempotency_key)` index, a unique nullable `dtfimage_id` index, and operational indexes on `(state, lease_expires_at)`, `label_status`, and `rendered_at`. Do not add a foreign key until the audited engine/type of the legacy `dtfimages` table proves it is compatible.
-
-Do not persist a signed artwork URL or `sent_at` in the semantic snapshot. Store only safe transport diagnostics such as approved host, response size, actual content hash, and enumerated error code; URLs with query strings are secrets and must not enter logs or frozen responses.
-
-The v1 exact dimensions in `incoming_order_jobs` are authoritative. Legacy `dtfimages` dimension columns remain untouched by the additive migration. Every v1 pricing, grouping, layout, production, response, and admin-display code path must read the exact v1 values and pass them explicitly to rendering helpers; legacy jobs continue using `dtfimages.width` and `dtfimages.height` exactly as today.
-
-Schema changes are additive. The old application must safely ignore the new table. Once any v1 job exists, rollback must disable the capability and revert code without dropping this table, deleting derived files, or discarding label snapshots.
-
-Artwork-byte deduplication may reuse one immutable blob, but it never reuses or merges a job row. Different idempotency keys always produce distinct BuyDTF job records, even when the artwork hash is identical.
-
-Production grouping rules:
-
-- Legacy/no-label grouping key remains exactly `image path + width + height`.
-- A labeled v1 grouping key additionally contains label mode, immutable label fingerprint, renderer version, and output dimensions.
-- Different labels can never merge or share the representative job's metadata.
-- Identical labeled jobs may group only when all grouping fields match; every constituent job retains its own frozen metadata and production audit record.
-
-## Success Response
-
-Legacy success responses remain byte-for-byte structurally unchanged. An opted-in v1 success adds `receiver` and, when supplied, `job_label`:
+The existing success fields remain available. V1 adds `receiver`; a request containing `job_label` also receives an explicit `job_label` result.
 
 ```json
 {
   "success": true,
   "duplicate": false,
-  "file": "/uploads/images/immutable-original.png",
-  "order_id": 1444,
-  "dtfimage_id": 17262,
+  "file": "/uploads/images/api/v1/01/01/0101....png",
+  "order_id": 42,
+  "dtfimage_id": 9001,
   "job_id": 853,
   "file_size": 123456,
-  "sha256": "hex-sha256",
+  "sha256": "0101010101010101010101010101010101010101010101010101010101010101",
   "orig_width_in": 10.75,
-  "orig_height_in": 11.122,
+  "orig_height_in": 11.1233,
   "width_ratio": 1,
-  "height_ratio": 1,
+  "height_ratio": 0.999883,
   "receiver": {
     "contract": "incoming_order_v1",
-    "idempotency_key": "shopnltees:dispatch:01995f6a-2ba1-7b22-a1c4-12f25b48f291",
-    "request_fingerprint": "hex-sha256",
+    "idempotency_key": "shopnltees:dispatch:00000000-0000-4000-8000-000000000001",
+    "request_fingerprint": "64-character-sha256",
     "status": "completed",
     "attempt_count": 1,
     "replayed": false
@@ -349,232 +226,82 @@ Legacy success responses remain byte-for-byte structurally unchanged. An opted-i
     "reason": null,
     "art_width_in": "10.7500",
     "art_height_in": "11.1220",
-    "output_width_in": "10.7500",
-    "output_height_in": "11.1220",
-    "label_height_in": "0.0000"
-  }
-}
-```
-
-`duplicate` continues to mean that the immutable artwork blob was reused. It never means the new job or its metadata was merged.
-
-For an optional invalid label, the artwork job succeeds and the response includes:
-
-```json
-{
-  "job_label": {
-    "status": "ignored",
-    "version": 1,
-    "mode": "printed_strip",
-    "reason": "rendering_unavailable",
-    "art_width_in": "10.7500",
-    "art_height_in": "11.1220",
-    "output_width_in": "10.7500",
-    "output_height_in": "11.1220",
-    "label_height_in": "0.0000"
-  }
-}
-```
-
-Reasons are enumerated machine codes and never echo rejected input. Initial codes are:
-
-- `unsupported_version`
-- `unsupported_mode`
-- `missing_field`
-- `unknown_field`
-- `invalid_type`
-- `invalid_value`
-- `unsafe_characters`
-- `contains_pii`
-- `too_long`
-- `quantity_mismatch`
-- `printed_strip_width_out_of_range`
-- `rendering_unavailable`
-
-For `status="ignored"`, `mode` is the normalized supported requested mode or `null` when the supplied mode is missing, malformed, or unsupported. Accepted/rendered labels always return one of the two supported mode strings.
-
-## Error Responses
-
-### Artwork-integrity or required-label validation failure: 422
-
-```json
-{
-  "success": false,
-  "error": {
-    "code": "artwork_invalid",
-    "reason": "artwork_dimension_mismatch"
-  }
-}
-```
-
-No order, DTF image/job, permanent file, label row, or derived asset is created.
-
-### Idempotency conflict: 409
-
-```json
-{
-  "success": false,
-  "error": {
-    "code": "idempotency_conflict",
-    "message": "This idempotency key was already used with a different payload."
-  },
-  "receiver": {
-    "contract": "incoming_order_v1",
-    "idempotency_key": "shopnltees:dispatch:01995f6a-2ba1-7b22-a1c4-12f25b48f291"
-  }
-}
-```
-
-No existing record is changed and no artwork is fetched.
-
-### Existing active lease: 202
-
-```json
-{
-  "success": false,
-  "receiver": {
-    "contract": "incoming_order_v1",
-    "idempotency_key": "shopnltees:dispatch:01995f6a-2ba1-7b22-a1c4-12f25b48f291",
-    "status": "processing",
-    "attempt_count": 1
-  }
-}
-```
-
-The response includes `Retry-After: 5` (or the smaller whole-second remainder of the live lease, clamped to 1-15 seconds). It exposes neither the lease owner token nor internal paths. For `printed_strip` with `required=true`, clients treat 202 as not yet successful and retry the same signed semantic request/key; only a later 200 with `job_label.status="rendered"` is success.
-
-Initial artwork error reasons include `artwork_hash_mismatch`, `artwork_decode_failed`, `artwork_limits_exceeded`, `artwork_dimension_mismatch`, and `artwork_format_unsupported`. They are never converted into optional-label `ignored` outcomes.
-
-Existing authentication failures remain 401. Malformed JSON or duplicate keys are 400. Unknown v1 envelope/design fields and other semantic validation failures are 422. Internal errors remain non-success and must not leak stack traces, filesystem paths, provider responses, secrets, or payload values.
-
-## Capability Discovery
-
-New endpoint:
-
-```text
-GET /api/incomingorder/capabilities
-```
-
-It is read-only, contains no tenant/customer information, requires no shared-secret signature, and returns `Cache-Control: public, max-age=60`.
-
-```json
-{
-  "endpoint": "/api/incomingorder",
-  "capabilities": {
-    "receiver_idempotency_v1": {
-      "enabled": true,
-      "key_max_length": 128,
-      "key_collation": "ascii_bin",
-      "fingerprint": "sha256-rfc8785-semantic",
-      "artwork_sha256_required": true,
-      "conflict_status": 409,
-      "lease_seconds": 90,
-      "heartbeat_seconds": 20,
-      "max_attempts": 10,
-      "fetch_timeout_seconds": 30,
-      "receiver_request_timeout_seconds": 60,
-      "sender_minimum_timeout_seconds": 75
-    },
-    "job_label_metadata_v1": {
-      "enabled": true,
-      "version": 1,
-      "modes": ["metadata_only"],
-      "optional_failure_status": "ignored",
-      "dimension_precision_decimals": 4,
-      "aspect_ratio_max_relative_error": "0.0010",
-      "printed_strip": {
-        "enabled": false,
-        "physical_readability_verified": false,
-        "dpi": 300,
-        "candidate_label_height_in": "0.3500",
-        "min_art_width_in": "3.0000",
-        "max_art_width_in": "21.9000"
-      },
-      "limits": {
-        "download_bytes": 52428800,
-        "decoded_width_px": 30000,
-        "decoded_height_px": 30000,
-        "decoded_area_px": 100000000,
-        "frames": 1,
-        "formats": ["png", "jpeg", "webp"],
-        "order_number": 64,
-        "product_name": 160,
-        "product_sku": 80,
-        "color": 80,
-        "size": 40,
-        "placement": 80,
-        "quantity_max": 10000,
-        "shop_domain": 253
-      }
+    "artwork_modified": false,
+    "job_card": {
+      "artifact": "separate",
+      "status": "pending_production",
+      "quantity": 1
     }
   }
 }
 ```
 
-The example is the safe state after metadata-only support but before physical strip sign-off. After the physical readability gate passes, BuyDTF may advertise `printed_strip.enabled=true`, `physical_readability_verified=true`, add `printed_strip` to `modes`, and replace `candidate_label_height_in` with the tested contractual `label_height_in`.
+An optional invalid or disabled label returns `status: ignored`, a stable machine-readable `reason`, `artwork_modified: false`, and `job_card.status: not_requested`. A request with no `job_label` omits the `job_label` response member.
 
-BuyDTF may advertise `receiver_idempotency_v1` independently once its schema/state machine is deployed and verified. It must not advertise `job_label_metadata_v1` until label persistence, admin display, grouping, rollback safeguards, and at least `metadata_only` are ready. During rollback, disable affected capability flags first; retained v1 data remains readable.
+## Errors
 
-## Required Acceptance Tests
+| HTTP | Meaning |
+| --- | --- |
+| `400` | Malformed JSON, duplicate key, or non-object body. |
+| `401` | Missing, malformed, or mismatched signature. |
+| `409` | Same integration client/key with a different semantic fingerprint. |
+| `413` | V1 request body exceeds the configured receiver limit. |
+| `415` | V1 body is not `application/json`. |
+| `422` | Strict validation, required label, artwork integrity, format, limit, or aspect failure. No partial legacy job is created. |
+| `202` | Identical request is owned by another live processing lease. Retry after the supplied interval. |
+| `503` | Capability disabled, receiver unavailable, retryable fetch/processing failure, or attempts exhausted. |
 
-1. A legacy payload without v1 fields has identical status, response shape, persistence, image result, and production behavior.
-2. Existing sender semantics are locked: `source_order_id` remains the database ID, `shop` remains the human-readable name, and signed `sent_at` remains transport-only; the label `order_number` is separately the displayed number.
-3. Metadata-only submission is validated, frozen, displayed, and returned without changing printable bytes or dimensions.
-4. Printed-strip output follows preserve -> normalize/trim -> uniform 300-DPI resample -> pixel-for-pixel canvas copy -> append strip, with unchanged artwork-region dimensions/aspect.
-5. `printed_strip.required=true` cannot return 200/accepted before its derived file/hash/dimensions are persisted and status is `rendered`.
-6. Optional label-specific invalid metadata creates the ordinary distinct artwork job and returns explicit `ignored`; optional or absent labels do not relax artwork hash/aspect/pixel validation.
-7. Required invalid metadata leaves no order, DTF image/job, permanent job-specific file, completed idempotency result, or label artifact.
-8. Every v1 aspect mismatch, including `required=false`, returns 422 and never reaches the legacy independent width/height resize.
-9. A correct `design.sha256` is verified; wrong bytes return 422. A refreshed signed URL/`sent_at` with the same expected hash/key has the same semantic fingerprint, while a changed expected hash under the key returns 409.
-10. The same artwork bytes under two dispatch keys and different labels create two DTF image/job rows and frozen metadata records, even if the immutable blob is reused.
-11. A transport retry uses one dispatch key and returns the original job. An explicit reprint of the same snapshot uses a new dispatch key and creates a new job.
-12. Same-key/different-fingerprint retry returns 409 and changes nothing.
-13. Concurrent requests create one job; active leases return bounded 202, heartbeats extend ownership, stale leases are conditionally reclaimed, attempt counts increment, and an expired/crashed owner cannot leave 202 forever.
-14. Failure injection before/after asset promotion and before database commit proves no completed job references a missing file; unreferenced content-addressed assets are safely reusable/collectible.
-15. Four-decimal dimensions round-trip and a single uniform scale is used.
-16. Length boundaries, NFC normalization, escaping, controls, bidi characters, path/shell/template strings, and malicious input are safe.
-17. Duplicate JSON keys are 400; unknown v1 envelope/design fields are 422; label unknown/PII fields follow only the documented required/optional label policy.
-18. `ascii_bin` uniqueness is proven with mixed-case keys, boundary lengths, and concurrent insert races.
-19. Both repositories pass the same pinned RFC 8785 signing/fingerprint vector file, including refreshed-URL and Unicode cases.
-20. Label-aware grouping never combines different label fingerprints; identical groups retain per-job audit metadata.
-21. Original, normalized, and printed-strip assets have distinct immutable paths/checksums; regeneration from the frozen snapshot is deterministic.
-22. URL fetch tests cover connect/total timeout, size cap, redirect/DNS/private-network denial, hash mismatch, MIME mismatch, 30,000-pixel dimension, 100-megapixel area, multi-frame rejection, decoder resource limits, and cleanup.
-23. Capability tests prove key-only adoption, label dual-capability gating, metadata-only pre-strip state, the 60-second cache rollback wait, and sender-observed disablement.
-24. A documented physical printer/media test passes before `printed_strip` and a contractual strip height are advertised.
-25. Code rollback leaves legacy jobs working and retains v1 rows/assets; migration rollback never drops production metadata.
-26. HMAC covers idempotency key, transport URL/timestamp, artwork hash, and label; logs contain no raw signature, URL query, label text, or customer PII.
-27. The presence of any v1-only field activates v1; a missing/invalid dispatch key or artwork SHA-256 returns 422 with no fetch or persistence and never falls through to legacy resizing.
+Machine-readable error responses use `error.code` and `error.reason`. Logs for v1 contain only correlation IDs, hashes, internal IDs, state, and exception class. They do not contain the secret, signature, signed URL query, raw label/card text, or customer PII.
 
-## Deployment and Rollback Sequence
+## Capability discovery
 
-1. Review this contract jointly in BuyDTF and ShopNLTees.
-2. Implement additive schema, receiver service, controlled fetcher, persistence, production grouping, renderer, admin display, capability endpoint, and tests on a new branch.
-3. Run all existing stabilization tests plus the acceptance matrix; inspect migrations and rollback manually.
-4. Deploy BuyDTF schema/code with capabilities disabled.
-5. Backfill nothing and alter no legacy response.
-6. Smoke idempotency and metadata-only behavior using non-production test jobs.
-7. Enable and verify `receiver_idempotency_v1`. ShopNLTees may then adopt key-only v1 requests while continuing to omit `job_label`.
-8. Complete and record the physical strip-readability test. Advertise `printed_strip` only if it passes; otherwise keep metadata-only mode and revise the proposed dimensions before further review.
-9. Enable `job_label_metadata_v1` only after both applications observe receiver idempotency and BuyDTF's label modes are ready. ShopNLTees initially sends labels with `required=false`.
-10. Rollback begins by disabling the affected capability flags. Wait at least 90 seconds (greater than the public 60-second cache lifetime), then verify ShopNLTees has fetched/observed the disabled state and stopped creating affected sends before removing receiver code support. Retain additive tables, frozen metadata, and original/derived files.
+`GET /api/incomingorder/capabilities` is unsigned, read-only, and returns `Cache-Control: public, max-age=60`.
 
-## ShopNLTees Requirements
+- `receiver_idempotency_v1.enabled` is controlled by `INCOMING_ORDER_V1_ENABLED` and defaults to `false`.
+- `job_label_metadata_v1.enabled` requires both the receiver and `INCOMING_ORDER_JOB_LABEL_ENABLED`; both default to `false`.
+- The response advertises supported modes, fingerprint scheme, artwork-hash requirement, timeouts, dimension precision, aspect tolerance, image limits, metadata limits, separate-card semantics, and quantity one.
 
-- Probe capabilities. `receiver_idempotency_v1` alone permits key-only requests; sending `job_label` requires both receiver and label capabilities, and the requested mode must be listed.
-- Create and persist a durable dispatch/send-operation record with a UUID. Derive one stable idempotency key from that dispatch, not from only the production snapshot.
-- Reuse that key for transport retries, including retries with a refreshed signed URL for the same immutable artwork hash. Create a new dispatch/key for every explicit reprint, even from the same snapshot.
-- Preserve current sender meaning: `source_order_id` is the database order ID, `shop` is the human-readable shop name, `sent_at` is RFC 3339 transport metadata, and `job_label.order_number` is the displayed order number.
-- Supply lowercase `design.sha256` from the frozen artwork and retain it with the dispatch.
-- Sign RFC 8785 canonical request content including the idempotency key, artwork hash, URL, timestamp, and full label.
-- Persist the BuyDTF response, receiver fingerprint, BuyDTF job ID, and label outcome.
-- Treat 202 as retryable with `Retry-After`; treat 409 as a data-integrity error requiring operator resolution, not an automatic new key.
-- Initially send `required=false`.
-- Supply only the allowed production fields from immutable snapshot/catalog data and never customer PII or personalization rosters.
-- Keep the source artwork available by HTTPS through an approved host long enough for the first successful receipt; do not depend on shared storage.
-- Use four-decimal dimension strings and ensure requested dimensions match the submitted normalized artwork aspect ratio.
-- Configure a minimum 75-second HTTP timeout (with a 10-second connect timeout) so the sender does not abandon a receiver that legitimately spends up to 30 seconds fetching and up to 60 seconds on the complete request. After any ambiguous timeout, retry with the same dispatch key.
-- Consume the shared pinned RFC 8785 test vectors in CI and fail release if the vector file hash or any expected HMAC/fingerprint differs from BuyDTF.
+ShopNLTees may adopt key-only v1 after `receiver_idempotency_v1` is deployed, smoke-tested, and enabled. It may send `job_label` only after both capabilities are observed enabled. On rollback, disable the capability, wait longer than the 60-second cache lifetime, verify ShopNLTees has observed the disabled state, and only then remove receiver support.
 
-## Stop Point
+## Retention and customer removal
 
-This document defines the proposed contract only. No route, controller, schema, model, rendering, capability, or production behavior has been implemented. Implementation and deployment require separate approval.
+Fail-safe retention is `forever`.
+
+- Every legacy `dtfimages` and `savedimages` record remains permanent.
+- Direct-cart and saved customer artwork remains permanent unless its owning customer explicitly removes it.
+- Missing, unknown, or unclassified origin/retention data means permanent retention.
+- Origin is never inferred from a filename.
+- Automatic expiration applies only to a future API asset with an explicit API asset record and separately enabled retention policy.
+- The cleanup command is report-only/dry-run in this change. Retention is disabled by default.
+
+Customer removal is a separate, disabled-by-default feature. It is scoped to the authenticated business, immediately hides the path from Saved Images and that customer's prior-order artwork results, defers physical deletion while an open cart or active production job references it, checks all known database path references, and records `customer_deleted_at` and `purged_at`. Shared source, thumbnail, and applicable derivative files are removed only after active references clear. Historical order metadata remains.
+
+## Deployment and rollback gates
+
+Before production review:
+
+1. Review the exact branch commit, migration, shared vectors, test results, and production drift.
+2. Confirm approved artwork hosts, shared-secret placement, and production PHP/Imagick/font support without changing configuration.
+3. Review a migration `--pretend` result against the audited Fuel connection and take an exact database backup.
+4. Deploy schema and code with every new capability and purge setting disabled.
+5. Smoke-test using non-production jobs.
+6. Enable receiver idempotency first; only then update ShopNLTees.
+7. Enable label metadata only after receiver and sender behavior are proven and a physical job-card sample is approved.
+
+Code rollback disables the capability flags first and preserves all additive tables and assets. No rollback path drops idempotency history or frozen metadata.
+
+## ShopNLTees requirements
+
+- Generate a durable dispatch-operation key. Reuse it for transport retries and use a new key for each intentional reprint.
+- Compute the exact frozen artwork SHA-256 before sending and keep it stable across refreshed URLs.
+- Use the shared canonicalization vectors and HMAC rules.
+- Preserve current `source_order_id`, `shop`, and `sent_at` meanings.
+- Send only allowlisted production metadata and no customer PII.
+- Use a request timeout of at least 75 seconds and honor `202`/`503` `Retry-After`.
+- Treat `409` as a non-retryable payload/key conflict requiring investigation.
+- Gate idempotency and labels independently from the capability response.
+- Do not send labels until both `receiver_idempotency_v1` and `job_label_metadata_v1` are enabled.
+
+## Stop point
+
+This branch stops before production migration, deployment, configuration changes, capability enablement, data cleanup, legacy backfill, or ShopNLTees sender changes.

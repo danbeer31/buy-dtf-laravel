@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Models\DtfOrder;
 use App\Models\DtfImage;
+use App\Services\IncomingOrders\CustomerArtworkRemovalService;
 use App\Services\QboService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -141,16 +142,18 @@ class AccountController extends Controller
         return view('account.tabs._invoices_table', compact('invoiceHistory', 'unpaidInvoices', 'qboBalance'));
     }
 
-    public function images(Request $request)
+    public function images(Request $request, CustomerArtworkRemovalService $removals)
     {
         $user = Auth::user();
         $business = $user->business;
 
         if (!$business) return response()->json(['error' => 'No business found'], 404);
 
+        $hiddenPaths = $removals->hiddenPaths((int)$business->id);
         $images = DtfImage::whereHas('dtfOrder', function($q) use ($business) {
                 $q->where('business_id', $business->id);
             })
+            ->when($hiddenPaths->isNotEmpty(), fn ($query) => $query->whereNotIn('image', $hiddenPaths->all()))
             ->orderBy('id', 'desc')
             ->get()
             ->unique('image');
@@ -162,6 +165,41 @@ class AccountController extends Controller
         }
 
         return view('account.tabs._images_grid', compact('images'));
+    }
+
+    public function deleteImage(
+        DtfImage $image,
+        CustomerArtworkRemovalService $removals
+    ) {
+        if (!(bool)config('incoming_order.customer_artwork.deletion_enabled', false)) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Customer artwork deletion is not enabled.',
+            ], 503);
+        }
+
+        $business = Auth::user()->business;
+        if (!$business) {
+            abort(404);
+        }
+        $belongsToBusiness = DtfImage::whereKey($image->id)
+            ->whereHas('dtfOrder', fn ($query) => $query->where('business_id', $business->id))
+            ->exists();
+        if (!$belongsToBusiness) {
+            abort(403);
+        }
+
+        $removal = $removals->requestRemoval($business, $image->loadMissing('dtfOrder'));
+
+        if (request()->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'state' => $removal->state,
+                'deferred_reason' => $removal->deferred_reason,
+            ]);
+        }
+
+        return redirect()->route('account')->with('success', 'Artwork was removed from your library.');
     }
 
     public function downloadImage(DtfImage $image): BinaryFileResponse

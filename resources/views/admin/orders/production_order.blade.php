@@ -168,6 +168,7 @@
                                                 <div class="text-muted smaller">Size: {{ strtoupper(data_get($img->item_meta, 'size_key', $img->width . 'x' . $img->height)) }}</div>
                                                 <a class="smaller text-decoration-none" href="{{ $img->image }}" target="_blank" rel="noopener">Open file</a>
                                             @endif
+                                            @include('admin.orders._incoming_job_card', ['image' => $img])
                                         </td>
                                         <td class="py-3 text-center fw-bold">{{ $img->quantity }}</td>
                                         <td class="py-3 text-center">{{ $img->width }}"</td>
@@ -246,19 +247,11 @@
                     $pendingImages = $eligibleImages->where('production', 0);
                     $allImages = $eligibleImages;
                     $pendingGroupImageIds = $pendingImages
-                        ->groupBy(fn($img) => implode('|', [
-                            (string) $img->image,
-                            number_format((float) $img->width, 2, '.', ''),
-                            number_format((float) $img->height, 2, '.', ''),
-                        ]))
+                        ->groupBy(fn($img) => $img->productionGroupingKey())
                         ->map(fn($group) => $group->first()->id)
                         ->values();
                     $allGroupImageIds = $allImages
-                        ->groupBy(fn($img) => implode('|', [
-                            (string) $img->image,
-                            number_format((float) $img->width, 2, '.', ''),
-                            number_format((float) $img->height, 2, '.', ''),
-                        ]))
+                        ->groupBy(fn($img) => $img->productionGroupingKey())
                         ->map(fn($group) => $group->first()->id)
                         ->values();
                 @endphp

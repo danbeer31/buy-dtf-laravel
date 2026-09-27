@@ -129,6 +129,7 @@ Route::middleware(['auth', 'verified', 'customer'])->group(function () {
     Route::get('/account/invoices', [AccountController::class, 'invoices'])->name('account.invoices');
     Route::get('/account/images', [AccountController::class, 'images'])->name('account.images');
     Route::get('/account/images/{image}/download', [AccountController::class, 'downloadImage'])->name('account.images.download');
+    Route::delete('/account/images/{image}', [AccountController::class, 'deleteImage'])->name('account.images.delete');
 
     Route::get('/orders', function() {
         return redirect()->route('account');

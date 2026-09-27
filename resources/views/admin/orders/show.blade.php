@@ -96,6 +96,7 @@
                                                                 <div class="text-muted smaller">Size: {{ strtoupper(data_get($item->item_meta, 'size_key', $item->width . 'x' . $item->height)) }}</div>
                                                                 <a class="smaller text-decoration-none" href="{{ $item->image }}" target="_blank" rel="noopener">Open file</a>
                                                             @endif
+                                                            @include('admin.orders._incoming_job_card', ['image' => $item])
                                                         </div>
                                                     </div>
                                                 </td>

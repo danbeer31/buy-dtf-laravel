@@ -34,12 +34,24 @@ class ProductionHelper
         $deleteHdr   = array_key_exists('delete_jhdr', $opts) ? (bool)$opts['delete_jhdr'] : true;
         $uploadImage = array_key_exists('upload_image', $opts) ? (bool)$opts['upload_image'] : true;
         $overwrite   = array_key_exists('overwrite_img', $opts) ? (bool)$opts['overwrite_img'] : true;
+        $preparedImagePath = isset($opts['prepared_image_path'])
+            ? (string)$opts['prepared_image_path']
+            : null;
+        $uploadedPaths = [];
 
         $qty = max(1, (int)($opts['quantity'] ?? $image->quantity));
+        $productionWidth = (float)($opts['width_in'] ?? $image->width);
+        $productionHeight = (float)($opts['height_in'] ?? $image->height);
+        if ($productionWidth <= 0 || $productionHeight <= 0) {
+            throw new \InvalidArgumentException('Production dimensions must be positive.');
+        }
 
-        $layout = self::calculate_sheet_layout($image, $qty);
+        $layoutImage = clone $image;
+        $layoutImage->width = $productionWidth;
+        $layoutImage->height = $productionHeight;
+        $layout = self::calculate_sheet_layout($layoutImage, $qty);
 
-        $baseName      = self::safeBasename((string)$image->image);
+        $baseName      = self::safeBasename((string)($opts['remote_image_name'] ?? $image->image));
         $remoteMainImg = (string)$image->id . '-'  . $baseName;
         $remoteRemImg  = (string)$image->id . 'R-' . $baseName;
 
@@ -54,43 +66,32 @@ class ProductionHelper
                 self::LOCAL_JHDR_DIR,
                 $printMode,
                 ($opts['rotate'] ?? $layout['rotated']),
-                (float)$image->width,
-                (float)$image->height,
+                $productionWidth,
+                $productionHeight,
                 $fullCopies,
                 $layout['Columns'],
                 $layout['Rows'],
                 $deleteHdr
             );
 
-            $dropbox->upload($jhdrMainPath, $dropboxPath . $jhdrMainBase . '.jhdr');
-            @unlink($jhdrMainPath);
+            try {
+                $dropbox->upload($jhdrMainPath, $dropboxPath . $jhdrMainBase . '.jhdr');
+                $uploadedPaths[] = $dropboxPath . $jhdrMainBase . '.jhdr';
+            } finally {
+                @unlink($jhdrMainPath);
+            }
 
             if ($uploadImage) {
-                $localPath = public_path((string)$image->image);
-                if (file_exists($localPath)) {
-                    // Prepare image for production (resize, 300 DPI, hard edges)
-                    $tempImagePath = storage_path('app/temp_' . uniqid() . '.png');
-                    $prepareResult = ImageHelper::prepareForProduction(
-                        $localPath,
-                        $tempImagePath,
-                        (float)$image->width,
-                        (float)$image->height,
-                        300
-                    );
-
-                    if ($prepareResult['success']) {
-                        $dropbox->upload($tempImagePath, $dropboxPath . $remoteMainImg);
-                        @unlink($tempImagePath);
-                    } else {
-                        Log::error("Failed to prepare image for production: " . ($prepareResult['message'] ?? 'Unknown error'));
-                        // Fallback to original if processing fails?
-                        // The user said "edit the image to match...", so failing might be better,
-                        // but for robustness we might want to upload original or throw error.
-                        // Let's throw an exception to be safe and notify the user.
-                        throw new \Exception("Failed to process image: " . ($prepareResult['message'] ?? 'Unknown error'));
-                    }
-                } else {
-                    Log::warning("Local image not found for upload: $localPath");
+                if (self::uploadProductionImage(
+                    $dropbox,
+                    $image,
+                    $dropboxPath . $remoteMainImg,
+                    $preparedImagePath,
+                    false,
+                    $productionWidth,
+                    $productionHeight
+                )) {
+                    $uploadedPaths[] = $dropboxPath . $remoteMainImg;
                 }
             }
         }
@@ -98,7 +99,7 @@ class ProductionHelper
         // REMAINDER
         if ($layout['remaining'] > 0) {
             $remQty = (int)$layout['remaining'];
-            $rem    = self::calculate_sheet_layout($image, $remQty);
+            $rem    = self::calculate_sheet_layout($layoutImage, $remQty);
 
             $jhdrRemBase = pathinfo($remoteRemImg, PATHINFO_FILENAME);
             $jhdrRemPath = self::create_jhdr_grid_file(
@@ -106,39 +107,32 @@ class ProductionHelper
                 self::LOCAL_JHDR_DIR,
                 $printMode,
                 ($opts['rotate'] ?? $rem['rotated']),
-                (float)$image->width,
-                (float)$image->height,
+                $productionWidth,
+                $productionHeight,
                 $remQty,
                 $rem['Columns'],
                 $rem['Rows'],
                 $deleteHdr
             );
 
-            $dropbox->upload($jhdrRemPath, $dropboxPath . $jhdrRemBase . '.jhdr');
-            @unlink($jhdrRemPath);
+            try {
+                $dropbox->upload($jhdrRemPath, $dropboxPath . $jhdrRemBase . '.jhdr');
+                $uploadedPaths[] = $dropboxPath . $jhdrRemBase . '.jhdr';
+            } finally {
+                @unlink($jhdrRemPath);
+            }
 
             if ($uploadImage) {
-                $localPath = public_path((string)$image->image);
-                if (file_exists($localPath)) {
-                    // Prepare image for production (resize, 300 DPI, hard edges)
-                    $tempImagePath = storage_path('app/temp_' . uniqid() . '.png');
-                    $prepareResult = ImageHelper::prepareForProduction(
-                        $localPath,
-                        $tempImagePath,
-                        (float)$image->width,
-                        (float)$image->height,
-                        300
-                    );
-
-                    if ($prepareResult['success']) {
-                        $dropbox->upload($tempImagePath, $dropboxPath . $remoteRemImg);
-                        @unlink($tempImagePath);
-                    } else {
-                        Log::error("Failed to prepare image for production (remainder): " . ($prepareResult['message'] ?? 'Unknown error'));
-                        throw new \Exception("Failed to process image (remainder): " . ($prepareResult['message'] ?? 'Unknown error'));
-                    }
-                } else {
-                    Log::warning("Local image not found for upload (remainder): $localPath");
+                if (self::uploadProductionImage(
+                    $dropbox,
+                    $image,
+                    $dropboxPath . $remoteRemImg,
+                    $preparedImagePath,
+                    true,
+                    $productionWidth,
+                    $productionHeight
+                )) {
+                    $uploadedPaths[] = $dropboxPath . $remoteRemImg;
                 }
             }
         }
@@ -147,6 +141,118 @@ class ProductionHelper
             $image->production = 1;
             $image->save();
         }
+
+        return [
+            'uploaded_paths' => $uploadedPaths,
+            'quantity' => $qty,
+            'layout' => $layout,
+        ];
+    }
+
+    /**
+     * Upload a separate quantity-one production artifact and its JHDR using a
+     * stable caller-provided basename. Legacy jobs never call this method.
+     */
+    public static function addCompanionArtifact(
+        string $localImagePath,
+        string $remoteBase,
+        float $widthIn,
+        float $heightIn,
+        array $opts = []
+    ): array
+    {
+        if (!is_file($localImagePath)) {
+            throw new \RuntimeException('Companion production artifact is missing.');
+        }
+
+        $dropboxPath = rtrim($opts['dropbox_path'] ?? self::DEFAULT_DROPBOX_PATH, '/') . '/';
+        $printMode = (string)($opts['print_mode'] ?? self::DEFAULT_PRINT_MODE);
+        $deleteHdr = array_key_exists('delete_jhdr', $opts) ? (bool)$opts['delete_jhdr'] : true;
+        $safeBase = preg_replace('/[^A-Za-z0-9._-]+/', '-', basename($remoteBase));
+        $safeBase = trim((string)$safeBase, '.-');
+        if ($safeBase === '') {
+            throw new \InvalidArgumentException('Companion production basename is invalid.');
+        }
+
+        $jhdrPath = self::create_jhdr_grid_file(
+            $safeBase,
+            self::LOCAL_JHDR_DIR,
+            $printMode,
+            0,
+            $widthIn,
+            $heightIn,
+            1,
+            1,
+            1,
+            $deleteHdr
+        );
+
+        $dropbox = new DropboxService();
+        $jhdrRemote = $dropboxPath . $safeBase . '.jhdr';
+        $imageRemote = $dropboxPath . $safeBase . '.png';
+        try {
+            $dropbox->upload($jhdrPath, $jhdrRemote);
+        } finally {
+            @unlink($jhdrPath);
+        }
+        $dropbox->upload($localImagePath, $imageRemote);
+
+        return [
+            'uploaded_paths' => [$jhdrRemote, $imageRemote],
+            'quantity' => 1,
+        ];
+    }
+
+    private static function uploadProductionImage(
+        DropboxService $dropbox,
+        DtfImage $image,
+        string $remotePath,
+        ?string $preparedImagePath,
+        bool $remainder,
+        float $widthIn,
+        float $heightIn
+    ): bool
+    {
+        if ($preparedImagePath !== null) {
+            if (!is_file($preparedImagePath)) {
+                throw new \RuntimeException('Prepared production artwork is missing.');
+            }
+            $dropbox->upload($preparedImagePath, $remotePath);
+            return true;
+        }
+
+        $localPath = public_path((string)$image->image);
+        if (!file_exists($localPath)) {
+            Log::warning($remainder
+                ? "Local image not found for upload (remainder): $localPath"
+                : "Local image not found for upload: $localPath");
+            return false;
+        }
+
+        $tempImagePath = storage_path('app/temp_' . uniqid() . '.png');
+        $prepareResult = ImageHelper::prepareForProduction(
+            $localPath,
+            $tempImagePath,
+            $widthIn,
+            $heightIn,
+            300
+        );
+
+        if (!($prepareResult['success'] ?? false)) {
+            $prefix = $remainder
+                ? 'Failed to process image (remainder): '
+                : 'Failed to process image: ';
+            Log::error($prefix . ($prepareResult['message'] ?? 'Unknown error'));
+            throw new \RuntimeException($prefix . ($prepareResult['message'] ?? 'Unknown error'));
+        }
+
+        try {
+            $dropbox->upload($tempImagePath, $remotePath);
+        } finally {
+            @unlink($tempImagePath);
+        }
+
+        return true;
     }
 
     protected static function create_jhdr_grid_file(

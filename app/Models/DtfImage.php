@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Services\GangSheetPricingService;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Schema;
 use Exception;
 
@@ -113,6 +114,39 @@ class DtfImage extends FuelModel
         return $this->belongsTo(DtfOrder::class, 'dtforder_id');
     }
 
+    public function incomingOrderJob(): HasOne
+    {
+        return $this->hasOne(IncomingOrderJob::class, 'dtfimage_id');
+    }
+
+    public function productionGroupingKey(): string
+    {
+        if ($this->item_type === 'gang_sheet') {
+            return 'gang_sheet:' . $this->id;
+        }
+
+        $legacyKey = implode('|', [
+            (string)$this->image,
+            number_format((float)$this->width, 2, '.', ''),
+            number_format((float)$this->height, 2, '.', ''),
+        ]);
+        $incomingJob = $this->relationLoaded('incomingOrderJob')
+            ? $this->incomingOrderJob
+            : $this->incomingOrderJob()->first();
+        if (!$incomingJob || !$incomingJob->hasAcceptedJobCard()) {
+            return $legacyKey;
+        }
+
+        return implode('|', [
+            $legacyKey,
+            'separate-job-card',
+            (string)$incomingJob->job_label_fingerprint,
+            (string)$incomingJob->renderer_version,
+            number_format((float)$incomingJob->art_width_in, 4, '.', ''),
+            number_format((float)$incomingJob->art_height_in, 4, '.', ''),
+        ]);
+    }
+
     public function get_price()
     {
         if ((int)($this->admin_price_locked ?? 0) === 1 && $this->admin_unit_price !== null) {
@@ -151,6 +185,13 @@ class DtfImage extends FuelModel
 
     public function get_square_inches()
     {
+        $incomingJob = $this->relationLoaded('incomingOrderJob')
+            ? $this->incomingOrderJob
+            : $this->incomingOrderJob()->first();
+        if ($incomingJob !== null) {
+            return (float)$incomingJob->art_width_in * (float)$incomingJob->art_height_in;
+        }
+
         return (float)$this->width * (float)$this->height;
     }
 

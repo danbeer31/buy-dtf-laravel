@@ -25,6 +25,15 @@
                                     <i class="bi bi-cart-plus me-1"></i>Re-order
                                 </button>
                             </form>
+                            @if(config('incoming_order.customer_artwork.deletion_enabled'))
+                                <form action="{{ route('account.images.delete', $image->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Remove this artwork from your saved and prior-order image library?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-outline-danger p-1" title="Remove artwork">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            @endif
                         </div>
                     </div>
                 </div>

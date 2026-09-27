@@ -425,6 +425,170 @@ class ImageHelper
     }
 
     /**
+     * Build an exact-size production canvas while uniformly scaling the
+     * artwork. Any sub-pixel aspect difference becomes transparent edge
+     * padding instead of independent X/Y scaling.
+     */
+    public static function prepareForProductionAspectSafe(
+        string $inputFile,
+        string $outputFile,
+        float $widthIn,
+        float $heightIn,
+        int $dpi = 300
+    ): array
+    {
+        $targetWidth = max(1, (int) round($widthIn * $dpi));
+        $targetHeight = max(1, (int) round($heightIn * $dpi));
+
+        if (!extension_loaded('imagick')) {
+            return self::prepareForProductionAspectSafeWithGd(
+                $inputFile,
+                $outputFile,
+                $targetWidth,
+                $targetHeight,
+                $dpi
+            );
+        }
+
+        try {
+            $source = new Imagick($inputFile);
+            if ($source->getNumberImages() !== 1) {
+                throw new \RuntimeException('Artwork must contain exactly one frame.');
+            }
+            $source->setIteratorIndex(0);
+            self::normalizeCmykToRgb($source);
+            if (!$source->getImageAlphaChannel()) {
+                $source->setImageAlphaChannel(Imagick::ALPHACHANNEL_SET);
+            }
+
+            $sourceWidth = $source->getImageWidth();
+            $sourceHeight = $source->getImageHeight();
+            if ($sourceWidth < 1 || $sourceHeight < 1) {
+                throw new \RuntimeException('Artwork has invalid pixel dimensions.');
+            }
+
+            $scale = min($targetWidth / $sourceWidth, $targetHeight / $sourceHeight);
+            $scaledWidth = max(1, min($targetWidth, (int) round($sourceWidth * $scale)));
+            $scaledHeight = max(1, min($targetHeight, (int) round($sourceHeight * $scale)));
+
+            if (defined('\Imagick::INTERPOLATE_NEARESTNEIGHBOR')) {
+                $source->setImageInterpolateMethod(\Imagick::INTERPOLATE_NEARESTNEIGHBOR);
+            }
+            $source->resizeImage($scaledWidth, $scaledHeight, Imagick::FILTER_POINT, 1);
+
+            $canvas = new Imagick();
+            $canvas->newImage($targetWidth, $targetHeight, new ImagickPixel('transparent'), 'png');
+            $canvas->setImageAlphaChannel(Imagick::ALPHACHANNEL_SET);
+            $canvas->compositeImage(
+                $source,
+                Imagick::COMPOSITE_OVER,
+                intdiv($targetWidth - $scaledWidth, 2),
+                intdiv($targetHeight - $scaledHeight, 2)
+            );
+            $canvas->setImageFormat('png');
+            $canvas->setOption('png:color-type', '6');
+            $canvas->setOption('png:compression-level', '9');
+            $canvas->stripImage();
+            $canvas->setImageUnits(Imagick::RESOLUTION_PIXELSPERINCH);
+            $canvas->setImageResolution($dpi, $dpi);
+            $canvas->setImageProperty('png:pHYs', "x={$dpi},y={$dpi},units=1");
+            $ok = $canvas->writeImage($outputFile);
+
+            $source->clear();
+            $source->destroy();
+            $canvas->clear();
+            $canvas->destroy();
+
+            if (!$ok) {
+                return ['success' => false, 'message' => 'Failed to write aspect-safe production image'];
+            }
+
+            $dpiResult = self::setPngDpi($outputFile, $dpi, $dpi);
+
+            return ($dpiResult['success'] ?? false)
+                ? [
+                    'success' => true,
+                    'canvas_width_px' => $targetWidth,
+                    'canvas_height_px' => $targetHeight,
+                    'art_width_px' => $scaledWidth,
+                    'art_height_px' => $scaledHeight,
+                ]
+                : $dpiResult;
+        } catch (\Throwable $exception) {
+            return ['success' => false, 'message' => $exception->getMessage()];
+        }
+    }
+
+    private static function prepareForProductionAspectSafeWithGd(
+        string $inputFile,
+        string $outputFile,
+        int $targetWidth,
+        int $targetHeight,
+        int $dpi
+    ): array
+    {
+        if (!function_exists('imagecreatefromstring') || !function_exists('imagecreatetruecolor')) {
+            return ['success' => false, 'message' => 'No supported image renderer is available'];
+        }
+
+        $raw = @file_get_contents($inputFile);
+        $source = is_string($raw) ? @imagecreatefromstring($raw) : false;
+        if (!$source) {
+            return ['success' => false, 'message' => 'GD could not decode source artwork'];
+        }
+
+        $sourceWidth = imagesx($source);
+        $sourceHeight = imagesy($source);
+        if ($sourceWidth < 1 || $sourceHeight < 1) {
+            imagedestroy($source);
+            return ['success' => false, 'message' => 'Artwork has invalid pixel dimensions'];
+        }
+        $scale = min($targetWidth / $sourceWidth, $targetHeight / $sourceHeight);
+        $scaledWidth = max(1, min($targetWidth, (int) round($sourceWidth * $scale)));
+        $scaledHeight = max(1, min($targetHeight, (int) round($sourceHeight * $scale)));
+
+        $canvas = imagecreatetruecolor($targetWidth, $targetHeight);
+        if (!$canvas) {
+            imagedestroy($source);
+            return ['success' => false, 'message' => 'GD could not allocate production canvas'];
+        }
+        imagealphablending($canvas, false);
+        imagesavealpha($canvas, true);
+        $transparent = imagecolorallocatealpha($canvas, 0, 0, 0, 127);
+        imagefilledrectangle($canvas, 0, 0, $targetWidth, $targetHeight, $transparent);
+        $ok = imagecopyresized(
+            $canvas,
+            $source,
+            intdiv($targetWidth - $scaledWidth, 2),
+            intdiv($targetHeight - $scaledHeight, 2),
+            0,
+            0,
+            $scaledWidth,
+            $scaledHeight,
+            $sourceWidth,
+            $sourceHeight
+        ) && imagepng($canvas, $outputFile, 9);
+        imagedestroy($source);
+        imagedestroy($canvas);
+
+        if (!$ok) {
+            return ['success' => false, 'message' => 'GD failed to write production canvas'];
+        }
+        $dpiResult = self::upsertPngPhysChunk($outputFile, $dpi, $dpi);
+
+        return ($dpiResult['success'] ?? false)
+            ? [
+                'success' => true,
+                'fallback' => 'gd',
+                'canvas_width_px' => $targetWidth,
+                'canvas_height_px' => $targetHeight,
+                'art_width_px' => $scaledWidth,
+                'art_height_px' => $scaledHeight,
+            ]
+            : $dpiResult;
+    }
+
+    /**
      * Generate a thumbnail for an image.
      */
     public static function generateThumbnail(string $inputFile, string $outputFile, int $maxWidth = 300, int $maxHeight = 300): array
