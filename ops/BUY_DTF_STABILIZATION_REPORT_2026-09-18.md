@@ -2,9 +2,9 @@
 
 Date: 2026-09-18 (America/Chicago)
 
-Status: **historical baseline; superseded for dependency operations**
+Status: **historical baseline; dependency prerequisite completed and reconciled on 2026-09-27**
 
-> **2026-09-19 dependency-operation update:** The v1 dependency cutover described below was staged and attempted, failed on a stale dev-provider bootstrap cache, and was validly rolled back to the exact old vendor, lock, and cache. Production is healthy. Do not reuse the v1 script hash, staged receipt, or cutover procedure in this historical report. The authoritative replacement is `ops/ATOMIC_DEPENDENCY_DEPLOYMENT_ARTIFACT.md` v2, which remains NO-GO for cutover pending a new rehearsal, staging receipt, and independent approval. The payout-notes repair and all failed-cutover evidence remain retained.
+> **2026-09-27 dependency-operation reconciliation:** The v1 dependency cutover described below failed on a stale dev-provider cache and was validly rolled back. The reviewed v2 artifact subsequently staged and cut over successfully on September 18 America/Chicago (September 19 UTC), completed its 30-minute monitoring window, and remains the current healthy production dependency state. The September 27 production-filesystem rehearsal passed 23/23; its staging attempt correctly stopped because production already contained the approved candidate lock/vendor/cache. Independent reconciliation marked the dependency prerequisite complete. Never retry the failed v1 artifact or repeat the completed v2 cutover. See `ops/ATOMIC_DEPENDENCY_DEPLOYMENT_ARTIFACT.md` for the exact receipts and identities.
 
 ## Decision
 
@@ -12,7 +12,7 @@ The production working files are the source of truth. The detached production Gi
 
 The stabilization candidate preserves the live runtime source. A normalized comparison of 270 production-relevant files found 266 exact matches and four explained differences: `composer.json`, `composer.lock`, `config/database.php`, and `phpunit.xml`. The dependency deployment must therefore be a narrowly scoped `composer.lock` plus staged `vendor/` replacement. It must not use Git, replace production `composer.json`, replace production configuration, run migrations, or restart shared services.
 
-The dependency lock/vendor candidate is credible, and a frozen deployment artifact now implements the compare-and-swap, atomic directory exchange, automatic rollback, and OPcache checks specified below. It passed disposable local-Linux rehearsal. Live cutover remains **conditional NO-GO** until the artifact receives independent review, passes rehearsal on a disposable directory on the actual production filesystem, generates a reviewed staged-release receipt/vendor manifest, and receives a separate low-traffic-window approval. A sequential `vendor/` rename is not acceptable.
+At the time of this report, the dependency lock/vendor candidate was pending the gates described below. Those gates were later satisfied by the reviewed v2 artifact. Release receipt SHA-256 `56ad9a24e4fe533599ac7bfd63558f4721f0119fad39afa54c2a6f80c2e1e541` and successful deployment-state SHA-256 `08095defa421cd6baa9a425ad87f0a5059109100f73d5765fa3ebc263f673436` now close this historical prerequisite. The current live candidate lock, vendor, and bootstrap cache match those receipts exactly.
 
 The Stripe payout schema correction is prepared and tested locally as a separate change. It binds DDL to the migrator-selected connection and fails unless that active connection is the configured/audited Fuel connection. It must not be applied through a bulk migration.
 
@@ -266,7 +266,7 @@ Rollback is application-safe by retaining the nullable column. If the applicatio
 
 ## Exact Dependency-Only Deployment Plan
 
-This section is implemented by `ops/deployment/atomic_dependency_deploy.py` and detailed in `ops/ATOMIC_DEPENDENCY_DEPLOYMENT_ARTIFACT.md`. Its exact reviewed SHA-256 is recorded above. It has not been copied to, staged on, or executed against production. The production cutover remains a no-go until independent review, a disposable rehearsal on the actual production filesystem, staged-release receipt/vendor-manifest approval, and a separate GO.
+This section records the historical plan that led to the failed v1 attempt and the later hardened v2 artifact. The reviewed v2 script was staged and executed successfully; its authoritative completion receipts and September 27 reconciliation are recorded in `ops/ATOMIC_DEPENDENCY_DEPLOYMENT_ARTIFACT.md`. This historical section is not authorization to repeat either cutover.
 
 ### Preconditions and stop conditions
 
@@ -355,12 +355,12 @@ This rollback changes no schema and restores the actual previously running depen
 ## Remaining Work Requiring Separate Approval
 
 - Independently review the exact payout execution artifact, then approve or reject its separate single-migration window.
-- Independently review the frozen atomic dependency deployment artifact, run its disposable production-filesystem rehearsal only after approval, review its generated staged-release receipt/vendor manifest, and only then request a low-traffic cutover GO.
+- Dependency stabilization is complete. Preserve its release, deployment, rollback, and rehearsal evidence; do not repeat the cutover for the already-live candidate.
 - Reconcile the two migration ledgers without running schema migrations.
 - Remove the obsolete `remotefuel` fallback credentials and rotate any once-valid credential.
 - Change production `APP_ENV` from `local` only after reviewing environment-dependent branches.
 - Remediate npm audit findings and Sass deprecations in a separate frontend dependency phase.
-- Implement the reviewed incoming-order v1 contract only after explicit approval; deploy BuyDTF capability first, then enable ShopNLTees sending.
+- Independently review the disabled-capability deployment plan for incoming-order receiver commit `3c38427f77d3a5ce9a9df7ec2b68f6ac7595b1c6`; schema/code deployment still requires separate authorization. Deploy BuyDTF capability code first with every capability disabled, then review any later ShopNLTees sender change.
 
 ## Stop Point
 

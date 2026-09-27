@@ -1,10 +1,30 @@
 # Atomic Dependency Deployment Artifact v2
 
-Status: **revised after the 2026-09-18 failed cutover; local rehearsal passes; another cutover is forbidden until the new script, production-filesystem rehearsal, and new staging receipt receive independent approval.**
+Status: **completed successfully on 2026-09-18 America/Chicago (deployment state completed 2026-09-19 UTC); independently reconciled on 2026-09-27. Do not repeat this dependency cutover.**
 
 The first candidate cutover failed because the live `bootstrap/cache` referenced the dev-only `Laravel\Pail\PailServiceProvider` while the correctly staged production vendor excluded dev packages. The reviewed rollback restored the exact old vendor, Composer lock, and bootstrap cache. This revision treats candidate cache files as release artifacts and uses a boot-independent static front controller during every mutation and recovery.
 
 The artifact contains no Git command, general migration command, `composer update`, Composer self-update, source/config deployment, asset deployment, database write, shared-service restart, or database-consolidation action. Production installation remains `--no-dev`; Pail and other development packages are expressly rejected.
+
+## Completion and Reconciliation Record
+
+The reviewed v2 release was staged and cut over successfully after the failed v1 attempt had rolled back. The retained records are:
+
+- Release receipt: `/var/www/buy-dtf/storage/app/private/operations/dependency-releases/eeac4637272c-20260919T015405Z/release-receipt.json`
+  - SHA-256: `56ad9a24e4fe533599ac7bfd63558f4721f0119fad39afa54c2a6f80c2e1e541`
+  - Status: `staged`
+  - Install policy: `--no-dev`
+- Successful deployment state: `/var/www/buy-dtf/storage/app/private/operations/dependency-rollbacks/eeac4637272c-20260919T021422Z/deployment-state.json`
+  - SHA-256: `08095defa421cd6baa9a425ad87f0a5059109100f73d5765fa3ebc263f673436`
+  - Status: `success`
+  - Rollback started: `false`
+  - Monitoring completed after 30 healthy samples
+
+The successful deployment installed Laravel `12.61.1`, Guzzle `7.15.2`, candidate lock SHA-256 `eeac4637272ca2b9aeaa797a4440cfc8b4e31f5a469619c46ebfa5791c701831`, vendor manifest SHA-256 `97cd0bb104c42b57fbf90204ee74837ec1359b0ab1cbf8dac7d6929a154922d7`, and bootstrap-cache manifest SHA-256 `468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9`.
+
+On 2026-09-27, the exact v2 script passed all 23 disposable scenarios again on production filesystem device `64513`. The rehearsal receipt SHA-256 is `2ca320a7b319f7c0f46cc8b625bb49d005cd0922516c594dda20168a2544f006`, and the complete evidence tree at `/var/www/buy-dtf/storage/app/private/operations/dependency-v2-rehearsal-stage-20260927T223343Z` has SHA-256 `5e2614027a16ecb9fcddb4949f9c5c1e9be9ef3603cb5b336fca62c9f7bdfa32`. A staging attempt then stopped before creating a release because the script correctly required the retired pre-cutover lock while production already contained the approved candidate lock. Independent reconciliation accepted that fail-closed result and marked the dependency prerequisite complete.
+
+The phase descriptions below are retained as the historical, reviewed procedure. They are not instructions or authorization to stage or cut over the same dependency candidate again.
 
 ## Reviewed Files and Fixed Production Identities
 
@@ -134,4 +154,4 @@ GitHub CI runs this rehearsal on every push. The same exact script/hash must als
 
 ## Current Decision
 
-Dependency cutover: **NO-GO**. A new production-filesystem rehearsal and new v2 staging receipt must be generated in new paths, independently reviewed, and separately authorized. The failed v1 candidate must never be retried.
+Dependency stabilization prerequisite: **COMPLETE**. The current live lock, vendor, bootstrap cache, and front controller match the successful v2 release and deployment receipts. Do not revert dependencies, modify the frozen v2 artifact, repeat this cutover, or retry the failed v1 artifact. Any future dependency change requires a new candidate, artifact, receipts, review, and authorization.
