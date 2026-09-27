@@ -26,7 +26,7 @@ The deployment adds the capability-discovery route, guarded receiver code, froze
 | Feature base | `f11a9413d9040b4562064ee02fda002b317e0de9` |
 | Reviewed receiver target | `3c38427f77d3a5ce9a9df7ec2b68f6ac7595b1c6` |
 | Runtime CAS manifest | `ops/deployment/incoming_order_v1_runtime_3c38427.manifest` |
-| Runtime CAS manifest SHA-256 | `f8fc98af69cd2e028076f8cab462585743506cba7097d9719e5f8b41281c4ebf` |
+| Runtime CAS manifest SHA-256 | `7ea88d3927b33a476c4b322104928a56f501e40137b3e8c2cb639405f787c03f` |
 | Runtime paths | 35 total: 24 additions and 11 replacements |
 | Exact migration | `database/migrations/2026_09_27_120000_create_incoming_order_v1_tables.php` |
 | Migration SHA-256 | `79fa911b0b2ad9bb79c33080725446093dffd4df3e01c3cb3888d508087c9f9d` |
@@ -39,6 +39,8 @@ The deployment adds the capability-discovery route, guarded receiver code, froze
 | Reviewed static 503 gate | `94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03` |
 
 The runtime manifest is the complete source allowlist. Do not deploy `.env.example`, tests, contracts, evidence images, review scripts, `ops/` documentation, `composer.json`, `composer.lock`, `vendor/`, `bootstrap/cache/`, frontend assets, uploads, or any path absent from that manifest.
+
+The expected-live column is deliberately based on raw production bytes, not Git-normalized blobs. Eight replaced files currently contain mixed CRLF/bare-CR line endings; converting them to LF produces an exact match with feature base `f11a9413d9040b4562064ee02fda002b317e0de9`. Their raw hashes are nevertheless the compare-and-swap authority. The candidate target hashes remain the exact bytes from receiver commit `3c38427f77d3a5ce9a9df7ec2b68f6ac7595b1c6`, and rollback must restore the original raw production bytes and line endings.
 
 ## Risk assessment
 
@@ -64,7 +66,7 @@ Stop before staging or mutation unless all conditions pass:
 3. There is no active deployment, migration, payout sync, Composer install/update, checkout, upload, or production-handoff process.
 4. Queue remains `sync`; queued and failed-job counts have not unexpectedly increased. Do not start or restart a worker.
 5. The successful v2 dependency state remains exact: Composer lock, vendor tree, `packages.php`, `services.php`, and front controller match the frozen identities above. The deployment lock is free, maintenance is inactive, and the static gate is inactive.
-6. Every `M` path in the runtime CAS manifest matches its expected-live SHA-256. Every `A` path is absent. Any mismatch requires a new drift review; never overwrite it.
+6. Every `M` path in the runtime CAS manifest matches its raw expected-live SHA-256. Every `A` path is absent. Eight expected-live values intentionally differ from their Git-base hashes only because of production line endings; do not normalize bytes during preflight or backup. Any later raw-byte mismatch requires a new drift review; never overwrite it.
 7. No path in the candidate, backup, evidence, or application roots is a symlink. All resolved paths stay beneath their fixed roots.
 8. `bootstrap/cache` contains only the currently reviewed package/service files. In particular, no config or route cache exists. Do not introduce config or route caching in this rollout.
 9. Composer's live autoloader is not class-map authoritative, so the new PSR-4 classes do not require `composer dump-autoload`. If it is authoritative, stop.
@@ -76,7 +78,7 @@ Stop before staging or mutation unless all conditions pass:
 
 The preflight receipt must contain timestamps, non-secret configuration classifications, process/queue counts, health results, file identities, schema/ledger state, owners/modes, and disk/device results.
 
-## Phase 1: stage source without changing live paths
+## Phase 1: stage source and produce read-only pretend evidence
 
 Use a clean local checkout and export files from the target commit, not the working directory. Resolve the path list only from the reviewed manifest. A representative deterministic build is:
 
@@ -105,15 +107,34 @@ The stage must:
 5. reject extra files, symlinks, devices, sockets, hard-link surprises, absolute paths, and `..` paths;
 6. record the candidate owner/group/mode plan without touching live files;
 7. create no Git checkout and run no Git command on production;
-8. perform no Composer, Artisan, database, cache, or HTTP mutation.
+8. perform no Composer operation and no Artisan, database, cache, or HTTP mutation; the only Artisan call permitted in this phase is the reviewed `--pretend` invocation below after the ledger-existence proof.
 
-Staging ends with a restricted source-stage receipt containing the archive SHA-256, manifest SHA-256, per-file verification, and tool results. That receipt and the final deployment runner hash require independent approval before Phase 2.
+After the candidate is verified, produce the migration pretend evidence before any live source, front-controller, maintenance, cache, schema, ledger, or configuration mutation:
+
+1. Use a reviewed read-only probe to resolve the Fuel connection and migration-ledger table without printing credentials. Require the connection name to be exactly `fuelmysql`, require it to equal `config('database.fuel_connection')`, and require the configured ledger table to exist on that connection. Stop without invoking Artisan if the ledger is absent; this prevents Laravel from calling `migrate:install`.
+2. Record deterministic pre-pretend identities:
+   - a sorted schema fingerprint from non-volatile `information_schema` table, column, index, and constraint definitions for the audited Fuel database;
+   - a sorted hash of every Fuel migration-ledger `(migration, batch)` row;
+   - explicit absence of `incoming_order_jobs`, `api_asset_records`, and the exact incoming-order migration ledger entry.
+3. Run the migration from its absolute restricted candidate path. Do not copy it into the live source tree:
+
+   ```bash
+   /usr/bin/php artisan migrate \
+     --database=fuelmysql \
+     --path=/var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/3c38427-<UTC timestamp>/candidate/database/migrations/2026_09_27_120000_create_incoming_order_v1_tables.php \
+     --realpath --pretend --force --no-interaction
+   ```
+
+4. Capture stdout, stderr, exit status, exact command identity, staged migration SHA-256, connection/ledger proof, and a normalized statement-set hash. Stop unless every statement targets only `incoming_order_jobs` or `api_asset_records`, uses only the reviewed create/index definitions, and contains no unrelated DDL or DML.
+5. Recompute the same schema and ledger identities immediately afterward. Require byte-identical fingerprints, both target tables still absent, the incoming-order ledger entry still absent, and unchanged ledger row count. Any difference is a hard stop and invalidates the evidence.
+
+Staging ends with a restricted source-stage receipt and a separate read-only pretend receipt containing all of the above hashes and proofs. Those receipts and the final deployment runner hash require independent review and separate authorization before Phase 2. The staging authorization does not permit backup creation, maintenance, migration execution, or live source installation.
 
 ## Phase 2: backups and rollback receipt
 
 Under an exclusive receiver-deployment lock, repeat the full preflight/CAS and then create a new restricted operation directory on the application filesystem. Before changing a live source path:
 
-1. Copy all 11 replaced files with their relative paths, exact bytes, owners, groups, and modes into `rollback/source/`.
+1. Copy all 11 replaced files with their relative paths, exact raw bytes, owners, groups, modes, and line endings into `rollback/source/`. Do not normalize the eight mixed-line-ending files.
 2. Record all 24 added paths as required-absent rollback entries.
 3. Copy and hash the exact current `public/index.php` and record the complete bootstrap-cache identity. Do not modify or rebuild dependency cache files.
 4. Take a schema-only logical dump of the audited Fuel database with `--single-transaction --skip-lock-tables --no-tablespaces --routines --triggers --events --no-data`.
@@ -130,25 +151,24 @@ The final runner must have fixed absolute paths, restrictive umask, reviewed has
 
 1. Atomically install and verify the exact reviewed static front controller. After the FPM revalidation interval, require its unique header, body sentinel, and HTTP `503` from `/` and a random application route.
 2. While the static gate is active, use the still-running old Laravel runtime to enter maintenance mode. Wait 65 seconds, require no active scoped PHP/Artisan/FastCGI request, and repeat every source/dependency/schema CAS.
-3. Atomically install only the reviewed migration file first. Its live SHA-256 must become `79fa911b0b2ad9bb79c33080725446093dffd4df3e01c3cb3888d508087c9f9d`.
-4. Run only this pretend command from `/var/www/buy-dtf`:
+3. Reconfirm that the Fuel ledger exists and recapture its row hash and the deterministic schema fingerprint. Repeat the reviewed pretend command from the exact staged absolute path while the gate is active:
 
    ```bash
    /usr/bin/php artisan migrate \
      --database=fuelmysql \
-     --path=database/migrations/2026_09_27_120000_create_incoming_order_v1_tables.php \
-     --pretend --force --no-interaction
+     --path=/var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/3c38427-<approved timestamp>/candidate/database/migrations/2026_09_27_120000_create_incoming_order_v1_tables.php \
+     --realpath --pretend --force --no-interaction
    ```
 
-5. Stop unless every pretend statement targets only `incoming_order_jobs` or `api_asset_records`, uses only their reviewed create/index definitions, and contains no alteration/drop of an existing table or unrelated DDL/DML. Hash and retain the complete pretend output.
-6. Run the same command without `--pretend`. Never run unrestricted `php artisan migrate`, `migrate:fresh`, `migrate:refresh`, or a rollback command.
-7. Verify the exact Fuel ledger entry, table engines/collations, all columns/indexes, `ascii_bin` idempotency/owner columns, zero rows in both new tables, and unchanged required-table row counts.
-8. Install the remaining 34 runtime files. Install additions before modified consumers and routes; replace each file through a same-directory temporary file plus atomic `rename(2)`. After every rename, verify target SHA-256, owner, group, and mode. The static gate and Laravel maintenance marker remain active throughout.
-9. Verify the complete live runtime tree against the target column of the manifest. No file outside the manifest may differ from the preflight receipt.
-10. Run `/usr/bin/php artisan view:clear` only. Do not run `optimize:clear`, `package:discover`, `composer dump-autoload`, any dependency command, or any cache-building command.
-11. PHP-lint all deployed PHP files and run candidate CLI boot, `about`, route discovery limited to `api/incomingorder`, and command discovery. Confirm the legacy POST route and the new GET capability route each appear once.
-12. Run a redacted runtime probe proving receiver, label, and retention flags are false; allowed-host count is zero; queue is `sync`; database default under the targeted migration invocation is the audited Fuel connection; and the two new tables are empty. Do not execute the retention command.
-13. Confirm the existing dependency/cache/front-controller identities are still exact. No dependency file may have changed.
+4. Require the repeated statement set to match the independently reviewed statement-set hash. Recompute the schema and ledger identities and require them to remain identical to the pre-pretend values.
+5. Run the same absolute staged-path command without `--pretend`. Never run unrestricted `php artisan migrate`, `migrate:fresh`, `migrate:refresh`, or a rollback command.
+6. Verify the exact Fuel ledger entry, table engines/collations, all columns/indexes, `ascii_bin` idempotency/owner columns, zero rows in both new tables, and unchanged required-table row counts.
+7. Install all 35 runtime files, including the now-recorded migration file. Install additions before modified consumers and routes; replace each file through a same-directory temporary file plus atomic `rename(2)`. After every rename, verify target SHA-256, owner, group, and mode. The static gate and Laravel maintenance marker remain active throughout.
+8. Verify the complete live runtime tree against the target column of the manifest. No file outside the manifest may differ from the preflight receipt.
+9. Run `/usr/bin/php artisan view:clear` only. Do not run `optimize:clear`, `package:discover`, `composer dump-autoload`, any dependency command, or any cache-building command.
+10. PHP-lint all deployed PHP files and run candidate CLI boot, `about`, route discovery limited to `api/incomingorder`, and command discovery. Confirm the legacy POST route and the new GET capability route each appear once.
+11. Run a redacted runtime probe proving receiver, label, and retention flags are false; allowed-host count is zero; queue is `sync`; database default under the targeted migration invocation is the audited Fuel connection; and the two new tables are empty. Do not execute the retention command.
+12. Confirm the existing dependency/cache/front-controller identities are still exact. No dependency file may have changed.
 
 If any step after the migration fails, do not drop the new tables or delete the migration ledger entry. Begin source rollback under the static gate.
 
@@ -183,7 +203,7 @@ Rollback is source-only and schema-preserving:
 
 1. Unconditionally reinstall and verify the boot-independent static `503` gate. Do not trust a saved maintenance flag.
 2. Re-enter Laravel maintenance with whichever reviewed runtime still boots. If neither runtime boots, keep the static gate and continue with file-identity rollback only.
-3. Restore the 11 replaced files from the verified source backup using same-directory atomic renames.
+3. Restore the 11 replaced files from the verified source backup using same-directory atomic renames, preserving their original raw bytes and mixed line endings exactly.
 4. Remove only an added path whose current bytes still match the reviewed target hash and whose preflight state was `ABSENT`. An unknown or modified path is preserved and causes rollback to stop for adjudication.
 5. Restore the exact pre-deployment source manifest. Clear compiled views with the restored old runtime; do not change package/service/config/route caches.
 6. Leave `incoming_order_jobs`, `api_asset_records`, their Fuel migration-ledger entry, and any retained evidence intact. The reviewed migration `down()` is intentionally non-destructive. Do not run a general rollback or manually drop tables.
