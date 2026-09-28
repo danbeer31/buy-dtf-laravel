@@ -2,7 +2,7 @@
 # Base: f11a9413d9040b4562064ee02fda002b317e0de9
 # Target: 3c38427f77d3a5ce9a9df7ec2b68f6ac7595b1c6
 # Expected-live hashes are over raw production bytes verified on 2026-09-27.
-# Eight replacements have mixed CRLF/bare-CR line endings whose LF-normalized
+# Eight replacements have mixed CRLF/LF line endings whose LF-normalized
 # content matches the base exactly; rollback preserves their original raw bytes.
 # Format: action<TAB>expected-live-sha256-or-ABSENT<TAB>target-sha256<TAB>relative-path
 A	ABSENT	4ec3c0d93754a8eb49ae88818e2a5d339866dd059d1decf84ab58bac57671065	app/Console/Commands/ReportIncomingOrderRetention.php

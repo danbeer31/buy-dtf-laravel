@@ -1,0 +1,41 @@
+{
+  "generated_at_local_date": "2026-09-27",
+  "status": "pass",
+  "checks": {
+    "runner_python_compile": "pass",
+    "runtime_helper_php_lint": "pass",
+    "runner_describe": "pass",
+    "runner_archive_extract_rehearsal": {
+      "status": "pass",
+      "regular_files": 35,
+      "path_set_matches_manifest": true,
+      "target_hash_mismatches": 0,
+      "candidate_tree_sha256": "001066ed16be972e762b4819a3f45dc1372192dda3bf984c9df4eedf357244c1"
+    },
+    "candidate_php_lint": {
+      "status": "pass",
+      "files": 35,
+      "passed": 35
+    },
+    "phpunit": {
+      "status": "pass_with_one_skip",
+      "tests": 169,
+      "assertions": 1080,
+      "skipped": 1
+    },
+    "composer_validate_strict": "pass",
+    "composer_audit_locked_no_dev": {
+      "status": "pass",
+      "security_advisories": 0
+    },
+    "npm_production_audit": {
+      "status": "pass",
+      "vulnerabilities": 0
+    },
+    "frontend_build": {
+      "status": "pass",
+      "warnings": "Existing Sass deprecation and browsers-data-age warnings only"
+    },
+    "git_diff_check": "pass"
+  }
+}

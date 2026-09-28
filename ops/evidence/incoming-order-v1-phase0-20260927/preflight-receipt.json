@@ -1,0 +1,173 @@
+{
+  "artifact_version": 1,
+  "authorization_scope": "Phase 0 read-only preflight and Phase 1 restricted staging plus read-only migration pretend only",
+  "generated_at_utc": "2026-09-28T00:48:08Z",
+  "status": "hard_stop_before_phase1",
+  "target_commit": "3c38427f77d3a5ce9a9df7ec2b68f6ac7595b1c6",
+  "production": {
+    "application_root": "/var/www/buy-dtf",
+    "application_device": 64513,
+    "application_uid": 1000,
+    "application_gid": 1000,
+    "application_mode_octal": "0755",
+    "maintenance_active": false,
+    "static_gate_active": false,
+    "dependency_lock_free": true,
+    "receiver_lock_free": true,
+    "live_source_changed": false,
+    "live_cache_changed": false,
+    "configuration_changed": false,
+    "schema_changed": false,
+    "migration_ledger_changed": false,
+    "service_restarted": false
+  },
+  "dependencies": {
+    "composer_lock_sha256": "eeac4637272ca2b9aeaa797a4440cfc8b4e31f5a469619c46ebfa5791c701831",
+    "vendor_manifest_sha256": "97cd0bb104c42b57fbf90204ee74837ec1359b0ab1cbf8dac7d6929a154922d7",
+    "vendor_files": 6454,
+    "vendor_directories": 925,
+    "vendor_bytes": 26397293,
+    "bootstrap_cache_manifest_sha256": "468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9",
+    "bootstrap_cache_files": 2,
+    "packages_php_sha256": "21da8f9ed19687e708cc7bc5cc59394c6fcdf9b9deadf617ae70526f815a1db0",
+    "services_php_sha256": "1f7623b2b4ffd2c4099fb34ad86fc96c1479e27bf81b1b0ba328c988cc4ffcb5",
+    "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
+  },
+  "runtime": {
+    "probe_generated_at_utc": "2026-09-28T00:46:37Z",
+    "php_version": "8.2.30",
+    "laravel_version": "12.61.1",
+    "application_environment": "local",
+    "application_debug": false,
+    "composer_classmap_authoritative": false,
+    "imagick_loaded": true,
+    "imagick_version": "ImageMagick 6.9.11-60 Q16 x86_64 2021-01-25 https://imagemagick.org"
+  },
+  "fuel_connection": {
+    "configured_connection": "fuelmysql",
+    "migration_invocation_connection": "fuelmysql",
+    "connection_match": true,
+    "driver": "mysql",
+    "database_name_sha256": "9566898c6940c2248e1e0ee02d8460bfb42d6b407d3108ad60044bab86ac4567"
+  },
+  "migration_ledger": {
+    "table": "migrations",
+    "exists": true,
+    "row_count": 19,
+    "rows_sha256": "867eda60246e2beb8cb86b927408284e2fdc4c6066d3485fe779523c68e7c8f9",
+    "target_migration": "2026_09_27_120000_create_incoming_order_v1_tables",
+    "target_entry_count": 0
+  },
+  "schema": {
+    "sha256": "8e35bf9ad473e78578d29315a74ad9b87e5007f585b0d85807feb1681e605476",
+    "section_row_counts": {
+      "tables": 34,
+      "columns": 350,
+      "statistics": 58,
+      "table_constraints": 41,
+      "key_column_usage": 41,
+      "referential_constraints": 2
+    },
+    "required_tables": {
+      "businesses": true,
+      "dtforders": true,
+      "dtfimages": true
+    },
+    "required_table_row_counts": {
+      "businesses": 45,
+      "dtforders": 1562,
+      "dtfimages": 19207
+    },
+    "target_tables": {
+      "incoming_order_jobs": false,
+      "api_asset_records": false
+    }
+  },
+  "capabilities": {
+    "receiver_enabled": false,
+    "job_label_enabled": false,
+    "retention_enabled": false,
+    "allowed_host_count": 0
+  },
+  "queue": {
+    "configured_connection": "sync",
+    "jobs": 0,
+    "failed_jobs": 0,
+    "buy_dtf_conflicting_processes": [],
+    "other_application_workers_observed": [
+      "shopnltees-queue.service",
+      "shopnltees-imports.service",
+      "nlcustomtees-queue.service"
+    ]
+  },
+  "source_compare_and_swap": {
+    "manifest_sha256_after_comment_only_wording_fix": "bd801f8c40a278e21802d7fe9448e6d17da5040351bce5083be76a57331484f7",
+    "manifest_rows": 35,
+    "additions_absent": 24,
+    "replacements_matching_raw_production_sha256": 11,
+    "all_match": true,
+    "production_rows_sha256": "95f92509bdce37b554fe32c3d218394b5c5b4ea3f5c0388324b195aaf0b7336e"
+  },
+  "health": {
+    "buy_dtf_home": 200,
+    "buy_dtf_up": 200,
+    "buy_dtf_login": 200,
+    "buy_dtf_admin": 302,
+    "buy_dtf_checkout": 302,
+    "www_home": 200,
+    "www_up": 200,
+    "vite_manifest_sha256": "496deb082f252b319b12538ec2e9114589bcfbe7b3809ed74996faaf9e9e7f9f",
+    "vite_css": 200,
+    "vite_javascript": 200
+  },
+  "disk": {
+    "total_bytes": 124678225920,
+    "used_bytes": 74283900928,
+    "free_bytes": 50377547776
+  },
+  "hard_stops": [
+    {
+      "code": "renderer_font_sha256_mismatch",
+      "path": "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+      "reviewed_sha256": "ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280",
+      "production_sha256": "690243adfefe0ce154b547db6205794bd30ac4277275179517a90994f4980648",
+      "effect": "The reviewed Phase 0 plan requires the exact pinned font; Phase 1 was not started."
+    }
+  ],
+  "local_artifacts": {
+    "source_archive": "storage/app/private/operations/local-preflight/incoming-order-v1-20260927/incoming-order-v1-3c38427.tar",
+    "source_archive_sha256": "e71e5357d4895ec3bd3882e9e45ddbe3d41deb9641f69486e030b27b023b250a",
+    "archive_regular_files": 35,
+    "archive_path_set_matches_manifest": true,
+    "archive_target_hash_mismatches": 0,
+    "candidate_php_lint_files": 35,
+    "candidate_php_lint_passed": 35,
+    "runner_sha256": "c40ba24695f06302dae1ee8d2b48a2d4a4a559bca832aae901e1e83adbf34b44",
+    "runtime_helper_sha256": "2887987036e874699e67b03dc3146f4a39d5b6d2eda25bbdbc76152ff2be29ee"
+  },
+  "phase1": {
+    "started": false,
+    "production_release_directory_created": false,
+    "archive_uploaded": false,
+    "candidate_staged": false,
+    "artisan_invoked": false,
+    "pretend_executed": false,
+    "stage_receipt": null,
+    "pretend_stdout": null,
+    "pretend_stderr": null,
+    "normalized_statement_set": null,
+    "post_pretend_schema_fingerprint": null,
+    "post_pretend_ledger_fingerprint": null
+  },
+  "prohibited_actions_confirmed_not_performed": {
+    "phase2_backup_created": false,
+    "maintenance_entered": false,
+    "static_gate_installed": false,
+    "real_migration_executed": false,
+    "live_source_modified": false,
+    "service_restarted": false,
+    "capability_enabled": false,
+    "shopnltees_changed": false,
+    "retention_executed": false
+  }
+}

@@ -2,9 +2,15 @@
 
 Date: 2026-09-27 (America/Chicago)
 
-Status: **prepared only; NO-GO until this documentation commit, the staged source receipt, the migration pretend output, and the final execution artifact receive independent review and separate production authorization.**
+Status: **Phase 0 stopped on a production font-identity mismatch; Phase 1 was not started. NO-GO until the mismatch is adjudicated and a new authorization is issued.**
 
 Nothing in this plan authorizes a migration, source deployment, service restart, capability change, ShopNLTees sender change, or retention action.
+
+## Phase 0 execution result
+
+The authorized read-only preflight on 2026-09-27 stopped before any Phase 1 production write. `/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf` hashes to `690243adfefe0ce154b547db6205794bd30ac4277275179517a90994f4980648` on production, not the reviewed renderer identity `ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280`. Because the exact pinned font is a Phase 0 hard stop, no release directory was created and Artisan `migrate --pretend` was not invoked.
+
+The complete stop receipt is `ops/evidence/incoming-order-v1-phase0-20260927/preflight-receipt.json`. All other completed Phase 0 checks passed, including all 35 source CAS conditions, dependency/cache identities, Fuel connection and ledger proof, target-table absence, capability defaults, queue counts, locks, and the public health matrix. Production remained unchanged.
 
 ## Objective and fixed boundary
 
@@ -26,8 +32,13 @@ The deployment adds the capability-discovery route, guarded receiver code, froze
 | Feature base | `f11a9413d9040b4562064ee02fda002b317e0de9` |
 | Reviewed receiver target | `3c38427f77d3a5ce9a9df7ec2b68f6ac7595b1c6` |
 | Runtime CAS manifest | `ops/deployment/incoming_order_v1_runtime_3c38427.manifest` |
-| Runtime CAS manifest SHA-256 | `7ea88d3927b33a476c4b322104928a56f501e40137b3e8c2cb639405f787c03f` |
+| Runtime CAS manifest SHA-256 | `bd801f8c40a278e21802d7fe9448e6d17da5040351bce5083be76a57331484f7` |
 | Runtime paths | 35 total: 24 additions and 11 replacements |
+| Deterministic source archive SHA-256 | `e71e5357d4895ec3bd3882e9e45ddbe3d41deb9641f69486e030b27b023b250a` |
+| Final deployment runner | `ops/deployment/incoming_order_v1_deploy.py` |
+| Final deployment runner SHA-256 | `c40ba24695f06302dae1ee8d2b48a2d4a4a559bca832aae901e1e83adbf34b44` |
+| Runtime/schema helper | `ops/deployment/incoming_order_v1_runtime_probe.php` |
+| Runtime/schema helper SHA-256 | `2887987036e874699e67b03dc3146f4a39d5b6d2eda25bbdbc76152ff2be29ee` |
 | Exact migration | `database/migrations/2026_09_27_120000_create_incoming_order_v1_tables.php` |
 | Migration SHA-256 | `79fa911b0b2ad9bb79c33080725446093dffd4df3e01c3cb3888d508087c9f9d` |
 | Contract-vector fixture SHA-256 | `5cae7f7af7636f891c39aea7d958aa73caf8f3f289175d156ba02088ffc7fd8b` |
@@ -40,7 +51,7 @@ The deployment adds the capability-discovery route, guarded receiver code, froze
 
 The runtime manifest is the complete source allowlist. Do not deploy `.env.example`, tests, contracts, evidence images, review scripts, `ops/` documentation, `composer.json`, `composer.lock`, `vendor/`, `bootstrap/cache/`, frontend assets, uploads, or any path absent from that manifest.
 
-The expected-live column is deliberately based on raw production bytes, not Git-normalized blobs. Eight replaced files currently contain mixed CRLF/bare-CR line endings; converting them to LF produces an exact match with feature base `f11a9413d9040b4562064ee02fda002b317e0de9`. Their raw hashes are nevertheless the compare-and-swap authority. The candidate target hashes remain the exact bytes from receiver commit `3c38427f77d3a5ce9a9df7ec2b68f6ac7595b1c6`, and rollback must restore the original raw production bytes and line endings.
+The expected-live column is deliberately based on raw production bytes, not Git-normalized blobs. Eight replaced files currently contain mixed CRLF/LF line endings; converting them to LF produces an exact match with feature base `f11a9413d9040b4562064ee02fda002b317e0de9`. Their raw hashes are nevertheless the compare-and-swap authority. The candidate target hashes remain the exact bytes from receiver commit `3c38427f77d3a5ce9a9df7ec2b68f6ac7595b1c6`, and rollback must restore the original raw production bytes and line endings.
 
 ## Risk assessment
 
