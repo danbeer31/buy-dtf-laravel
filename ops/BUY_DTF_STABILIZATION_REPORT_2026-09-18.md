@@ -360,7 +360,7 @@ This rollback changes no schema and restores the actual previously running depen
 - Remove the obsolete `remotefuel` fallback credentials and rotate any once-valid credential.
 - Change production `APP_ENV` from `local` only after reviewing environment-dependent branches.
 - Remediate npm audit findings and Sass deprecations in a separate frontend dependency phase.
-- Independently review the disabled-capability deployment plan for incoming-order receiver commit `3c38427f77d3a5ce9a9df7ec2b68f6ac7595b1c6`; schema/code deployment still requires separate authorization. Deploy BuyDTF capability code first with every capability disabled, then review any later ShopNLTees sender change.
+- Independently review the corrected disabled-capability deployment artifact for incoming-order receiver commit `0799440b7cbb0bad364fc2a65b41285f20245658`, which packages the immutable renderer font and license; schema/code deployment still requires separate authorization. Deploy BuyDTF capability code first with every capability disabled, then review any later ShopNLTees sender change.
 
 ## Stop Point
 

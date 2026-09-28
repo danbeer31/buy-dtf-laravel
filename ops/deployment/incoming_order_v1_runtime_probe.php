@@ -260,6 +260,29 @@ SQL, [$databaseName]),
         $allowedHosts = [];
     }
 
+    $rendererClass = 'App\\Services\\IncomingOrders\\JobCardRenderer';
+    $renderer = [
+        'class_available' => false,
+        'readiness' => null,
+    ];
+    if (class_exists($rendererClass)) {
+        $readiness = app($rendererClass)->readiness();
+        $renderer = [
+            'class_available' => true,
+            'readiness' => [
+                'ready' => (bool) ($readiness['ready'] ?? false),
+                'reason' => isset($readiness['reason']) ? (string) $readiness['reason'] : null,
+                'renderer_version' => (string) ($readiness['renderer_version'] ?? ''),
+                'font_sha256' => isset($readiness['font_sha256'])
+                    ? (string) $readiness['font_sha256']
+                    : null,
+                'width_px' => (int) ($readiness['width_px'] ?? 0),
+                'height_px' => (int) ($readiness['height_px'] ?? 0),
+                'dpi' => (int) ($readiness['dpi'] ?? 0),
+            ],
+        ];
+    }
+
     $result = [
         'probe_version' => 1,
         'generated_at_utc' => gmdate('Y-m-d\TH:i:s\Z'),
@@ -310,6 +333,7 @@ SQL, [$databaseName]),
             'retention_enabled' => (bool) config('incoming_order.retention.enabled', false),
             'allowed_host_count' => count($allowedHosts),
         ],
+        'job_card_renderer' => $renderer,
         'queue' => [
             'connection' => $queueConnection,
             'counts' => $queueCounts,

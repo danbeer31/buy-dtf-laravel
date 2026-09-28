@@ -1,0 +1,147 @@
+{
+  "receipt_version": 1,
+  "status": "ready_for_independent_review_before_staging",
+  "generated_at_utc": "2026-09-28T01:41:09Z",
+  "scope": "local_font_asset_correction_and_disabled_deployment_artifact_only",
+  "branch": "feature/incoming-order-v1-job-card-20260927",
+  "feature_base_commit": "f11a9413d9040b4562064ee02fda002b317e0de9",
+  "receiver_target_commit": "0799440b7cbb0bad364fc2a65b41285f20245658",
+  "superseded_receiver_commit": "3c38427f77d3a5ce9a9df7ec2b68f6ac7595b1c6",
+  "font_asset": {
+    "renderer_version": "separate-job-card-v2",
+    "path": "resources/fonts/job-card-v2/DejaVuSans.ttf",
+    "sha256": "ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280",
+    "bytes": 759720,
+    "license_path": "resources/fonts/job-card-v2/LICENSE.txt",
+    "license_sha256": "bc88ec457a574842b8f28c20e97a1fe91ecca69db14840484a22c694f2ffb6da",
+    "license_bytes": 2637,
+    "environment_path_override": false,
+    "environment_hash_override": false,
+    "system_font_dependency": false
+  },
+  "render_evidence": {
+    "receipt_path": "ops/evidence/incoming-order-v1-job-card-v2/render-receipt.json",
+    "receipt_sha256": "db8e2d6316b408b4e63897e3d18c4d2d1e9057ea49fe79e9a0095678da62dd5f",
+    "normal": {
+      "path": "ops/evidence/incoming-order-v1-job-card-v2/buy-dtf-job-card-review-normal.png",
+      "sha256": "fa4d42b35ddf99736345d76a8a65c5275c1980b1af323a794b5678d889b5b136",
+      "bytes": 58002,
+      "width_px": 1500,
+      "height_px": 900,
+      "x_ppm": 11811,
+      "y_ppm": 11811
+    },
+    "maximum_fields": {
+      "path": "ops/evidence/incoming-order-v1-job-card-v2/buy-dtf-job-card-review-maximum-fields.png",
+      "sha256": "cadf92ae4e1f7b2b0b6496e66d2f426e9701ad5617986e8abebaef0b32258ddf",
+      "bytes": 44527,
+      "width_px": 1500,
+      "height_px": 900,
+      "x_ppm": 11811,
+      "y_ppm": 11811
+    },
+    "real_imagick_render": true,
+    "visual_clipping_review": "pass"
+  },
+  "deployment_artifacts": {
+    "manifest": {
+      "path": "ops/deployment/incoming_order_v1_runtime_0799440.manifest",
+      "sha256": "b6efbd5463c82f895ca8d359b665a145d88c0d363ce7f97b247eae9080853bb6",
+      "paths": 37,
+      "additions": 26,
+      "replacements": 11
+    },
+    "archive": {
+      "path": "storage/app/private/operations/local-preflight/incoming-order-v1-20260927/incoming-order-v1-0799440.tar",
+      "sha256": "ed1df143d219fa073efb2707508c3eb81ba17b777597cebc20a72d3c546522c2",
+      "bytes": 1157120,
+      "regular_files": 37,
+      "candidate_tree_sha256": "ef29f935cd0ca94eb62e735900e02d349d9ae3d936c618e828dd360f8da1dbb2",
+      "candidate_tree_bytes": 1113106,
+      "candidate_records_sha256": "3d6c13e315cdda24b966ecc95e6ea025d9a646fa421da2aee0f360f446cacffb",
+      "target_hash_mismatches": 0
+    },
+    "runner": {
+      "path": "ops/deployment/incoming_order_v1_deploy.py",
+      "sha256": "2a7bf3966c593532af1e22db0f03d8cec1c6aecfde0902629b9f2328016c1138"
+    },
+    "runtime_probe": {
+      "path": "ops/deployment/incoming_order_v1_runtime_probe.php",
+      "sha256": "1b37d3a38834ef633cee5caa784d909b2f5be41ae6e22766f817f80f9f4a20bd"
+    },
+    "deployment_plan": {
+      "path": "ops/INCOMING_ORDER_V1_DISABLED_DEPLOYMENT_PLAN_2026-09-27.md",
+      "sha256": "cf71c437b65a813ef37d37aa58125d0eead900654c38219f3307e91d76968491"
+    }
+  },
+  "local_validation": {
+    "php_full_suite": {
+      "status": "pass",
+      "tests_discovered": 170,
+      "tests_passed": 169,
+      "tests_skipped": 1,
+      "assertions": 1099,
+      "skip_reason": "Windows PHP does not load Imagick; real renderer evidence was generated separately with WSL PHP and Imagick"
+    },
+    "receiver_and_renderer_suite": {
+      "status": "pass",
+      "tests_discovered": 25,
+      "tests_passed": 24,
+      "tests_skipped": 1,
+      "assertions": 160
+    },
+    "composer_validate_strict": "pass",
+    "composer_audit_locked_no_dev": {
+      "status": "pass",
+      "advisories": 0
+    },
+    "npm_production_audit": {
+      "status": "pass",
+      "vulnerabilities": 0
+    },
+    "frontend_build": {
+      "status": "pass",
+      "modules_transformed": 112,
+      "known_sass_deprecation_warnings": true
+    },
+    "candidate_php_lint": {
+      "status": "pass",
+      "files": 35,
+      "passed": 35
+    },
+    "python_compile_and_describe": "pass",
+    "git_diff_check": "pass",
+    "archive_manifest_validation": "pass",
+    "runner_archive_extract_rehearsal": {
+      "status": "pass",
+      "regular_files": 37,
+      "path_set_matches_manifest": true,
+      "target_hash_mismatches": 0,
+      "preinstall_font_and_license_absence": "pass",
+      "postinstall_renderer_readiness": "pass",
+      "tampered_font_rejected": true,
+      "invalid_font_hash_rejected": true,
+      "unready_renderer_rejected": true,
+      "wrong_dpi_rejected": true
+    }
+  },
+  "capability_defaults": {
+    "receiver_idempotency_v1_enabled": false,
+    "job_label_metadata_v1_enabled": false,
+    "job_label_modes": [],
+    "artwork_hosts": [],
+    "retention_enabled": false
+  },
+  "production_actions": {
+    "production_accessed": false,
+    "staged": false,
+    "deployed": false,
+    "migration_run": false,
+    "maintenance_entered": false,
+    "service_restarted": false,
+    "configuration_changed": false,
+    "capability_enabled": false,
+    "shopnltees_changed": false,
+    "retention_action": false
+  }
+}

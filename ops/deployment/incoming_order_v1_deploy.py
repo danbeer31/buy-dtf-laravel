@@ -44,19 +44,19 @@ EXPECTED_APP_UID = 1000
 EXPECTED_APP_GID = 1000
 EXPECTED_WEB_GID = 33
 
-TARGET_COMMIT = "3c38427f77d3a5ce9a9df7ec2b68f6ac7595b1c6"
+TARGET_COMMIT = "0799440b7cbb0bad364fc2a65b41285f20245658"
 TARGET_SHORT = TARGET_COMMIT[:8]
-EXPECTED_ARCHIVE_SHA256 = "e71e5357d4895ec3bd3882e9e45ddbe3d41deb9641f69486e030b27b023b250a"
-EXPECTED_MANIFEST_SHA256 = "bd801f8c40a278e21802d7fe9448e6d17da5040351bce5083be76a57331484f7"
-EXPECTED_HELPER_SHA256 = "2887987036e874699e67b03dc3146f4a39d5b6d2eda25bbdbc76152ff2be29ee"
+EXPECTED_ARCHIVE_SHA256 = "ed1df143d219fa073efb2707508c3eb81ba17b777597cebc20a72d3c546522c2"
+EXPECTED_MANIFEST_SHA256 = "b6efbd5463c82f895ca8d359b665a145d88c0d363ce7f97b247eae9080853bb6"
+EXPECTED_HELPER_SHA256 = "1b37d3a38834ef633cee5caa784d909b2f5be41ae6e22766f817f80f9f4a20bd"
 EXPECTED_MIGRATION_SHA256 = "79fa911b0b2ad9bb79c33080725446093dffd4df3e01c3cb3888d508087c9f9d"
 MIGRATION_RELATIVE_PATH = Path(
     "database/migrations/2026_09_27_120000_create_incoming_order_v1_tables.php"
 )
 TARGET_MIGRATION = "2026_09_27_120000_create_incoming_order_v1_tables"
 TARGET_TABLES = frozenset({"incoming_order_jobs", "api_asset_records"})
-EXPECTED_RUNTIME_PATHS = 35
-EXPECTED_ADDITIONS = 24
+EXPECTED_RUNTIME_PATHS = 37
+EXPECTED_ADDITIONS = 26
 EXPECTED_REPLACEMENTS = 11
 
 EXPECTED_COMPOSER_LOCK_SHA256 = "eeac4637272ca2b9aeaa797a4440cfc8b4e31f5a469619c46ebfa5791c701831"
@@ -65,8 +65,13 @@ EXPECTED_CACHE_MANIFEST_SHA256 = "468c3eadd5d92b7c13024ab613ebb5ad986015359ef318
 EXPECTED_PACKAGES_SHA256 = "21da8f9ed19687e708cc7bc5cc59394c6fcdf9b9deadf617ae70526f815a1db0"
 EXPECTED_SERVICES_SHA256 = "1f7623b2b4ffd2c4099fb34ad86fc96c1479e27bf81b1b0ba328c988cc4ffcb5"
 EXPECTED_FRONT_CONTROLLER_SHA256 = "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
-EXPECTED_FONT_PATH = Path("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")
+FONT_RELATIVE_PATH = Path("resources/fonts/job-card-v2/DejaVuSans.ttf")
+FONT_LICENSE_RELATIVE_PATH = Path("resources/fonts/job-card-v2/LICENSE.txt")
+EXPECTED_FONT_PATH = APP_ROOT / FONT_RELATIVE_PATH
 EXPECTED_FONT_SHA256 = "ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280"
+EXPECTED_FONT_LICENSE_PATH = APP_ROOT / FONT_LICENSE_RELATIVE_PATH
+EXPECTED_FONT_LICENSE_SHA256 = "bc88ec457a574842b8f28c20e97a1fe91ecca69db14840484a22c694f2ffb6da"
+EXPECTED_RENDERER_VERSION = "separate-job-card-v2"
 
 STAGE_APPROVAL_TOKEN = f"STAGE-BUYDTF-INCOMING-{TARGET_COMMIT[:16]}"
 DEPLOY_APPROVAL_TOKEN = f"DEPLOY-BUYDTF-INCOMING-{TARGET_COMMIT[:16]}"
@@ -187,6 +192,47 @@ def require_regular_file(path: Path, expected_sha256: str | None = None) -> Path
                 f"Checksum mismatch for {path}: expected {expected_sha256}, got {actual}"
             )
     return path.resolve(strict=True)
+
+
+def require_bundled_font_absent() -> dict[str, Any]:
+    """Prove both reviewed application-owned font additions are still absent."""
+    records: list[dict[str, Any]] = []
+    for path, expected_sha256 in (
+        (EXPECTED_FONT_PATH, EXPECTED_FONT_SHA256),
+        (EXPECTED_FONT_LICENSE_PATH, EXPECTED_FONT_LICENSE_SHA256),
+    ):
+        if path.exists() or path.is_symlink():
+            raise DeploymentError(f"Reviewed font addition is unexpectedly present: {path}")
+        records.append(
+            {
+                "path": str(path),
+                "expected_sha256": expected_sha256,
+                "state": "absent",
+            }
+        )
+    return {"state": "reviewed_additions_absent", "files": records}
+
+
+def bundled_font_identity(root: Path = APP_ROOT) -> dict[str, Any]:
+    """Verify and describe the immutable bundled font and its license."""
+    font = require_regular_file(root / FONT_RELATIVE_PATH, EXPECTED_FONT_SHA256)
+    license_path = require_regular_file(
+        root / FONT_LICENSE_RELATIVE_PATH,
+        EXPECTED_FONT_LICENSE_SHA256,
+    )
+    return {
+        "renderer_version": EXPECTED_RENDERER_VERSION,
+        "font": {
+            "path": str(font),
+            "sha256": EXPECTED_FONT_SHA256,
+            "bytes": font.stat().st_size,
+        },
+        "license": {
+            "path": str(license_path),
+            "sha256": EXPECTED_FONT_LICENSE_SHA256,
+            "bytes": license_path.stat().st_size,
+        },
+    }
 
 
 def path_metadata(path: Path) -> dict[str, int | str]:
@@ -588,7 +634,12 @@ def runtime_probe(helper: Path, evidence_directory: Path, name: str) -> tuple[di
     return payload, result
 
 
-def validate_runtime_snapshot(payload: dict[str, Any], *, require_target_absent: bool) -> None:
+def validate_runtime_snapshot(
+    payload: dict[str, Any],
+    *,
+    require_target_absent: bool,
+    require_renderer_ready: bool = False,
+) -> None:
     if payload.get("application_environment") != "local":
         raise DeploymentError("APP_ENV differs from the reviewed local value.")
     if payload.get("application_debug") is not False:
@@ -630,6 +681,21 @@ def validate_runtime_snapshot(payload: dict[str, Any], *, require_target_absent:
         or capabilities.get("allowed_host_count") != 0
     ):
         raise DeploymentError("An incoming-order capability or artwork host is unexpectedly enabled.")
+    renderer = payload.get("job_card_renderer", {})
+    if require_renderer_ready:
+        readiness = renderer.get("readiness", {})
+        if (
+            renderer.get("class_available") is not True
+            or not isinstance(readiness, dict)
+            or readiness.get("ready") is not True
+            or readiness.get("reason") is not None
+            or readiness.get("renderer_version") != EXPECTED_RENDERER_VERSION
+            or readiness.get("font_sha256") != EXPECTED_FONT_SHA256
+            or readiness.get("width_px") != 1500
+            or readiness.get("height_px") != 900
+            or readiness.get("dpi") != 300
+        ):
+            raise DeploymentError("The immutable job-card renderer is not exactly ready.")
     queue = payload.get("queue", {})
     if queue.get("connection") != "sync":
         raise DeploymentError("The queue connection is no longer sync.")
@@ -689,7 +755,11 @@ def production_preflight(
         raise DeploymentError("Laravel maintenance is unexpectedly active.")
     require_regular_file(FRONT_CONTROLLER, EXPECTED_FRONT_CONTROLLER_SHA256)
     require_regular_file(helper, EXPECTED_HELPER_SHA256)
-    require_regular_file(EXPECTED_FONT_PATH, EXPECTED_FONT_SHA256)
+    font_asset = (
+        require_bundled_font_absent()
+        if require_target_absent
+        else bundled_font_identity()
+    )
     if sha256_bytes(MAINTENANCE_GATE_BYTES) != EXPECTED_GATE_SHA256:
         raise DeploymentError("Embedded static-gate bytes differ from the reviewed identity.")
     if not lock_is_free(DEPENDENCY_LOCK):
@@ -719,7 +789,7 @@ def production_preflight(
         "active_fpm_connections_observed": active_fpm_connections(),
         "disk": {"total": disk.total, "used": disk.used, "free": disk.free},
         "front_controller_sha256": EXPECTED_FRONT_CONTROLLER_SHA256,
-        "font": {"path": str(EXPECTED_FONT_PATH), "sha256": EXPECTED_FONT_SHA256},
+        "font_asset": font_asset,
         "dependencies": dependencies,
         "live_source": live_source,
         "runtime": runtime,
@@ -754,7 +824,7 @@ def preflight_guard(helper: Path, rows: list[dict[str, str]]) -> dict[str, Any]:
         raise DeploymentError("Laravel maintenance is unexpectedly active.")
     require_regular_file(FRONT_CONTROLLER, EXPECTED_FRONT_CONTROLLER_SHA256)
     require_regular_file(helper, EXPECTED_HELPER_SHA256)
-    require_regular_file(EXPECTED_FONT_PATH, EXPECTED_FONT_SHA256)
+    font_asset = require_bundled_font_absent()
     if not lock_is_free(DEPENDENCY_LOCK) or not lock_is_free(DEPLOYMENT_LOCK):
         raise DeploymentError("A production deployment lock is active.")
     if scoped_processes():
@@ -768,6 +838,7 @@ def preflight_guard(helper: Path, rows: list[dict[str, str]]) -> dict[str, Any]:
         "status": "pass",
         "generated_at_utc": utc_now(),
         "source": source,
+        "font_asset": font_asset,
         "dependencies": dependencies,
         "runtime": runtime,
         "health": health,
@@ -1119,6 +1190,7 @@ def stage_release(
         candidate = release / "candidate"
         extraction = extract_candidate(copied_archive, candidate, rows, evidence)
         verification = candidate_verification(candidate, rows, evidence)
+        font_asset = bundled_font_identity(candidate)
         metadata_plan = planned_install_metadata(rows, evidence)
         lint = lint_candidate(candidate, rows, evidence)
 
@@ -1222,6 +1294,7 @@ def stage_release(
             },
             "extraction": extraction,
             "candidate_verification": verification,
+            "font_asset": font_asset,
             "planned_install_metadata": metadata_plan,
             "php_lint": lint,
             "pretend_receipt": {
@@ -1330,6 +1403,17 @@ def validate_release_receipt(
     recorded = receipt.get("candidate_verification", {})
     if verification.get("records_sha256") != recorded.get("records_sha256"):
         raise DeploymentError("Staged candidate identity differs from its Phase 1 receipt.")
+    font_asset = bundled_font_identity(candidate)
+    recorded_font = receipt.get("font_asset", {})
+    if (
+        recorded_font.get("renderer_version") != EXPECTED_RENDERER_VERSION
+        or recorded_font.get("font", {}).get("sha256") != EXPECTED_FONT_SHA256
+        or recorded_font.get("license", {}).get("sha256")
+        != EXPECTED_FONT_LICENSE_SHA256
+        or font_asset["font"]["sha256"] != EXPECTED_FONT_SHA256
+        or font_asset["license"]["sha256"] != EXPECTED_FONT_LICENSE_SHA256
+    ):
+        raise DeploymentError("Staged immutable font asset differs from its Phase 1 receipt.")
     pretend_receipt = Path(str(receipt.get("pretend_receipt", {}).get("path", "")))
     require_regular_file(pretend_receipt, str(receipt["pretend_receipt"]["sha256"]))
     if not is_relative_to(pretend_receipt.resolve(strict=True), release):
@@ -1940,7 +2024,12 @@ def candidate_cli_checks(
     if "incoming-orders:retention-report" not in command_text:
         raise DeploymentError("The report-only retention command was not discovered.")
     runtime, runtime_command = runtime_probe(helper, state_directory, "candidate-runtime-probe")
-    validate_runtime_snapshot(runtime, require_target_absent=False)
+    validate_runtime_snapshot(
+        runtime,
+        require_target_absent=False,
+        require_renderer_ready=True,
+    )
+    font_asset = bundled_font_identity()
     if any(runtime["schema"]["target_tables"].get(name) is not True for name in TARGET_TABLES):
         raise DeploymentError("Candidate runtime does not observe both incoming-order tables.")
     if any(runtime["schema"]["target_table_row_counts"].get(name) != 0 for name in TARGET_TABLES):
@@ -1953,6 +2042,7 @@ def candidate_cli_checks(
         "commands": commands,
         "runtime": runtime,
         "runtime_command": runtime_command,
+        "font_asset": font_asset,
         "dependencies": dependencies,
     }
 
@@ -2004,6 +2094,20 @@ def capability_probe(state_directory: Path, name: str) -> dict[str, Any]:
         raise DeploymentError("Job-label capability is unexpectedly enabled.")
     if label.get("artwork_hosts") != []:
         raise DeploymentError("Artwork allowlist is unexpectedly populated.")
+    readiness = label.get("renderer_readiness", {})
+    if (
+        label.get("renderer_version") != EXPECTED_RENDERER_VERSION
+        or label.get("renderer_font_sha256") != EXPECTED_FONT_SHA256
+        or not isinstance(readiness, dict)
+        or readiness.get("ready") is not True
+        or readiness.get("reason") is not None
+        or readiness.get("renderer_version") != EXPECTED_RENDERER_VERSION
+        or readiness.get("font_sha256") != EXPECTED_FONT_SHA256
+        or readiness.get("width_px") != 1500
+        or readiness.get("height_px") != 900
+        or readiness.get("dpi") != 300
+    ):
+        raise DeploymentError("Capability endpoint reports an unready job-card renderer.")
     header_text = headers.read_text("utf-8", errors="replace").lower()
     if "cache-control:" not in header_text or "max-age=60" not in header_text:
         raise DeploymentError("Capability endpoint cache policy differs from the reviewed contract.")
@@ -2015,6 +2119,9 @@ def capability_probe(state_directory: Path, name: str) -> dict[str, Any]:
         "job_label_enabled": False,
         "job_label_modes": [],
         "artwork_hosts": [],
+        "renderer_version": EXPECTED_RENDERER_VERSION,
+        "renderer_font_sha256": EXPECTED_FONT_SHA256,
+        "renderer_readiness": readiness,
     }
 
 
@@ -2027,7 +2134,11 @@ def post_open_health(
     health_second = health_snapshot()
     capability_second = capability_probe(state_directory, f"{name}-capability-2")
     runtime, runtime_command = runtime_probe(helper, state_directory, f"{name}-runtime")
-    validate_runtime_snapshot(runtime, require_target_absent=False)
+    validate_runtime_snapshot(
+        runtime,
+        require_target_absent=False,
+        require_renderer_ready=True,
+    )
     if any(runtime["schema"]["target_table_row_counts"].get(table) != 0 for table in TARGET_TABLES):
         raise DeploymentError("Post-open incoming-order tables are not empty.")
     return {
@@ -2051,7 +2162,11 @@ def monitor_production(
     sample_count = MONITOR_SECONDS // MONITOR_INTERVAL_SECONDS
     for index in range(sample_count):
         runtime, _ = runtime_probe(helper, state_directory, f"monitor-runtime-{index + 1:02d}")
-        validate_runtime_snapshot(runtime, require_target_absent=False)
+        validate_runtime_snapshot(
+            runtime,
+            require_target_absent=False,
+            require_renderer_ready=True,
+        )
         if any(runtime["schema"]["target_table_row_counts"].get(table) != 0 for table in TARGET_TABLES):
             raise DeploymentError("Monitoring observed an unexpected incoming-order row.")
         sample = {
@@ -2578,7 +2693,14 @@ def describe() -> dict[str, Any]:
         },
         "front_controller_sha256": EXPECTED_FRONT_CONTROLLER_SHA256,
         "static_gate_sha256": EXPECTED_GATE_SHA256,
-        "font": {"path": str(EXPECTED_FONT_PATH), "sha256": EXPECTED_FONT_SHA256},
+        "font_asset": {
+            "renderer_version": EXPECTED_RENDERER_VERSION,
+            "path": str(EXPECTED_FONT_PATH),
+            "sha256": EXPECTED_FONT_SHA256,
+            "license_path": str(EXPECTED_FONT_LICENSE_PATH),
+            "license_sha256": EXPECTED_FONT_LICENSE_SHA256,
+            "predeployment_state": "absent_reviewed_addition",
+        },
         "approval_tokens": {
             "stage": STAGE_APPROVAL_TOKEN,
             "deploy": DEPLOY_APPROVAL_TOKEN,
