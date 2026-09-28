@@ -1,5 +1,12 @@
 {
-    "evidence_version": 1,
+    "evidence_version": 2,
+    "font_asset": {
+        "path": "resources/fonts/job-card-v2/DejaVuSans.ttf",
+        "sha256": "ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280",
+        "bytes": 759720,
+        "license_path": "resources/fonts/job-card-v2/LICENSE.txt",
+        "license_sha256": "bc88ec457a574842b8f28c20e97a1fe91ecca69db14840484a22c694f2ffb6da"
+    },
     "renderer_readiness": {
         "ready": true,
         "reason": null,

@@ -191,7 +191,7 @@ Receipt validates and freezes metadata; it does not render a card. When an opera
 
 The card displays only order number, product, SKU when present, color, size, placement, **Shop** (`shop_domain`), and total quantity. Grapheme-aware wrapping and deterministic adaptive type sizing keep every accepted maximum-length field inside the printable border. A required card failure leaves the production handoff incomplete and retryable. It never falls back to artwork without its card.
 
-The provisional card is 5 by 3 inches (1500 by 900 pixels) with a verified PNG `pHYs` value of 11,811 pixels/metre on both axes (300 PPI). Renderer `separate-job-card-v2` pins DejaVu Sans to SHA-256 `ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280`; a font or layout change requires a new renderer version. The capability readiness result verifies Imagick and this exact font. Physical readability still requires an operator-approved sample before label enablement.
+The provisional card is 5 by 3 inches (1500 by 900 pixels) with a verified PNG `pHYs` value of 11,811 pixels/metre on both axes (300 PPI). Renderer `separate-job-card-v2` uses the application-owned `resources/fonts/job-card-v2/DejaVuSans.ttf`, pinned in code to SHA-256 `ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280`; neither the font path nor hash is environment-configurable. A font or layout change requires a new renderer version. The capability readiness result verifies Imagick and this exact asset. Physical readability still requires an operator-approved sample before label enablement.
 
 ## Success response
 

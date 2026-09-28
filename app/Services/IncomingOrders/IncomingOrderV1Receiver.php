@@ -284,7 +284,7 @@ class IncomingOrderV1Receiver
             'job_label_metadata' => $label['metadata'],
             'job_label_fingerprint' => $label['fingerprint'],
             'renderer_version' => $label['status'] === 'accepted'
-                ? (string) config('incoming_order.job_card.renderer_version', 'separate-job-card-v2')
+                ? JobCardRenderer::RENDERER_VERSION
                 : null,
             'production_state' => $label['status'] === 'accepted' ? 'pending' : null,
         ];

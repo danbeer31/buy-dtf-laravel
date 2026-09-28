@@ -8,6 +8,7 @@ use App\Models\DtfImage;
 use App\Models\IncomingOrderJob;
 use App\Services\IncomingOrders\BoundedArtworkFetcher;
 use App\Services\IncomingOrders\FetchedArtwork;
+use App\Services\IncomingOrders\JobCardRenderer;
 use App\Support\JsonCanonicalizer;
 use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
@@ -81,6 +82,7 @@ class IncomingOrderV1ReceiverTest extends TestCase
     {
         config()->set('incoming_order.receiver_enabled', false);
         config()->set('incoming_order.job_label_enabled', false);
+        config()->set('incoming_order.allowed_hosts', []);
 
         $this->getJson('/api/incomingorder/capabilities')
             ->assertOk()
@@ -88,7 +90,15 @@ class IncomingOrderV1ReceiverTest extends TestCase
             ->assertJsonPath('capabilities.receiver_idempotency_v1.enabled', false)
             ->assertJsonPath('capabilities.job_label_metadata_v1.enabled', false)
             ->assertJsonPath('capabilities.job_label_metadata_v1.supported_modes', ['metadata_only'])
-            ->assertJsonPath('capabilities.job_label_metadata_v1.modes', []);
+            ->assertJsonPath('capabilities.job_label_metadata_v1.modes', [])
+            ->assertJsonPath('capabilities.job_label_metadata_v1.artwork_hosts', [])
+            ->assertJsonPath('capabilities.job_label_metadata_v1.renderer_version', JobCardRenderer::RENDERER_VERSION)
+            ->assertJsonPath('capabilities.job_label_metadata_v1.renderer_font_sha256', JobCardRenderer::FONT_SHA256)
+            ->assertJsonPath(
+                'capabilities.job_label_metadata_v1.renderer_readiness.ready',
+                extension_loaded('imagick'),
+            )
+            ->assertJsonPath('capabilities.job_label_metadata_v1.renderer_readiness.font_sha256', JobCardRenderer::FONT_SHA256);
     }
 
     public function test_legacy_payload_keeps_its_existing_response_shape_and_persistence_path(): void

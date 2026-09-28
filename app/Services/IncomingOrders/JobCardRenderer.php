@@ -10,6 +10,14 @@ use RuntimeException;
 
 class JobCardRenderer
 {
+    public const RENDERER_VERSION = 'separate-job-card-v2';
+
+    public const FONT_RELATIVE_PATH = 'fonts/job-card-v2/DejaVuSans.ttf';
+
+    public const FONT_LICENSE_RELATIVE_PATH = 'fonts/job-card-v2/LICENSE.txt';
+
+    public const FONT_SHA256 = 'ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280';
+
     /** @return array{ready: bool, reason: string|null, renderer_version: string, font_sha256: string|null, width_px: int, height_px: int, dpi: int} */
     public function readiness(): array
     {
@@ -17,23 +25,25 @@ class JobCardRenderer
         $widthPx = max(1, (int) round((float) config('incoming_order.job_card.width_in', 5.0) * $dpi));
         $heightPx = max(1, (int) round((float) config('incoming_order.job_card.height_in', 3.0) * $dpi));
         $base = [
-            'renderer_version' => (string) config('incoming_order.job_card.renderer_version', 'separate-job-card-v2'),
+            'renderer_version' => self::RENDERER_VERSION,
             'font_sha256' => null,
             'width_px' => $widthPx,
             'height_px' => $heightPx,
             'dpi' => $dpi,
         ];
+
+        try {
+            [, $fontHash] = $this->verifiedFont();
+        } catch (RuntimeException) {
+            return ['ready' => false, 'reason' => 'pinned_font_unavailable'] + $base;
+        }
+
+        $base['font_sha256'] = $fontHash;
         if (! extension_loaded('imagick')) {
             return ['ready' => false, 'reason' => 'imagick_unavailable'] + $base;
         }
 
-        try {
-            [, $fontHash] = $this->verifiedFont();
-
-            return ['ready' => true, 'reason' => null] + array_merge($base, ['font_sha256' => $fontHash]);
-        } catch (RuntimeException) {
-            return ['ready' => false, 'reason' => 'pinned_font_unavailable'] + $base;
-        }
+        return ['ready' => true, 'reason' => null] + $base;
     }
 
     /**
@@ -54,8 +64,7 @@ class JobCardRenderer
             throw new RuntimeException('Imagick is required to render production job cards.');
         }
 
-        $supportedVersion = (string) config('incoming_order.job_card.renderer_version', 'separate-job-card-v2');
-        if ($rendererVersion === '' || ! hash_equals($supportedVersion, $rendererVersion)) {
+        if ($rendererVersion === '' || ! hash_equals(self::RENDERER_VERSION, $rendererVersion)) {
             throw new RuntimeException('The frozen job-card renderer version is not available.');
         }
 
@@ -358,8 +367,8 @@ class JobCardRenderer
     /** @return array{0: string, 1: string} */
     private function verifiedFont(): array
     {
-        $path = (string) config('incoming_order.job_card.font', '');
-        $expectedHash = strtolower((string) config('incoming_order.job_card.font_sha256', ''));
+        $path = resource_path(self::FONT_RELATIVE_PATH);
+        $expectedHash = self::FONT_SHA256;
         if ($path === '' || ! is_file($path) || ! is_readable($path)) {
             throw new RuntimeException('The pinned job-card font is unavailable.');
         }

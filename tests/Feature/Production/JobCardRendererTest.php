@@ -50,7 +50,7 @@ class JobCardRendererTest extends TestCase
             hash('sha256', 'maximum-field-card'),
             $metadata,
             10_000,
-            (string) config('incoming_order.job_card.renderer_version'),
+            JobCardRenderer::RENDERER_VERSION,
         );
         $this->paths[] = $result['absolute_path'];
 
@@ -66,8 +66,44 @@ class JobCardRendererTest extends TestCase
         $this->assertSame(11811, $resolution['y_ppm'] ?? null);
         $this->assertEqualsWithDelta(300.0, $resolution['x_dpi'] ?? 0.0, 0.02);
         $this->assertSame(
-            (string) config('incoming_order.job_card.font_sha256'),
+            JobCardRenderer::FONT_SHA256,
             $result['font_sha256'],
         );
+    }
+
+    public function test_renderer_v2_uses_the_bundled_immutable_font_identity(): void
+    {
+        $font = resource_path(JobCardRenderer::FONT_RELATIVE_PATH);
+        $license = resource_path(JobCardRenderer::FONT_LICENSE_RELATIVE_PATH);
+
+        $this->assertFileExists($font);
+        $this->assertFileExists($license);
+        $this->assertSame(759_720, filesize($font));
+        $this->assertSame(JobCardRenderer::FONT_SHA256, hash_file('sha256', $font));
+        $this->assertStringContainsString(
+            'Copyright (c) 2003 by Bitstream, Inc. All Rights Reserved.',
+            (string) file_get_contents($license),
+        );
+        $this->assertStringContainsString(
+            'Permission is hereby granted, free of charge',
+            (string) file_get_contents($license),
+        );
+        $this->assertSame('separate-job-card-v2', JobCardRenderer::RENDERER_VERSION);
+        $this->assertArrayNotHasKey('font', config('incoming_order.job_card'));
+        $this->assertArrayNotHasKey('font_sha256', config('incoming_order.job_card'));
+        $this->assertArrayNotHasKey('renderer_version', config('incoming_order.job_card'));
+
+        config()->set('incoming_order.job_card.font', '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf');
+        config()->set('incoming_order.job_card.font_sha256', str_repeat('0', 64));
+        config()->set('incoming_order.job_card.renderer_version', 'unreviewed-renderer');
+
+        $readiness = app(JobCardRenderer::class)->readiness();
+        $this->assertSame(extension_loaded('imagick'), $readiness['ready']);
+        $this->assertSame(
+            extension_loaded('imagick') ? null : 'imagick_unavailable',
+            $readiness['reason'],
+        );
+        $this->assertSame(JobCardRenderer::RENDERER_VERSION, $readiness['renderer_version']);
+        $this->assertSame(JobCardRenderer::FONT_SHA256, $readiness['font_sha256']);
     }
 }

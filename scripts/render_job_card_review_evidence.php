@@ -60,7 +60,17 @@ $cases = [
     'maximum-fields' => [$maximum, 10_000],
 ];
 $receipt = [
-    'evidence_version' => 1,
+    'evidence_version' => 2,
+    'font_asset' => [
+        'path' => 'resources/'.JobCardRenderer::FONT_RELATIVE_PATH,
+        'sha256' => hash_file('sha256', resource_path(JobCardRenderer::FONT_RELATIVE_PATH)),
+        'bytes' => filesize(resource_path(JobCardRenderer::FONT_RELATIVE_PATH)),
+        'license_path' => 'resources/'.JobCardRenderer::FONT_LICENSE_RELATIVE_PATH,
+        'license_sha256' => hash_file(
+            'sha256',
+            resource_path(JobCardRenderer::FONT_LICENSE_RELATIVE_PATH),
+        ),
+    ],
     'renderer_readiness' => $readiness,
     'cases' => [],
 ];
@@ -71,7 +81,7 @@ foreach ($cases as $name => [$metadata, $quantity]) {
         hash('sha256', 'review-evidence-'.$name),
         $metadata,
         $quantity,
-        (string) config('incoming_order.job_card.renderer_version'),
+        JobCardRenderer::RENDERER_VERSION,
     );
     $destination = $outputDirectory.'/buy-dtf-job-card-review-'.$name.'.png';
     if (! copy($result['absolute_path'], $destination)) {
