@@ -64,6 +64,36 @@ foreach (['jobs', 'failed_jobs'] as $table) {
         : null;
 }
 
+$packageNames = [
+    'guzzlehttp/guzzle',
+    'laravel/framework',
+    'league/commonmark',
+    'league/flysystem',
+    'league/flysystem-local',
+];
+$packageVersions = [];
+$packageInstallPaths = [];
+foreach ($packageNames as $packageName) {
+    if (! Composer\InstalledVersions::isInstalled($packageName)) {
+        fwrite(STDERR, 'Required package is not installed: '.$packageName.PHP_EOL);
+        exit(1);
+    }
+
+    $prettyVersion = Composer\InstalledVersions::getPrettyVersion($packageName);
+    $installPath = Composer\InstalledVersions::getInstallPath($packageName);
+    $realInstallPath = is_string($installPath) ? realpath($installPath) : false;
+    if (! is_string($prettyVersion) || $prettyVersion === '' || $realInstallPath === false) {
+        fwrite(STDERR, 'Required package identity is unavailable: '.$packageName.PHP_EOL);
+        exit(1);
+    }
+
+    $packageVersions[$packageName] = ltrim($prettyVersion, 'v');
+    $packageInstallPaths[$packageName] = $realInstallPath;
+}
+
+$phpExtensions = get_loaded_extensions();
+sort($phpExtensions, SORT_STRING);
+
 $payload = [
     'app_environment' => (string) $app->environment(),
     'app_debug' => (bool) config('app.debug'),
@@ -73,6 +103,10 @@ $payload = [
     'fuel_database_connection' => $fuelConnection,
     'laravel_version' => Application::VERSION,
     'guzzle_version' => Composer\InstalledVersions::getPrettyVersion('guzzlehttp/guzzle'),
+    'package_versions' => $packageVersions,
+    'package_install_paths' => $packageInstallPaths,
+    'php_version' => PHP_VERSION,
+    'php_extensions' => $phpExtensions,
     'laravel_class_path' => (new ReflectionClass(Application::class))->getFileName(),
     'guzzle_class_path' => (new ReflectionClass(GuzzleHttp\Client::class))->getFileName(),
     'business_activity' => $summary,

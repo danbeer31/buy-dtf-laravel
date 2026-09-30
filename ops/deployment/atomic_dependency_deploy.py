@@ -40,20 +40,31 @@ EXPECTED_APP_UID = 1000
 EXPECTED_APP_GID = 1000
 EXPECTED_WEB_GID = 33
 EXPECTED_LIVE_COMPOSER_JSON_SHA256 = "7098f3a19cb65f88bcc945f019dda0aa7f515737eb5d4918c30705f25c6ad872"
-EXPECTED_LIVE_LOCK_SHA256 = "16eef909889a727717fccf52e9c7c23e8a0d2cc661777f6044abde97713d2579"
-CANDIDATE_LOCK_SHA256 = "eeac4637272ca2b9aeaa797a4440cfc8b4e31f5a469619c46ebfa5791c701831"
+EXPECTED_LIVE_LOCK_SHA256 = "eeac4637272ca2b9aeaa797a4440cfc8b4e31f5a469619c46ebfa5791c701831"
+CANDIDATE_LOCK_SHA256 = "22af12c7e58fcfe809735dbf9955b2d22a264e9e7345cefd74398e36bf2773b9"
 EXPECTED_DATABASE_CONFIG_SHA256 = "d25ab83243dc255e43ddbaa856991dae93016dd8ff77fa11be20d222693bb8f9"
 EXPECTED_SOURCE_MANIFEST_SHA256 = "46f6a1ffa03364b550395c89111a0d69a844d1379f3c5aba6ed5c1e17616abca"
-EXPECTED_LIVE_VENDOR_MANIFEST_SHA256 = "738c326e7f8e9199d36d0bb754eff031c38c5f69603bb56baa3cd189c98dbdcc"
+EXPECTED_LIVE_VENDOR_MANIFEST_SHA256 = "97cd0bb104c42b57fbf90204ee74837ec1359b0ab1cbf8dac7d6929a154922d7"
 EXPECTED_FRONT_CONTROLLER_SHA256 = "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
 EXPECTED_APP_ENVIRONMENT = "local"
 EXPECTED_APP_DEBUG = False
-RUNTIME_HELPER_SHA256 = "e664bbff0af18ba07763bfb0fd1f2f4d2f4a5f7f2f2e378caed8daeea3ca31b7"
+EXPECTED_PHP_VERSION = "8.2.30"
+RUNTIME_HELPER_SHA256 = "16e1f7cf814112120eb71afa3385dd0ae5251dac85e5407d88ed0b639bc93cb0"
 
-OLD_LARAVEL_VERSION = "12.46.0"
-OLD_GUZZLE_VERSION = "7.10.0"
-NEW_LARAVEL_VERSION = "12.61.1"
-NEW_GUZZLE_VERSION = "7.15.2"
+OLD_PACKAGE_VERSIONS = {
+    "guzzlehttp/guzzle": "7.15.2",
+    "laravel/framework": "12.61.1",
+    "league/commonmark": "2.10.0",
+    "league/flysystem": "3.30.2",
+    "league/flysystem-local": "3.30.2",
+}
+NEW_PACKAGE_VERSIONS = {
+    "guzzlehttp/guzzle": "7.15.2",
+    "laravel/framework": "12.69.0",
+    "league/commonmark": "2.10.2",
+    "league/flysystem": "3.35.3",
+    "league/flysystem-local": "3.35.3",
+}
 STAGE_APPROVAL_TOKEN = f"STAGE-BUYDTF-DEPS-{CANDIDATE_LOCK_SHA256[:16]}"
 CUTOVER_APPROVAL_TOKEN = f"DEPLOY-BUYDTF-DEPS-{CANDIDATE_LOCK_SHA256[:16]}"
 RECOVERY_APPROVAL_TOKEN = f"RECOVER-BUYDTF-DEPS-{EXPECTED_LIVE_LOCK_SHA256[:16]}"
@@ -554,7 +565,31 @@ def runtime_probe(helper: Path) -> dict[str, Any]:
     return payload
 
 
-def validate_runtime_baseline(payload: dict[str, Any], *, laravel: str, guzzle: str) -> None:
+def normalize_package_version(value: Any) -> str:
+    version = str(value or "")
+    return version[1:] if version.startswith("v") else version
+
+
+def validate_package_identity(
+    payload: dict[str, Any], expected_versions: dict[str, str]
+) -> None:
+    versions = payload.get("package_versions")
+    paths = payload.get("package_install_paths")
+    if versions != expected_versions:
+        raise DeploymentError("Runtime package versions do not match the exact approved baseline.")
+    if not isinstance(paths, dict) or set(paths) != set(expected_versions):
+        raise DeploymentError("Runtime package install paths are incomplete or unexpected.")
+    vendor_prefix = str(APP_ROOT / "vendor") + os.sep
+    for package_name, package_path in paths.items():
+        if not str(package_path).startswith(vendor_prefix):
+            raise DeploymentError(
+                f"Runtime package path for {package_name} is outside the live vendor directory."
+            )
+
+
+def validate_runtime_baseline(
+    payload: dict[str, Any], *, expected_versions: dict[str, str]
+) -> None:
     if payload.get("app_environment") != EXPECTED_APP_ENVIRONMENT:
         raise DeploymentError("The live application environment differs from the reported baseline.")
     if payload.get("app_debug") is not EXPECTED_APP_DEBUG:
@@ -566,8 +601,21 @@ def validate_runtime_baseline(payload: dict[str, Any], *, laravel: str, guzzle: 
         raise DeploymentError("Queue table state is unavailable.")
     if queue_tables.get("jobs") not in (0, None) or queue_tables.get("failed_jobs") not in (0, None):
         raise DeploymentError("Queued or failed jobs are present.")
-    if payload.get("laravel_version") != laravel or payload.get("guzzle_version") != guzzle:
-        raise DeploymentError("Runtime dependency versions do not match the expected baseline.")
+    if payload.get("php_version") != EXPECTED_PHP_VERSION:
+        raise DeploymentError("Runtime PHP version does not match the reviewed baseline.")
+    extensions = payload.get("php_extensions")
+    if (
+        not isinstance(extensions, list)
+        or not extensions
+        or extensions != sorted(set(extensions))
+        or not all(isinstance(extension, str) and extension for extension in extensions)
+    ):
+        raise DeploymentError("Runtime PHP extension inventory is invalid.")
+    validate_package_identity(payload, expected_versions)
+    if payload.get("laravel_version") != expected_versions["laravel/framework"]:
+        raise DeploymentError("Runtime Laravel version differs from its package identity.")
+    if normalize_package_version(payload.get("guzzle_version")) != expected_versions["guzzlehttp/guzzle"]:
+        raise DeploymentError("Runtime Guzzle version differs from its package identity.")
     vendor_prefix = str(APP_ROOT / "vendor") + os.sep
     for field in ("laravel_class_path", "guzzle_class_path"):
         if not str(payload.get(field, "")).startswith(vendor_prefix):
@@ -591,7 +639,7 @@ def validate_toolchain() -> None:
         cwd=APP_ROOT,
         timeout=15,
     )
-    if php.stdout != "8.2.30":
+    if php.stdout != EXPECTED_PHP_VERSION:
         raise DeploymentError("PHP CLI differs from the reviewed 8.2.30 baseline.")
     composer = run(
         ["/usr/local/bin/composer", "--version", "--no-ansi"],
@@ -671,6 +719,94 @@ def safe_environment(composer_home: Path) -> dict[str, str]:
     }
 
 
+def locked_package_versions(lock_path: Path) -> dict[str, str]:
+    lock_path = require_regular_file(lock_path)
+    try:
+        document = json.loads(lock_path.read_text(encoding="utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as exception:
+        raise DeploymentError("Composer lock is not valid UTF-8 JSON.") from exception
+    packages = document.get("packages") if isinstance(document, dict) else None
+    if not isinstance(packages, list):
+        raise DeploymentError("Composer lock has no production package list.")
+    available = {
+        package.get("name"): normalize_package_version(package.get("version"))
+        for package in packages
+        if isinstance(package, dict) and isinstance(package.get("name"), str)
+    }
+    try:
+        return {name: available[name] for name in NEW_PACKAGE_VERSIONS}
+    except KeyError as exception:
+        raise DeploymentError(
+            f"Composer lock is missing required package {exception.args[0]}."
+        ) from exception
+
+
+def deployment_lock_snapshot() -> dict[str, Any]:
+    if not DEPLOYMENT_LOCK.exists():
+        return {"exists": False, "free": True}
+    require_regular_file(DEPLOYMENT_LOCK)
+    with DEPLOYMENT_LOCK.open("rb") as lock_handle:
+        try:
+            fcntl.flock(lock_handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            return {"exists": True, "free": False}
+        try:
+            return {"exists": True, "free": True}
+        finally:
+            fcntl.flock(lock_handle.fileno(), fcntl.LOCK_UN)
+
+
+def production_preflight(
+    candidate_lock: Path,
+    helper: Path,
+    *,
+    deployment_lock_owned: bool = False,
+) -> dict[str, Any]:
+    candidate_lock = require_regular_file(candidate_lock, CANDIDATE_LOCK_SHA256)
+    if candidate_lock.is_relative_to(APP_ROOT / "vendor"):
+        raise DeploymentError("Candidate lock may not be sourced from vendor.")
+    candidate_versions = locked_package_versions(candidate_lock)
+    if candidate_versions != NEW_PACKAGE_VERSIONS:
+        raise DeploymentError("Candidate lock package versions differ from the approved set.")
+
+    lock_state = (
+        {"exists": DEPLOYMENT_LOCK.exists(), "free": False, "owned_by_stage_process": True}
+        if deployment_lock_owned
+        else deployment_lock_snapshot()
+    )
+    if not deployment_lock_owned and lock_state["free"] is not True:
+        raise DeploymentError("Another dependency operation holds the application lock.")
+
+    baseline = assert_production_baseline(helper)
+    processes = scoped_processes()
+    if processes:
+        raise DeploymentError("A scoped Artisan/payout process is active; preflight stopped.")
+    health = health_snapshot()
+    runtime = runtime_probe(helper)
+    validate_runtime_baseline(runtime, expected_versions=OLD_PACKAGE_VERSIONS)
+    return {
+        "artifact": "buy-dtf-dependency-production-preflight-v2",
+        "status": "pass",
+        "checked_at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "script_sha256": sha256_file(Path(__file__).resolve()),
+        "runtime_helper_sha256": RUNTIME_HELPER_SHA256,
+        "live_composer_json_sha256": sha256_file(APP_ROOT / "composer.json"),
+        "live_lock_sha256": sha256_file(APP_ROOT / "composer.lock"),
+        "candidate_lock_sha256": sha256_file(candidate_lock),
+        "database_config_sha256": sha256_file(APP_ROOT / "config/database.php"),
+        "source_manifest": baseline["source"],
+        "vendor_manifest": baseline["vendor"],
+        "cache_identity": baseline["cache"],
+        "front_controller": baseline["front_controller"],
+        "maintenance_active": LARAVEL_MAINTENANCE_FILE.exists(),
+        "deployment_lock": lock_state,
+        "scoped_processes": processes,
+        "health": health,
+        "runtime": runtime,
+        "candidate_package_versions": candidate_versions,
+    }
+
+
 def copy_runtime_shadow(destination: Path) -> None:
     for relative_name in SOURCE_TOP_LEVEL_FILES:
         if relative_name == "composer.json":
@@ -705,15 +841,16 @@ def copy_runtime_shadow(destination: Path) -> None:
 def stage_release(candidate_lock: Path, approval_token: str, helper: Path) -> Path:
     if approval_token != STAGE_APPROVAL_TOKEN:
         raise DeploymentError("The exact reviewed staging approval token was not supplied.")
-    baseline = assert_production_baseline(helper)
+    preflight = production_preflight(candidate_lock, helper, deployment_lock_owned=True)
+    baseline = {
+        "source": preflight["source_manifest"],
+        "vendor": preflight["vendor_manifest"],
+        "cache": preflight["cache_identity"],
+        "front_controller": preflight["front_controller"],
+    }
+    before_health = preflight["health"]
+    before_runtime = preflight["runtime"]
     candidate_lock = require_regular_file(candidate_lock, CANDIDATE_LOCK_SHA256)
-    if candidate_lock.is_relative_to(APP_ROOT / "vendor"):
-        raise DeploymentError("Candidate lock may not be sourced from vendor.")
-    if scoped_processes():
-        raise DeploymentError("A scoped Artisan/payout process is active; staging stopped.")
-    before_health = health_snapshot()
-    before_runtime = runtime_probe(helper)
-    validate_runtime_baseline(before_runtime, laravel=OLD_LARAVEL_VERSION, guzzle=OLD_GUZZLE_VERSION)
 
     RELEASE_ROOT.mkdir(mode=0o700, parents=True, exist_ok=True)
     os.chmod(RELEASE_ROOT, 0o700)
@@ -819,14 +956,15 @@ def stage_release(candidate_lock: Path, approval_token: str, helper: Path) -> Pa
     installed = json.loads((shadow / "vendor/composer/installed.json").read_text(encoding="utf-8"))
     packages = installed.get("packages", installed) if isinstance(installed, dict) else installed
     versions = {
-        package.get("name"): package.get("version_normalized", package.get("version"))
+        package.get("name"): normalize_package_version(package.get("version"))
         for package in packages
         if isinstance(package, dict)
     }
-    if not str(versions.get("laravel/framework", "")).startswith(NEW_LARAVEL_VERSION):
-        raise DeploymentError("Staged Laravel version is not the approved candidate.")
-    if not str(versions.get("guzzlehttp/guzzle", "")).startswith(NEW_GUZZLE_VERSION):
-        raise DeploymentError("Staged Guzzle version is not the approved candidate.")
+    installed_candidate_versions = {
+        package_name: versions.get(package_name) for package_name in NEW_PACKAGE_VERSIONS
+    }
+    if installed_candidate_versions != NEW_PACKAGE_VERSIONS:
+        raise DeploymentError("Staged package versions do not match the exact approved candidate.")
     if "laravel/pail" in versions:
         raise DeploymentError("The no-dev candidate unexpectedly contains Laravel Pail.")
     if (shadow / "vendor/laravel/pail").exists():
@@ -848,14 +986,12 @@ def stage_release(candidate_lock: Path, approval_token: str, helper: Path) -> Pa
         "front_controller": baseline["front_controller"],
         "maintenance_gate_sha256": MAINTENANCE_GATE_SHA256,
         "command_receipts": command_receipts,
+        "production_preflight": preflight,
         "health_before": before_health,
         "runtime_before": before_runtime,
         "script_sha256": sha256_file(Path(__file__).resolve()),
         "runtime_helper_sha256": RUNTIME_HELPER_SHA256,
-        "versions": {
-            "laravel/framework": NEW_LARAVEL_VERSION,
-            "guzzlehttp/guzzle": NEW_GUZZLE_VERSION,
-        },
+        "versions": NEW_PACKAGE_VERSIONS,
         "no_dev": True,
     }
     receipt_path = release / "release-receipt.json"
@@ -877,6 +1013,16 @@ def load_approved_release(receipt_path: Path, approved_sha256: str) -> tuple[dic
         raise DeploymentError("Release receipt is not an approved staged release.")
     if receipt.get("candidate_lock_sha256") != CANDIDATE_LOCK_SHA256:
         raise DeploymentError("Release receipt references a different candidate lock.")
+    if receipt.get("versions") != NEW_PACKAGE_VERSIONS:
+        raise DeploymentError("Release receipt references different candidate package versions.")
+    preflight = receipt.get("production_preflight")
+    if (
+        not isinstance(preflight, dict)
+        or preflight.get("status") != "pass"
+        or preflight.get("script_sha256") != sha256_file(Path(__file__).resolve())
+        or preflight.get("runtime_helper_sha256") != RUNTIME_HELPER_SHA256
+    ):
+        raise DeploymentError("Release receipt has no matching successful production preflight.")
     shadow = Path(str(receipt.get("shadow_path", "")))
     shadow = require_real_directory(shadow, within=RELEASE_ROOT)
     require_regular_file(shadow / "composer.lock", CANDIDATE_LOCK_SHA256)
@@ -1098,7 +1244,7 @@ def contain_rollback_failure(
     write_state(state_path, state)
 
 
-def fpm_probe(expected_laravel: str, expected_guzzle: str) -> dict[str, Any]:
+def fpm_probe(expected_versions: dict[str, str]) -> dict[str, Any]:
     if not FPM_SOCKET.is_socket():
         raise DeploymentError("The reviewed PHP-FPM socket is unavailable.")
     probe_directory = APP_ROOT / "storage/framework/dependency-probes"
@@ -1106,12 +1252,30 @@ def fpm_probe(expected_laravel: str, expected_guzzle: str) -> dict[str, Any]:
     os.chown(probe_directory, -1, 33)
     os.chmod(probe_directory, 0o2750)
     probe = probe_directory / f"probe-{secrets.token_hex(12)}.php"
+    package_names_php = json.dumps(list(expected_versions))
     source = f'''<?php
 declare(strict_types=1);
 require {str(APP_ROOT / "vendor/autoload.php")!r};
+$packageNames = {package_names_php};
+$packageVersions = [];
+$packageInstallPaths = [];
+foreach ($packageNames as $packageName) {{
+    $packageVersions[$packageName] = ltrim(
+        (string) Composer\\InstalledVersions::getPrettyVersion($packageName),
+        'v'
+    );
+    $installPath = Composer\\InstalledVersions::getInstallPath($packageName);
+    $packageInstallPaths[$packageName] = is_string($installPath) ? realpath($installPath) : false;
+}}
+$phpExtensions = get_loaded_extensions();
+sort($phpExtensions, SORT_STRING);
 $payload = [
     'laravel_version' => Illuminate\\Foundation\\Application::VERSION,
     'guzzle_version' => Composer\\InstalledVersions::getPrettyVersion('guzzlehttp/guzzle'),
+    'package_versions' => $packageVersions,
+    'package_install_paths' => $packageInstallPaths,
+    'php_version' => PHP_VERSION,
+    'php_extensions' => $phpExtensions,
     'laravel_path' => (new ReflectionClass(Illuminate\\Foundation\\Application::class))->getFileName(),
     'guzzle_path' => (new ReflectionClass(GuzzleHttp\\Client::class))->getFileName(),
 ];
@@ -1149,9 +1313,15 @@ echo json_encode($payload, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES);
             payload = json.loads(body)
         except json.JSONDecodeError as exception:
             raise DeploymentError("PHP-FPM dependency probe returned invalid JSON.") from exception
-        if payload.get("laravel_version") != expected_laravel:
+        validate_package_identity(payload, expected_versions)
+        if payload.get("php_version") != EXPECTED_PHP_VERSION:
+            raise DeploymentError("PHP-FPM loaded an unexpected PHP version.")
+        extensions = payload.get("php_extensions")
+        if not isinstance(extensions, list) or not extensions or extensions != sorted(set(extensions)):
+            raise DeploymentError("PHP-FPM returned an invalid PHP extension inventory.")
+        if payload.get("laravel_version") != expected_versions["laravel/framework"]:
             raise DeploymentError("PHP-FPM loaded an unexpected Laravel version.")
-        if payload.get("guzzle_version") != expected_guzzle:
+        if normalize_package_version(payload.get("guzzle_version")) != expected_versions["guzzlehttp/guzzle"]:
             raise DeploymentError("PHP-FPM loaded an unexpected Guzzle version.")
         vendor_prefix = str(APP_ROOT / "vendor") + os.sep
         if not str(payload.get("laravel_path", "")).startswith(vendor_prefix):
@@ -1299,14 +1469,13 @@ def rollback_from_state(
         rollback_runtime = runtime_probe(helper)
         validate_runtime_baseline(
             rollback_runtime,
-            laravel=OLD_LARAVEL_VERSION,
-            guzzle=OLD_GUZZLE_VERSION,
+            expected_versions=OLD_PACKAGE_VERSIONS,
         )
         inject("after_rollback_runtime")
         time.sleep(OPCACHE_WAIT_SECONDS)
-        first = fpm_probe(OLD_LARAVEL_VERSION, OLD_GUZZLE_VERSION)
+        first = fpm_probe(OLD_PACKAGE_VERSIONS)
         time.sleep(OPCACHE_SECOND_PROBE_DELAY_SECONDS)
-        second = fpm_probe(OLD_LARAVEL_VERSION, OLD_GUZZLE_VERSION)
+        second = fpm_probe(OLD_PACKAGE_VERSIONS)
         inject("after_rollback_fpm_probes")
         front_controller = restore_front_controller(state, state_path)
         inject("after_rollback_gate_open")
@@ -1351,8 +1520,8 @@ def cutover(
         raise DeploymentError("A scoped Artisan/payout process is active.")
     before_health = health_snapshot()
     before_runtime = runtime_probe(helper)
-    validate_runtime_baseline(before_runtime, laravel=OLD_LARAVEL_VERSION, guzzle=OLD_GUZZLE_VERSION)
-    old_fpm_preflight = fpm_probe(OLD_LARAVEL_VERSION, OLD_GUZZLE_VERSION)
+    validate_runtime_baseline(before_runtime, expected_versions=OLD_PACKAGE_VERSIONS)
+    old_fpm_preflight = fpm_probe(OLD_PACKAGE_VERSIONS)
 
     ROLLBACK_ROOT.mkdir(mode=0o700, parents=True, exist_ok=True)
     os.chmod(ROLLBACK_ROOT, 0o700)
@@ -1488,15 +1657,15 @@ def cutover(
         # The candidate-compatible cache is live before this first candidate
         # Laravel boot. No candidate command is needed to construct the cache.
         live_runtime = runtime_probe(helper)
-        validate_runtime_baseline(live_runtime, laravel=NEW_LARAVEL_VERSION, guzzle=NEW_GUZZLE_VERSION)
+        validate_runtime_baseline(live_runtime, expected_versions=NEW_PACKAGE_VERSIONS)
         inject("after_candidate_runtime")
         if sha256_file(APP_ROOT / "composer.lock") != CANDIDATE_LOCK_SHA256:
             raise DeploymentError("Live composer.lock differs from the approved candidate.")
 
         time.sleep(OPCACHE_WAIT_SECONDS)
-        first_probe = fpm_probe(NEW_LARAVEL_VERSION, NEW_GUZZLE_VERSION)
+        first_probe = fpm_probe(NEW_PACKAGE_VERSIONS)
         time.sleep(OPCACHE_SECOND_PROBE_DELAY_SECONDS)
-        second_probe = fpm_probe(NEW_LARAVEL_VERSION, NEW_GUZZLE_VERSION)
+        second_probe = fpm_probe(NEW_PACKAGE_VERSIONS)
         state["candidate_fpm_probes"] = [first_probe, second_probe]
         state["candidate_runtime"] = live_runtime
         write_state(state_path, state)
@@ -1519,7 +1688,9 @@ def cutover(
                 "health": health_snapshot(),
                 "runtime": runtime_probe(helper),
             }
-            validate_runtime_baseline(sample["runtime"], laravel=NEW_LARAVEL_VERSION, guzzle=NEW_GUZZLE_VERSION)
+            validate_runtime_baseline(
+                sample["runtime"], expected_versions=NEW_PACKAGE_VERSIONS
+            )
             monitor_samples.append(sample)
             state["monitor_samples"] = monitor_samples
             write_state(state_path, state)
@@ -1929,14 +2100,21 @@ def describe() -> None:
         json.dumps(
             {
                 "application_root": str(APP_ROOT),
+                "live_composer_json_sha256": EXPECTED_LIVE_COMPOSER_JSON_SHA256,
                 "source_manifest_sha256": EXPECTED_SOURCE_MANIFEST_SHA256,
                 "old_vendor_manifest_sha256": EXPECTED_LIVE_VENDOR_MANIFEST_SHA256,
                 "old_lock_sha256": EXPECTED_LIVE_LOCK_SHA256,
                 "candidate_lock_sha256": CANDIDATE_LOCK_SHA256,
+                "database_config_sha256": EXPECTED_DATABASE_CONFIG_SHA256,
+                "front_controller_sha256": EXPECTED_FRONT_CONTROLLER_SHA256,
+                "runtime_helper_sha256": RUNTIME_HELPER_SHA256,
+                "old_package_versions": OLD_PACKAGE_VERSIONS,
+                "candidate_package_versions": NEW_PACKAGE_VERSIONS,
                 "atomic_vendor_operation": "renameat2(RENAME_EXCHANGE)",
                 "atomic_cache_operation": "renameat2(RENAME_EXCHANGE)",
                 "static_maintenance_gate_sha256": MAINTENANCE_GATE_SHA256,
                 "candidate_install_no_dev": True,
+                "read_only_preflight_available": True,
                 "reported_app_environment": EXPECTED_APP_ENVIRONMENT,
                 "reported_app_debug": EXPECTED_APP_DEBUG,
                 "git_operations": False,
@@ -1954,6 +2132,7 @@ def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     action = parser.add_mutually_exclusive_group(required=True)
     action.add_argument("--describe", action="store_true")
+    action.add_argument("--preflight", action="store_true")
     action.add_argument("--stage", action="store_true")
     action.add_argument("--cutover", action="store_true")
     action.add_argument("--recover", action="store_true")
@@ -1973,6 +2152,17 @@ def main() -> int:
     try:
         if arguments.describe:
             describe()
+        elif arguments.preflight:
+            if arguments.candidate_lock is None:
+                raise DeploymentError("--preflight requires --candidate-lock.")
+            require_regular_file(helper, RUNTIME_HELPER_SHA256)
+            print(
+                json.dumps(
+                    production_preflight(arguments.candidate_lock, helper),
+                    indent=2,
+                    sort_keys=True,
+                )
+            )
         elif arguments.rehearse:
             if arguments.rehearsal_parent is None:
                 raise DeploymentError("--rehearse requires --rehearsal-parent.")

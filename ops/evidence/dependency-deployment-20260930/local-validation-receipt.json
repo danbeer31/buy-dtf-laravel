@@ -1,0 +1,84 @@
+{
+  "artifact": "buy-dtf-dependency-deployment-local-validation-v2",
+  "status": "pass",
+  "validated_at_utc": "2026-09-30T23:55:00Z",
+  "branch": "security/dependency-advisories-20260930",
+  "dependency_candidate_commit": "c07c29332adcc9fa41f2c3b4f14bf6f35cf28c3c",
+  "candidate_lock_sha256": "22af12c7e58fcfe809735dbf9955b2d22a264e9e7345cefd74398e36bf2773b9",
+  "production_composer_json_sha256": "7098f3a19cb65f88bcc945f019dda0aa7f515737eb5d4918c30705f25c6ad872",
+  "runner_sha256": "9a8d130eeee5b9aab1cbe89632a9357af6dcdcb8bbd1b484b6d2fdf7f0ce56be",
+  "runtime_helper_sha256": "16e1f7cf814112120eb71afa3385dd0ae5251dac85e5407d88ed0b639bc93cb0",
+  "checks": {
+    "runner_parse_and_describe": "pass",
+    "helper_php_lint": "pass",
+    "helper_candidate_identity_probe": "pass",
+    "atomic_rehearsal": {
+      "status": "pass",
+      "scenario_count": 23
+    },
+    "phpunit": {
+      "status": "pass",
+      "observed_tests": 108,
+      "observed_assertions": 714,
+      "php_version": "8.2.0"
+    },
+    "composer_validate_strict": "pass",
+    "composer_audit_locked_no_dev": {
+      "status": "pass",
+      "advisories": 0,
+      "abandoned": 0
+    },
+    "npm_audit_omit_dev": {
+      "status": "pass",
+      "vulnerabilities": 0
+    },
+    "git_diff_check": "pass"
+  },
+  "php_extensions": [
+    "Core",
+    "PDO",
+    "Phar",
+    "Reflection",
+    "SPL",
+    "SimpleXML",
+    "bcmath",
+    "calendar",
+    "ctype",
+    "curl",
+    "date",
+    "dom",
+    "fileinfo",
+    "filter",
+    "hash",
+    "iconv",
+    "json",
+    "libxml",
+    "mbstring",
+    "mysqlnd",
+    "openssl",
+    "pcre",
+    "pdo_mysql",
+    "pdo_sqlite",
+    "random",
+    "readline",
+    "session",
+    "sqlite3",
+    "standard",
+    "tokenizer",
+    "xml",
+    "xmlreader",
+    "xmlwriter",
+    "zlib"
+  ],
+  "production_actions": {
+    "dependency_cutover": false,
+    "receiver_staged_or_deployed": false,
+    "migration_run": false,
+    "maintenance_entered": false,
+    "live_file_changed": false,
+    "service_restarted": false,
+    "capability_enabled": false,
+    "shopnltees_changed": false,
+    "retention_or_customer_deletion_run": false
+  }
+}
