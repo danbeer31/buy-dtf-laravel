@@ -12,7 +12,9 @@ This candidate starts from the exact current production Composer files: lock SHA
 - Dependency-only commit: `c07c29332adcc9fa41f2c3b4f14bf6f35cf28c3c`.
 - Commit diff: only `composer.lock`, 22 insertions and 22 deletions.
 - Candidate lock SHA-256: `22af12c7e58fcfe809735dbf9955b2d22a264e9e7345cefd74398e36bf2773b9`.
-- Candidate receipt SHA-256: `3aff7d1c9a061c6818283664d019232d45ed62d6d33c526431a6a9450d48b0cb`.
+- Portable deterministic lock artifact: `buy-dtf-dependency-lock-c07c293.tar.gz`.
+- Portable artifact SHA-256: `4ac95177d2d839110cb72ad5ec50bdb59e41ff71202c3c9fbb870ad459a92d07`; its single extracted lock hashes to `22af12c7…`.
+- Candidate receipt SHA-256: `c717912b276f5f0c797bb0ef1333995fdfb93d9d11d6c72a22927de94150a1aa`.
 - Composer content hash remains `a72b3c22fc3bec98130fd5133da242a1`.
 - Package count remains 116; there are four updates, zero additions, zero removals, and zero unrelated changes.
 

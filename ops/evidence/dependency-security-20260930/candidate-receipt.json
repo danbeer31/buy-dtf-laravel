@@ -17,6 +17,14 @@
     "dependency_only_commit": "c07c29332adcc9fa41f2c3b4f14bf6f35cf28c3c",
     "composer_lock_path": "composer.lock",
     "composer_lock_sha256": "22af12c7e58fcfe809735dbf9955b2d22a264e9e7345cefd74398e36bf2773b9",
+    "portable_lock_artifact": {
+      "path": "ops/evidence/dependency-security-20260930/buy-dtf-dependency-lock-c07c293.tar.gz",
+      "sha256": "4ac95177d2d839110cb72ad5ec50bdb59e41ff71202c3c9fbb870ad459a92d07",
+      "member": "buy-dtf-dependency-lock-c07c293/composer.lock",
+      "extracted_composer_lock_sha256": "22af12c7e58fcfe809735dbf9955b2d22a264e9e7345cefd74398e36bf2773b9",
+      "deterministic_tar_metadata": true,
+      "gzip_timestamp_suppressed": true
+    },
     "repository_composer_json_sha256": "12359b3c25459a78578c67ac542bc72b7148c16d0a1ff51c351b150aed75676c",
     "repository_composer_json_unchanged": true,
     "production_composer_json_must_be_retained": true,
