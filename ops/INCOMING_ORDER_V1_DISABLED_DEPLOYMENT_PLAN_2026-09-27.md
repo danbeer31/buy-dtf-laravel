@@ -2,7 +2,7 @@
 
 Date: 2026-09-27 (America/Chicago)
 
-Status: **The Phase 0 font stop is corrected in a new, locally reviewed artifact set. No new production preflight or staging has occurred. NO-GO pending independent review and a new authorization.**
+Status: **The 2026-09-30 cutover attempt stopped before maintenance, migration, or source installation after the static gate inherited mode `0600`. Production was restored to its exact original front controller and independently confirmed healthy. Runner `2a7bf3966c593532af1e22db0f03d8cec1c6aecfde0902629b9f2328016c1138` is permanently NO-GO. The corrected runner and local fault-injection rehearsal below are NO-GO pending independent review, a new staging receipt, and separate authorization.**
 
 Nothing in this plan authorizes a migration, source deployment, service restart, capability change, ShopNLTees sender change, or retention action.
 
@@ -38,7 +38,12 @@ The deployment adds the capability-discovery route, guarded receiver code, froze
 | Runtime paths | 37 total: 26 additions and 11 replacements |
 | Deterministic source archive SHA-256 | `ed1df143d219fa073efb2707508c3eb81ba17b777597cebc20a72d3c546522c2` |
 | Final deployment runner | `ops/deployment/incoming_order_v1_deploy.py` |
-| Final deployment runner SHA-256 | `2a7bf3966c593532af1e22db0f03d8cec1c6aecfde0902629b9f2328016c1138` |
+| Corrected deployment runner SHA-256 | `61607104b81470af9cf8b5505f9ec6ae04cb67653474aa726b0b2d712097fb5f` |
+| Permanently retired runner SHA-256 | `2a7bf3966c593532af1e22db0f03d8cec1c6aecfde0902629b9f2328016c1138` |
+| Local gate rehearsal script | `ops/deployment/rehearse_incoming_order_v1_gate.py` |
+| Local gate rehearsal script SHA-256 | `f43f84352a1a972d70120ed7a3528924e770ba01e9ac06b3d1f1ab5dd13b44e2` |
+| Local gate rehearsal receipt SHA-256 | `6d8c03d382f3bafea293cff5c3ebff7c4a3db3fabeada652747a0babc9e744b5` |
+| Local correction validation receipt SHA-256 | `cde8568af9ca08df5b9a063c918595d794dfb72705fd1ed1aaf467a073a14968` |
 | Runtime/schema helper | `ops/deployment/incoming_order_v1_runtime_probe.php` |
 | Runtime/schema helper SHA-256 | `1b37d3a38834ef633cee5caa784d909b2f5be41ae6e22766f817f80f9f4a20bd` |
 | Exact migration | `database/migrations/2026_09_27_120000_create_incoming_order_v1_tables.php` |
@@ -55,6 +60,22 @@ The deployment adds the capability-discovery route, guarded receiver code, froze
 | Reviewed static 503 gate | `94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03` |
 
 The runtime manifest is the complete source allowlist. Do not deploy `.env.example`, tests, contracts, evidence images, review scripts, `ops/` documentation, `composer.json`, `composer.lock`, `vendor/`, `bootstrap/cache/`, frontend assets, uploads, or any path absent from that manifest.
+
+The September 28 staged release receipt records the permanently retired runner and must not be used for another cutover. The failed-operation directory at `/var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-rollbacks/0799440b-20260930T220235Z` and every receipt beneath it remain immutable evidence. A future attempt requires a new sibling release, a new staging receipt containing the corrected runner, independent review, and separate authorization.
+
+## Corrected front-controller transition primitive
+
+The corrected primitive is shared by initial cutover gating, rollback gating, failure containment, normal reopening, and rollback reopening:
+
+1. Require the original front controller to match its reviewed SHA-256, UID `1000`, GID `1000`, and mode `0644`.
+2. Build the replacement beside the live path, then explicitly `chown` and `chmod 0644` and verify bytes plus metadata before any swap. The process-wide `umask 077` cannot reduce the prepared file's final mode.
+3. Persist and fsync a `replacement_pending` transition before `os.replace`.
+4. Atomically replace and fsync the directory, verify the live identity, then persist and fsync `installed` before any HTTP verification.
+5. On verification failure or an injected exception, use the retained exact original plus reviewed metadata to restore atomically and write both an exact-restoration receipt and a gate-failure receipt.
+6. Recovery classifies the actual live front-controller SHA-256 and validates the durable transition history. It never decides from `static_gate_active` alone.
+7. A pending transition with live gate bytes is reconciled as installed before verification. A live gate with the historical `0600` failure mode is identified by bytes and restored exactly.
+
+The local Linux rehearsal runs under `umask 077`, executes the gate as a separate UID/GID `33` process, proves a `0600` negative control is unreadable, and covers success, failures before/after replacement, verification failure, recovery of the historical `0600` gate, recovery from pending state with live gate bytes, and later-phase rollback gating. It does not access production.
 
 The expected-live column is deliberately based on raw production bytes, not Git-normalized blobs. Eight replaced files currently contain mixed CRLF/LF line endings; converting them to LF produces an exact match with feature base `f11a9413d9040b4562064ee02fda002b317e0de9`. Their raw hashes are nevertheless the compare-and-swap authority. The candidate target hashes remain the exact bytes from receiver commit `0799440b7cbb0bad364fc2a65b41285f20245658`, and rollback must restore the original raw production bytes and line endings.
 

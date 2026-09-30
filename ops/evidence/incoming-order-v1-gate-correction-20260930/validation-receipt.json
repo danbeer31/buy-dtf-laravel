@@ -1,0 +1,94 @@
+{
+  "receipt_version": 1,
+  "status": "ready_for_independent_review_no_go_for_staging_or_deployment",
+  "generated_at_utc": "2026-09-30T22:33:20Z",
+  "scope": "local_front_controller_gate_correction_and_fault_injection_rehearsal_only",
+  "branch": "feature/incoming-order-v1-job-card-20260927",
+  "artifact_base_commit": "4dc61a09a780974a519728a76f776f78bb8b7b0f",
+  "receiver_target_commit": "0799440b7cbb0bad364fc2a65b41285f20245658",
+  "retired_runner": {
+    "sha256": "2a7bf3966c593532af1e22db0f03d8cec1c6aecfde0902629b9f2328016c1138",
+    "status": "permanent_no_go_do_not_retry"
+  },
+  "corrected_artifacts": {
+    "runner": {
+      "path": "ops/deployment/incoming_order_v1_deploy.py",
+      "sha256": "61607104b81470af9cf8b5505f9ec6ae04cb67653474aa726b0b2d712097fb5f"
+    },
+    "rehearsal_script": {
+      "path": "ops/deployment/rehearse_incoming_order_v1_gate.py",
+      "sha256": "f43f84352a1a972d70120ed7a3528924e770ba01e9ac06b3d1f1ab5dd13b44e2"
+    },
+    "rehearsal_receipt": {
+      "path": "ops/evidence/incoming-order-v1-gate-correction-20260930/rehearsal-receipt.json",
+      "sha256": "6d8c03d382f3bafea293cff5c3ebff7c4a3db3fabeada652747a0babc9e744b5",
+      "canonical_sha256": "b8d44252d71db1b46063313212c4a0e38780416c993ae0a72b8538f2d5b43b57"
+    }
+  },
+  "rehearsal": {
+    "status": "pass",
+    "umask": "0077",
+    "runner_uid": 0,
+    "runner_gid": 0,
+    "separate_web_reader_uid": 33,
+    "separate_web_reader_gid": 33,
+    "mode_0600_negative_control_denied": true,
+    "scenario_count": 7,
+    "all_scenarios_restored_exact_original": true,
+    "scenarios": [
+      "success_under_umask_077",
+      "failure_before_replacement",
+      "failure_after_replacement",
+      "failure_during_verification",
+      "recovery_from_live_mode_0600_gate",
+      "recovery_from_pending_state_and_live_gate",
+      "later_phase_rollback_gate"
+    ]
+  },
+  "validation": {
+    "python_compile": "pass",
+    "runner_describe": "pass",
+    "git_diff_check": "pass",
+    "phpunit": {
+      "status": "pass_with_one_existing_skip",
+      "tests": 170,
+      "assertions": 1099,
+      "skipped": 1
+    },
+    "composer_validate_strict": "pass",
+    "composer_audit_locked_no_dev": {
+      "status": "fail_new_advisories",
+      "advisories": 4,
+      "affected_packages": 3,
+      "ids": [
+        "CVE-2026-102279",
+        "GHSA-97jj-33gv-5xf9",
+        "GHSA-3q6v-r5mr-hxv8",
+        "CVE-2026-102601"
+      ]
+    },
+    "npm_audit_omit_dev": {
+      "status": "pass",
+      "vulnerabilities": 0
+    },
+    "frontend_build": {
+      "status": "pass",
+      "modules_transformed": 112,
+      "known_sass_deprecation_warnings": true
+    }
+  },
+  "production_actions": {
+    "production_accessed": false,
+    "failed_operation_evidence_changed": false,
+    "staged": false,
+    "deployed": false,
+    "migration_run": false,
+    "maintenance_entered": false,
+    "service_restarted": false,
+    "configuration_changed": false,
+    "capability_enabled": false,
+    "shopnltees_changed": false,
+    "retention_action": false,
+    "customer_deletion_action": false
+  }
+}

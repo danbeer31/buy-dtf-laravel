@@ -48,6 +48,15 @@ jobs:
           extensions: mbstring, pdo_sqlite, sqlite3
           coverage: none
 
+      - name: Rehearse incoming-order front-controller recovery
+        shell: bash
+        run: |
+          python3 -m py_compile \
+            ops/deployment/incoming_order_v1_deploy.py \
+            ops/deployment/rehearse_incoming_order_v1_gate.py
+          sudo python3 ops/deployment/rehearse_incoming_order_v1_gate.py \
+            --rehearsal-parent /tmp
+
       - name: Lint dependency runtime helper
         run: php -l ops/deployment/dependency_runtime_probe.php
 
