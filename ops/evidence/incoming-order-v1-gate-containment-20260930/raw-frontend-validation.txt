@@ -1,0 +1,320 @@
+$ npm.cmd audit --omit=dev --json
+{
+  "auditReportVersion": 2,
+  "vulnerabilities": {},
+  "metadata": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 0
+    },
+    "dependencies": {
+      "prod": 1,
+      "dev": 274,
+      "optional": 108,
+      "peer": 0,
+      "peerOptional": 0,
+      "total": 274
+    }
+  }
+}
+__EXIT_STATUS__=0
+
+$ npm.cmd run build
+
+> build
+> vite build
+
+vite v7.3.1 building client environment for production...
+transforming...
+DEPRECATION WARNING [import]: Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+  ╷
+5 │ @import 'bootstrap/scss/bootstrap';
+  │         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  ╵
+    C:\Users\danie\projects\buy-dtf-job-card-20260927\resources\css\app.scss 5:9  root stylesheet
+
+DEPRECATION WARNING [import]: Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+  ╷
+1 │ @import "mixins/banner";
+  │         ^^^^^^^^^^^^^^^
+  ╵
+    ..\..\..\bootstrap\scss\bootstrap.scss 1:9                                    @import
+    C:\Users\danie\projects\buy-dtf-job-card-20260927\resources\css\app.scss 5:9  root stylesheet
+
+DEPRECATION WARNING [import]: Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+  ╷
+7 │ @import "functions";
+  │         ^^^^^^^^^^^
+  ╵
+    ..\..\..\bootstrap\scss\bootstrap.scss 7:9                                    @import
+    C:\Users\danie\projects\buy-dtf-job-card-20260927\resources\css\app.scss 5:9  root stylesheet
+
+DEPRECATION WARNING [import]: Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+  ╷
+8 │ @import "variables";
+  │         ^^^^^^^^^^^
+  ╵
+    ..\..\..\bootstrap\scss\bootstrap.scss 8:9                                    @import
+    C:\Users\danie\projects\buy-dtf-job-card-20260927\resources\css\app.scss 5:9  root stylesheet
+
+DEPRECATION WARNING [import]: Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+  ╷
+9 │ @import "variables-dark";
+  │         ^^^^^^^^^^^^^^^^
+  ╵
+    ..\..\..\bootstrap\scss\bootstrap.scss 9:9                                    @import
+    C:\Users\danie\projects\buy-dtf-job-card-20260927\resources\css\app.scss 5:9  root stylesheet
+
+DEPRECATION WARNING [if-function]: The Sass if() syntax is deprecated in favor of the modern CSS syntax.
+
+Suggestion: if(sass($arg == "$value"): $value; else: $arg)
+
+More info: https://sass-lang.com/d/if-function
+
+   ╷
+58 │       $_args: append($_args, if($arg == "$key", $key, if($arg == "$value", $value, $arg)));
+   │                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   ╵
+    ..\..\..\bootstrap\scss\_functions.scss 58:55                                 @import
+    ..\..\..\bootstrap\scss\bootstrap.scss 7:9                                    @import
+    C:\Users\danie\projects\buy-dtf-job-card-20260927\resources\css\app.scss 5:9  root stylesheet
+
+DEPRECATION WARNING [if-function]: The Sass if() syntax is deprecated in favor of the modern CSS syntax.
+
+Suggestion: if(sass($arg == "$key"): $key; else: if($arg == "$value", $value, $arg))
+
+More info: https://sass-lang.com/d/if-function
+
+   ╷
+58 │       $_args: append($_args, if($arg == "$key", $key, if($arg == "$value", $value, $arg)));
+   │                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   ╵
+    ..\..\..\bootstrap\scss\_functions.scss 58:30                                 @import
+    ..\..\..\bootstrap\scss\bootstrap.scss 7:9                                    @import
+    C:\Users\danie\projects\buy-dtf-job-card-20260927\resources\css\app.scss 5:9  root stylesheet
+
+DEPRECATION WARNING [if-function]: The Sass if() syntax is deprecated in favor of the modern CSS syntax.
+
+Suggestion: if(sass($l1 > $l2): divide($l1 + 0.05, $l2 + 0.05); else: divide($l2 + 0.05, $l1 + 0.05))
+
+More info: https://sass-lang.com/d/if-function
+
+    ╷
+177 │   @return if($l1 > $l2, divide($l1 + .05, $l2 + .05), divide($l2 + .05, $l1 + .05));
+    │           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ╵
+    ..\..\..\bootstrap\scss\_functions.scss 177:11                                @import
+    ..\..\..\bootstrap\scss\bootstrap.scss 7:9                                    @import
+    C:\Users\danie\projects\buy-dtf-job-card-20260927\resources\css\app.scss 5:9  root stylesheet
+
+DEPRECATION WARNING [if-function]: The Sass if() syntax is deprecated in favor of the modern CSS syntax.
+
+Suggestion: if(sass(divide($value, 255) < 0.04045): divide(divide($value, 255), 12.92); else: nth($_luminance-list, $value + 1))
+
+More info: https://sass-lang.com/d/if-function
+
+    ╷
+191 │     $value: if(divide($value, 255) < .04045, divide(divide($value, 255), 12.92), nth($_luminance-list, $value + 1));
+    │             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ╵
+    ..\..\..\bootstrap\scss\_functions.scss 191:13                                @import
+    ..\..\..\bootstrap\scss\bootstrap.scss 7:9                                    @import
+    C:\Users\danie\projects\buy-dtf-job-card-20260927\resources\css\app.scss 5:9  root stylesheet
+
+DEPRECATION WARNING [if-function]: The Sass if() syntax is deprecated in favor of the modern CSS syntax.
+
+Suggestion: if(sass($weight > 0): shade-color($color, $weight); else: tint-color($color, -$weight))
+
+More info: https://sass-lang.com/d/if-function
+
+    ╷
+217 │   @return if($weight > 0, shade-color($color, $weight), tint-color($color, -$weight));
+    │           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ╵
+    ..\..\..\bootstrap\scss\_functions.scss 217:11                                @import
+    ..\..\..\bootstrap\scss\bootstrap.scss 7:9                                    @import
+    C:\Users\danie\projects\buy-dtf-job-card-20260927\resources\css\app.scss 5:9  root stylesheet
+
+DEPRECATION WARNING [global-builtin]: Global built-in functions are deprecated and will be removed in Dart Sass 3.0.0.
+Use color.mix instead.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+    ╷
+207 │   @return mix(white, $color, $weight);
+    │           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ╵
+    ..\..\..\bootstrap\scss\_functions.scss 207:11                                tint-color()
+    ..\..\..\bootstrap\scss\_variables.scss 79:12                                 @import
+    ..\..\..\bootstrap\scss\bootstrap.scss 8:9                                    @import
+    C:\Users\danie\projects\buy-dtf-job-card-20260927\resources\css\app.scss 5:9  root stylesheet
+
+DEPRECATION WARNING [global-builtin]: Global built-in functions are deprecated and will be removed in Dart Sass 3.0.0.
+Use color.mix instead.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+    ╷
+212 │   @return mix(black, $color, $weight);
+    │           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ╵
+    ..\..\..\bootstrap\scss\_functions.scss 212:11                                shade-color()
+    ..\..\..\bootstrap\scss\_variables.scss 84:12                                 @import
+    ..\..\..\bootstrap\scss\bootstrap.scss 8:9                                    @import
+    C:\Users\danie\projects\buy-dtf-job-card-20260927\resources\css\app.scss 5:9  root stylesheet
+
+DEPRECATION WARNING [global-builtin]: Global built-in functions are deprecated and will be removed in Dart Sass 3.0.0.
+Use color.mix instead.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+    ╷
+342 │ $light-bg-subtle:         mix($gray-100, $white) !default;
+    │                           ^^^^^^^^^^^^^^^^^^^^^^
+    ╵
+    ..\..\..\bootstrap\scss\_variables.scss 342:27                                @import
+    ..\..\..\bootstrap\scss\bootstrap.scss 8:9                                    @import
+    C:\Users\danie\projects\buy-dtf-job-card-20260927\resources\css\app.scss 5:9  root stylesheet
+
+DEPRECATION WARNING [global-builtin]: Global built-in functions are deprecated and will be removed in Dart Sass 3.0.0.
+Use math.unit instead.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+   ╷
+11 │     @if $prev-num == null or unit($num) == "%" or unit($prev-num) == "%" {
+   │                              ^^^^^^^^^^
+   ╵
+    ..\..\..\bootstrap\scss\_functions.scss 11:30                                 -assert-ascending()
+    ..\..\..\bootstrap\scss\_variables.scss 494:1                                 @import
+    ..\..\..\bootstrap\scss\bootstrap.scss 8:9                                    @import
+    C:\Users\danie\projects\buy-dtf-job-card-20260927\resources\css\app.scss 5:9  root stylesheet
+
+DEPRECATION WARNING [global-builtin]: Global built-in functions are deprecated and will be removed in Dart Sass 3.0.0.
+Use math.unit instead.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+   ╷
+11 │     @if $prev-num == null or unit($num) == "%" or unit($prev-num) == "%" {
+   │                                                   ^^^^^^^^^^^^^^^
+   ╵
+    ..\..\..\bootstrap\scss\_functions.scss 11:51                                 -assert-ascending()
+    ..\..\..\bootstrap\scss\_variables.scss 494:1                                 @import
+    ..\..\..\bootstrap\scss\bootstrap.scss 8:9                                    @import
+    C:\Users\danie\projects\buy-dtf-job-card-20260927\resources\css\app.scss 5:9  root stylesheet
+
+DEPRECATION WARNING [color-functions]: red() is deprecated. Suggestion:
+
+color.channel($color, "red", $space: rgb)
+
+More info: https://sass-lang.com/d/color-functions
+
+    ╷
+185 │     "r": red($color),
+    │          ^^^^^^^^^^^
+    ╵
+    ..\..\..\bootstrap\scss\_functions.scss 185:10                                luminance()
+    ..\..\..\bootstrap\scss\_functions.scss 174:8                                 contrast-ratio()
+    ..\..\..\bootstrap\scss\_functions.scss 159:22                                color-contrast()
+    ..\..\..\bootstrap\scss\_variables.scss 846:42                                @import
+    ..\..\..\bootstrap\scss\bootstrap.scss 8:9                                    @import
+    C:\Users\danie\projects\buy-dtf-job-card-20260927\resources\css\app.scss 5:9  root stylesheet
+
+DEPRECATION WARNING [color-functions]: green() is deprecated. Suggestion:
+
+color.channel($color, "green", $space: rgb)
+
+More info: https://sass-lang.com/d/color-functions
+
+    ╷
+186 │     "g": green($color),
+    │          ^^^^^^^^^^^^^
+    ╵
+    ..\..\..\bootstrap\scss\_functions.scss 186:10                                luminance()
+    ..\..\..\bootstrap\scss\_functions.scss 174:8                                 contrast-ratio()
+    ..\..\..\bootstrap\scss\_functions.scss 159:22                                color-contrast()
+    ..\..\..\bootstrap\scss\_variables.scss 846:42                                @import
+    ..\..\..\bootstrap\scss\bootstrap.scss 8:9                                    @import
+    C:\Users\danie\projects\buy-dtf-job-card-20260927\resources\css\app.scss 5:9  root stylesheet
+
+DEPRECATION WARNING [color-functions]: blue() is deprecated. Suggestion:
+
+color.channel($color, "blue", $space: rgb)
+
+More info: https://sass-lang.com/d/color-functions
+
+    ╷
+187 │     "b": blue($color)
+    │          ^^^^^^^^^^^^
+    ╵
+    ..\..\..\bootstrap\scss\_functions.scss 187:10                                luminance()
+    ..\..\..\bootstrap\scss\_functions.scss 174:8                                 contrast-ratio()
+    ..\..\..\bootstrap\scss\_functions.scss 159:22                                color-contrast()
+    ..\..\..\bootstrap\scss\_variables.scss 846:42                                @import
+    ..\..\..\bootstrap\scss\bootstrap.scss 8:9                                    @import
+    C:\Users\danie\projects\buy-dtf-job-card-20260927\resources\css\app.scss 5:9  root stylesheet
+
+DEPRECATION WARNING [color-functions]: red() is deprecated. Suggestion:
+
+color.channel($color, "red", $space: rgb)
+
+More info: https://sass-lang.com/d/color-functions
+
+   ╷
+37 │   @return red($value), green($value), blue($value);
+   │           ^^^^^^^^^^^
+   ╵
+    ..\..\..\bootstrap\scss\_functions.scss 37:11                                 to-rgb()
+    ..\..\..\bootstrap\scss\_variables.scss 846:31                                @import
+    ..\..\..\bootstrap\scss\bootstrap.scss 8:9                                    @import
+    C:\Users\danie\projects\buy-dtf-job-card-20260927\resources\css\app.scss 5:9  root stylesheet
+
+DEPRECATION WARNING [color-functions]: green() is deprecated. Suggestion:
+
+color.channel($color, "green", $space: rgb)
+
+More info: https://sass-lang.com/d/color-functions
+
+   ╷
+37 │   @return red($value), green($value), blue($value);
+   │                        ^^^^^^^^^^^^^
+   ╵
+    ..\..\..\bootstrap\scss\_functions.scss 37:24                                 to-rgb()
+    ..\..\..\bootstrap\scss\_variables.scss 846:31                                @import
+    ..\..\..\bootstrap\scss\bootstrap.scss 8:9                                    @import
+    C:\Users\danie\projects\buy-dtf-job-card-20260927\resources\css\app.scss 5:9  root stylesheet
+
+WARNING: 311 repetitive deprecation warnings omitted.
+Run in verbose mode to see all warnings.
+
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✓ 112 modules transformed.
+rendering chunks...
+computing gzip size...
+public/build/manifest.json              0.33 kB │ gzip:  0.17 kB
+public/build/assets/app-B5oFf84X.css  230.96 kB │ gzip: 31.39 kB
+public/build/assets/app-i-LVkB2i.js   163.87 kB │ gzip: 55.12 kB
+✓ built in 2.25s
+__EXIT_STATUS__=0

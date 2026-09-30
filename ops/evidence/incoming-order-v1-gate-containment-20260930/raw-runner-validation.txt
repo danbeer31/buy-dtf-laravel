@@ -1,0 +1,69 @@
+$ wsl.exe --cd /mnt/c/Users/danie/projects/buy-dtf-job-card-20260927 env PYTHONPYCACHEPREFIX=/tmp/buy-dtf-gate-containment-pycache python3 -m py_compile ops/deployment/incoming_order_v1_deploy.py ops/deployment/rehearse_incoming_order_v1_gate.py
+
+__EXIT_STATUS__=0
+
+$ wsl.exe --cd /mnt/c/Users/danie/projects/buy-dtf-job-card-20260927 python3 ops/deployment/incoming_order_v1_deploy.py --describe
+{
+  "application_root": "/var/www/buy-dtf",
+  "approval_tokens": {
+    "deploy": "DEPLOY-BUYDTF-INCOMING-0799440b7cbb0bad",
+    "recover": "RECOVER-BUYDTF-INCOMING-0799440b7cbb0bad",
+    "stage": "STAGE-BUYDTF-INCOMING-0799440b7cbb0bad"
+  },
+  "archive_sha256": "ed1df143d219fa073efb2707508c3eb81ba17b777597cebc20a72d3c546522c2",
+  "artifact": "BuyDTF incoming-order v1 fixed deployment runner",
+  "dependency_identity": {
+    "cache_manifest_sha256": "468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9",
+    "composer_lock_sha256": "eeac4637272ca2b9aeaa797a4440cfc8b4e31f5a469619c46ebfa5791c701831",
+    "packages_sha256": "21da8f9ed19687e708cc7bc5cc59394c6fcdf9b9deadf617ae70526f815a1db0",
+    "services_sha256": "1f7623b2b4ffd2c4099fb34ad86fc96c1479e27bf81b1b0ba328c988cc4ffcb5",
+    "vendor_manifest_sha256": "97cd0bb104c42b57fbf90204ee74837ec1359b0ab1cbf8dac7d6929a154922d7"
+  },
+  "font_asset": {
+    "license_path": "/var/www/buy-dtf/resources/fonts/job-card-v2/LICENSE.txt",
+    "license_sha256": "bc88ec457a574842b8f28c20e97a1fe91ecca69db14840484a22c694f2ffb6da",
+    "path": "/var/www/buy-dtf/resources/fonts/job-card-v2/DejaVuSans.ttf",
+    "predeployment_state": "absent_reviewed_addition",
+    "renderer_version": "separate-job-card-v2",
+    "sha256": "ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280"
+  },
+  "front_controller_gate": {
+    "gid": 1000,
+    "installed_persisted_before_http_verification": true,
+    "mode": "0o644",
+    "recovery_uses_live_identity_and_durable_state": true,
+    "replacement_pending_persisted_before_swap": true,
+    "uid": 1000,
+    "verification_failure_restores_exact_original": true,
+    "web_reader_gid": 33,
+    "web_reader_uid": 33
+  },
+  "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
+  "helper_sha256": "1b37d3a38834ef633cee5caa784d909b2f5be41ae6e22766f817f80f9f4a20bd",
+  "manifest_sha256": "b6efbd5463c82f895ca8d359b665a145d88c0d363ce7f97b247eae9080853bb6",
+  "migration": {
+    "path": "database/migrations/2026_09_27_120000_create_incoming_order_v1_tables.php",
+    "sha256": "79fa911b0b2ad9bb79c33080725446093dffd4df3e01c3cb3888d508087c9f9d"
+  },
+  "release_root": "/var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases",
+  "rollback_root": "/var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-rollbacks",
+  "runtime_paths": {
+    "additions": 26,
+    "replacements": 11,
+    "total": 37
+  },
+  "safety": {
+    "capability_enablement": false,
+    "composer_operations": false,
+    "environment_change": false,
+    "gate_failure_restores_original_with_receipt": true,
+    "general_migration": false,
+    "git_operations": false,
+    "retention_execution": false,
+    "service_restart": false,
+    "source_rollback_drops_additive_schema": false
+  },
+  "static_gate_sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03",
+  "target_commit": "0799440b7cbb0bad364fc2a65b41285f20245658"
+}
+__EXIT_STATUS__=0

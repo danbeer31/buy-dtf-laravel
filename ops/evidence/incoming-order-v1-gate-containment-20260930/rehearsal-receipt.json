@@ -1,0 +1,1959 @@
+{
+  "all_final_front_controllers_safe": true,
+  "artifact": "buy-dtf-incoming-order-front-controller-gate-rehearsal-v3",
+  "canonical_sha256": "5308f0303d56ef7529f1928c350cbe8aa9a25c037de3257ba0cf1e6565c8836c",
+  "later_phase_failure_original_restoration_receipts": [],
+  "later_phase_failure_retained_exact_gate": true,
+  "mode_0600_negative_control": {
+    "command": {
+      "argv_sha256": "b8f4d06082977bea022eabd612920ceb0f9f9a6086b1fd11b12598cbaa2ff131",
+      "executable_chain": [
+        "setpriv",
+        "python3"
+      ],
+      "exit_status": 1,
+      "stderr_sha256": "52ac4fbe8456d2a215724334c207932a3abf0d28f1335b2eaa7b6128c3cf7cf6",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "identity": {
+      "bytes": 339,
+      "metadata": {
+        "gid": 1000,
+        "kind": "file",
+        "mode": 384,
+        "uid": 1000
+      },
+      "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/negative-control/negative-control-mode-0600.php",
+      "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+    },
+    "read_denied": true,
+    "reader_gid": 33,
+    "reader_uid": 33,
+    "status": "pass"
+  },
+  "rehearsal_script_sha256": "c3b2e2b79986650a6d27625ae18372057d987ac61eebf42e8a08fb6d40232e5d",
+  "runner_identity": {
+    "egid": 0,
+    "euid": 0
+  },
+  "runner_sha256": "53723435a2d56d2736746a5a6d1e98fddeda660acbcf3a45f57b662b06b4adfd",
+  "scenario_count": 8,
+  "scenarios": {
+    "failure-after-replacement": {
+      "automatic_original_restoration_receipts": [
+        "after-replacement-gate-automatic-original-restore-receipt.json"
+      ],
+      "canonical_sha256": "faa120fb140a4fc22078526e855c76a25e340f7f0a4fbe3a78e5879c9a69f2ef",
+      "details": {
+        "expected_failure_sha256": "bc6c17f6d38c9b72e1941936cc3d6622eb346449da87b574ab1da5de96e63936"
+      },
+      "durable_transitions": [
+        {
+          "operation": "after-replacement-gate",
+          "phase": "replacement_pending",
+          "sequence": 1
+        },
+        {
+          "operation": "after-replacement-gate",
+          "phase": "installed",
+          "sequence": 2
+        },
+        {
+          "operation": "after-replacement-gate-automatic-original-restore",
+          "phase": "replacement_pending",
+          "sequence": 3
+        },
+        {
+          "operation": "after-replacement-gate-automatic-original-restore",
+          "phase": "installed",
+          "sequence": 4
+        },
+        {
+          "operation": "after-replacement-gate-automatic-original-restore",
+          "phase": "exact_original_verified",
+          "sequence": 5
+        }
+      ],
+      "evidence_manifest": [
+        {
+          "bytes": 1979,
+          "mode": "0o600",
+          "path": "after-replacement-gate-automatic-original-restore-receipt.json",
+          "sha256": "3a8cd4edbf77c79a9132b36c72d49092811ce8eb018056dcbeaed9e24789209b"
+        },
+        {
+          "bytes": 2064,
+          "mode": "0o600",
+          "path": "after-replacement-gate-gate-failure-receipt.json",
+          "sha256": "11574ec59e495a256a0a595f2904470c31bb68fb74f748eee045cfef13162667"
+        },
+        {
+          "bytes": 780,
+          "mode": "0o600",
+          "path": "events.jsonl",
+          "sha256": "d4bbdeadf54d2ad6c9f568921881035092f006340bfd12f4f81f9bfc3682874d"
+        },
+        {
+          "bytes": 40,
+          "mode": "0o600",
+          "path": "front-controller-before.php",
+          "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+        },
+        {
+          "bytes": 6763,
+          "mode": "0o600",
+          "path": "state.json",
+          "sha256": "17f4fb8dd0e5f8af3f52a950c6d46b23b401c8114e596140e83f7f9d893d4741"
+        }
+      ],
+      "final_durable_state": {
+        "containment_active": false,
+        "gate_failure_receipt_present": true,
+        "migration_executed": false,
+        "source_install_started": false,
+        "static_gate_active": false,
+        "status": "after-replacement-gate_failed_original_restored"
+      },
+      "final_front_controller": {
+        "bytes": 40,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+      },
+      "final_is_exact_gate": false,
+      "final_is_original": true,
+      "receipt_hashes": {
+        "after-replacement-gate-automatic-original-restore-receipt.json": "3a8cd4edbf77c79a9132b36c72d49092811ce8eb018056dcbeaed9e24789209b",
+        "after-replacement-gate-gate-failure-receipt.json": "11574ec59e495a256a0a595f2904470c31bb68fb74f748eee045cfef13162667"
+      },
+      "receipt_payloads": {
+        "after-replacement-gate-automatic-original-restore-receipt.json": {
+          "before": {
+            "bytes": 339,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/failure-after-replacement/application/public/index.php",
+            "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+          },
+          "exact_original_restored": true,
+          "generated_at_utc": "2026-09-30T23:11:56Z",
+          "operation": "after-replacement-gate-automatic-original-restore",
+          "replacement": {
+            "before": {
+              "bytes": 339,
+              "metadata": {
+                "gid": 1000,
+                "kind": "file",
+                "mode": 420,
+                "uid": 1000
+              },
+              "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/failure-after-replacement/application/public/index.php",
+              "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+            },
+            "installed": {
+              "bytes": 40,
+              "metadata": {
+                "gid": 1000,
+                "kind": "file",
+                "mode": 420,
+                "uid": 1000
+              },
+              "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/failure-after-replacement/application/public/index.php",
+              "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+            },
+            "prepared": {
+              "bytes": 40,
+              "metadata": {
+                "gid": 1000,
+                "kind": "file",
+                "mode": 420,
+                "uid": 1000
+              },
+              "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/failure-after-replacement/application/public/.index.php.incoming-12902-6c350ad9c952",
+              "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+            }
+          },
+          "restored": {
+            "bytes": 40,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/failure-after-replacement/application/public/index.php",
+            "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+          },
+          "status": "pass"
+        },
+        "after-replacement-gate-gate-failure-receipt.json": {
+          "failure_message_sha256": "56d02af64f09c6931f17eefc1f79b88b3ba4cffb549cc10f8e8415ff45e62ba1",
+          "failure_type": "DeploymentError",
+          "final": {
+            "bytes": 40,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/failure-after-replacement/application/public/index.php",
+            "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+          },
+          "generated_at_utc": "2026-09-30T23:11:56Z",
+          "initial": {
+            "bytes": 40,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/failure-after-replacement/application/public/index.php",
+            "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+          },
+          "live_after_failure": {
+            "bytes": 339,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/failure-after-replacement/application/public/index.php",
+            "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+          },
+          "mutation_started": false,
+          "operation": "after-replacement-gate",
+          "origin_probe": null,
+          "original_restoration_performed": true,
+          "post_restoration_health": {
+            "result": {
+              "application_healthy": true,
+              "front_controller": {
+                "bytes": 40,
+                "metadata": {
+                  "gid": 1000,
+                  "kind": "file",
+                  "mode": 420,
+                  "uid": 1000
+                },
+                "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+              }
+            },
+            "status": "pass"
+          },
+          "public_probe": null,
+          "restoration_receipt": {
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/failure-after-replacement/evidence/after-replacement-gate-automatic-original-restore-receipt.json",
+            "sha256": "3a8cd4edbf77c79a9132b36c72d49092811ce8eb018056dcbeaed9e24789209b"
+          },
+          "status": "gate_failed_original_restored"
+        }
+      },
+      "scenario": "failure-after-replacement",
+      "status": "pass"
+    },
+    "failure-before-replacement": {
+      "automatic_original_restoration_receipts": [
+        "before-replacement-gate-automatic-original-restore-receipt.json"
+      ],
+      "canonical_sha256": "0efc39f8542d43c62d562e0a5221099c690efd23daaa49d63b40c8a70a285413",
+      "details": {
+        "expected_failure_sha256": "21677549a4971be06591dec244a9ad921742a27d266638c87a32315234123dad"
+      },
+      "durable_transitions": [
+        {
+          "operation": "before-replacement-gate",
+          "phase": "replacement_pending",
+          "sequence": 1
+        },
+        {
+          "operation": "before-replacement-gate-automatic-original-restore",
+          "phase": "original_already_present",
+          "sequence": 2
+        },
+        {
+          "operation": "before-replacement-gate-automatic-original-restore",
+          "phase": "exact_original_verified",
+          "sequence": 3
+        }
+      ],
+      "evidence_manifest": [
+        {
+          "bytes": 872,
+          "mode": "0o600",
+          "path": "before-replacement-gate-automatic-original-restore-receipt.json",
+          "sha256": "b442642dcc28c606da9947a54ceb1d8c1dda11f581f6164105a52e0255eb4555"
+        },
+        {
+          "bytes": 2069,
+          "mode": "0o600",
+          "path": "before-replacement-gate-gate-failure-receipt.json",
+          "sha256": "651c1fab4d33b27b134ab15394f188d3e976cb423b7380ae9b2fab42ebfa4307"
+        },
+        {
+          "bytes": 495,
+          "mode": "0o600",
+          "path": "events.jsonl",
+          "sha256": "8738b5198c0f7e6663cb2f300d2c3aed7881f1a14c5655c152b3e39ae0fdeeaf"
+        },
+        {
+          "bytes": 40,
+          "mode": "0o600",
+          "path": "front-controller-before.php",
+          "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+        },
+        {
+          "bytes": 4104,
+          "mode": "0o600",
+          "path": "state.json",
+          "sha256": "3acaa6181dd596ca69ba89807251a5901320a212553c8056a4c6a69418c5ef10"
+        }
+      ],
+      "final_durable_state": {
+        "containment_active": false,
+        "gate_failure_receipt_present": true,
+        "migration_executed": false,
+        "source_install_started": false,
+        "static_gate_active": false,
+        "status": "before-replacement-gate_failed_original_restored"
+      },
+      "final_front_controller": {
+        "bytes": 40,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+      },
+      "final_is_exact_gate": false,
+      "final_is_original": true,
+      "receipt_hashes": {
+        "before-replacement-gate-automatic-original-restore-receipt.json": "b442642dcc28c606da9947a54ceb1d8c1dda11f581f6164105a52e0255eb4555",
+        "before-replacement-gate-gate-failure-receipt.json": "651c1fab4d33b27b134ab15394f188d3e976cb423b7380ae9b2fab42ebfa4307"
+      },
+      "receipt_payloads": {
+        "before-replacement-gate-automatic-original-restore-receipt.json": {
+          "before": {
+            "bytes": 40,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/failure-before-replacement/application/public/index.php",
+            "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+          },
+          "exact_original_restored": true,
+          "generated_at_utc": "2026-09-30T23:11:56Z",
+          "operation": "before-replacement-gate-automatic-original-restore",
+          "replacement": null,
+          "restored": {
+            "bytes": 40,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/failure-before-replacement/application/public/index.php",
+            "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+          },
+          "status": "pass"
+        },
+        "before-replacement-gate-gate-failure-receipt.json": {
+          "failure_message_sha256": "09327c7a7d0a967fca4571b23d0150e67582c98b92955817e28f0d0728f839a0",
+          "failure_type": "DeploymentError",
+          "final": {
+            "bytes": 40,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/failure-before-replacement/application/public/index.php",
+            "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+          },
+          "generated_at_utc": "2026-09-30T23:11:56Z",
+          "initial": {
+            "bytes": 40,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/failure-before-replacement/application/public/index.php",
+            "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+          },
+          "live_after_failure": {
+            "bytes": 40,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/failure-before-replacement/application/public/index.php",
+            "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+          },
+          "mutation_started": false,
+          "operation": "before-replacement-gate",
+          "origin_probe": null,
+          "original_restoration_performed": true,
+          "post_restoration_health": {
+            "result": {
+              "application_healthy": true,
+              "front_controller": {
+                "bytes": 40,
+                "metadata": {
+                  "gid": 1000,
+                  "kind": "file",
+                  "mode": 420,
+                  "uid": 1000
+                },
+                "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+              }
+            },
+            "status": "pass"
+          },
+          "public_probe": null,
+          "restoration_receipt": {
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/failure-before-replacement/evidence/before-replacement-gate-automatic-original-restore-receipt.json",
+            "sha256": "b442642dcc28c606da9947a54ceb1d8c1dda11f581f6164105a52e0255eb4555"
+          },
+          "status": "gate_failed_original_restored"
+        }
+      },
+      "scenario": "failure-before-replacement",
+      "status": "pass"
+    },
+    "failure-during-verification": {
+      "automatic_original_restoration_receipts": [
+        "verification-failure-gate-automatic-original-restore-receipt.json"
+      ],
+      "canonical_sha256": "53bed15d5c19c5d30a4429734151644469f85a30b0db8a6e630e6dc06a7a7d12",
+      "details": {
+        "expected_failure_sha256": "31f720f2954290d879c10497921b7fd509a283ae2039120d5161785389dc606d"
+      },
+      "durable_transitions": [
+        {
+          "operation": "verification-failure-gate",
+          "phase": "replacement_pending",
+          "sequence": 1
+        },
+        {
+          "operation": "verification-failure-gate",
+          "phase": "installed",
+          "sequence": 2
+        },
+        {
+          "operation": "verification-failure-gate-automatic-original-restore",
+          "phase": "replacement_pending",
+          "sequence": 3
+        },
+        {
+          "operation": "verification-failure-gate-automatic-original-restore",
+          "phase": "installed",
+          "sequence": 4
+        },
+        {
+          "operation": "verification-failure-gate-automatic-original-restore",
+          "phase": "exact_original_verified",
+          "sequence": 5
+        }
+      ],
+      "evidence_manifest": [
+        {
+          "bytes": 795,
+          "mode": "0o600",
+          "path": "events.jsonl",
+          "sha256": "010d70286b319aa995785e53e581a2a2397a63e1cc862e350b09ca54b369a075"
+        },
+        {
+          "bytes": 40,
+          "mode": "0o600",
+          "path": "front-controller-before.php",
+          "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+        },
+        {
+          "bytes": 6823,
+          "mode": "0o600",
+          "path": "state.json",
+          "sha256": "bd88e5fdb14ac74b18dc23d1a43f91dd17bce9e9f7d5bddc93ee8f9cc5583e17"
+        },
+        {
+          "bytes": 1992,
+          "mode": "0o600",
+          "path": "verification-failure-gate-automatic-original-restore-receipt.json",
+          "sha256": "22429dd1e2b8136563d60fae47ff618d0dadf1c261d0b362813a395e9041906e"
+        },
+        {
+          "bytes": 4951,
+          "mode": "0o600",
+          "path": "verification-failure-gate-gate-failure-receipt.json",
+          "sha256": "4871cf3dde6e1cb3649c127bfed79623151b2454e9b00c0c57c5f104910f1550"
+        }
+      ],
+      "final_durable_state": {
+        "containment_active": false,
+        "gate_failure_receipt_present": true,
+        "migration_executed": false,
+        "source_install_started": false,
+        "static_gate_active": false,
+        "status": "verification-failure-gate_failed_original_restored"
+      },
+      "final_front_controller": {
+        "bytes": 40,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+      },
+      "final_is_exact_gate": false,
+      "final_is_original": true,
+      "receipt_hashes": {
+        "verification-failure-gate-automatic-original-restore-receipt.json": "22429dd1e2b8136563d60fae47ff618d0dadf1c261d0b362813a395e9041906e",
+        "verification-failure-gate-gate-failure-receipt.json": "4871cf3dde6e1cb3649c127bfed79623151b2454e9b00c0c57c5f104910f1550"
+      },
+      "receipt_payloads": {
+        "verification-failure-gate-automatic-original-restore-receipt.json": {
+          "before": {
+            "bytes": 339,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/failure-during-verification/application/public/index.php",
+            "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+          },
+          "exact_original_restored": true,
+          "generated_at_utc": "2026-09-30T23:11:56Z",
+          "operation": "verification-failure-gate-automatic-original-restore",
+          "replacement": {
+            "before": {
+              "bytes": 339,
+              "metadata": {
+                "gid": 1000,
+                "kind": "file",
+                "mode": 420,
+                "uid": 1000
+              },
+              "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/failure-during-verification/application/public/index.php",
+              "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+            },
+            "installed": {
+              "bytes": 40,
+              "metadata": {
+                "gid": 1000,
+                "kind": "file",
+                "mode": 420,
+                "uid": 1000
+              },
+              "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/failure-during-verification/application/public/index.php",
+              "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+            },
+            "prepared": {
+              "bytes": 40,
+              "metadata": {
+                "gid": 1000,
+                "kind": "file",
+                "mode": 420,
+                "uid": 1000
+              },
+              "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/failure-during-verification/application/public/.index.php.incoming-12902-9f738b021336",
+              "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+            }
+          },
+          "restored": {
+            "bytes": 40,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/failure-during-verification/application/public/index.php",
+            "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+          },
+          "status": "pass"
+        },
+        "verification-failure-gate-gate-failure-receipt.json": {
+          "failure_message_sha256": "ec3927d67b3a2821b1063fb438c83a093ffe6cfa4e553cb2d98c9468cdbfe620",
+          "failure_type": "DeploymentError",
+          "final": {
+            "bytes": 40,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/failure-during-verification/application/public/index.php",
+            "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+          },
+          "generated_at_utc": "2026-09-30T23:11:56Z",
+          "initial": {
+            "bytes": 40,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/failure-during-verification/application/public/index.php",
+            "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+          },
+          "live_after_failure": {
+            "bytes": 339,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/failure-during-verification/application/public/index.php",
+            "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+          },
+          "mutation_started": false,
+          "operation": "verification-failure-gate",
+          "origin_probe": {
+            "front_controller": {
+              "bytes": 339,
+              "metadata": {
+                "gid": 1000,
+                "kind": "file",
+                "mode": 420,
+                "uid": 1000
+              },
+              "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/failure-during-verification/application/public/index.php",
+              "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+            },
+            "header_verified": true,
+            "php_command": {
+              "argv_sha256": "2569041ad50ff29f92dde705fcbf9a701386d62bc36f3d17ea788f529ed186ef",
+              "executable_chain": [
+                "setpriv",
+                "php"
+              ],
+              "exit_status": 0,
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout_sha256": "2fdceb579aa8e0aa62c46d0b44b7a0efe95736f468889531f13cc605ad55ef57"
+            },
+            "reader": {
+              "bytes": 339,
+              "egid": 33,
+              "euid": 33,
+              "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+            },
+            "reader_command": {
+              "argv_sha256": "5a7631d8d574c7e07a7e3d9f98935a48905e44219642e2f67789a267f959924f",
+              "executable_chain": [
+                "setpriv",
+                "python3"
+              ],
+              "exit_status": 0,
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout_sha256": "8935255040cf75b970c3a7c0191e70bcbc91852cd1ac558607c2624f472d5bc9"
+            },
+            "route": "origin_loopback",
+            "sentinel_verified": true,
+            "status": 503
+          },
+          "original_restoration_performed": true,
+          "post_restoration_health": {
+            "result": {
+              "application_healthy": true,
+              "front_controller": {
+                "bytes": 40,
+                "metadata": {
+                  "gid": 1000,
+                  "kind": "file",
+                  "mode": 420,
+                  "uid": 1000
+                },
+                "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+              }
+            },
+            "status": "pass"
+          },
+          "public_probe": {
+            "front_controller": {
+              "bytes": 339,
+              "metadata": {
+                "gid": 1000,
+                "kind": "file",
+                "mode": 420,
+                "uid": 1000
+              },
+              "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/failure-during-verification/application/public/index.php",
+              "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+            },
+            "header_verified": false,
+            "php_command": {
+              "argv_sha256": "2569041ad50ff29f92dde705fcbf9a701386d62bc36f3d17ea788f529ed186ef",
+              "executable_chain": [
+                "setpriv",
+                "php"
+              ],
+              "exit_status": 0,
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout_sha256": "2fdceb579aa8e0aa62c46d0b44b7a0efe95736f468889531f13cc605ad55ef57"
+            },
+            "reader": {
+              "bytes": 339,
+              "egid": 33,
+              "euid": 33,
+              "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+            },
+            "reader_command": {
+              "argv_sha256": "5a7631d8d574c7e07a7e3d9f98935a48905e44219642e2f67789a267f959924f",
+              "executable_chain": [
+                "setpriv",
+                "python3"
+              ],
+              "exit_status": 0,
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout_sha256": "8935255040cf75b970c3a7c0191e70bcbc91852cd1ac558607c2624f472d5bc9"
+            },
+            "route": "public_cloudflare",
+            "sentinel_verified": true,
+            "status": 500
+          },
+          "restoration_receipt": {
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/failure-during-verification/evidence/verification-failure-gate-automatic-original-restore-receipt.json",
+            "sha256": "22429dd1e2b8136563d60fae47ff618d0dadf1c261d0b362813a395e9041906e"
+          },
+          "status": "gate_failed_original_restored"
+        }
+      },
+      "scenario": "failure-during-verification",
+      "status": "pass"
+    },
+    "later-phase-gate-verification-failure": {
+      "automatic_original_restoration_receipts": [],
+      "canonical_sha256": "9e2668b594ffa32c449118587acf2f5f6eb882df23d4bcc2eb461c7ecd014c8f",
+      "details": {
+        "expected_fail_closed_result": "exact_gate_retained_without_original_restore",
+        "expected_failure_sha256": "7b28661237f62c4ef0e57acff533d47baac01c757b9259c4f18ee7562b0cc283",
+        "migration_executed": true,
+        "source_install_started": true
+      },
+      "durable_transitions": [
+        {
+          "operation": "later-phase-verification-failure-gate",
+          "phase": "replacement_pending",
+          "sequence": 1
+        },
+        {
+          "operation": "later-phase-verification-failure-gate",
+          "phase": "installed",
+          "sequence": 2
+        },
+        {
+          "operation": "later-phase-verification-failure-gate-verification-failure",
+          "phase": "containment_retained",
+          "sequence": 3
+        }
+      ],
+      "evidence_manifest": [
+        {
+          "bytes": 1092,
+          "mode": "0o600",
+          "path": "events.jsonl",
+          "sha256": "4008c13e53739d8132dfd2576fff5ffe0b443f5188b5dc72f37aa17132e6a814"
+        },
+        {
+          "bytes": 40,
+          "mode": "0o600",
+          "path": "front-controller-before.php",
+          "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+        },
+        {
+          "bytes": 4652,
+          "mode": "0o600",
+          "path": "later-phase-verification-failure-gate-gate-failure-receipt.json",
+          "sha256": "781784a5f171306374fe534364c036108e47585b905a6996c55f8f77ae19d341"
+        },
+        {
+          "bytes": 974,
+          "mode": "0o600",
+          "path": "later-phase-verification-failure-gate-verification-failure-containment-receipt.json",
+          "sha256": "0904569cb4b38c9e51407563309745446d64e3342555fb40c644b369a38220f5"
+        },
+        {
+          "bytes": 4768,
+          "mode": "0o600",
+          "path": "state.json",
+          "sha256": "298aea1b918556fd4bc923f8180edb9e92df8ff2dde8daf9d749ceffdd7e6701"
+        }
+      ],
+      "final_durable_state": {
+        "containment_active": true,
+        "gate_failure_receipt_present": true,
+        "migration_executed": true,
+        "source_install_started": true,
+        "static_gate_active": true,
+        "status": "later-phase-verification-failure-gate_verification_failed_site_gated"
+      },
+      "final_front_controller": {
+        "bytes": 339,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+      },
+      "final_is_exact_gate": true,
+      "final_is_original": false,
+      "receipt_hashes": {
+        "later-phase-verification-failure-gate-gate-failure-receipt.json": "781784a5f171306374fe534364c036108e47585b905a6996c55f8f77ae19d341",
+        "later-phase-verification-failure-gate-verification-failure-containment-receipt.json": "0904569cb4b38c9e51407563309745446d64e3342555fb40c644b369a38220f5"
+      },
+      "receipt_payloads": {
+        "later-phase-verification-failure-gate-gate-failure-receipt.json": {
+          "containment_receipt": {
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/later-phase-gate-verification-failure/evidence/later-phase-verification-failure-gate-verification-failure-containment-receipt.json",
+            "sha256": "0904569cb4b38c9e51407563309745446d64e3342555fb40c644b369a38220f5"
+          },
+          "failure_message_sha256": "ec3927d67b3a2821b1063fb438c83a093ffe6cfa4e553cb2d98c9468cdbfe620",
+          "failure_type": "DeploymentError",
+          "final": {
+            "bytes": 339,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/later-phase-gate-verification-failure/application/public/index.php",
+            "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+          },
+          "generated_at_utc": "2026-09-30T23:11:57Z",
+          "initial": {
+            "bytes": 40,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/later-phase-gate-verification-failure/application/public/index.php",
+            "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+          },
+          "live_after_failure": {
+            "bytes": 339,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/later-phase-gate-verification-failure/application/public/index.php",
+            "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+          },
+          "mutation_started": true,
+          "operation": "later-phase-verification-failure-gate",
+          "origin_probe": {
+            "front_controller": {
+              "bytes": 339,
+              "metadata": {
+                "gid": 1000,
+                "kind": "file",
+                "mode": 420,
+                "uid": 1000
+              },
+              "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/later-phase-gate-verification-failure/application/public/index.php",
+              "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+            },
+            "header_verified": true,
+            "php_command": {
+              "argv_sha256": "a76682f1a6f80317cc198d685de9919f61122d7261b780a7687f3fa950e00cdf",
+              "executable_chain": [
+                "setpriv",
+                "php"
+              ],
+              "exit_status": 0,
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout_sha256": "2fdceb579aa8e0aa62c46d0b44b7a0efe95736f468889531f13cc605ad55ef57"
+            },
+            "reader": {
+              "bytes": 339,
+              "egid": 33,
+              "euid": 33,
+              "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+            },
+            "reader_command": {
+              "argv_sha256": "ba66508a3a6849753bc0f6b885527190a1d21079bb1f2c9ac0c1cb3b1badb9a9",
+              "executable_chain": [
+                "setpriv",
+                "python3"
+              ],
+              "exit_status": 0,
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout_sha256": "8935255040cf75b970c3a7c0191e70bcbc91852cd1ac558607c2624f472d5bc9"
+            },
+            "route": "origin_loopback",
+            "sentinel_verified": true,
+            "status": 503
+          },
+          "original_restoration_performed": false,
+          "public_probe": {
+            "front_controller": {
+              "bytes": 339,
+              "metadata": {
+                "gid": 1000,
+                "kind": "file",
+                "mode": 420,
+                "uid": 1000
+              },
+              "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/later-phase-gate-verification-failure/application/public/index.php",
+              "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+            },
+            "header_verified": false,
+            "php_command": {
+              "argv_sha256": "a76682f1a6f80317cc198d685de9919f61122d7261b780a7687f3fa950e00cdf",
+              "executable_chain": [
+                "setpriv",
+                "php"
+              ],
+              "exit_status": 0,
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout_sha256": "2fdceb579aa8e0aa62c46d0b44b7a0efe95736f468889531f13cc605ad55ef57"
+            },
+            "reader": {
+              "bytes": 339,
+              "egid": 33,
+              "euid": 33,
+              "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+            },
+            "reader_command": {
+              "argv_sha256": "ba66508a3a6849753bc0f6b885527190a1d21079bb1f2c9ac0c1cb3b1badb9a9",
+              "executable_chain": [
+                "setpriv",
+                "python3"
+              ],
+              "exit_status": 0,
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout_sha256": "8935255040cf75b970c3a7c0191e70bcbc91852cd1ac558607c2624f472d5bc9"
+            },
+            "route": "public_cloudflare",
+            "sentinel_verified": false,
+            "status": 522
+          },
+          "status": "gate_failed_site_gated"
+        },
+        "later-phase-verification-failure-gate-verification-failure-containment-receipt.json": {
+          "before": {
+            "bytes": 339,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/later-phase-gate-verification-failure/application/public/index.php",
+            "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+          },
+          "exact_gate_retained": true,
+          "final": {
+            "bytes": 339,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/later-phase-gate-verification-failure/application/public/index.php",
+            "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+          },
+          "generated_at_utc": "2026-09-30T23:11:57Z",
+          "mutation_started": true,
+          "operation": "later-phase-verification-failure-gate-verification-failure",
+          "original_restoration_performed": false,
+          "replacement": null,
+          "status": "site_gated"
+        }
+      },
+      "scenario": "later-phase-gate-verification-failure",
+      "status": "pass"
+    },
+    "later-phase-rollback-gate": {
+      "automatic_original_restoration_receipts": [],
+      "canonical_sha256": "6cf61f5286db2ba398ecec8220648637e9df1fb9a1e8487c6c59bf0a49fe935b",
+      "details": {
+        "durable_later_phase_state_used": true,
+        "gate": {
+          "installed": {
+            "bytes": 339,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+          },
+          "metadata": {
+            "gid": 1000,
+            "kind": "file",
+            "mode": 420,
+            "uid": 1000
+          },
+          "origin_probe": {
+            "header_verified": true,
+            "php_command": {
+              "argv_sha256": "811793e991ec3a6fd4b2b695dd61b827ed50691d8a4a7a9635189c1261854bf7",
+              "executable_chain": [
+                "setpriv",
+                "php"
+              ],
+              "exit_status": 0,
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout_sha256": "2fdceb579aa8e0aa62c46d0b44b7a0efe95736f468889531f13cc605ad55ef57"
+            },
+            "reader": {
+              "bytes": 339,
+              "egid": 33,
+              "euid": 33,
+              "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+            },
+            "reader_command": {
+              "argv_sha256": "2b19c73e737dcfc41fae0f6dec5b16d26ad7996923c787f16b7c57425d3d42e4",
+              "executable_chain": [
+                "setpriv",
+                "python3"
+              ],
+              "exit_status": 0,
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout_sha256": "8935255040cf75b970c3a7c0191e70bcbc91852cd1ac558607c2624f472d5bc9"
+            },
+            "route": "origin_loopback",
+            "sentinel_verified": true,
+            "status": 503
+          },
+          "prepared": {
+            "bytes": 339,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+          },
+          "public_probe": {
+            "header_verified": true,
+            "php_command": {
+              "argv_sha256": "811793e991ec3a6fd4b2b695dd61b827ed50691d8a4a7a9635189c1261854bf7",
+              "executable_chain": [
+                "setpriv",
+                "php"
+              ],
+              "exit_status": 0,
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout_sha256": "2fdceb579aa8e0aa62c46d0b44b7a0efe95736f468889531f13cc605ad55ef57"
+            },
+            "reader": {
+              "bytes": 339,
+              "egid": 33,
+              "euid": 33,
+              "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+            },
+            "reader_command": {
+              "argv_sha256": "2b19c73e737dcfc41fae0f6dec5b16d26ad7996923c787f16b7c57425d3d42e4",
+              "executable_chain": [
+                "setpriv",
+                "python3"
+              ],
+              "exit_status": 0,
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout_sha256": "8935255040cf75b970c3a7c0191e70bcbc91852cd1ac558607c2624f472d5bc9"
+            },
+            "route": "public_cloudflare",
+            "sentinel_verified": true,
+            "status": 503
+          },
+          "reconciled_from_live_identity": false,
+          "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+        },
+        "restore_receipt_sha256": "c7c5af1261fc3f2608373b98604b1c73396795da0e0072fa10fb391389e37ee3"
+      },
+      "durable_transitions": [
+        {
+          "operation": "later-phase-rollback-gate",
+          "phase": "replacement_pending",
+          "sequence": 1
+        },
+        {
+          "operation": "later-phase-rollback-gate",
+          "phase": "installed",
+          "sequence": 2
+        },
+        {
+          "operation": "later-phase-rollback-gate",
+          "phase": "verified",
+          "sequence": 3
+        },
+        {
+          "operation": "later-phase-rollback-reopen",
+          "phase": "replacement_pending",
+          "sequence": 4
+        },
+        {
+          "operation": "later-phase-rollback-reopen",
+          "phase": "installed",
+          "sequence": 5
+        },
+        {
+          "operation": "later-phase-rollback-reopen",
+          "phase": "exact_original_verified",
+          "sequence": 6
+        }
+      ],
+      "evidence_manifest": [
+        {
+          "bytes": 1403,
+          "mode": "0o600",
+          "path": "events.jsonl",
+          "sha256": "9d3d465651400e62a892a805ccde4bbad3a3c02d069c61b6ca7a46e79c4809ee"
+        },
+        {
+          "bytes": 40,
+          "mode": "0o600",
+          "path": "front-controller-before.php",
+          "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+        },
+        {
+          "bytes": 1957,
+          "mode": "0o600",
+          "path": "later-phase-rollback-reopen-receipt.json",
+          "sha256": "c7c5af1261fc3f2608373b98604b1c73396795da0e0072fa10fb391389e37ee3"
+        },
+        {
+          "bytes": 10694,
+          "mode": "0o600",
+          "path": "state.json",
+          "sha256": "8d9503b0867758c53399b05c2b2c0b5ed5320605a15662305c722aab5aa607f6"
+        }
+      ],
+      "final_durable_state": {
+        "containment_active": false,
+        "gate_failure_receipt_present": false,
+        "migration_executed": true,
+        "source_install_started": true,
+        "static_gate_active": false,
+        "status": "later-phase-rollback-gate_containment_verified"
+      },
+      "final_front_controller": {
+        "bytes": 40,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+      },
+      "final_is_exact_gate": false,
+      "final_is_original": true,
+      "receipt_hashes": {
+        "later-phase-rollback-reopen-receipt.json": "c7c5af1261fc3f2608373b98604b1c73396795da0e0072fa10fb391389e37ee3"
+      },
+      "receipt_payloads": {
+        "later-phase-rollback-reopen-receipt.json": {
+          "before": {
+            "bytes": 339,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/later-phase-rollback-gate/application/public/index.php",
+            "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+          },
+          "exact_original_restored": true,
+          "generated_at_utc": "2026-09-30T23:11:57Z",
+          "operation": "later-phase-rollback-reopen",
+          "replacement": {
+            "before": {
+              "bytes": 339,
+              "metadata": {
+                "gid": 1000,
+                "kind": "file",
+                "mode": 420,
+                "uid": 1000
+              },
+              "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/later-phase-rollback-gate/application/public/index.php",
+              "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+            },
+            "installed": {
+              "bytes": 40,
+              "metadata": {
+                "gid": 1000,
+                "kind": "file",
+                "mode": 420,
+                "uid": 1000
+              },
+              "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/later-phase-rollback-gate/application/public/index.php",
+              "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+            },
+            "prepared": {
+              "bytes": 40,
+              "metadata": {
+                "gid": 1000,
+                "kind": "file",
+                "mode": 420,
+                "uid": 1000
+              },
+              "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/later-phase-rollback-gate/application/public/.index.php.incoming-12902-a0ac7a70ad76",
+              "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+            }
+          },
+          "restored": {
+            "bytes": 40,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/later-phase-rollback-gate/application/public/index.php",
+            "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+          },
+          "status": "pass"
+        }
+      },
+      "scenario": "later-phase-rollback-gate",
+      "status": "pass"
+    },
+    "recovery-from-live-mode-0600-gate": {
+      "automatic_original_restoration_receipts": [
+        "legacy-mode-0600-gate-recovery-automatic-original-restore-receipt.json"
+      ],
+      "canonical_sha256": "219786e2f132f76539c0025eb15ea0fef56aea79d27742641298584e3795d027",
+      "details": {
+        "expected_failure_sha256": "69f920c85e9be2f29adf1a67410d2b7b6eb4dabe847aca2b4cef3a9d3b8da6c8",
+        "unreadable_gate_identified_by_sha256_not_boolean": true
+      },
+      "durable_transitions": [
+        {
+          "operation": "legacy-unreadable-gate",
+          "phase": "replacement_pending",
+          "sequence": 1
+        },
+        {
+          "operation": "legacy-mode-0600-gate-recovery-automatic-original-restore",
+          "phase": "replacement_pending",
+          "sequence": 2
+        },
+        {
+          "operation": "legacy-mode-0600-gate-recovery-automatic-original-restore",
+          "phase": "installed",
+          "sequence": 3
+        },
+        {
+          "operation": "legacy-mode-0600-gate-recovery-automatic-original-restore",
+          "phase": "exact_original_verified",
+          "sequence": 4
+        }
+      ],
+      "evidence_manifest": [
+        {
+          "bytes": 671,
+          "mode": "0o600",
+          "path": "events.jsonl",
+          "sha256": "437f070c4523a6be9623d22564d4b3566d7f80d485f1acdecca9f813edd61ebb"
+        },
+        {
+          "bytes": 40,
+          "mode": "0o600",
+          "path": "front-controller-before.php",
+          "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+        },
+        {
+          "bytes": 2027,
+          "mode": "0o600",
+          "path": "legacy-mode-0600-gate-recovery-automatic-original-restore-receipt.json",
+          "sha256": "46d9559d463da2bba0d964ce7948774f93393a6b44a9e5c4b1db83e2829c5df8"
+        },
+        {
+          "bytes": 2113,
+          "mode": "0o600",
+          "path": "legacy-mode-0600-gate-recovery-gate-failure-receipt.json",
+          "sha256": "8c1331fe4a5bd5c556654ceb0f37133eb0937fe85efdf8efc50b5276a741fce0"
+        },
+        {
+          "bytes": 5035,
+          "mode": "0o600",
+          "path": "state.json",
+          "sha256": "090924ab44eaa77cc43711124c3d63ba7aa8c8f63464766c96b13bccaef0f494"
+        }
+      ],
+      "final_durable_state": {
+        "containment_active": false,
+        "gate_failure_receipt_present": true,
+        "migration_executed": false,
+        "source_install_started": false,
+        "static_gate_active": false,
+        "status": "legacy-mode-0600-gate-recovery_failed_original_restored"
+      },
+      "final_front_controller": {
+        "bytes": 40,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+      },
+      "final_is_exact_gate": false,
+      "final_is_original": true,
+      "receipt_hashes": {
+        "legacy-mode-0600-gate-recovery-automatic-original-restore-receipt.json": "46d9559d463da2bba0d964ce7948774f93393a6b44a9e5c4b1db83e2829c5df8",
+        "legacy-mode-0600-gate-recovery-gate-failure-receipt.json": "8c1331fe4a5bd5c556654ceb0f37133eb0937fe85efdf8efc50b5276a741fce0"
+      },
+      "receipt_payloads": {
+        "legacy-mode-0600-gate-recovery-automatic-original-restore-receipt.json": {
+          "before": {
+            "bytes": 339,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 384,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/recovery-from-live-mode-0600-gate/application/public/index.php",
+            "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+          },
+          "exact_original_restored": true,
+          "generated_at_utc": "2026-09-30T23:11:56Z",
+          "operation": "legacy-mode-0600-gate-recovery-automatic-original-restore",
+          "replacement": {
+            "before": {
+              "bytes": 339,
+              "metadata": {
+                "gid": 1000,
+                "kind": "file",
+                "mode": 384,
+                "uid": 1000
+              },
+              "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/recovery-from-live-mode-0600-gate/application/public/index.php",
+              "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+            },
+            "installed": {
+              "bytes": 40,
+              "metadata": {
+                "gid": 1000,
+                "kind": "file",
+                "mode": 420,
+                "uid": 1000
+              },
+              "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/recovery-from-live-mode-0600-gate/application/public/index.php",
+              "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+            },
+            "prepared": {
+              "bytes": 40,
+              "metadata": {
+                "gid": 1000,
+                "kind": "file",
+                "mode": 420,
+                "uid": 1000
+              },
+              "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/recovery-from-live-mode-0600-gate/application/public/.index.php.incoming-12902-749630641aa1",
+              "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+            }
+          },
+          "restored": {
+            "bytes": 40,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/recovery-from-live-mode-0600-gate/application/public/index.php",
+            "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+          },
+          "status": "pass"
+        },
+        "legacy-mode-0600-gate-recovery-gate-failure-receipt.json": {
+          "failure_message_sha256": "e707dab5d173c891134a0418dd183e2e5c36fca65bc8423ae619734977f1b0de",
+          "failure_type": "DeploymentError",
+          "final": {
+            "bytes": 40,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/recovery-from-live-mode-0600-gate/application/public/index.php",
+            "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+          },
+          "generated_at_utc": "2026-09-30T23:11:56Z",
+          "initial": {
+            "bytes": 339,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 384,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/recovery-from-live-mode-0600-gate/application/public/index.php",
+            "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+          },
+          "live_after_failure": {
+            "bytes": 339,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 384,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/recovery-from-live-mode-0600-gate/application/public/index.php",
+            "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+          },
+          "mutation_started": false,
+          "operation": "legacy-mode-0600-gate-recovery",
+          "origin_probe": null,
+          "original_restoration_performed": true,
+          "post_restoration_health": {
+            "result": {
+              "application_healthy": true,
+              "front_controller": {
+                "bytes": 40,
+                "metadata": {
+                  "gid": 1000,
+                  "kind": "file",
+                  "mode": 420,
+                  "uid": 1000
+                },
+                "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+              }
+            },
+            "status": "pass"
+          },
+          "public_probe": null,
+          "restoration_receipt": {
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/recovery-from-live-mode-0600-gate/evidence/legacy-mode-0600-gate-recovery-automatic-original-restore-receipt.json",
+            "sha256": "46d9559d463da2bba0d964ce7948774f93393a6b44a9e5c4b1db83e2829c5df8"
+          },
+          "status": "gate_failed_original_restored"
+        }
+      },
+      "scenario": "recovery-from-live-mode-0600-gate",
+      "status": "pass"
+    },
+    "recovery-from-pending-state-and-live-gate": {
+      "automatic_original_restoration_receipts": [],
+      "canonical_sha256": "ced96784a50316d99cd0842bb6f762da3cd71b45f4595e4f0026fe92fc5ff7fa",
+      "details": {
+        "gate": {
+          "installed": null,
+          "metadata": {
+            "gid": 1000,
+            "kind": "file",
+            "mode": 420,
+            "uid": 1000
+          },
+          "origin_probe": {
+            "header_verified": true,
+            "php_command": {
+              "argv_sha256": "3350c7f366747bee7ce5b268e3c628e0333cb56c7cd1b465401864b339223755",
+              "executable_chain": [
+                "setpriv",
+                "php"
+              ],
+              "exit_status": 0,
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout_sha256": "2fdceb579aa8e0aa62c46d0b44b7a0efe95736f468889531f13cc605ad55ef57"
+            },
+            "reader": {
+              "bytes": 339,
+              "egid": 33,
+              "euid": 33,
+              "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+            },
+            "reader_command": {
+              "argv_sha256": "c7c6f5bb566323b92e25849163070d88de5f0fa3c09552b8d50bc86efb8fefa4",
+              "executable_chain": [
+                "setpriv",
+                "python3"
+              ],
+              "exit_status": 0,
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout_sha256": "8935255040cf75b970c3a7c0191e70bcbc91852cd1ac558607c2624f472d5bc9"
+            },
+            "route": "origin_loopback",
+            "sentinel_verified": true,
+            "status": 503
+          },
+          "prepared": null,
+          "public_probe": {
+            "header_verified": true,
+            "php_command": {
+              "argv_sha256": "3350c7f366747bee7ce5b268e3c628e0333cb56c7cd1b465401864b339223755",
+              "executable_chain": [
+                "setpriv",
+                "php"
+              ],
+              "exit_status": 0,
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout_sha256": "2fdceb579aa8e0aa62c46d0b44b7a0efe95736f468889531f13cc605ad55ef57"
+            },
+            "reader": {
+              "bytes": 339,
+              "egid": 33,
+              "euid": 33,
+              "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+            },
+            "reader_command": {
+              "argv_sha256": "c7c6f5bb566323b92e25849163070d88de5f0fa3c09552b8d50bc86efb8fefa4",
+              "executable_chain": [
+                "setpriv",
+                "python3"
+              ],
+              "exit_status": 0,
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout_sha256": "8935255040cf75b970c3a7c0191e70bcbc91852cd1ac558607c2624f472d5bc9"
+            },
+            "route": "public_cloudflare",
+            "sentinel_verified": true,
+            "status": 503
+          },
+          "reconciled_from_live_identity": true,
+          "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+        },
+        "restore_receipt_sha256": "0516a03df435997e5f1acd7ef6aa69fed8a77de1a61ab4fae101a1ff98fce7c6",
+        "stale_boolean_ignored": true
+      },
+      "durable_transitions": [
+        {
+          "operation": "interrupted-gate",
+          "phase": "replacement_pending",
+          "sequence": 1
+        },
+        {
+          "operation": "reconciled-recovery-gate",
+          "phase": "installed_reconciled_from_live_identity",
+          "sequence": 2
+        },
+        {
+          "operation": "reconciled-recovery-gate",
+          "phase": "verified",
+          "sequence": 3
+        },
+        {
+          "operation": "reconciled-recovery-reopen",
+          "phase": "replacement_pending",
+          "sequence": 4
+        },
+        {
+          "operation": "reconciled-recovery-reopen",
+          "phase": "installed",
+          "sequence": 5
+        },
+        {
+          "operation": "reconciled-recovery-reopen",
+          "phase": "exact_original_verified",
+          "sequence": 6
+        }
+      ],
+      "evidence_manifest": [
+        {
+          "bytes": 871,
+          "mode": "0o600",
+          "path": "events.jsonl",
+          "sha256": "c1cff10838949629f44a3450759ed526442609a5412f53dab90eca34fe9b570e"
+        },
+        {
+          "bytes": 40,
+          "mode": "0o600",
+          "path": "front-controller-before.php",
+          "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+        },
+        {
+          "bytes": 2036,
+          "mode": "0o600",
+          "path": "reconciled-recovery-reopen-receipt.json",
+          "sha256": "0516a03df435997e5f1acd7ef6aa69fed8a77de1a61ab4fae101a1ff98fce7c6"
+        },
+        {
+          "bytes": 10218,
+          "mode": "0o600",
+          "path": "state.json",
+          "sha256": "7241a798c5663d092a48d0158a6f0b9914cc33075ef034922f8ea83a047b0ac0"
+        }
+      ],
+      "final_durable_state": {
+        "containment_active": false,
+        "gate_failure_receipt_present": false,
+        "migration_executed": false,
+        "source_install_started": false,
+        "static_gate_active": false,
+        "status": "rehearsal"
+      },
+      "final_front_controller": {
+        "bytes": 40,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+      },
+      "final_is_exact_gate": false,
+      "final_is_original": true,
+      "receipt_hashes": {
+        "reconciled-recovery-reopen-receipt.json": "0516a03df435997e5f1acd7ef6aa69fed8a77de1a61ab4fae101a1ff98fce7c6"
+      },
+      "receipt_payloads": {
+        "reconciled-recovery-reopen-receipt.json": {
+          "before": {
+            "bytes": 339,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/recovery-from-pending-state-and-live-gate/application/public/index.php",
+            "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+          },
+          "exact_original_restored": true,
+          "generated_at_utc": "2026-09-30T23:11:57Z",
+          "operation": "reconciled-recovery-reopen",
+          "replacement": {
+            "before": {
+              "bytes": 339,
+              "metadata": {
+                "gid": 1000,
+                "kind": "file",
+                "mode": 420,
+                "uid": 1000
+              },
+              "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/recovery-from-pending-state-and-live-gate/application/public/index.php",
+              "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+            },
+            "installed": {
+              "bytes": 40,
+              "metadata": {
+                "gid": 1000,
+                "kind": "file",
+                "mode": 420,
+                "uid": 1000
+              },
+              "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/recovery-from-pending-state-and-live-gate/application/public/index.php",
+              "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+            },
+            "prepared": {
+              "bytes": 40,
+              "metadata": {
+                "gid": 1000,
+                "kind": "file",
+                "mode": 420,
+                "uid": 1000
+              },
+              "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/recovery-from-pending-state-and-live-gate/application/public/.index.php.incoming-12902-0953bfaef529",
+              "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+            }
+          },
+          "restored": {
+            "bytes": 40,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/recovery-from-pending-state-and-live-gate/application/public/index.php",
+            "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+          },
+          "status": "pass"
+        }
+      },
+      "scenario": "recovery-from-pending-state-and-live-gate",
+      "status": "pass"
+    },
+    "success-under-umask-077": {
+      "automatic_original_restoration_receipts": [],
+      "canonical_sha256": "940c8de12f6e1e0adf69dadc8639aa928e8efc3ad32e9f886fea9839271e3a0b",
+      "details": {
+        "gate": {
+          "installed": {
+            "bytes": 339,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+          },
+          "metadata": {
+            "gid": 1000,
+            "kind": "file",
+            "mode": 420,
+            "uid": 1000
+          },
+          "origin_probe": {
+            "header_verified": true,
+            "php_command": {
+              "argv_sha256": "1dfc31c654db7e4a369e32d89a534812dd8741c5b24022aad33049fffa658f7d",
+              "executable_chain": [
+                "setpriv",
+                "php"
+              ],
+              "exit_status": 0,
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout_sha256": "2fdceb579aa8e0aa62c46d0b44b7a0efe95736f468889531f13cc605ad55ef57"
+            },
+            "reader": {
+              "bytes": 339,
+              "egid": 33,
+              "euid": 33,
+              "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+            },
+            "reader_command": {
+              "argv_sha256": "7b7b1893d39545556b5cf4be6e5bf47baa3e229894eb87e018867bc9ef7bd6d4",
+              "executable_chain": [
+                "setpriv",
+                "python3"
+              ],
+              "exit_status": 0,
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout_sha256": "8935255040cf75b970c3a7c0191e70bcbc91852cd1ac558607c2624f472d5bc9"
+            },
+            "route": "origin_loopback",
+            "sentinel_verified": true,
+            "status": 503
+          },
+          "prepared": {
+            "bytes": 339,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+          },
+          "public_probe": {
+            "header_verified": true,
+            "php_command": {
+              "argv_sha256": "1dfc31c654db7e4a369e32d89a534812dd8741c5b24022aad33049fffa658f7d",
+              "executable_chain": [
+                "setpriv",
+                "php"
+              ],
+              "exit_status": 0,
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout_sha256": "2fdceb579aa8e0aa62c46d0b44b7a0efe95736f468889531f13cc605ad55ef57"
+            },
+            "reader": {
+              "bytes": 339,
+              "egid": 33,
+              "euid": 33,
+              "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+            },
+            "reader_command": {
+              "argv_sha256": "7b7b1893d39545556b5cf4be6e5bf47baa3e229894eb87e018867bc9ef7bd6d4",
+              "executable_chain": [
+                "setpriv",
+                "python3"
+              ],
+              "exit_status": 0,
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout_sha256": "8935255040cf75b970c3a7c0191e70bcbc91852cd1ac558607c2624f472d5bc9"
+            },
+            "route": "public_cloudflare",
+            "sentinel_verified": true,
+            "status": 503
+          },
+          "reconciled_from_live_identity": false,
+          "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+        },
+        "restore_receipt_sha256": "ea4f35dd30d8391078b078b8d2be91f448757be666a16781080027cb97f8a5e2"
+      },
+      "durable_transitions": [
+        {
+          "operation": "successful-cutover-gate",
+          "phase": "replacement_pending",
+          "sequence": 1
+        },
+        {
+          "operation": "successful-cutover-gate",
+          "phase": "installed",
+          "sequence": 2
+        },
+        {
+          "operation": "successful-cutover-gate",
+          "phase": "verified",
+          "sequence": 3
+        },
+        {
+          "operation": "successful-cutover-reopen",
+          "phase": "replacement_pending",
+          "sequence": 4
+        },
+        {
+          "operation": "successful-cutover-reopen",
+          "phase": "installed",
+          "sequence": 5
+        },
+        {
+          "operation": "successful-cutover-reopen",
+          "phase": "exact_original_verified",
+          "sequence": 6
+        }
+      ],
+      "evidence_manifest": [
+        {
+          "bytes": 843,
+          "mode": "0o600",
+          "path": "events.jsonl",
+          "sha256": "962a20b59b6e749f31c56b52c67c8c58bccc98f10df9712835262f80f1708e1d"
+        },
+        {
+          "bytes": 40,
+          "mode": "0o600",
+          "path": "front-controller-before.php",
+          "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+        },
+        {
+          "bytes": 10570,
+          "mode": "0o600",
+          "path": "state.json",
+          "sha256": "09c25f0189134d8a160f663c321b3660b8091d46af023c556fe402c00419feb5"
+        },
+        {
+          "bytes": 1945,
+          "mode": "0o600",
+          "path": "successful-cutover-reopen-receipt.json",
+          "sha256": "ea4f35dd30d8391078b078b8d2be91f448757be666a16781080027cb97f8a5e2"
+        }
+      ],
+      "final_durable_state": {
+        "containment_active": false,
+        "gate_failure_receipt_present": false,
+        "migration_executed": false,
+        "source_install_started": false,
+        "static_gate_active": false,
+        "status": "rehearsal"
+      },
+      "final_front_controller": {
+        "bytes": 40,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+      },
+      "final_is_exact_gate": false,
+      "final_is_original": true,
+      "receipt_hashes": {
+        "successful-cutover-reopen-receipt.json": "ea4f35dd30d8391078b078b8d2be91f448757be666a16781080027cb97f8a5e2"
+      },
+      "receipt_payloads": {
+        "successful-cutover-reopen-receipt.json": {
+          "before": {
+            "bytes": 339,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/success-under-umask-077/application/public/index.php",
+            "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+          },
+          "exact_original_restored": true,
+          "generated_at_utc": "2026-09-30T23:11:56Z",
+          "operation": "successful-cutover-reopen",
+          "replacement": {
+            "before": {
+              "bytes": 339,
+              "metadata": {
+                "gid": 1000,
+                "kind": "file",
+                "mode": 420,
+                "uid": 1000
+              },
+              "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/success-under-umask-077/application/public/index.php",
+              "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+            },
+            "installed": {
+              "bytes": 40,
+              "metadata": {
+                "gid": 1000,
+                "kind": "file",
+                "mode": 420,
+                "uid": 1000
+              },
+              "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/success-under-umask-077/application/public/index.php",
+              "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+            },
+            "prepared": {
+              "bytes": 40,
+              "metadata": {
+                "gid": 1000,
+                "kind": "file",
+                "mode": 420,
+                "uid": 1000
+              },
+              "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/success-under-umask-077/application/public/.index.php.incoming-12902-133b3acd1dd7",
+              "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+            }
+          },
+          "restored": {
+            "bytes": 40,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/success-under-umask-077/application/public/index.php",
+            "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+          },
+          "status": "pass"
+        }
+      },
+      "scenario": "success-under-umask-077",
+      "status": "pass"
+    }
+  },
+  "static_gate_sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03",
+  "status": "pass",
+  "umask": "0077",
+  "web_identity": {
+    "egid": 33,
+    "euid": 33
+  }
+}

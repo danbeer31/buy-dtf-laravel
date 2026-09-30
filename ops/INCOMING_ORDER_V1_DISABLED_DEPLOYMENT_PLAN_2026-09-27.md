@@ -2,7 +2,7 @@
 
 Date: 2026-09-27 (America/Chicago)
 
-Status: **The 2026-09-30 cutover attempt stopped before maintenance, migration, or source installation after the static gate inherited mode `0600`. Production was restored to its exact original front controller and independently confirmed healthy. Runner `2a7bf3966c593532af1e22db0f03d8cec1c6aecfde0902629b9f2328016c1138` is permanently NO-GO. The corrected runner and local fault-injection rehearsal below are NO-GO pending independent review, a new staging receipt, and separate authorization.**
+Status: **The 2026-09-30 cutover attempt stopped before maintenance, migration, or source installation after the static gate inherited mode `0600`. Production was restored to its exact original front controller and independently confirmed healthy. Runner `2a7bf3966c593532af1e22db0f03d8cec1c6aecfde0902629b9f2328016c1138` is permanently NO-GO. The phase-aware containment runner and local fault-injection rehearsal below are NO-GO pending independent review, a new staging receipt, and separate authorization.**
 
 Nothing in this plan authorizes a migration, source deployment, service restart, capability change, ShopNLTees sender change, or retention action.
 
@@ -38,12 +38,13 @@ The deployment adds the capability-discovery route, guarded receiver code, froze
 | Runtime paths | 37 total: 26 additions and 11 replacements |
 | Deterministic source archive SHA-256 | `ed1df143d219fa073efb2707508c3eb81ba17b777597cebc20a72d3c546522c2` |
 | Final deployment runner | `ops/deployment/incoming_order_v1_deploy.py` |
-| Corrected deployment runner SHA-256 | `61607104b81470af9cf8b5505f9ec6ae04cb67653474aa726b0b2d712097fb5f` |
+| Phase-aware containment runner SHA-256 | `53723435a2d56d2736746a5a6d1e98fddeda660acbcf3a45f57b662b06b4adfd` |
 | Permanently retired runner SHA-256 | `2a7bf3966c593532af1e22db0f03d8cec1c6aecfde0902629b9f2328016c1138` |
 | Local gate rehearsal script | `ops/deployment/rehearse_incoming_order_v1_gate.py` |
-| Local gate rehearsal script SHA-256 | `f43f84352a1a972d70120ed7a3528924e770ba01e9ac06b3d1f1ab5dd13b44e2` |
-| Local gate rehearsal receipt SHA-256 | `6d8c03d382f3bafea293cff5c3ebff7c4a3db3fabeada652747a0babc9e744b5` |
-| Local correction validation receipt SHA-256 | `cde8568af9ca08df5b9a063c918595d794dfb72705fd1ed1aaf467a073a14968` |
+| Local gate rehearsal script SHA-256 | `c3b2e2b79986650a6d27625ae18372057d987ac61eebf42e8a08fb6d40232e5d` |
+| Local gate rehearsal receipt SHA-256 | `063a006ac173baf789bb0d1dd9da859f9805b3ef63a0906e2ec7382a08b6adfa` |
+| Later-phase failure receipts SHA-256 | `56095d4dcc3c183ee3d7fb9cc1e199faed598c980f2d0a88384d8a567cc8df4c` |
+| Local correction validation receipt SHA-256 | `be0c021d405cfc899f0604a3045eb48bcc8e24690c62e52a9ce919495e3e141f` |
 | Runtime/schema helper | `ops/deployment/incoming_order_v1_runtime_probe.php` |
 | Runtime/schema helper SHA-256 | `1b37d3a38834ef633cee5caa784d909b2f5be41ae6e22766f817f80f9f4a20bd` |
 | Exact migration | `database/migrations/2026_09_27_120000_create_incoming_order_v1_tables.php` |
@@ -71,11 +72,13 @@ The corrected primitive is shared by initial cutover gating, rollback gating, fa
 2. Build the replacement beside the live path, then explicitly `chown` and `chmod 0644` and verify bytes plus metadata before any swap. The process-wide `umask 077` cannot reduce the prepared file's final mode.
 3. Persist and fsync a `replacement_pending` transition before `os.replace`.
 4. Atomically replace and fsync the directory, verify the live identity, then persist and fsync `installed` before any HTTP verification.
-5. On verification failure or an injected exception, use the retained exact original plus reviewed metadata to restore atomically and write both an exact-restoration receipt and a gate-failure receipt.
-6. Recovery classifies the actual live front-controller SHA-256 and validates the durable transition history. It never decides from `static_gate_active` alone.
-7. A pending transition with live gate bytes is reconciled as installed before verification. A live gate with the historical `0600` failure mode is identified by bytes and restored exactly.
+5. Validate the gate first through a direct loopback origin request that bypasses Cloudflare, then through a separate public Cloudflare request. Both must return the reviewed header, body sentinel, and HTTP `503`.
+6. Before migration or source installation begins, any installation or verification failure restores the exact original atomically, writes exact-restoration and gate-failure receipts, and records a post-restoration normal-health result.
+7. Once either `migration_executed` or `source_install_started` is durable, any gate verification failure retains or reinstalls the exact reviewed `0644` gate, records durable gated containment and a containment receipt, and never restores the original front controller.
+8. Recovery classifies the actual live front-controller SHA-256 and validates the durable transition history. It never decides from `static_gate_active` alone. Rollback gate installation is an explicit containment phase before recovery work.
+9. A pending transition with live gate bytes is reconciled as installed before verification. A live gate with the historical `0600` failure mode is identified by bytes; before mutation it is restored exactly, while later-phase recovery normalizes it to the reviewed `0644` gate and remains closed.
 
-The local Linux rehearsal runs under `umask 077`, executes the gate as a separate UID/GID `33` process, proves a `0600` negative control is unreadable, and covers success, failures before/after replacement, verification failure, recovery of the historical `0600` gate, recovery from pending state with live gate bytes, and later-phase rollback gating. It does not access production.
+The local Linux rehearsal runs under `umask 077`, executes the gate as a separate UID/GID `33` process, proves a `0600` negative control is unreadable, and covers success, failures before/after replacement, pre-mutation public verification failure with exact restoration and recorded health, recovery of the historical `0600` gate, recovery from pending state with live gate bytes, later-phase rollback gating, and later-phase public verification failure with exact gated containment and no original-restoration receipt. It does not access production.
 
 The expected-live column is deliberately based on raw production bytes, not Git-normalized blobs. Eight replaced files currently contain mixed CRLF/LF line endings; converting them to LF produces an exact match with feature base `f11a9413d9040b4562064ee02fda002b317e0de9`. Their raw hashes are nevertheless the compare-and-swap authority. The candidate target hashes remain the exact bytes from receiver commit `0799440b7cbb0bad364fc2a65b41285f20245658`, and rollback must restore the original raw production bytes and line endings.
 
@@ -186,7 +189,7 @@ The migration does not alter existing business rows, so schema plus migration-le
 
 The final runner must have fixed absolute paths, restrictive umask, reviewed hashes, an exclusive lock, append-only step/state receipts, signal/error traps, and no caller-supplied command text.
 
-1. Atomically install and verify the exact reviewed static front controller. After the FPM revalidation interval, require its unique header, body sentinel, and HTTP `503` from `/` and a random application route.
+1. Atomically install and verify the exact reviewed static front controller. After the FPM revalidation interval, first require its unique header, body sentinel, and HTTP `503` through a direct loopback origin probe that bypasses Cloudflare, then require the same through a separate public Cloudflare probe.
 2. While the static gate is active, use the still-running old Laravel runtime to enter maintenance mode. Wait 65 seconds, require no active scoped PHP/Artisan/FastCGI request, and repeat every source/dependency/schema CAS.
 3. Reconfirm that the Fuel ledger exists and recapture its row hash and the deterministic schema fingerprint. Repeat the reviewed pretend command from the exact staged absolute path while the gate is active:
 
@@ -240,7 +243,7 @@ No PHP-FPM, nginx, scheduler, queue, or other shared service restart is planned 
 
 Rollback is source-only and schema-preserving:
 
-1. Unconditionally reinstall and verify the boot-independent static `503` gate. Do not trust a saved maintenance flag.
+1. Enter explicit rollback containment by unconditionally reinstalling and verifying the boot-independent static `503` gate. Do not trust a saved maintenance flag. If validation fails after migration or source installation began, retain the exact `0644` gate and durable gated state; never reopen partially changed application code.
 2. Re-enter Laravel maintenance with whichever reviewed runtime still boots. If neither runtime boots, keep the static gate and continue with file-identity rollback only.
 3. Restore the 11 replaced files from the verified source backup using same-directory atomic renames, preserving their original raw bytes and mixed line endings exactly.
 4. Remove only an added path whose current bytes still match the reviewed target hash and whose preflight state was `ABSENT`. An unknown or modified path is preserved and causes rollback to stop for adjudication.

@@ -1,0 +1,19 @@
+$ C:\\tools\\php82\\php.exe vendor\\bin\\phpunit --colors=never
+PHPUnit 11.5.50 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.2.0
+Configuration: C:\Users\danie\projects\buy-dtf-job-card-20260927\phpunit.xml
+
+.............................................Dropbox: Refreshing tokens for ID: 1... (Old access token: dropbox-ac...)
+Dropbox refresh success. New token starting with: dropbox-ac, length: 28
+..................  63 / 170 ( 37%)
+............................................................... 126 / 170 ( 74%)
+...............addToProduction call: {"image_id":1}
+...S....addToProduction call: {"image_id":1}
+.....................                    170 / 170 (100%)
+
+Time: 00:10.462, Memory: 78.00 MB
+
+OK, but some tests were skipped!
+Tests: 170, Assertions: 1099, Skipped: 1.
+__EXIT_STATUS__=0

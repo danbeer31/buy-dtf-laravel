@@ -1,0 +1,199 @@
+{
+  "status": "pass",
+  "source_scenario": "later-phase-gate-verification-failure",
+  "expected_conditions": {
+    "migration_executed": true,
+    "source_install_started": true,
+    "exact_gate_retained": true,
+    "original_restoration_receipt_absent": true
+  },
+  "final_front_controller": {
+    "bytes": 339,
+    "metadata": {
+      "gid": 1000,
+      "kind": "file",
+      "mode": 420,
+      "uid": 1000
+    },
+    "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+  },
+  "final_durable_state": {
+    "containment_active": true,
+    "gate_failure_receipt_present": true,
+    "migration_executed": true,
+    "source_install_started": true,
+    "static_gate_active": true,
+    "status": "later-phase-verification-failure-gate_verification_failed_site_gated"
+  },
+  "automatic_original_restoration_receipts": [],
+  "receipt_hashes": {
+    "later-phase-verification-failure-gate-gate-failure-receipt.json": "781784a5f171306374fe534364c036108e47585b905a6996c55f8f77ae19d341",
+    "later-phase-verification-failure-gate-verification-failure-containment-receipt.json": "0904569cb4b38c9e51407563309745446d64e3342555fb40c644b369a38220f5"
+  },
+  "receipts": {
+    "later-phase-verification-failure-gate-gate-failure-receipt.json": {
+      "containment_receipt": {
+        "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/later-phase-gate-verification-failure/evidence/later-phase-verification-failure-gate-verification-failure-containment-receipt.json",
+        "sha256": "0904569cb4b38c9e51407563309745446d64e3342555fb40c644b369a38220f5"
+      },
+      "failure_message_sha256": "ec3927d67b3a2821b1063fb438c83a093ffe6cfa4e553cb2d98c9468cdbfe620",
+      "failure_type": "DeploymentError",
+      "final": {
+        "bytes": 339,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/later-phase-gate-verification-failure/application/public/index.php",
+        "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+      },
+      "generated_at_utc": "2026-09-30T23:11:57Z",
+      "initial": {
+        "bytes": 40,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/later-phase-gate-verification-failure/application/public/index.php",
+        "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+      },
+      "live_after_failure": {
+        "bytes": 339,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/later-phase-gate-verification-failure/application/public/index.php",
+        "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+      },
+      "mutation_started": true,
+      "operation": "later-phase-verification-failure-gate",
+      "origin_probe": {
+        "front_controller": {
+          "bytes": 339,
+          "metadata": {
+            "gid": 1000,
+            "kind": "file",
+            "mode": 420,
+            "uid": 1000
+          },
+          "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/later-phase-gate-verification-failure/application/public/index.php",
+          "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+        },
+        "header_verified": true,
+        "php_command": {
+          "argv_sha256": "a76682f1a6f80317cc198d685de9919f61122d7261b780a7687f3fa950e00cdf",
+          "executable_chain": [
+            "setpriv",
+            "php"
+          ],
+          "exit_status": 0,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "2fdceb579aa8e0aa62c46d0b44b7a0efe95736f468889531f13cc605ad55ef57"
+        },
+        "reader": {
+          "bytes": 339,
+          "egid": 33,
+          "euid": 33,
+          "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+        },
+        "reader_command": {
+          "argv_sha256": "ba66508a3a6849753bc0f6b885527190a1d21079bb1f2c9ac0c1cb3b1badb9a9",
+          "executable_chain": [
+            "setpriv",
+            "python3"
+          ],
+          "exit_status": 0,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "8935255040cf75b970c3a7c0191e70bcbc91852cd1ac558607c2624f472d5bc9"
+        },
+        "route": "origin_loopback",
+        "sentinel_verified": true,
+        "status": 503
+      },
+      "original_restoration_performed": false,
+      "public_probe": {
+        "front_controller": {
+          "bytes": 339,
+          "metadata": {
+            "gid": 1000,
+            "kind": "file",
+            "mode": 420,
+            "uid": 1000
+          },
+          "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/later-phase-gate-verification-failure/application/public/index.php",
+          "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+        },
+        "header_verified": false,
+        "php_command": {
+          "argv_sha256": "a76682f1a6f80317cc198d685de9919f61122d7261b780a7687f3fa950e00cdf",
+          "executable_chain": [
+            "setpriv",
+            "php"
+          ],
+          "exit_status": 0,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "2fdceb579aa8e0aa62c46d0b44b7a0efe95736f468889531f13cc605ad55ef57"
+        },
+        "reader": {
+          "bytes": 339,
+          "egid": 33,
+          "euid": 33,
+          "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+        },
+        "reader_command": {
+          "argv_sha256": "ba66508a3a6849753bc0f6b885527190a1d21079bb1f2c9ac0c1cb3b1badb9a9",
+          "executable_chain": [
+            "setpriv",
+            "python3"
+          ],
+          "exit_status": 0,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "8935255040cf75b970c3a7c0191e70bcbc91852cd1ac558607c2624f472d5bc9"
+        },
+        "route": "public_cloudflare",
+        "sentinel_verified": false,
+        "status": 522
+      },
+      "status": "gate_failed_site_gated"
+    },
+    "later-phase-verification-failure-gate-verification-failure-containment-receipt.json": {
+      "before": {
+        "bytes": 339,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/later-phase-gate-verification-failure/application/public/index.php",
+        "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+      },
+      "exact_gate_retained": true,
+      "final": {
+        "bytes": 339,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "path": "/tmp/buy-dtf-incoming-gate-rehearsal-139ry_ml/later-phase-gate-verification-failure/application/public/index.php",
+        "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+      },
+      "generated_at_utc": "2026-09-30T23:11:57Z",
+      "mutation_started": true,
+      "operation": "later-phase-verification-failure-gate-verification-failure",
+      "original_restoration_performed": false,
+      "replacement": null,
+      "status": "site_gated"
+    }
+  },
+  "scenario_canonical_sha256": "9e2668b594ffa32c449118587acf2f5f6eb882df23d4bcc2eb461c7ecd014c8f"
+}

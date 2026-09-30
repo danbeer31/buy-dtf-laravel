@@ -1826,6 +1826,7 @@ def restore_front_controller_exact(
         details={"identity": restored},
     )
     state["static_gate_active"] = False
+    state["containment_active"] = False
     write_state(state_path, state)
     receipt = {
         "status": "pass",
@@ -1841,6 +1842,95 @@ def restore_front_controller_exact(
     return {**receipt, "path": str(receipt_path), "receipt_sha256": receipt_sha256}
 
 
+def mutation_has_started(state: dict[str, Any]) -> bool:
+    """Return the durable point after which reopening is never a safe fallback."""
+    return bool(state.get("migration_executed") or state.get("source_install_started"))
+
+
+def gate_probe_passed(result: dict[str, Any], expected_route: str) -> bool:
+    return (
+        result.get("route") == expected_route
+        and result.get("status") == 503
+        and result.get("header_verified") is True
+        and result.get("sentinel_verified") is True
+    )
+
+
+def capture_health_check(check: Callable[[], dict[str, Any]]) -> dict[str, Any]:
+    """Always return receipt-safe evidence, including when the health check fails."""
+    try:
+        return {"status": "pass", "result": check()}
+    except Exception as exception:
+        return {
+            "status": "fail",
+            "failure_type": type(exception).__name__,
+            "failure_message_sha256": sha256_bytes(str(exception).encode("utf-8")),
+        }
+
+
+def retain_static_gate_exact(
+    *,
+    state_directory: Path,
+    name: str,
+    state: dict[str, Any],
+    state_path: Path,
+    original_sha256: str,
+    metadata: dict[str, Any],
+    front_controller: Path = FRONT_CONTROLLER,
+    application_root: Path = APP_ROOT,
+) -> dict[str, Any]:
+    """Fail closed on the exact reviewed gate without relying on Laravel or HTTP."""
+    before = file_identity(front_controller)
+    if before["sha256"] not in {original_sha256, EXPECTED_GATE_SHA256}:
+        raise DeploymentError(
+            "Containment found unknown front-controller bytes and refused overwrite."
+        )
+    replacement: dict[str, Any] | None = None
+    if before["sha256"] != EXPECTED_GATE_SHA256 or before["metadata"] != metadata:
+        replacement = atomic_front_controller_replace(
+            replacement_bytes=MAINTENANCE_GATE_BYTES,
+            replacement_sha256=EXPECTED_GATE_SHA256,
+            allowed_current_sha256={original_sha256, EXPECTED_GATE_SHA256},
+            metadata=metadata,
+            state=state,
+            state_path=state_path,
+            state_directory=state_directory,
+            operation=f"{name}-exact-containment-install",
+            front_controller=front_controller,
+            application_root=application_root,
+        )
+    final = file_identity(front_controller)
+    if final["sha256"] != EXPECTED_GATE_SHA256 or final["metadata"] != metadata:
+        raise DeploymentError("Exact static-gate containment could not be established.")
+    record_front_controller_transition(
+        state=state,
+        state_path=state_path,
+        state_directory=state_directory,
+        operation=name,
+        phase="containment_retained",
+        front_controller=front_controller,
+        details={"identity": final, "mutation_started": mutation_has_started(state)},
+    )
+    state["static_gate_active"] = True
+    state["containment_active"] = True
+    state["status"] = f"{name}_site_gated"
+    write_state(state_path, state)
+    receipt = {
+        "status": "site_gated",
+        "generated_at_utc": utc_now(),
+        "operation": name,
+        "mutation_started": mutation_has_started(state),
+        "before": before,
+        "replacement": replacement,
+        "final": final,
+        "exact_gate_retained": True,
+        "original_restoration_performed": False,
+    }
+    receipt_path = state_directory / f"{name}-containment-receipt.json"
+    receipt_sha256 = write_new_json(receipt_path, receipt)
+    return {**receipt, "path": str(receipt_path), "receipt_sha256": receipt_sha256}
+
+
 def install_static_gate(
     *,
     state_directory: Path,
@@ -1852,7 +1942,9 @@ def install_static_gate(
     metadata: dict[str, Any] | None = None,
     front_controller: Path = FRONT_CONTROLLER,
     application_root: Path = APP_ROOT,
-    probe: Callable[[], dict[str, Any]] | None = None,
+    origin_probe: Callable[[], dict[str, Any]] | None = None,
+    public_probe: Callable[[], dict[str, Any]] | None = None,
+    restored_health_probe: Callable[[], dict[str, Any]] | None = None,
     fault_injector: Callable[[str], None] | None = None,
 ) -> dict[str, Any]:
     if sha256_bytes(MAINTENANCE_GATE_BYTES) != EXPECTED_GATE_SHA256:
@@ -1864,6 +1956,8 @@ def install_static_gate(
     initial = file_identity(front_controller)
     replacement: dict[str, Any] | None = None
     reconciled_from_live_identity = False
+    origin_result: dict[str, Any] | None = None
+    public_result: dict[str, Any] | None = None
     try:
         if initial["sha256"] == original_sha256:
             if initial["metadata"] != reviewed_metadata:
@@ -1901,16 +1995,26 @@ def install_static_gate(
             raise DeploymentError("Static gate refuses unknown front-controller bytes.")
 
         state["static_gate_active"] = True
+        state["containment_active"] = True
         write_state(state_path, state)
         time.sleep(OPCACHE_WAIT_SECONDS)
-        result = probe() if probe is not None else gate_http_probe(state_directory, name)
-        if (
-            result.get("status") != 503
-            or result.get("header_verified") is not True
-            or result.get("sentinel_verified") is not True
-        ):
+        origin_result = (
+            origin_probe()
+            if origin_probe is not None
+            else gate_origin_probe(state_directory, name)
+        )
+        if not gate_probe_passed(origin_result, "origin_loopback"):
             raise DeploymentError(
-                "Boot-independent static gate did not return its reviewed 503 response."
+                "The local/origin static-gate probe did not return the reviewed 503 response."
+            )
+        public_result = (
+            public_probe()
+            if public_probe is not None
+            else gate_public_probe(state_directory, name)
+        )
+        if not gate_probe_passed(public_result, "public_cloudflare"):
+            raise DeploymentError(
+                "The public Cloudflare static-gate probe did not return the reviewed 503 response."
             )
         verified = file_identity(front_controller)
         if (
@@ -1925,7 +2029,11 @@ def install_static_gate(
             operation=name,
             phase="verified",
             front_controller=front_controller,
-            details={"identity": verified, "probe": result},
+            details={
+                "identity": verified,
+                "origin_probe": origin_result,
+                "public_probe": public_result,
+            },
         )
         return {
             "sha256": EXPECTED_GATE_SHA256,
@@ -1933,7 +2041,8 @@ def install_static_gate(
             "initial": initial,
             "replacement": replacement,
             "reconciled_from_live_identity": reconciled_from_live_identity,
-            "probe": result,
+            "origin_probe": origin_result,
+            "public_probe": public_result,
         }
     except Exception as exception:
         live_after_failure = file_identity(front_controller)
@@ -1941,48 +2050,109 @@ def install_static_gate(
             raise DeploymentError(
                 "Static-gate failure left unknown front-controller bytes; refusing overwrite."
             ) from exception
-        restoration = restore_front_controller_exact(
-            backup=original_backup,
-            expected_sha256=original_sha256,
-            metadata=reviewed_metadata,
-            allowed_current_sha256={original_sha256, EXPECTED_GATE_SHA256},
-            state=state,
-            state_path=state_path,
-            state_directory=state_directory,
-            operation=f"{name}-automatic-original-restore",
-            receipt_name=f"{name}-automatic-original-restore-receipt.json",
-            front_controller=front_controller,
-            application_root=application_root,
-        )
-        failure_receipt = {
-            "status": "gate_failed_original_restored",
-            "generated_at_utc": utc_now(),
-            "operation": name,
-            "failure_type": type(exception).__name__,
-            "failure_message_sha256": sha256_bytes(str(exception).encode("utf-8")),
-            "initial": initial,
-            "live_after_failure": live_after_failure,
-            "restoration_receipt": {
-                "path": restoration["path"],
-                "sha256": restoration["receipt_sha256"],
-            },
-            "final": file_identity(front_controller),
-        }
+        if mutation_has_started(state):
+            containment = retain_static_gate_exact(
+                state_directory=state_directory,
+                name=f"{name}-verification-failure",
+                state=state,
+                state_path=state_path,
+                original_sha256=original_sha256,
+                metadata=reviewed_metadata,
+                front_controller=front_controller,
+                application_root=application_root,
+            )
+            failure_receipt = {
+                "status": "gate_failed_site_gated",
+                "generated_at_utc": utc_now(),
+                "operation": name,
+                "failure_type": type(exception).__name__,
+                "failure_message_sha256": sha256_bytes(str(exception).encode("utf-8")),
+                "mutation_started": True,
+                "initial": initial,
+                "live_after_failure": live_after_failure,
+                "origin_probe": origin_result,
+                "public_probe": public_result,
+                "containment_receipt": {
+                    "path": containment["path"],
+                    "sha256": containment["receipt_sha256"],
+                },
+                "original_restoration_performed": False,
+                "final": file_identity(front_controller),
+            }
+        else:
+            restoration = restore_front_controller_exact(
+                backup=original_backup,
+                expected_sha256=original_sha256,
+                metadata=reviewed_metadata,
+                allowed_current_sha256={original_sha256, EXPECTED_GATE_SHA256},
+                state=state,
+                state_path=state_path,
+                state_directory=state_directory,
+                operation=f"{name}-automatic-original-restore",
+                receipt_name=f"{name}-automatic-original-restore-receipt.json",
+                front_controller=front_controller,
+                application_root=application_root,
+            )
+            restored_health = capture_health_check(restored_health_probe or health_snapshot)
+            failure_receipt = {
+                "status": "gate_failed_original_restored",
+                "generated_at_utc": utc_now(),
+                "operation": name,
+                "failure_type": type(exception).__name__,
+                "failure_message_sha256": sha256_bytes(str(exception).encode("utf-8")),
+                "mutation_started": False,
+                "initial": initial,
+                "live_after_failure": live_after_failure,
+                "origin_probe": origin_result,
+                "public_probe": public_result,
+                "restoration_receipt": {
+                    "path": restoration["path"],
+                    "sha256": restoration["receipt_sha256"],
+                },
+                "post_restoration_health": restored_health,
+                "original_restoration_performed": True,
+                "final": file_identity(front_controller),
+            }
         failure_path = state_directory / f"{name}-gate-failure-receipt.json"
         failure_sha256 = write_new_json(failure_path, failure_receipt)
-        state["static_gate_active"] = False
         state["gate_failure_receipt"] = str(failure_path)
-        state["status"] = f"{name}_failed_original_restored"
+        if mutation_has_started(state):
+            state["static_gate_active"] = True
+            state["containment_active"] = True
+            state["status"] = f"{name}_failed_site_gated"
+        else:
+            state["static_gate_active"] = False
+            state["containment_active"] = False
+            state["status"] = f"{name}_failed_original_restored"
         write_state(state_path, state)
+        if mutation_has_started(state):
+            raise DeploymentError(
+                "Static-gate verification failed after mutation began; the exact 0644 "
+                f"gate remains installed (receipt {failure_sha256})."
+            ) from exception
         raise DeploymentError(
-            "Static-gate installation or verification failed; the exact original "
-            f"front controller was restored (receipt {failure_sha256})."
+            "Static-gate installation or verification failed before mutation; the exact "
+            f"original front controller was restored and health recorded (receipt {failure_sha256})."
         ) from exception
 
 
-def gate_http_probe(state_directory: Path, name: str) -> dict[str, Any]:
-    headers = state_directory / f"{name}.headers.txt"
-    body = state_directory / f"{name}.body.txt"
+def gate_http_probe(
+    state_directory: Path, name: str, *, origin_loopback: bool
+) -> dict[str, Any]:
+    route = "origin" if origin_loopback else "public"
+    headers = state_directory / f"{name}.{route}.headers.txt"
+    body = state_directory / f"{name}.{route}.body.txt"
+    routing_arguments = (
+        [
+            "--noproxy",
+            "*",
+            "--insecure",
+            "--resolve",
+            "buy-dtf.com:443:127.0.0.1",
+        ]
+        if origin_loopback
+        else []
+    )
     completed = run_command(
         [
             "/usr/bin/curl",
@@ -2000,6 +2170,7 @@ def gate_http_probe(state_directory: Path, name: str) -> dict[str, Any]:
             "5",
             "--max-time",
             "15",
+            *routing_arguments,
             f"https://buy-dtf.com/?ops_gate={secrets.token_hex(12)}",
         ],
         cwd=APP_ROOT,
@@ -2010,6 +2181,7 @@ def gate_http_probe(state_directory: Path, name: str) -> dict[str, Any]:
     header_text = headers.read_text("utf-8", errors="replace").lower()
     body_text = body.read_text("utf-8", errors="replace")
     return {
+        "route": "origin_loopback" if origin_loopback else "public_cloudflare",
         "status": int(completed.stdout),
         "header_verified": f"{MAINTENANCE_GATE_HEADER_NAME}: {MAINTENANCE_GATE_HEADER_VALUE}".lower()
         in header_text,
@@ -2017,6 +2189,14 @@ def gate_http_probe(state_directory: Path, name: str) -> dict[str, Any]:
         "headers_sha256": sha256_file(headers),
         "body_sha256": sha256_file(body),
     }
+
+
+def gate_origin_probe(state_directory: Path, name: str) -> dict[str, Any]:
+    return gate_http_probe(state_directory, name, origin_loopback=True)
+
+
+def gate_public_probe(state_directory: Path, name: str) -> dict[str, Any]:
+    return gate_http_probe(state_directory, name, origin_loopback=False)
 
 
 def atomic_install_file(source: Path, destination: Path, metadata: dict[str, Any]) -> None:
@@ -2688,11 +2868,90 @@ def front_controller_recovery_required(
         "installed",
         "installed_reconciled_from_live_identity",
         "verified",
+        "containment_retained",
     }:
         raise DeploymentError(
             "Durable state says the gate is installed but live identity is the original."
         )
-    return bool(state.get("migration_executed") or state.get("source_install_started"))
+    return mutation_has_started(state)
+
+
+def establish_rollback_containment(
+    *,
+    state_directory: Path,
+    name: str,
+    state: dict[str, Any],
+    state_path: Path,
+    original_backup: Path,
+    original_sha256: str = EXPECTED_FRONT_CONTROLLER_SHA256,
+    metadata: dict[str, Any] | None = None,
+    front_controller: Path = FRONT_CONTROLLER,
+    application_root: Path = APP_ROOT,
+    origin_probe: Callable[[], dict[str, Any]] | None = None,
+    public_probe: Callable[[], dict[str, Any]] | None = None,
+    restored_health_probe: Callable[[], dict[str, Any]] | None = None,
+) -> dict[str, Any]:
+    """Explicitly contain rollback before any source or runtime recovery work."""
+    state["containment_requested"] = True
+    state["status"] = f"{name}_establishing_containment"
+    write_state(state_path, state)
+    append_event(
+        state_directory,
+        "rollback_containment_requested",
+        {"operation": name, "mutation_started": mutation_has_started(state)},
+    )
+    try:
+        gate = install_static_gate(
+            state_directory=state_directory,
+            name=name,
+            state=state,
+            state_path=state_path,
+            original_backup=original_backup,
+            original_sha256=original_sha256,
+            metadata=metadata,
+            front_controller=front_controller,
+            application_root=application_root,
+            origin_probe=origin_probe,
+            public_probe=public_probe,
+            restored_health_probe=restored_health_probe,
+        )
+    except Exception:
+        live = file_identity(front_controller)
+        if mutation_has_started(state):
+            reviewed_metadata = metadata or reviewed_front_controller_metadata()
+            if (
+                live["sha256"] != EXPECTED_GATE_SHA256
+                or live["metadata"] != reviewed_metadata
+                or state.get("static_gate_active") is not True
+                or state.get("containment_active") is not True
+            ):
+                raise DeploymentError(
+                    "Rollback containment failed after mutation and did not retain the exact gate."
+                )
+            state["status"] = f"{name}_verification_failed_site_gated"
+            append_event(
+                state_directory,
+                "rollback_containment_verification_failed_site_gated",
+                {"operation": name, "identity": live},
+            )
+        else:
+            state["status"] = f"{name}_failed_before_mutation_original_restored"
+            append_event(
+                state_directory,
+                "rollback_containment_failed_before_mutation_original_restored",
+                {"operation": name, "identity": live},
+            )
+        write_state(state_path, state)
+        raise
+    state["containment_active"] = True
+    state["status"] = f"{name}_containment_verified"
+    write_state(state_path, state)
+    append_event(
+        state_directory,
+        "rollback_containment_verified",
+        {"operation": name, "identity": file_identity(front_controller)},
+    )
+    return gate
 
 
 def rollback_operation(
@@ -2709,10 +2968,10 @@ def rollback_operation(
     state["status"] = "rolling_back"
     write_state(state_path, state)
 
-    # Never trust a persisted boolean. The corrected primitive reconciles the
-    # actual front-controller bytes with durable transition state before any
-    # recovery write.
-    gate = install_static_gate(
+    # Rollback starts with an explicit containment phase. Never trust a
+    # persisted boolean: reconcile actual bytes and durable transition state
+    # before any recovery write.
+    gate = establish_rollback_containment(
         state_directory=state_directory,
         name="rollback-static-gate",
         state=state,
@@ -2781,7 +3040,7 @@ def rollback_operation(
         }
     except Exception as rollback_exception:
         try:
-            containment = install_static_gate(
+            containment = establish_rollback_containment(
                 state_directory=state_directory,
                 name="rollback-failure-static-gate",
                 state=state,
@@ -2789,16 +3048,12 @@ def rollback_operation(
                 original_backup=Path(str(state["front_controller_backup"])),
                 metadata=state["front_controller_metadata"],
             )
-            state["static_gate_active"] = True
             state["status"] = "rollback_failed_site_gated"
             state["rollback_failure_gate"] = containment
             write_state(state_path, state)
             append_event(state_directory, "rollback_failed_site_gated")
         except Exception as gate_exception:
-            # The gate primitive restores the exact original front controller
-            # whenever its own initial verification fails.
-            state["static_gate_active"] = False
-            state["status"] = "rollback_failed_gate_unavailable_original_restored"
+            live = file_identity(FRONT_CONTROLLER)
             state["rollback_failure_type"] = type(rollback_exception).__name__
             state["rollback_failure_message_sha256"] = sha256_bytes(
                 str(rollback_exception).encode("utf-8")
@@ -2807,11 +3062,31 @@ def rollback_operation(
             state["gate_failure_message_sha256"] = sha256_bytes(
                 str(gate_exception).encode("utf-8")
             )
+            if mutation_has_started(state):
+                if (
+                    live["sha256"] != EXPECTED_GATE_SHA256
+                    or live["metadata"] != state["front_controller_metadata"]
+                ):
+                    raise DeploymentError(
+                        "Rollback and containment both failed after mutation; exact gate identity is absent."
+                    ) from gate_exception
+                state["static_gate_active"] = True
+                state["containment_active"] = True
+                state["status"] = "rollback_failed_containment_unverified_site_gated"
+                outcome = "the exact gate remains installed"
+            else:
+                state["static_gate_active"] = False
+                state["containment_active"] = False
+                state["status"] = "rollback_failed_before_mutation_original_restored"
+                outcome = "the exact original front controller was restored"
             write_state(state_path, state)
-            append_event(state_directory, "rollback_failed_gate_unavailable_original_restored")
+            append_event(
+                state_directory,
+                "rollback_failed_containment_verification",
+                {"mutation_started": mutation_has_started(state), "identity": live},
+            )
             raise DeploymentError(
-                "Rollback failed and the static gate could not be verified; "
-                "the gate primitive restored the exact original front controller."
+                f"Rollback failed and containment verification also failed; {outcome}."
             ) from gate_exception
         raise
 
@@ -2850,6 +3125,7 @@ def deploy_release(
             "release_receipt_sha256": release_receipt_sha256,
             "state_directory": str(state_directory),
             "static_gate_active": False,
+            "containment_active": False,
             "laravel_maintenance_active": False,
             "migration_executed": False,
             "source_install_started": False,

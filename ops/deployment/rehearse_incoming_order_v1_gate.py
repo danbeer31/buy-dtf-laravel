@@ -44,6 +44,17 @@ def compact_identity(identity: dict[str, Any]) -> dict[str, Any]:
 
 def compact_gate(gate: dict[str, Any]) -> dict[str, Any]:
     replacement = gate.get("replacement")
+    def compact_probe(probe: dict[str, Any]) -> dict[str, Any]:
+        return {
+            "route": probe["route"],
+            "status": probe["status"],
+            "header_verified": probe["header_verified"],
+            "sentinel_verified": probe["sentinel_verified"],
+            "reader": probe["reader"],
+            "reader_command": probe["reader_command"],
+            "php_command": probe["php_command"],
+        }
+
     return {
         "sha256": gate["sha256"],
         "metadata": gate["metadata"],
@@ -54,18 +65,12 @@ def compact_gate(gate: dict[str, Any]) -> dict[str, Any]:
         "installed": (
             compact_identity(replacement["installed"]) if replacement is not None else None
         ),
-        "probe": {
-            "status": gate["probe"]["status"],
-            "header_verified": gate["probe"]["header_verified"],
-            "sentinel_verified": gate["probe"]["sentinel_verified"],
-            "reader": gate["probe"]["reader"],
-            "reader_command": gate["probe"]["reader_command"],
-            "php_command": gate["probe"]["php_command"],
-        },
+        "origin_probe": compact_probe(gate["origin_probe"]),
+        "public_probe": compact_probe(gate["public_probe"]),
     }
 
 
-def separate_web_identity_probe(front_controller: Path) -> dict[str, Any]:
+def separate_web_identity_probe(front_controller: Path, route: str) -> dict[str, Any]:
     reader_code = (
         "import hashlib,json,os,pathlib,sys;"
         "p=pathlib.Path(sys.argv[1]);b=p.read_bytes();"
@@ -116,6 +121,7 @@ def separate_web_identity_probe(front_controller: Path) -> dict[str, Any]:
         "The separate web identity did not execute the reviewed gate bytes.",
     )
     return {
+        "route": route,
         "status": 503,
         "header_verified": True,
         "sentinel_verified": True,
@@ -123,6 +129,21 @@ def separate_web_identity_probe(front_controller: Path) -> dict[str, Any]:
         "reader_command": command_identity(reader_command, reader),
         "php_command": command_identity(php_command, php),
         "front_controller": deploy.file_identity(front_controller),
+    }
+
+
+def restored_application_health_probe(
+    front_controller: Path, original_sha256: str
+) -> dict[str, Any]:
+    identity = deploy.file_identity(front_controller)
+    require(identity["sha256"] == original_sha256, "Health probe did not see the original.")
+    require(
+        identity["metadata"] == deploy.reviewed_front_controller_metadata(),
+        "Health probe saw unexpected original metadata.",
+    )
+    return {
+        "application_healthy": True,
+        "front_controller": compact_identity(identity),
     }
 
 
@@ -191,6 +212,7 @@ def fixture(rehearsal_root: Path, name: str) -> dict[str, Any]:
         "front_controller_metadata": deploy.reviewed_front_controller_metadata(),
         "front_controller_transitions": [],
         "static_gate_active": False,
+        "containment_active": False,
         "migration_executed": False,
         "source_install_started": False,
     }
@@ -226,12 +248,24 @@ def scenario_receipt(item: dict[str, Any], details: dict[str, Any]) -> dict[str,
     state = json.loads(item["state_path"].read_text("utf-8"))
     final = deploy.file_identity(item["front_controller"])
     manifest = evidence_manifest(item["evidence"])
+    receipt_payloads = {
+        record["path"]: json.loads((item["evidence"] / record["path"]).read_text("utf-8"))
+        for record in manifest
+        if record["path"].endswith("receipt.json")
+    }
+    restoration_receipts = sorted(
+        path for path in receipt_payloads if "automatic-original-restore-receipt.json" in path
+    )
     receipt = {
         "status": "pass",
         "scenario": item["root"].name,
         "details": details,
         "final_front_controller": compact_identity(final),
         "final_is_original": final["sha256"] == item["original_sha256"],
+        "final_is_exact_gate": (
+            final["sha256"] == deploy.EXPECTED_GATE_SHA256
+            and final["metadata"] == deploy.reviewed_front_controller_metadata()
+        ),
         "durable_transitions": [
             {
                 "sequence": transition["sequence"],
@@ -242,8 +276,10 @@ def scenario_receipt(item: dict[str, Any], details: dict[str, Any]) -> dict[str,
         ],
         "final_durable_state": {
             "static_gate_active": state["static_gate_active"],
+            "containment_active": state.get("containment_active", False),
             "migration_executed": state["migration_executed"],
             "source_install_started": state["source_install_started"],
+            "status": state["status"],
             "gate_failure_receipt_present": "gate_failure_receipt" in state,
         },
         "evidence_manifest": manifest,
@@ -252,12 +288,20 @@ def scenario_receipt(item: dict[str, Any], details: dict[str, Any]) -> dict[str,
             for record in manifest
             if record["path"].endswith("receipt.json")
         },
+        "receipt_payloads": receipt_payloads,
+        "automatic_original_restoration_receipts": restoration_receipts,
     }
     receipt["canonical_sha256"] = deploy.sha256_bytes(deploy.canonical_bytes(receipt))
     return receipt
 
 
-def install_arguments(item: dict[str, Any], name: str) -> dict[str, Any]:
+def install_arguments(
+    item: dict[str, Any],
+    name: str,
+    *,
+    origin_probe: Callable[[], dict[str, Any]] | None = None,
+    public_probe: Callable[[], dict[str, Any]] | None = None,
+) -> dict[str, Any]:
     return {
         "state_directory": item["evidence"],
         "name": name,
@@ -268,6 +312,13 @@ def install_arguments(item: dict[str, Any], name: str) -> dict[str, Any]:
         "metadata": deploy.reviewed_front_controller_metadata(),
         "front_controller": item["front_controller"],
         "application_root": item["application"],
+        "origin_probe": origin_probe
+        or (lambda: separate_web_identity_probe(item["front_controller"], "origin_loopback")),
+        "public_probe": public_probe
+        or (lambda: separate_web_identity_probe(item["front_controller"], "public_cloudflare")),
+        "restored_health_probe": lambda: restored_application_health_probe(
+            item["front_controller"], item["original_sha256"]
+        ),
     }
 
 
@@ -303,6 +354,28 @@ def expect_gate_failure(action: Callable[[], Any]) -> str:
     raise deploy.DeploymentError("Expected static-gate failure did not occur.")
 
 
+def require_pre_mutation_restoration_evidence(receipt: dict[str, Any]) -> None:
+    failures = [
+        payload
+        for path, payload in receipt["receipt_payloads"].items()
+        if path.endswith("gate-failure-receipt.json")
+    ]
+    require(len(failures) == 1, "Expected one pre-mutation gate-failure receipt.")
+    failure = failures[0]
+    require(
+        failure.get("original_restoration_performed") is True,
+        "Pre-mutation failure did not record exact original restoration.",
+    )
+    require(
+        failure.get("post_restoration_health", {}).get("status") == "pass",
+        "Pre-mutation failure did not record a passing post-restoration health check.",
+    )
+    require(
+        len(receipt["automatic_original_restoration_receipts"]) == 1,
+        "Pre-mutation failure did not retain one original-restoration receipt.",
+    )
+
+
 def run_rehearsal(parent: Path) -> dict[str, Any]:
     if os.geteuid() != 0:
         raise deploy.DeploymentError(
@@ -319,7 +392,7 @@ def run_rehearsal(parent: Path) -> dict[str, Any]:
     previous_wait = deploy.OPCACHE_WAIT_SECONDS
     deploy.OPCACHE_WAIT_SECONDS = 0
     result: dict[str, Any] = {
-        "artifact": "buy-dtf-incoming-order-front-controller-gate-rehearsal-v2",
+        "artifact": "buy-dtf-incoming-order-front-controller-gate-rehearsal-v3",
         "runner_sha256": deploy.sha256_file(Path(deploy.__file__).resolve()),
         "rehearsal_script_sha256": deploy.sha256_file(Path(__file__).resolve()),
         "umask": "0077",
@@ -342,7 +415,6 @@ def run_rehearsal(parent: Path) -> dict[str, Any]:
         success = fixture(rehearsal_root, "success-under-umask-077")
         gate = deploy.install_static_gate(
             **install_arguments(success, "successful-cutover-gate"),
-            probe=lambda: separate_web_identity_probe(success["front_controller"]),
         )
         require(
             gate["replacement"]["prepared"]["metadata"]
@@ -362,43 +434,52 @@ def run_rehearsal(parent: Path) -> dict[str, Any]:
         before_failure = expect_gate_failure(
             lambda: deploy.install_static_gate(
                 **install_arguments(before, "before-replacement-gate"),
-                probe=lambda: separate_web_identity_probe(before["front_controller"]),
                 fault_injector=injected_failure("before_replacement"),
             )
         )
-        result["scenarios"][before["root"].name] = scenario_receipt(
+        before_receipt = scenario_receipt(
             before, {"expected_failure_sha256": before_failure}
         )
+        require_pre_mutation_restoration_evidence(before_receipt)
+        result["scenarios"][before["root"].name] = before_receipt
 
         after = fixture(rehearsal_root, "failure-after-replacement")
         after_failure = expect_gate_failure(
             lambda: deploy.install_static_gate(
                 **install_arguments(after, "after-replacement-gate"),
-                probe=lambda: separate_web_identity_probe(after["front_controller"]),
                 fault_injector=injected_failure("after_replacement"),
             )
         )
-        result["scenarios"][after["root"].name] = scenario_receipt(
+        after_receipt = scenario_receipt(
             after, {"expected_failure_sha256": after_failure}
         )
+        require_pre_mutation_restoration_evidence(after_receipt)
+        result["scenarios"][after["root"].name] = after_receipt
 
         verification = fixture(rehearsal_root, "failure-during-verification")
 
         def failed_verification() -> dict[str, Any]:
-            observed = separate_web_identity_probe(verification["front_controller"])
+            observed = separate_web_identity_probe(
+                verification["front_controller"], "public_cloudflare"
+            )
             observed["status"] = 500
             observed["header_verified"] = False
             return observed
 
         verification_failure = expect_gate_failure(
             lambda: deploy.install_static_gate(
-                **install_arguments(verification, "verification-failure-gate"),
-                probe=failed_verification,
+                **install_arguments(
+                    verification,
+                    "verification-failure-gate",
+                    public_probe=failed_verification,
+                ),
             )
         )
-        result["scenarios"][verification["root"].name] = scenario_receipt(
+        verification_receipt = scenario_receipt(
             verification, {"expected_failure_sha256": verification_failure}
         )
+        require_pre_mutation_restoration_evidence(verification_receipt)
+        result["scenarios"][verification["root"].name] = verification_receipt
 
         unreadable = fixture(rehearsal_root, "recovery-from-live-mode-0600-gate")
         deploy.record_front_controller_transition(
@@ -421,16 +502,17 @@ def run_rehearsal(parent: Path) -> dict[str, Any]:
         unreadable_failure = expect_gate_failure(
             lambda: deploy.install_static_gate(
                 **install_arguments(unreadable, "legacy-mode-0600-gate-recovery"),
-                probe=lambda: separate_web_identity_probe(unreadable["front_controller"]),
             )
         )
-        result["scenarios"][unreadable["root"].name] = scenario_receipt(
+        unreadable_receipt = scenario_receipt(
             unreadable,
             {
                 "expected_failure_sha256": unreadable_failure,
                 "unreadable_gate_identified_by_sha256_not_boolean": True,
             },
         )
+        require_pre_mutation_restoration_evidence(unreadable_receipt)
+        result["scenarios"][unreadable["root"].name] = unreadable_receipt
 
         pending = fixture(rehearsal_root, "recovery-from-pending-state-and-live-gate")
         deploy.record_front_controller_transition(
@@ -460,7 +542,6 @@ def run_rehearsal(parent: Path) -> dict[str, Any]:
         )
         reconciled = deploy.install_static_gate(
             **install_arguments(pending, "reconciled-recovery-gate"),
-            probe=lambda: separate_web_identity_probe(pending["front_controller"]),
         )
         require(
             reconciled["reconciled_from_live_identity"] is True,
@@ -489,9 +570,8 @@ def run_rehearsal(parent: Path) -> dict[str, Any]:
             ),
             "Later-phase durable mutation state did not require rollback gating.",
         )
-        rollback_gate = deploy.install_static_gate(
+        rollback_gate = deploy.establish_rollback_containment(
             **install_arguments(rollback, "later-phase-rollback-gate"),
-            probe=lambda: separate_web_identity_probe(rollback["front_controller"]),
         )
         rollback_restore = exact_restore(rollback, "later-phase-rollback-reopen")
         result["scenarios"][rollback["root"].name] = scenario_receipt(
@@ -503,16 +583,74 @@ def run_rehearsal(parent: Path) -> dict[str, Any]:
             },
         )
 
-        require(len(result["scenarios"]) == 7, "Unexpected rehearsal scenario count.")
+        containment_failure = fixture(
+            rehearsal_root, "later-phase-gate-verification-failure"
+        )
+        containment_failure["state"]["migration_executed"] = True
+        containment_failure["state"]["source_install_started"] = True
+        deploy.write_state(
+            containment_failure["state_path"], containment_failure["state"]
+        )
+
+        def failed_later_phase_public_probe() -> dict[str, Any]:
+            observed = separate_web_identity_probe(
+                containment_failure["front_controller"], "public_cloudflare"
+            )
+            observed["status"] = 522
+            observed["header_verified"] = False
+            observed["sentinel_verified"] = False
+            return observed
+
+        containment_failure_sha256 = expect_gate_failure(
+            lambda: deploy.establish_rollback_containment(
+                **install_arguments(
+                    containment_failure,
+                    "later-phase-verification-failure-gate",
+                    public_probe=failed_later_phase_public_probe,
+                )
+            )
+        )
+        containment_receipt = scenario_receipt(
+            containment_failure,
+            {
+                "expected_failure_sha256": containment_failure_sha256,
+                "migration_executed": True,
+                "source_install_started": True,
+                "expected_fail_closed_result": "exact_gate_retained_without_original_restore",
+            },
+        )
+        require(
+            containment_receipt["final_is_exact_gate"],
+            "Later-phase verification failure did not retain the exact gate.",
+        )
+        require(
+            containment_receipt["final_durable_state"]["static_gate_active"] is True
+            and containment_receipt["final_durable_state"]["containment_active"] is True,
+            "Later-phase verification failure was not recorded as gated containment.",
+        )
+        require(
+            containment_receipt["automatic_original_restoration_receipts"] == [],
+            "Later-phase verification failure wrote an unsafe original-restoration receipt.",
+        )
+        result["scenarios"][containment_failure["root"].name] = containment_receipt
+
+        require(len(result["scenarios"]) == 8, "Unexpected rehearsal scenario count.")
         require(
             all(item["status"] == "pass" for item in result["scenarios"].values()),
             "A gate rehearsal scenario did not pass.",
         )
         result["status"] = "pass"
         result["scenario_count"] = len(result["scenarios"])
-        result["all_final_front_controllers_exactly_original"] = all(
-            item["final_is_original"] for item in result["scenarios"].values()
+        result["all_final_front_controllers_safe"] = all(
+            item["final_is_original"] or item["final_is_exact_gate"]
+            for item in result["scenarios"].values()
         )
+        result["later_phase_failure_retained_exact_gate"] = containment_receipt[
+            "final_is_exact_gate"
+        ]
+        result["later_phase_failure_original_restoration_receipts"] = containment_receipt[
+            "automatic_original_restoration_receipts"
+        ]
         result["canonical_sha256"] = deploy.sha256_bytes(deploy.canonical_bytes(result))
         return result
     finally:
