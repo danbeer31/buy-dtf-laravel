@@ -1,0 +1,35 @@
+$ php composer.phar update laravel/framework:12.69.0 league/commonmark:2.10.2 league/flysystem:3.35.3 league/flysystem-local:3.35.3 --with-dependencies --minimal-changes --no-install --no-interaction
+Loading composer repositories with package information
+Updating dependencies
+Lock file operations: 0 installs, 4 updates, 0 removals
+  - Upgrading laravel/framework (v12.61.1 => v12.69.0)
+  - Upgrading league/commonmark (2.10.0 => 2.10.2)
+  - Upgrading league/flysystem (3.30.2 => 3.35.3)
+  - Upgrading league/flysystem-local (3.30.2 => 3.35.3)
+Writing lock file
+> @php artisan vendor:publish --tag=laravel-assets --ansi --force
+PHP Warning:  require(/mnt/c/Users/danie/projects/buy-dtf-dependency-security-20260930/vendor/autoload.php): Failed to open stream: No such file or directory in /mnt/c/Users/danie/projects/buy-dtf-dependency-security-20260930/artisan on line 10
+PHP Fatal error:  Uncaught Error: Failed opening required '/mnt/c/Users/danie/projects/buy-dtf-dependency-security-20260930/vendor/autoload.php' (include_path='.:/usr/share/php') in /mnt/c/Users/danie/projects/buy-dtf-dependency-security-20260930/artisan:10
+Stack trace:
+#0 {main}
+  thrown in /mnt/c/Users/danie/projects/buy-dtf-dependency-security-20260930/artisan on line 10
+Script @php artisan vendor:publish --tag=laravel-assets --ansi --force handling the post-update-cmd event returned with error code 255
+__EXIT_STATUS__=1
+
+The dependency solver and lock write above completed before the unrelated post-update application hook ran. The hook could not boot because this new isolated worktree did not yet contain vendor/. No application or production state was changed. The exact resolution was then replayed from a fresh byte-exact baseline with scripts disabled, as shown below.
+
+$ php composer.phar update laravel/framework:12.69.0 league/commonmark:2.10.2 league/flysystem:3.35.3 league/flysystem-local:3.35.3 --with-dependencies --minimal-changes --no-install --no-interaction --no-scripts
+7098f3a19cb65f88bcc945f019dda0aa7f515737eb5d4918c30705f25c6ad872  composer.json
+eeac4637272ca2b9aeaa797a4440cfc8b4e31f5a469619c46ebfa5791c701831  composer.lock
+Loading composer repositories with package information
+Updating dependencies
+Lock file operations: 0 installs, 4 updates, 0 removals
+  - Upgrading laravel/framework (v12.61.1 => v12.69.0)
+  - Upgrading league/commonmark (2.10.0 => 2.10.2)
+  - Upgrading league/flysystem (3.30.2 => 3.35.3)
+  - Upgrading league/flysystem-local (3.30.2 => 3.35.3)
+Writing lock file
+No security vulnerability advisories found.
+22af12c7e58fcfe809735dbf9955b2d22a264e9e7345cefd74398e36bf2773b9  composer.lock
+__MATCHES_REVIEW_CANDIDATE__=true
+__EXIT_STATUS__=0

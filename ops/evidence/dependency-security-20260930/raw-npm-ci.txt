@@ -1,0 +1,19 @@
+$ npm.cmd ci
+
+added 175 packages, and audited 176 packages in 12s
+
+44 packages are looking for funding
+  run `npm fund` for details
+
+14 vulnerabilities (1 low, 2 moderate, 9 high, 2 critical)
+
+To address all issues, run:
+  npm audit fix
+
+Run `npm audit` for details.
+npm warn allow-scripts 2 packages have install scripts not yet covered by allowScripts:
+npm warn allow-scripts   @parcel/watcher@2.5.4 (install: node scripts/build-from-source.js)
+npm warn allow-scripts   esbuild@0.27.2 (postinstall: node install.js)
+npm warn allow-scripts
+npm warn allow-scripts Run `npm approve-scripts --allow-scripts-pending` to review, or `npm approve-scripts <pkg>` to allow.
+__EXIT_STATUS__=0

@@ -1,0 +1,37 @@
+$ wsl.exe --cd /mnt/c/Users/danie/projects/buy-dtf-dependency-security-20260930 php /mnt/c/Users/danie/projects/products.nlwebtools.com/composer.phar validate --strict --no-interaction
+./composer.json is valid
+__EXIT_STATUS__=0
+
+$ wsl.exe --cd /mnt/c/Users/danie/projects/buy-dtf-dependency-security-20260930 php /mnt/c/Users/danie/projects/products.nlwebtools.com/composer.phar audit --locked --no-dev --no-interaction --format=json
+{
+    "advisories": [],
+    "abandoned": []
+}
+__EXIT_STATUS__=0
+
+$ wsl.exe --cd /mnt/c/Users/danie/projects/buy-dtf-dependency-security-20260930 php /mnt/c/Users/danie/projects/products.nlwebtools.com/composer.phar audit --locked --no-interaction --format=json
+{
+    "advisories": [],
+    "abandoned": []
+}
+__EXIT_STATUS__=0
+
+$ wsl.exe --cd /mnt/c/Users/danie/projects/buy-dtf-dependency-security-20260930 php /mnt/c/Users/danie/projects/products.nlwebtools.com/composer.phar check-platform-reqs --no-dev --no-interaction
+Checking non-dev platform requirements for packages in the vendor dir
+composer-runtime-api 2.2.2      success
+ext-ctype            *          success provided by symfony/polyfill-ctype
+ext-curl             8.3.6      success
+ext-dom              20031129   success
+ext-fileinfo         8.3.6      success
+ext-filter           8.3.6      success
+ext-hash             8.3.6      success
+ext-iconv            8.3.6      success
+ext-json             8.3.6      success
+ext-libxml           8.3.6      success
+ext-mbstring         *          success provided by symfony/polyfill-mbstring
+ext-openssl          8.3.6      success
+ext-pcre             8.3.6      success
+ext-session          8.3.6      success
+ext-tokenizer        8.3.6      success
+php                  8.3.6      success
+__EXIT_STATUS__=0

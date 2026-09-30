@@ -1,0 +1,126 @@
+{
+  "receipt_version": 1,
+  "artifact": "buy-dtf-dependency-security-lock-candidate-v1",
+  "status": "ready_for_independent_review_no_go_for_staging_or_deployment",
+  "generated_at_utc": "2026-09-30T23:20:39Z",
+  "branch": "security/dependency-advisories-20260930",
+  "production_accessed": false,
+  "production_baseline": {
+    "candidate_base_commit": "f11a9413d9040b4562064ee02fda002b317e0de9",
+    "live_composer_json_source_commit": "10a2dfca5d734ea329ce251a295a355a46dff6f6",
+    "composer_json_sha256": "7098f3a19cb65f88bcc945f019dda0aa7f515737eb5d4918c30705f25c6ad872",
+    "composer_lock_sha256": "eeac4637272ca2b9aeaa797a4440cfc8b4e31f5a469619c46ebfa5791c701831",
+    "composer_content_hash": "a72b3c22fc3bec98130fd5133da242a1",
+    "package_count": 116
+  },
+  "candidate": {
+    "dependency_only_commit": "c07c29332adcc9fa41f2c3b4f14bf6f35cf28c3c",
+    "composer_lock_path": "composer.lock",
+    "composer_lock_sha256": "22af12c7e58fcfe809735dbf9955b2d22a264e9e7345cefd74398e36bf2773b9",
+    "repository_composer_json_sha256": "12359b3c25459a78578c67ac542bc72b7148c16d0a1ff51c351b150aed75676c",
+    "repository_composer_json_unchanged": true,
+    "production_composer_json_must_be_retained": true,
+    "composer_content_hash": "a72b3c22fc3bec98130fd5133da242a1",
+    "package_count": 116,
+    "package_changes": 4,
+    "package_additions": 0,
+    "package_removals": 0,
+    "unrelated_package_changes": 0
+  },
+  "resolution": {
+    "command": "composer update laravel/framework:12.69.0 league/commonmark:2.10.2 league/flysystem:3.35.3 league/flysystem-local:3.35.3 --with-dependencies --minimal-changes --no-install --no-interaction --no-scripts",
+    "with_dependencies": true,
+    "minimal_changes": true,
+    "exact_temporary_constraints": true,
+    "fresh_exact_production_composer_files_replay_exit_status": 0,
+    "fresh_replay_matches_candidate_bytes": true,
+    "initial_worktree_post_update_hook": {
+      "exit_status": 1,
+      "dependency_solver_completed": true,
+      "lock_write_completed": true,
+      "reason": "isolated worktree had no vendor/autoload.php when the post-update application hook ran",
+      "application_or_production_state_changed": false
+    }
+  },
+  "packages": [
+    {
+      "name": "laravel/framework",
+      "before": "v12.61.1",
+      "after": "v12.69.0",
+      "reference": "335429f28612e3a7810db0c8508b2cddbcc0fda0"
+    },
+    {
+      "name": "league/commonmark",
+      "before": "2.10.0",
+      "after": "2.10.2",
+      "reference": "692e90b901877bdfd727e51270ce4394633c6e74"
+    },
+    {
+      "name": "league/flysystem",
+      "before": "3.30.2",
+      "after": "3.35.3",
+      "reference": "5fc8404762179ae514678487b23494fd69b2309c"
+    },
+    {
+      "name": "league/flysystem-local",
+      "before": "3.30.2",
+      "after": "3.35.3",
+      "reference": "a099b24dce160f3b2239043d13d47c4a1a214ea4"
+    }
+  ],
+  "validation": {
+    "composer_validate_strict": "pass",
+    "composer_audit_locked_no_dev": {
+      "status": "pass",
+      "advisories": 0
+    },
+    "composer_audit_locked_full": {
+      "status": "pass",
+      "advisories": 0
+    },
+    "composer_check_platform_requirements_no_dev": "pass",
+    "phpunit": {
+      "status": "pass",
+      "php": "8.2.0",
+      "tests": 108,
+      "assertions": 714
+    },
+    "npm_audit_omit_dev": {
+      "status": "pass",
+      "vulnerabilities": 0
+    },
+    "frontend_build": {
+      "status": "pass",
+      "modules_transformed": 112,
+      "known_sass_deprecation_warnings": true
+    },
+    "node_development_advisories": {
+      "status": "out_of_scope_unchanged_package_lock",
+      "reported_by_npm_ci": 14,
+      "low": 1,
+      "moderate": 2,
+      "high": 9,
+      "critical": 2
+    }
+  },
+  "raw_evidence": {
+    "composer_resolution_sha256": "b4b5e5218ee408be79a7438d21c1dfb8cc71a1a72fa70cf34d5293e703f0d4cc",
+    "composer_validation_audit_sha256": "2b83d9bf0984782bf1981d751f6541a6ba47dc2a7e444b97aee7062919751c26",
+    "phpunit_sha256": "25fed5f3882845db562c223856169ea43f76d9b3b617aab082dcdb1fcda3b0e2",
+    "npm_ci_sha256": "d4e4eb5117e65383683af849ecfca4bda3d140dcd98fb12a904ac919ab470b0e",
+    "frontend_validation_sha256": "444c1ca1a193d4c869fb84321a463d45b6768116a81669d932ffe1618f849172",
+    "lock_diff_sha256": "309c766a856f82a60bc8bcce1b84889b21a81c0463acf26f1362117fbc375ed3"
+  },
+  "production_actions": {
+    "production_accessed": false,
+    "production_staged": false,
+    "dependency_cutover_run": false,
+    "migration_run": false,
+    "maintenance_entered": false,
+    "live_files_changed": false,
+    "service_restarted": false,
+    "capability_enabled": false,
+    "shopnltees_changed": false,
+    "retention_or_customer_deletion_run": false
+  }
+}
