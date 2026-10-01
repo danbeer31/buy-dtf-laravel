@@ -162,6 +162,14 @@ The copied production operation directory contains 57 files. Its files were
 compared byte-for-byte by SHA-256 with the retained production evidence before
 this report was created.
 
-No retry, manual production edit, dependency/cache/configuration change,
-service restart, capability enablement, ShopNLTees change, retention action, or
-customer-artwork action occurred.
+The evidence-local `.gitattributes` disables text conversion for this subtree.
+Several raw HTTP-header and production-source artifacts contain CRLF bytes;
+those bytes are intentionally preserved. Consequently, a Git whitespace check
+against the evidence commit can report the retained carriage returns as
+trailing whitespace. Do not normalize those files.
+
+No retry, manual production edit, dependency/bootstrap-cache/configuration
+change, service restart, capability enablement, ShopNLTees change, retention
+action, or customer-artwork action occurred. The reviewed automatic rollback
+did execute `artisan view:clear`; its stdout/stderr are retained in the
+operation directory.
