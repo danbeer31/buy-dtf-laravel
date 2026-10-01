@@ -1,0 +1,411 @@
+{
+  "approved_source_manifest": {
+    "files": 302,
+    "sha256": "46f6a1ffa03364b550395c89111a0d69a844d1379f3c5aba6ed5c1e17616abca"
+  },
+  "artifact": "buy-dtf-dependency-release-v2",
+  "candidate_cache_identity": {
+    "entries": {
+      "packages.php": {
+        "bytes": 415,
+        "gid": 33,
+        "kind": "file",
+        "mode": 436,
+        "sha256": "21da8f9ed19687e708cc7bc5cc59394c6fcdf9b9deadf617ae70526f815a1db0",
+        "uid": 1000
+      },
+      "services.php": {
+        "bytes": 21353,
+        "gid": 33,
+        "kind": "file",
+        "mode": 436,
+        "sha256": "1f7623b2b4ffd2c4099fb34ad86fc96c1479e27bf81b1b0ba328c988cc4ffcb5",
+        "uid": 1000
+      }
+    },
+    "manifest": {
+      "bytes": 21768,
+      "directories": 0,
+      "files": 2,
+      "sha256": "468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9"
+    },
+    "root_metadata": {
+      "gid": 33,
+      "kind": "directory",
+      "mode": 1533,
+      "uid": 1000
+    }
+  },
+  "candidate_lock_sha256": "22af12c7e58fcfe809735dbf9955b2d22a264e9e7345cefd74398e36bf2773b9",
+  "candidate_vendor_manifest": {
+    "bytes": 26453056,
+    "directories": 925,
+    "files": 6460,
+    "sha256": "7399949f857da190c5ff07b89c85e8fba8a6f681695e20a462862be591b698ed"
+  },
+  "command_receipts": {
+    "composer_audit": "dac04dda7966b04d2eb83ba22b729e4025f820bba102192effa983b1fa377af8",
+    "composer_install": "e3bd6c1a5556a8f83c087149c388fc263e18abbcdeaa5c428e36295cecc664ac",
+    "composer_validate": "43add299dc97ecbd90ec2dc456ef5a0bd824bb9abdae2a3d7cdb520e21f8e86d",
+    "platform": "485cb824d1abe5e4c9efa4248e41295c4de48429d7fc0e50d41220ca22d5d0d1",
+    "shadow_package_discovery": "1306c598a02c1f6569bca56d18f0b5710b08dbab9e8d5636f9655701c917188f",
+    "shadow_routes": "6ac448cb8e214e1c63676ef4f46b8f911ae69f4cda46b6a95a04b689eaef54a9"
+  },
+  "created_at_utc": "2026-10-01T00:03:08Z",
+  "front_controller": {
+    "metadata": {
+      "gid": 1000,
+      "kind": "file",
+      "mode": 420,
+      "uid": 1000
+    },
+    "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
+  },
+  "health_before": {
+    "https://buy-dtf.com/": 200,
+    "https://buy-dtf.com/admin": 302,
+    "https://buy-dtf.com/checkout": 302,
+    "https://buy-dtf.com/login": 200,
+    "https://buy-dtf.com/up": 200
+  },
+  "live_composer_json_sha256": "7098f3a19cb65f88bcc945f019dda0aa7f515737eb5d4918c30705f25c6ad872",
+  "maintenance_gate_sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03",
+  "no_dev": true,
+  "production_preflight": {
+    "artifact": "buy-dtf-dependency-production-preflight-v2",
+    "cache_identity": {
+      "entries": {
+        "packages.php": {
+          "bytes": 415,
+          "gid": 33,
+          "kind": "file",
+          "mode": 436,
+          "sha256": "21da8f9ed19687e708cc7bc5cc59394c6fcdf9b9deadf617ae70526f815a1db0",
+          "uid": 1000
+        },
+        "services.php": {
+          "bytes": 21353,
+          "gid": 33,
+          "kind": "file",
+          "mode": 436,
+          "sha256": "1f7623b2b4ffd2c4099fb34ad86fc96c1479e27bf81b1b0ba328c988cc4ffcb5",
+          "uid": 1000
+        }
+      },
+      "manifest": {
+        "bytes": 21768,
+        "directories": 0,
+        "files": 2,
+        "sha256": "468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9"
+      },
+      "root_metadata": {
+        "gid": 33,
+        "kind": "directory",
+        "mode": 1533,
+        "uid": 1000
+      }
+    },
+    "candidate_lock_sha256": "22af12c7e58fcfe809735dbf9955b2d22a264e9e7345cefd74398e36bf2773b9",
+    "candidate_package_versions": {
+      "guzzlehttp/guzzle": "7.15.2",
+      "laravel/framework": "12.69.0",
+      "league/commonmark": "2.10.2",
+      "league/flysystem": "3.35.3",
+      "league/flysystem-local": "3.35.3"
+    },
+    "checked_at_utc": "2026-10-01T00:02:59Z",
+    "database_config_sha256": "d25ab83243dc255e43ddbaa856991dae93016dd8ff77fa11be20d222693bb8f9",
+    "deployment_lock": {
+      "exists": true,
+      "free": false,
+      "owned_by_stage_process": true
+    },
+    "front_controller": {
+      "metadata": {
+        "gid": 1000,
+        "kind": "file",
+        "mode": 420,
+        "uid": 1000
+      },
+      "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
+    },
+    "health": {
+      "https://buy-dtf.com/": 200,
+      "https://buy-dtf.com/admin": 302,
+      "https://buy-dtf.com/checkout": 302,
+      "https://buy-dtf.com/login": 200,
+      "https://buy-dtf.com/up": 200
+    },
+    "live_composer_json_sha256": "7098f3a19cb65f88bcc945f019dda0aa7f515737eb5d4918c30705f25c6ad872",
+    "live_lock_sha256": "eeac4637272ca2b9aeaa797a4440cfc8b4e31f5a469619c46ebfa5791c701831",
+    "maintenance_active": false,
+    "runtime": {
+      "app_debug": false,
+      "app_environment": "local",
+      "business_activity": {
+        "dtfimages": {
+          "count": 19396,
+          "latest_sha256": "ae2213e6e6d9ff6b0d028da2fea87f1d171c634d43a80aedd8fc87ce43334478"
+        },
+        "dtforders": {
+          "count": 1580,
+          "latest_sha256": "2284e0fde5efa2000d7271cc973648afc291041dd900052142a9f8f127a4f111"
+        },
+        "paymentinfos": {
+          "count": 1709,
+          "latest_sha256": "0fb5fd75d006763d2a3ff733e2b7acd8b9f4a9a6634f1cd7ec29fb8cb2666567"
+        },
+        "stripe_sync_logs": {
+          "count": 4894,
+          "latest_sha256": "bb45dc167851291f9b6d6e668b21b9b9568fcf8c714caac6a1daa3977cdfec2c"
+        }
+      },
+      "config_cached": false,
+      "default_database_connection": "mysql",
+      "fuel_database_connection": "fuelmysql",
+      "guzzle_class_path": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle/src/Client.php",
+      "guzzle_version": "7.15.2",
+      "laravel_class_path": "/var/www/buy-dtf/vendor/laravel/framework/src/Illuminate/Foundation/Application.php",
+      "laravel_version": "12.61.1",
+      "package_install_paths": {
+        "guzzlehttp/guzzle": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle",
+        "laravel/framework": "/var/www/buy-dtf/vendor/laravel/framework",
+        "league/commonmark": "/var/www/buy-dtf/vendor/league/commonmark",
+        "league/flysystem": "/var/www/buy-dtf/vendor/league/flysystem",
+        "league/flysystem-local": "/var/www/buy-dtf/vendor/league/flysystem-local"
+      },
+      "package_versions": {
+        "guzzlehttp/guzzle": "7.15.2",
+        "laravel/framework": "12.61.1",
+        "league/commonmark": "2.10.0",
+        "league/flysystem": "3.30.2",
+        "league/flysystem-local": "3.30.2"
+      },
+      "php_extensions": [
+        "Core",
+        "FFI",
+        "PDO",
+        "Phar",
+        "Reflection",
+        "SPL",
+        "SimpleXML",
+        "Zend OPcache",
+        "bcmath",
+        "calendar",
+        "ctype",
+        "curl",
+        "date",
+        "dom",
+        "exif",
+        "fileinfo",
+        "filter",
+        "ftp",
+        "gd",
+        "gettext",
+        "hash",
+        "iconv",
+        "imagick",
+        "intl",
+        "json",
+        "libxml",
+        "mbstring",
+        "mysqli",
+        "mysqlnd",
+        "openssl",
+        "pcntl",
+        "pcre",
+        "pdo_mysql",
+        "posix",
+        "random",
+        "readline",
+        "session",
+        "shmop",
+        "sockets",
+        "sodium",
+        "standard",
+        "sysvmsg",
+        "sysvsem",
+        "sysvshm",
+        "tokenizer",
+        "xml",
+        "xmlreader",
+        "xmlwriter",
+        "xsl",
+        "zip",
+        "zlib"
+      ],
+      "php_version": "8.2.30",
+      "queue_connection": "sync",
+      "queue_tables": {
+        "failed_jobs": 0,
+        "jobs": 0
+      }
+    },
+    "runtime_helper_sha256": "16e1f7cf814112120eb71afa3385dd0ae5251dac85e5407d88ed0b639bc93cb0",
+    "scoped_processes": [],
+    "script_sha256": "9a8d130eeee5b9aab1cbe89632a9357af6dcdcb8bbd1b484b6d2fdf7f0ce56be",
+    "source_manifest": {
+      "files": 302,
+      "sha256": "46f6a1ffa03364b550395c89111a0d69a844d1379f3c5aba6ed5c1e17616abca"
+    },
+    "status": "pass",
+    "vendor_manifest": {
+      "bytes": 26397293,
+      "directories": 925,
+      "files": 6454,
+      "sha256": "97cd0bb104c42b57fbf90204ee74837ec1359b0ab1cbf8dac7d6929a154922d7"
+    }
+  },
+  "release_path": "/var/www/buy-dtf/storage/app/private/operations/dependency-releases/22af12c7e58f-20261001T000259Z",
+  "retained_cache_identity": {
+    "entries": {
+      "packages.php": {
+        "bytes": 415,
+        "gid": 33,
+        "kind": "file",
+        "mode": 436,
+        "sha256": "21da8f9ed19687e708cc7bc5cc59394c6fcdf9b9deadf617ae70526f815a1db0",
+        "uid": 1000
+      },
+      "services.php": {
+        "bytes": 21353,
+        "gid": 33,
+        "kind": "file",
+        "mode": 436,
+        "sha256": "1f7623b2b4ffd2c4099fb34ad86fc96c1479e27bf81b1b0ba328c988cc4ffcb5",
+        "uid": 1000
+      }
+    },
+    "manifest": {
+      "bytes": 21768,
+      "directories": 0,
+      "files": 2,
+      "sha256": "468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9"
+    },
+    "root_metadata": {
+      "gid": 33,
+      "kind": "directory",
+      "mode": 1533,
+      "uid": 1000
+    }
+  },
+  "retained_vendor_manifest": {
+    "bytes": 26397293,
+    "directories": 925,
+    "files": 6454,
+    "sha256": "97cd0bb104c42b57fbf90204ee74837ec1359b0ab1cbf8dac7d6929a154922d7"
+  },
+  "runtime_before": {
+    "app_debug": false,
+    "app_environment": "local",
+    "business_activity": {
+      "dtfimages": {
+        "count": 19396,
+        "latest_sha256": "ae2213e6e6d9ff6b0d028da2fea87f1d171c634d43a80aedd8fc87ce43334478"
+      },
+      "dtforders": {
+        "count": 1580,
+        "latest_sha256": "2284e0fde5efa2000d7271cc973648afc291041dd900052142a9f8f127a4f111"
+      },
+      "paymentinfos": {
+        "count": 1709,
+        "latest_sha256": "0fb5fd75d006763d2a3ff733e2b7acd8b9f4a9a6634f1cd7ec29fb8cb2666567"
+      },
+      "stripe_sync_logs": {
+        "count": 4894,
+        "latest_sha256": "bb45dc167851291f9b6d6e668b21b9b9568fcf8c714caac6a1daa3977cdfec2c"
+      }
+    },
+    "config_cached": false,
+    "default_database_connection": "mysql",
+    "fuel_database_connection": "fuelmysql",
+    "guzzle_class_path": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle/src/Client.php",
+    "guzzle_version": "7.15.2",
+    "laravel_class_path": "/var/www/buy-dtf/vendor/laravel/framework/src/Illuminate/Foundation/Application.php",
+    "laravel_version": "12.61.1",
+    "package_install_paths": {
+      "guzzlehttp/guzzle": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle",
+      "laravel/framework": "/var/www/buy-dtf/vendor/laravel/framework",
+      "league/commonmark": "/var/www/buy-dtf/vendor/league/commonmark",
+      "league/flysystem": "/var/www/buy-dtf/vendor/league/flysystem",
+      "league/flysystem-local": "/var/www/buy-dtf/vendor/league/flysystem-local"
+    },
+    "package_versions": {
+      "guzzlehttp/guzzle": "7.15.2",
+      "laravel/framework": "12.61.1",
+      "league/commonmark": "2.10.0",
+      "league/flysystem": "3.30.2",
+      "league/flysystem-local": "3.30.2"
+    },
+    "php_extensions": [
+      "Core",
+      "FFI",
+      "PDO",
+      "Phar",
+      "Reflection",
+      "SPL",
+      "SimpleXML",
+      "Zend OPcache",
+      "bcmath",
+      "calendar",
+      "ctype",
+      "curl",
+      "date",
+      "dom",
+      "exif",
+      "fileinfo",
+      "filter",
+      "ftp",
+      "gd",
+      "gettext",
+      "hash",
+      "iconv",
+      "imagick",
+      "intl",
+      "json",
+      "libxml",
+      "mbstring",
+      "mysqli",
+      "mysqlnd",
+      "openssl",
+      "pcntl",
+      "pcre",
+      "pdo_mysql",
+      "posix",
+      "random",
+      "readline",
+      "session",
+      "shmop",
+      "sockets",
+      "sodium",
+      "standard",
+      "sysvmsg",
+      "sysvsem",
+      "sysvshm",
+      "tokenizer",
+      "xml",
+      "xmlreader",
+      "xmlwriter",
+      "xsl",
+      "zip",
+      "zlib"
+    ],
+    "php_version": "8.2.30",
+    "queue_connection": "sync",
+    "queue_tables": {
+      "failed_jobs": 0,
+      "jobs": 0
+    }
+  },
+  "runtime_helper_sha256": "16e1f7cf814112120eb71afa3385dd0ae5251dac85e5407d88ed0b639bc93cb0",
+  "script_sha256": "9a8d130eeee5b9aab1cbe89632a9357af6dcdcb8bbd1b484b6d2fdf7f0ce56be",
+  "shadow_path": "/var/www/buy-dtf/storage/app/private/operations/dependency-releases/22af12c7e58f-20261001T000259Z/shadow",
+  "status": "staged",
+  "versions": {
+    "guzzlehttp/guzzle": "7.15.2",
+    "laravel/framework": "12.69.0",
+    "league/commonmark": "2.10.2",
+    "league/flysystem": "3.35.3",
+    "league/flysystem-local": "3.35.3"
+  }
+}

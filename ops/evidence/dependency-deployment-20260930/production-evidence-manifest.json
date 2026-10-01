@@ -1,0 +1,101 @@
+{
+  "artifact": "buy-dtf-dependency-rehearsal-and-staging-evidence-v2",
+  "status": "staged_no_cutover",
+  "generated_at_utc": "2026-10-01T00:05:21Z",
+  "branch": "security/dependency-advisories-20260930",
+  "artifact_commit": "27f455ea16325ae336c686757d59a7a81af81c64",
+  "dependency_candidate_commit": "c07c29332adcc9fa41f2c3b4f14bf6f35cf28c3c",
+  "identities": {
+    "runner_sha256": "9a8d130eeee5b9aab1cbe89632a9357af6dcdcb8bbd1b484b6d2fdf7f0ce56be",
+    "runtime_helper_sha256": "16e1f7cf814112120eb71afa3385dd0ae5251dac85e5407d88ed0b639bc93cb0",
+    "production_composer_json_sha256": "7098f3a19cb65f88bcc945f019dda0aa7f515737eb5d4918c30705f25c6ad872",
+    "retained_live_lock_sha256": "eeac4637272ca2b9aeaa797a4440cfc8b4e31f5a469619c46ebfa5791c701831",
+    "candidate_lock_sha256": "22af12c7e58fcfe809735dbf9955b2d22a264e9e7345cefd74398e36bf2773b9",
+    "retained_live_vendor_manifest_sha256": "97cd0bb104c42b57fbf90204ee74837ec1359b0ab1cbf8dac7d6929a154922d7",
+    "candidate_vendor_manifest_sha256": "7399949f857da190c5ff07b89c85e8fba8a6f681695e20a462862be591b698ed",
+    "retained_live_cache_manifest_sha256": "468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9",
+    "candidate_cache_manifest_sha256": "468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9",
+    "live_source_manifest_sha256": "46f6a1ffa03364b550395c89111a0d69a844d1379f3c5aba6ed5c1e17616abca",
+    "live_front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
+  },
+  "remote_paths": {
+    "artifact_directory": "/var/www/buy-dtf/storage/app/private/operations/dependency-security-artifact-9a8d130eeee5b9aa",
+    "rehearsal_parent": "/var/www/buy-dtf/storage/app/private/operations/dependency-rehearsals-22af12c7-20260930",
+    "release_directory": "/var/www/buy-dtf/storage/app/private/operations/dependency-releases/22af12c7e58f-20261001T000259Z",
+    "release_receipt": "/var/www/buy-dtf/storage/app/private/operations/dependency-releases/22af12c7e58f-20261001T000259Z/release-receipt.json"
+  },
+  "receipts": {
+    "local_validation": "01735b6af90715d66041ef25932343f4a6255e7c58952d952807c8f2141bb006",
+    "local_rehearsal": "ce688721efeb588ebe4e8cd0a05bd196c99a30b964576eda251aecfb800f6af4",
+    "production_filesystem_rehearsal": "51d18791dcc2756c95d7deca6a49f715a85b33ff53d73f3652deeed977024eaf",
+    "production_read_only_preflight": "1df3be0d0539f681b266b0ca53263a6109c49c31cf8607bec2bfad22530a88df",
+    "staged_release": "98cb72f1d1aca02e94a5cad2989f981782551d7d7c5cb254f7defc6fbeba79d3",
+    "production_post_staging_verification": "951943bb6bfc758083c18a4c185191e9a907f74d65cb483c448e1eed6df27634"
+  },
+  "first_preflight_attempt": {
+    "status": "stopped_before_staging",
+    "reason": "scheduled stripe:sync-payouts --limit=25 was active",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stop_record_sha256": "814e75d3b0827311b8b3bd03121db0756dd43270f92fe135988d4d16df9c1879",
+    "bypass_used": false
+  },
+  "rehearsal": {
+    "status": "pass",
+    "scenario_count": 23,
+    "filesystem_device": 64513,
+    "disposable_child_removed": true
+  },
+  "staging": {
+    "status": "staged",
+    "no_dev": true,
+    "candidate_vendor_files": 6460,
+    "candidate_vendor_directories": 925,
+    "candidate_vendor_bytes": 26453056,
+    "candidate_vendor_root_mode": "0775",
+    "candidate_cache_root_mode": "2775",
+    "same_filesystem_device": 64513,
+    "versions": {
+      "guzzlehttp/guzzle": "7.15.2",
+      "laravel/framework": "12.69.0",
+      "league/commonmark": "2.10.2",
+      "league/flysystem": "3.35.3",
+      "league/flysystem-local": "3.35.3"
+    }
+  },
+  "complete_staging_logs": {
+    "composer_audit": "dac04dda7966b04d2eb83ba22b729e4025f820bba102192effa983b1fa377af8",
+    "composer_install": "e3bd6c1a5556a8f83c087149c388fc263e18abbcdeaa5c428e36295cecc664ac",
+    "composer_validate": "43add299dc97ecbd90ec2dc456ef5a0bd824bb9abdae2a3d7cdb520e21f8e86d",
+    "platform": "485cb824d1abe5e4c9efa4248e41295c4de48429d7fc0e50d41220ca22d5d0d1",
+    "shadow_package_discovery": "1306c598a02c1f6569bca56d18f0b5710b08dbab9e8d5636f9655701c917188f",
+    "shadow_routes": "6ac448cb8e214e1c63676ef4f46b8f911ae69f4cda46b6a95a04b689eaef54a9"
+  },
+  "post_staging": {
+    "health": {
+      "https://buy-dtf.com/": 200,
+      "https://buy-dtf.com/up": 200,
+      "https://buy-dtf.com/login": 200,
+      "https://buy-dtf.com/admin": 302,
+      "https://buy-dtf.com/checkout": 302
+    },
+    "maintenance_active": false,
+    "deployment_lock_free": true,
+    "scoped_processes": [],
+    "queue_jobs": 0,
+    "failed_jobs": 0,
+    "live_dependencies_unchanged": true,
+    "live_source_unchanged": true,
+    "live_front_controller_unchanged": true
+  },
+  "prohibited_actions": {
+    "dependency_cutover": false,
+    "receiver_staged_or_deployed": false,
+    "migration_run": false,
+    "maintenance_entered": false,
+    "live_file_changed": false,
+    "service_restarted": false,
+    "capability_enabled": false,
+    "shopnltees_changed": false,
+    "retention_or_customer_deletion_run": false
+  }
+}
