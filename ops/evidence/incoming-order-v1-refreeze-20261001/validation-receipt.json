@@ -1,0 +1,142 @@
+{
+  "receipt_version": 1,
+  "status": "local_validation_pass_ready_for_authorized_phase0_and_phase1_only",
+  "generated_at_utc": "2026-10-01T01:27:15Z",
+  "scope": "receiver_runner_refreeze_and_local_validation_only",
+  "branch": "feature/incoming-order-v1-job-card-20260927",
+  "artifact_base_commit": "33337116556c28ce217869f74f66936b48a276ff",
+  "receiver_target_commit": "0799440b7cbb0bad364fc2a65b41285f20245658",
+  "dependency_identity": {
+    "composer_lock_sha256": "22af12c7e58fcfe809735dbf9955b2d22a264e9e7345cefd74398e36bf2773b9",
+    "vendor_manifest_sha256": "7399949f857da190c5ff07b89c85e8fba8a6f681695e20a462862be591b698ed",
+    "bootstrap_cache_manifest_sha256": "468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9",
+    "packages_php_sha256": "21da8f9ed19687e708cc7bc5cc59394c6fcdf9b9deadf617ae70526f815a1db0",
+    "services_php_sha256": "1f7623b2b4ffd2c4099fb34ad86fc96c1479e27bf81b1b0ba328c988cc4ffcb5",
+    "versions": {
+      "laravel/framework": "12.69.0",
+      "league/commonmark": "2.10.2",
+      "league/flysystem": "3.35.3",
+      "league/flysystem-local": "3.35.3",
+      "guzzlehttp/guzzle": "7.15.2"
+    }
+  },
+  "receiver_artifacts": {
+    "runner": {
+      "path": "ops/deployment/incoming_order_v1_deploy.py",
+      "sha256": "569f8aec08b8493d1544a9c1c84b0dca2e0efd74cd8385091cbff13796c6119c"
+    },
+    "gate_rehearsal_script": {
+      "path": "ops/deployment/rehearse_incoming_order_v1_gate.py",
+      "sha256": "c3b2e2b79986650a6d27625ae18372057d987ac61eebf42e8a08fb6d40232e5d"
+    },
+    "runtime_manifest": {
+      "path": "ops/deployment/incoming_order_v1_runtime_0799440.manifest",
+      "sha256": "b6efbd5463c82f895ca8d359b665a145d88c0d363ce7f97b247eae9080853bb6",
+      "paths": 37,
+      "additions": 26,
+      "replacements": 11
+    },
+    "runtime_probe": {
+      "path": "ops/deployment/incoming_order_v1_runtime_probe.php",
+      "sha256": "1b37d3a38834ef633cee5caa784d909b2f5be41ae6e22766f817f80f9f4a20bd"
+    },
+    "source_archive": {
+      "sha256": "ed1df143d219fa073efb2707508c3eb81ba17b777597cebc20a72d3c546522c2",
+      "bytes": 1157120
+    },
+    "migration": {
+      "path": "database/migrations/2026_09_27_120000_create_incoming_order_v1_tables.php",
+      "sha256": "79fa911b0b2ad9bb79c33080725446093dffd4df3e01c3cb3888d508087c9f9d"
+    },
+    "contract_vectors_sha256": "5cae7f7af7636f891c39aea7d958aa73caf8f3f289175d156ba02088ffc7fd8b",
+    "font_sha256": "ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280",
+    "font_license_sha256": "bc88ec457a574842b8f28c20e97a1fe91ecca69db14840484a22c694f2ffb6da"
+  },
+  "gate_rehearsal": {
+    "status": "pass",
+    "scenario_count": 8,
+    "umask": "0077",
+    "separate_web_identity": {
+      "uid": 33,
+      "gid": 33
+    },
+    "mode_0600_negative_control_denied": true,
+    "all_final_front_controllers_safe": true,
+    "later_phase_failure_retained_exact_gate": true,
+    "later_phase_original_restoration_receipts": [],
+    "receipt_path": "ops/evidence/incoming-order-v1-refreeze-20261001/gate-rehearsal-receipt.json",
+    "receipt_sha256": "12a792df83fe1e1884e52316e5a42d27a56c1370fe2ebbbc4df32ab29b3b5b94",
+    "canonical_sha256": "aff731b67ef8a02c6eea10464b8c205bbf97512af9d3fb317a019d1976fb6866"
+  },
+  "validation": {
+    "python_compile": "pass",
+    "runner_describe": {
+      "status": "pass",
+      "sha256": "d7cb4022b0942fd0d8727ecf7aca6fb53ac27f5b866ac44851138afed920639d"
+    },
+    "git_diff_check": "pass",
+    "phpunit": {
+      "status": "pass_with_one_expected_imagick_dependent_skip",
+      "runtime": "PHP 8.2.0",
+      "tests": 170,
+      "assertions": 1099,
+      "skipped": 1,
+      "stdout_sha256": "a7c2437b9dbf265305232b12f4583263f612f810fe94d57920298137129449ee",
+      "stderr_sha256": "775897831f2fcb2c224306827cedacf7aec88a2c6f8ff7a4ad07ba5fe80f048e",
+      "extension_count": 34,
+      "extension_list_sha256": "bb915b4639820f564f428a942b3430fc9b64eb24baa5e9987acddf99fba5a102"
+    },
+    "linux_render_runtime": {
+      "runtime": "PHP 8.3.6",
+      "unique_extension_count": 52,
+      "imagick_loaded": true,
+      "pdo_sqlite_loaded": true,
+      "extension_list_sha256": "d48ecad4ee3ad955c4001dd6c99949246a578fb426c886b8c0fd7e3c8b9e09eb"
+    },
+    "composer_validate_strict": {
+      "status": "pass",
+      "stdout_sha256": "43add299dc97ecbd90ec2dc456ef5a0bd824bb9abdae2a3d7cdb520e21f8e86d"
+    },
+    "composer_audit_locked_no_dev": {
+      "status": "pass_zero_advisories",
+      "stderr_sha256": "dac04dda7966b04d2eb83ba22b729e4025f820bba102192effa983b1fa377af8"
+    },
+    "npm_audit_omit_dev": {
+      "status": "pass_zero_vulnerabilities",
+      "sha256": "02421f7c383a056c60b8d2545bbcfce6ca887d8771e4c88b4036ad6e4df95439"
+    },
+    "frontend_build": {
+      "status": "pass",
+      "modules_transformed": 112,
+      "known_sass_deprecation_warnings": true,
+      "stdout_sha256": "abdd6edf50d844092880819db0f4658347853a0f289c194858cbbbdb3e42eff2",
+      "stderr_sha256": "9c5cd2dea63a1b83a11a5fbe5d72d67b873948dde19fe88cebda2364eb2c2462"
+    },
+    "real_imagick_rerender": {
+      "status": "pass",
+      "receipt_sha256": "db8e2d6316b408b4e63897e3d18c4d2d1e9057ea49fe79e9a0095678da62dd5f",
+      "normal_png_sha256": "fa4d42b35ddf99736345d76a8a65c5275c1980b1af323a794b5678d889b5b136",
+      "maximum_fields_png_sha256": "cadf92ae4e1f7b2b0b6496e66d2f426e9701ad5617986e8abebaef0b32258ddf",
+      "dimensions_px": "1500x900",
+      "pixels_per_meter": 11811,
+      "reported_dpi": 299.9994
+    }
+  },
+  "test_harness_notes": [
+    "The first WSL PHPUnit bootstrap stopped before tests because pdo_sqlite was absent; php8.3-sqlite3 was installed locally and the extension list records the resulting runtime.",
+    "A disposable vendor junction was rejected after it made Composer resolve the wrong application root; the final validation used a physical vendor copy with the exact candidate lock.",
+    "A WSL-on-NTFS full-suite attempt was stopped while I/O-bound; the complete passing suite used the established native PHP 8.2 runtime and the real Imagick fixtures were rendered separately on Linux-native storage."
+  ],
+  "production_actions_at_receipt_time": {
+    "production_accessed": false,
+    "staging_started": false,
+    "backup_created": false,
+    "maintenance_entered": false,
+    "real_migration_run": false,
+    "live_source_changed": false,
+    "service_restarted": false,
+    "capability_enabled": false,
+    "shopnltees_changed": false,
+    "retention_or_customer_deletion_run": false
+  }
+}

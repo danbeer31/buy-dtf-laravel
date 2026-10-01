@@ -2,7 +2,7 @@
 
 Date: 2026-09-27 (America/Chicago)
 
-Status: **The 2026-09-30 cutover attempt stopped before maintenance, migration, or source installation after the static gate inherited mode `0600`. Production was restored to its exact original front controller and independently confirmed healthy. Runner `2a7bf3966c593532af1e22db0f03d8cec1c6aecfde0902629b9f2328016c1138` is permanently NO-GO. The phase-aware containment runner and local fault-injection rehearsal below are NO-GO pending independent review, a new staging receipt, and separate authorization.**
+Status: **The 2026-09-30 receiver cutover attempt stopped before maintenance, migration, or source installation after the static gate inherited mode `0600`. Production was restored to its exact original front controller and independently confirmed healthy. Runner `2a7bf3966c593532af1e22db0f03d8cec1c6aecfde0902629b9f2328016c1138` is permanently NO-GO. The later dependency-only security cutover completed successfully and the phase-aware receiver runner is now re-frozen against that exact live lock/vendor/cache identity. A new staging receipt and independent review remain mandatory before any receiver migration or source deployment.**
 
 Nothing in this plan authorizes a migration, source deployment, service restart, capability change, ShopNLTees sender change, or retention action.
 
@@ -38,7 +38,7 @@ The deployment adds the capability-discovery route, guarded receiver code, froze
 | Runtime paths | 37 total: 26 additions and 11 replacements |
 | Deterministic source archive SHA-256 | `ed1df143d219fa073efb2707508c3eb81ba17b777597cebc20a72d3c546522c2` |
 | Final deployment runner | `ops/deployment/incoming_order_v1_deploy.py` |
-| Phase-aware containment runner SHA-256 | `53723435a2d56d2736746a5a6d1e98fddeda660acbcf3a45f57b662b06b4adfd` |
+| Phase-aware containment runner SHA-256 | `569f8aec08b8493d1544a9c1c84b0dca2e0efd74cd8385091cbff13796c6119c` |
 | Permanently retired runner SHA-256 | `2a7bf3966c593532af1e22db0f03d8cec1c6aecfde0902629b9f2328016c1138` |
 | Local gate rehearsal script | `ops/deployment/rehearse_incoming_order_v1_gate.py` |
 | Local gate rehearsal script SHA-256 | `c3b2e2b79986650a6d27625ae18372057d987ac61eebf42e8a08fb6d40232e5d` |
@@ -54,8 +54,8 @@ The deployment adds the capability-discovery route, guarded receiver code, froze
 | Bundled DejaVu Sans SHA-256 | `ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280` |
 | Bundled font license | `resources/fonts/job-card-v2/LICENSE.txt` |
 | Bundled font license SHA-256 | `bc88ec457a574842b8f28c20e97a1fe91ecca69db14840484a22c694f2ffb6da` |
-| Current Composer lock | `eeac4637272ca2b9aeaa797a4440cfc8b4e31f5a469619c46ebfa5791c701831` |
-| Current vendor manifest | `97cd0bb104c42b57fbf90204ee74837ec1359b0ab1cbf8dac7d6929a154922d7` |
+| Current Composer lock | `22af12c7e58fcfe809735dbf9955b2d22a264e9e7345cefd74398e36bf2773b9` |
+| Current vendor manifest | `7399949f857da190c5ff07b89c85e8fba8a6f681695e20a462862be591b698ed` |
 | Current bootstrap-cache manifest | `468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9` |
 | Current front controller | `eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9` |
 | Reviewed static 503 gate | `94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03` |

@@ -61,8 +61,8 @@ EXPECTED_RUNTIME_PATHS = 37
 EXPECTED_ADDITIONS = 26
 EXPECTED_REPLACEMENTS = 11
 
-EXPECTED_COMPOSER_LOCK_SHA256 = "eeac4637272ca2b9aeaa797a4440cfc8b4e31f5a469619c46ebfa5791c701831"
-EXPECTED_VENDOR_MANIFEST_SHA256 = "97cd0bb104c42b57fbf90204ee74837ec1359b0ab1cbf8dac7d6929a154922d7"
+EXPECTED_COMPOSER_LOCK_SHA256 = "22af12c7e58fcfe809735dbf9955b2d22a264e9e7345cefd74398e36bf2773b9"
+EXPECTED_VENDOR_MANIFEST_SHA256 = "7399949f857da190c5ff07b89c85e8fba8a6f681695e20a462862be591b698ed"
 EXPECTED_CACHE_MANIFEST_SHA256 = "468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9"
 EXPECTED_PACKAGES_SHA256 = "21da8f9ed19687e708cc7bc5cc59394c6fcdf9b9deadf617ae70526f815a1db0"
 EXPECTED_SERVICES_SHA256 = "1f7623b2b4ffd2c4099fb34ad86fc96c1479e27bf81b1b0ba328c988cc4ffcb5"
@@ -678,7 +678,7 @@ def validate_runtime_snapshot(
     if payload.get("application_debug") is not False:
         raise DeploymentError("APP_DEBUG is not false.")
     runtime = payload.get("runtime", {})
-    if runtime.get("php_version") != "8.2.30" or runtime.get("laravel_version") != "12.61.1":
+    if runtime.get("php_version") != "8.2.30" or runtime.get("laravel_version") != "12.69.0":
         raise DeploymentError("PHP/Laravel runtime identity differs from the reviewed baseline.")
     if runtime.get("composer_classmap_authoritative") is not False:
         raise DeploymentError("Composer is unexpectedly class-map authoritative.")
@@ -3426,7 +3426,12 @@ def describe() -> dict[str, Any]:
             "web_reader_gid": EXPECTED_WEB_GID,
             "replacement_pending_persisted_before_swap": True,
             "installed_persisted_before_http_verification": True,
-            "verification_failure_restores_exact_original": True,
+            "pre_mutation_verification_failure": (
+                "restore_exact_original_front_controller_with_receipt_and_health_check"
+            ),
+            "post_migration_or_source_mutation_verification_failure": (
+                "retain_exact_0644_gate_with_durable_rollback_containment"
+            ),
             "recovery_uses_live_identity_and_durable_state": True,
         },
         "font_asset": {
@@ -3451,7 +3456,8 @@ def describe() -> dict[str, Any]:
             "capability_enablement": False,
             "retention_execution": False,
             "source_rollback_drops_additive_schema": False,
-            "gate_failure_restores_original_with_receipt": True,
+            "pre_mutation_gate_failure_restores_original_with_receipt": True,
+            "post_mutation_gate_failure_retains_exact_0644_gate": True,
         },
     }
 

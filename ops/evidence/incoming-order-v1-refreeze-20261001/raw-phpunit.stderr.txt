@@ -1,0 +1,4 @@
+Dropbox: Refreshing tokens for ID: 1... (Old access token: dropbox-ac...)
+Dropbox refresh success. New token starting with: dropbox-ac, length: 28
+addToProduction call: {"image_id":1}
+addToProduction call: {"image_id":1}
