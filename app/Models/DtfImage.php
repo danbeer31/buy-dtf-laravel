@@ -214,6 +214,11 @@ class DtfImage extends FuelModel
 
     public function getGangSheetMeta(): array
     {
+        return $this->getItemMetadata();
+    }
+
+    public function getItemMetadata(): array
+    {
         $meta = $this->item_meta;
 
         if (is_array($meta)) {
@@ -226,6 +231,20 @@ class DtfImage extends FuelModel
         }
 
         return [];
+    }
+
+    public function productionAlphaThreshold(): ?int
+    {
+        $policy = data_get($this->getItemMetadata(), 'alpha_processing');
+        if (! is_array($policy)
+            || ($policy['scope'] ?? null) !== 'production_derivative'
+            || (int) ($policy['version'] ?? 0) !== 1
+            || ! array_key_exists('threshold', $policy)
+            || $policy['threshold'] === null) {
+            return null;
+        }
+
+        return max(1, min(255, (int) $policy['threshold']));
     }
 
     public function downloadFilename(?string $absolutePath = null): string

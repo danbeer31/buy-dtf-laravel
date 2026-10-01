@@ -183,21 +183,37 @@ class TeamCustomizationController extends Controller
                 return ['success' => false, 'message' => 'File info incomplete'];
             }
 
-            // Post-process image
-            ImageHelper::trimTransparentBorder($absPath);
-            ImageHelper::setPngDpi($absPath, 300, 300);
-            ImageHelper::thresholdAlphaMask($absPath);
-
-            // Re-read dimensions
-            $widthInches = 0;
-            $heightInches = 0;
-            if (extension_loaded('imagick')) {
-                $im = new \Imagick($absPath);
-                $widthInches = round($im->getImageWidth() / 300, 3);
-                $heightInches = round($im->getImageHeight() / 300, 3);
-                $im->clear();
-                $im->destroy();
+            // Preserve the rendered source. The hard alpha policy is applied
+            // only to the temporary production derivative.
+            $sourceHash = @hash_file('sha256', $absPath);
+            $bounds = ImageHelper::productionAlphaBounds($absPath, 128);
+            if (!is_string($sourceHash) || !($bounds['success'] ?? false)) {
+                throw new \RuntimeException(
+                    ($bounds['reason'] ?? null) === 'fully_transparent_image'
+                        ? 'Rendered customization is fully transparent.'
+                        : 'Unable to measure rendered customization bounds.'
+                );
             }
+            if (!hash_equals($sourceHash, (string)@hash_file('sha256', $absPath))) {
+                throw new \RuntimeException('Rendered customization changed while measuring production bounds.');
+            }
+            $widthInches = round((int)$bounds['width'] / 300, 3);
+            $heightInches = round((int)$bounds['height'] / 300, 3);
+            $itemMeta = [
+                'source_artwork' => [
+                    'version' => 1,
+                    'disk' => 'public',
+                    'path' => $url,
+                    'sha256' => $sourceHash,
+                    'bytes' => (int)(@filesize($absPath) ?: 0),
+                    'mime' => (string)(@mime_content_type($absPath) ?: 'image/png'),
+                ],
+                'alpha_processing' => [
+                    'version' => 1,
+                    'scope' => 'production_derivative',
+                    'threshold' => 128,
+                ],
+            ];
 
             $data = $payload['data'] ?? ($payload['opts']['data'] ?? []);
             $qty = (int)($payload['__order_quantity'] ?? $payload['opts']['order_quantity'] ?? $data['quantity'] ?? 1);
@@ -208,6 +224,11 @@ class TeamCustomizationController extends Controller
                 'image' => $url, // Use the full URL starting with /uploads/images/
                 'image_notes' => 'Team Customization Batch Loader',
                 'image_name' => 'Team Customization',
+                'item_type' => 'standard',
+                'item_meta' => $itemMeta,
+                'upload_mime' => 'image/png',
+                'sha256_original' => $sourceHash,
+                'sha256_bitmap' => $sourceHash,
                 'width' => $widthInches,
                 'height' => $heightInches,
                 'quantity' => $qty,

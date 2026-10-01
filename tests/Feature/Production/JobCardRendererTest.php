@@ -4,6 +4,8 @@ namespace Tests\Feature\Production;
 
 use App\Helpers\ImageHelper;
 use App\Services\IncomingOrders\JobCardRenderer;
+use PHPUnit\Framework\Attributes\PreserveGlobalState;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use Tests\TestCase;
 
 class JobCardRendererTest extends TestCase
@@ -21,6 +23,8 @@ class JobCardRendererTest extends TestCase
         parent::tearDown();
     }
 
+    #[RunInSeparateProcess]
+    #[PreserveGlobalState(false)]
     public function test_real_renderer_emits_1500_by_900_card_with_verified_300_dpi_and_max_fields_fit(): void
     {
         $renderer = app(JobCardRenderer::class);

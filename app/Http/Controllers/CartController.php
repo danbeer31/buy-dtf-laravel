@@ -332,26 +332,35 @@ class CartController extends Controller
             throw new \RuntimeException('Failed while trimming transparent border: '.($trimResult['message'] ?? 'Unknown error'));
         }
 
-        // Heavy cleanup (alpha threshold) can be skipped for very large rasters.
-        if (! $skipHeavyCleanup) {
-            $alphaResult = ImageHelper::thresholdAlphaMask($workPng);
-            if (! ($alphaResult['success'] ?? false)) {
-                throw new \RuntimeException('Failed while cleaning PNG alpha channel: '.($alphaResult['message'] ?? 'Unknown error'));
-            }
-        }
-
         // Always set pHYs/300 DPI metadata so downstream RIP/software dimensions stay correct.
         $dpiResult = ImageHelper::setPngDpi($workPng, 300, 300);
         if (! ($dpiResult['success'] ?? false)) {
             throw new \RuntimeException('Failed while setting PNG DPI metadata: '.($dpiResult['message'] ?? 'Unknown error'));
         }
 
-        $imgSize = @getimagesize($workPng);
-        if (! is_array($imgSize) || ! isset($imgSize[0], $imgSize[1])) {
-            throw new \RuntimeException('Unable to read image dimensions after processing.');
+        // Keep the alpha-preserving preview untouched. Measure the future
+        // production derivative using the hard-alpha policy without writing it.
+        $alphaThreshold = $skipHeavyCleanup ? null : 128;
+        if ($alphaThreshold !== null) {
+            $productionBounds = ImageHelper::productionAlphaBounds($workPng, $alphaThreshold);
+            if (! ($productionBounds['success'] ?? false)) {
+                $message = ($productionBounds['reason'] ?? null) === 'fully_transparent_image'
+                    ? 'Uploaded artwork is fully transparent.'
+                    : 'Failed while measuring printable artwork: '.($productionBounds['message'] ?? 'Unknown error');
+                @unlink($workPng);
+
+                throw new \RuntimeException($message);
+            }
+            $pxW = (int) $productionBounds['width'];
+            $pxH = (int) $productionBounds['height'];
+        } else {
+            $imgSize = @getimagesize($workPng);
+            if (! is_array($imgSize) || ! isset($imgSize[0], $imgSize[1])) {
+                throw new \RuntimeException('Unable to read image dimensions after processing.');
+            }
+            $pxW = (int) $imgSize[0];
+            $pxH = (int) $imgSize[1];
         }
-        $pxW = (int) $imgSize[0];
-        $pxH = (int) $imgSize[1];
         $shaBitmap = @hash_file('sha256', $workPng) ?: null;
 
         $inDpi = 300;
@@ -359,52 +368,99 @@ class CartController extends Controller
         $heightIn = $pxH > 0 ? round($pxH / $inDpi, 3) : 0.000;
 
         $prefixId = ($sourceOrderId !== '') ? $sourceOrderId : (string) $order->id;
-        $relativeName = 'uploads/images/'.uniqid('DTF_API_'.$prefixId.'_').'.png';
+        $prefixId = trim((string) preg_replace('/[^A-Za-z0-9_-]+/', '-', $prefixId), '-_') ?: (string) $order->id;
+        $assetId = (string) Str::ulid();
+        $relativeName = 'uploads/images/DTF_API_'.$prefixId.'_'.$assetId.'.png';
+        $sourceRelativeName = 'customer-artwork/DTF_SOURCE_'.$prefixId.'_'.$assetId.'.'.$this->sourceExtensionForMime($mime);
         $publicPath = public_path($relativeName);
+        $sourceStoragePath = storage_path('app/private/'.$sourceRelativeName);
 
         if (! is_dir(dirname($publicPath))) {
             mkdir(dirname($publicPath), 0777, true);
         }
-
-        copy($workPng, $publicPath);
-
-        // Generate thumbnail
-        $thumbRelativeName = 'uploads/images/thumbs/'.basename($relativeName);
-        $thumbPublicPath = public_path($thumbRelativeName);
-        if (! is_dir(dirname($thumbPublicPath))) {
-            mkdir(dirname($thumbPublicPath), 0777, true);
-        }
-        $thumbOk = ImageHelper::generateThumbnail($workPng, $thumbPublicPath);
-        if (! ($thumbOk['success'] ?? false)) {
-            // Fall back to using the original file as thumbnail reference.
-            $thumbRelativeName = $relativeName;
+        if (! is_dir(dirname($sourceStoragePath))) {
+            mkdir(dirname($sourceStoragePath), 0770, true);
         }
 
-        @unlink($workPng);
+        $createdPaths = [];
+        try {
+            if (! @copy($tmpPath, $sourceStoragePath)) {
+                throw new \RuntimeException('Failed to preserve original customer artwork.');
+            }
+            $createdPaths[] = $sourceStoragePath;
+            if (! is_string($shaOriginal)
+                || ! hash_equals($shaOriginal, (string) @hash_file('sha256', $sourceStoragePath))) {
+                throw new \RuntimeException('Preserved original artwork failed checksum verification.');
+            }
+            @chmod($sourceStoragePath, 0640);
 
-        $nativeBase = strtolower(basename($clientName));
-        if ($clientSize <= 0) {
-            $clientSize = (int) @filesize($tmpPath);
+            if (! @copy($workPng, $publicPath)) {
+                throw new \RuntimeException('Failed to publish the alpha-preserving preview.');
+            }
+            $createdPaths[] = $publicPath;
+
+            // Generate thumbnail from the alpha-preserving preview.
+            $thumbRelativeName = 'uploads/images/thumbs/'.basename($relativeName);
+            $thumbPublicPath = public_path($thumbRelativeName);
+            if (! is_dir(dirname($thumbPublicPath))) {
+                mkdir(dirname($thumbPublicPath), 0777, true);
+            }
+            $thumbOk = ImageHelper::generateThumbnail($workPng, $thumbPublicPath);
+            if ($thumbOk['success'] ?? false) {
+                $createdPaths[] = $thumbPublicPath;
+            } else {
+                // Fall back to using the preview file as thumbnail reference.
+                $thumbRelativeName = $relativeName;
+            }
+
+            $nativeBase = strtolower(basename($clientName));
+            if ($clientSize <= 0) {
+                $clientSize = (int) @filesize($tmpPath);
+            }
+
+            $itemMeta = [
+                'source_artwork' => [
+                    'version' => 1,
+                    'disk' => 'local_private',
+                    'path' => $sourceRelativeName,
+                    'sha256' => $shaOriginal,
+                    'bytes' => $clientSize,
+                    'mime' => $mime,
+                ],
+                'alpha_processing' => [
+                    'version' => 1,
+                    'scope' => 'production_derivative',
+                    'threshold' => $alphaThreshold,
+                ],
+            ];
+
+            $img = DtfImage::createUsingExistingColumns([
+                'dtforder_id' => $order->id,
+                'image' => '/'.$relativeName,
+                'thumbnail' => '/'.$thumbRelativeName,
+                'upload_mime' => $mime,
+                'item_type' => 'standard',
+                'item_meta' => $itemMeta,
+                'image_name' => $this->deriveImageName($clientName),
+                'image_notes' => '',
+                'width' => $widthIn,
+                'height' => $heightIn,
+                'quantity' => 1,
+                'production' => 0,
+                'date_uploaded' => now(),
+                'native_filename' => $nativeBase,
+                'file_size' => $clientSize,
+                'sha256_original' => $shaOriginal,
+                'sha256_bitmap' => $shaBitmap,
+            ]);
+        } catch (\Throwable $exception) {
+            foreach (array_reverse($createdPaths) as $createdPath) {
+                @unlink($createdPath);
+            }
+            throw $exception;
+        } finally {
+            @unlink($workPng);
         }
-
-        $img = DtfImage::createUsingExistingColumns([
-            'dtforder_id' => $order->id,
-            'image' => '/'.$relativeName,
-            'thumbnail' => '/'.$thumbRelativeName,
-            'upload_mime' => $mime,
-            'item_type' => 'standard',
-            'image_name' => $this->deriveImageName($clientName),
-            'image_notes' => '',
-            'width' => $widthIn,
-            'height' => $heightIn,
-            'quantity' => 1,
-            'production' => 0,
-            'date_uploaded' => now(),
-            'native_filename' => $nativeBase,
-            'file_size' => $clientSize,
-            'sha256_original' => $shaOriginal,
-            'sha256_bitmap' => $shaBitmap,
-        ]);
 
         return [
             'order_id' => $order->id,
@@ -425,6 +481,15 @@ class CartController extends Controller
         $name = preg_replace('/\.(png|svg|pdf)$/i', '', $name);
 
         return Str::limit($name, 100);
+    }
+
+    protected function sourceExtensionForMime(string $mime): string
+    {
+        return match (strtolower($mime)) {
+            'image/svg+xml' => 'svg',
+            'application/pdf' => 'pdf',
+            default => 'png',
+        };
     }
 
     public function updateImage(Request $request, $id)
@@ -619,7 +684,9 @@ class CartController extends Controller
         $newImg = DtfImage::createUsingExistingColumns([
             'dtforder_id' => $order->id,
             'image' => $saved->image,
+            'thumbnail' => $sourceImg ? $sourceImg->thumbnail : $saved->thumbnail,
             'item_type' => 'standard',
+            'item_meta' => $sourceImg ? $sourceImg->getItemMetadata() : null,
             'image_name' => $saved->image_name,
             'image_notes' => $saved->image_notes ?? '',
             'width' => $saved->width ?: ($sourceImg ? $sourceImg->width : 0),
@@ -819,6 +886,9 @@ class CartController extends Controller
             'dtforder_id' => $order->id,
             'image' => $img->image,
             'thumbnail' => $img->thumbnail,
+            'item_type' => $img->item_type ?: 'standard',
+            'item_meta' => $img->getItemMetadata(),
+            'upload_mime' => $img->upload_mime,
             'native_filename' => $img->native_filename,
             'file_size' => $img->file_size,
             'sha256_original' => $img->sha256_original,

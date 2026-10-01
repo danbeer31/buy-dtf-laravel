@@ -7,6 +7,8 @@ use ImagickPixel;
 
 class ImageHelper
 {
+    private const DEFAULT_ALPHA_THRESHOLD = 128;
+
     protected static function upsertPngPhysChunk(string $file, int $dpiX, int $dpiY): array
     {
         $bytes = @file_get_contents($file);
@@ -202,8 +204,14 @@ class ImageHelper
      * Lightweight fallback resize path using GD when Imagick cache is exhausted.
      * Uses nearest-neighbor style scaling via imagecopyresized to preserve hard edges.
      */
-    protected static function prepareForProductionWithGd(string $inputFile, string $outputFile, int $widthPx, int $heightPx, int $dpi = 300): array
-    {
+    protected static function prepareForProductionWithGd(
+        string $inputFile,
+        string $outputFile,
+        int $widthPx,
+        int $heightPx,
+        int $dpi = 300,
+        ?int $alphaThreshold = null
+    ): array {
         if (! function_exists('imagecreatefromstring') || ! function_exists('imagecreatetruecolor')) {
             return ['success' => false, 'message' => 'GD extension not available'];
         }
@@ -230,8 +238,33 @@ class ImageHelper
             return ['success' => false, 'message' => 'GD could not decode source image'];
         }
 
+        $resizeSource = $src;
+        $sourceBounds = null;
+        if ($alphaThreshold !== null) {
+            $sourceBounds = self::gdVisibleBounds($src, $alphaThreshold);
+            if ($sourceBounds === null) {
+                imagedestroy($src);
+
+                return [
+                    'success' => false,
+                    'reason' => 'fully_transparent_image',
+                    'message' => 'Artwork contains no pixels at or above the alpha threshold.',
+                ];
+            }
+
+            $resizeSource = self::gdThresholdedCrop($src, $sourceBounds, $alphaThreshold);
+            if (! $resizeSource) {
+                imagedestroy($src);
+
+                return ['success' => false, 'message' => 'GD could not create the thresholded source crop'];
+            }
+        }
+
         $dst = imagecreatetruecolor($widthPx, $heightPx);
         if (! $dst) {
+            if ($resizeSource !== $src) {
+                imagedestroy($resizeSource);
+            }
             imagedestroy($src);
 
             return ['success' => false, 'message' => 'GD could not allocate destination image'];
@@ -244,19 +277,22 @@ class ImageHelper
 
         $okResize = imagecopyresized(
             $dst,
-            $src,
+            $resizeSource,
             0,
             0,
             0,
             0,
             $widthPx,
             $heightPx,
-            imagesx($src),
-            imagesy($src)
+            imagesx($resizeSource),
+            imagesy($resizeSource)
         );
 
         $okWrite = $okResize ? imagepng($dst, $outputFile, 9) : false;
 
+        if ($resizeSource !== $src) {
+            imagedestroy($resizeSource);
+        }
         imagedestroy($src);
         imagedestroy($dst);
 
@@ -269,7 +305,68 @@ class ImageHelper
             return ['success' => false, 'message' => 'GD wrote PNG but failed to set pHYs: '.($phys['message'] ?? 'Unknown error')];
         }
 
-        return ['success' => true, 'fallback' => 'gd'];
+        return [
+            'success' => true,
+            'fallback' => 'gd',
+            'source_bounds' => $sourceBounds,
+        ];
+    }
+
+    /**
+     * Return the printable bounds after applying the production alpha policy.
+     * This method never modifies the source file.
+     *
+     * @return array{success: bool, x?: int, y?: int, width?: int, height?: int, renderer?: string, reason?: string, message?: string}
+     */
+    public static function productionAlphaBounds(
+        string $inputFile,
+        int $threshold = self::DEFAULT_ALPHA_THRESHOLD,
+        ?string $renderer = null
+    ): array {
+        $renderer = self::validatedRenderer($renderer);
+        if ($renderer === null) {
+            return ['success' => false, 'message' => 'Unsupported image renderer.'];
+        }
+
+        if ($renderer === 'gd' || ($renderer === 'auto' && ! extension_loaded('imagick'))) {
+            return self::productionAlphaBoundsWithGd($inputFile, $threshold);
+        }
+
+        try {
+            $image = new Imagick($inputFile);
+            self::normalizeCmykToRgb($image);
+            if (! $image->getImageAlphaChannel()) {
+                $image->setImageAlphaChannel(Imagick::ALPHACHANNEL_SET);
+            }
+            self::applyImagickAlphaThreshold($image, $threshold);
+            $bounds = self::imagickVisibleBounds($image);
+            $image->clear();
+            $image->destroy();
+
+            if ($bounds === null) {
+                return [
+                    'success' => false,
+                    'reason' => 'fully_transparent_image',
+                    'message' => 'Artwork contains no pixels at or above the alpha threshold.',
+                ];
+            }
+
+            return ['success' => true, 'renderer' => 'imagick'] + $bounds;
+        } catch (\Throwable $exception) {
+            if ($renderer === 'imagick') {
+                return ['success' => false, 'message' => $exception->getMessage()];
+            }
+
+            $fallback = self::productionAlphaBoundsWithGd($inputFile, $threshold);
+            if ($fallback['success'] ?? false) {
+                return $fallback;
+            }
+
+            return [
+                'success' => false,
+                'message' => $exception->getMessage().'; GD fallback failed: '.($fallback['message'] ?? 'Unknown error'),
+            ];
+        }
     }
 
     /**
@@ -334,10 +431,17 @@ class ImageHelper
     /**
      * Hard-threshold the alpha channel.
      */
-    public static function thresholdAlphaMask(string $inputFile, int $threshold = 128): array
-    {
-        if (! extension_loaded('imagick')) {
-            return ['success' => false, 'message' => 'Imagick extension not available.'];
+    public static function thresholdAlphaMask(
+        string $inputFile,
+        int $threshold = self::DEFAULT_ALPHA_THRESHOLD,
+        ?string $renderer = null
+    ): array {
+        $renderer = self::validatedRenderer($renderer);
+        if ($renderer === null) {
+            return ['success' => false, 'message' => 'Unsupported image renderer.'];
+        }
+        if ($renderer === 'gd' || ($renderer === 'auto' && ! extension_loaded('imagick'))) {
+            return self::thresholdAlphaMaskWithGd($inputFile, $threshold);
         }
 
         try {
@@ -348,8 +452,7 @@ class ImageHelper
                 $img->setImageAlphaChannel(Imagick::ALPHACHANNEL_SET);
             }
 
-            $lvl = max(0, min(255, $threshold)) / 255.0;
-            $img->evaluateImage(Imagick::EVALUATE_THRESHOLD, $lvl, Imagick::CHANNEL_ALPHA);
+            self::applyImagickAlphaThreshold($img, $threshold);
 
             $img->setImageFormat('png');
             $img->setOption('png:color-type', '6'); // RGBA
@@ -359,8 +462,17 @@ class ImageHelper
             $img->destroy();
 
             return $ok ? ['success' => true] : ['success' => false];
-        } catch (\Exception $e) {
-            return ['success' => false, 'message' => $e->getMessage()];
+        } catch (\Throwable $e) {
+            if ($renderer === 'imagick') {
+                return ['success' => false, 'message' => $e->getMessage()];
+            }
+
+            $fallback = self::thresholdAlphaMaskWithGd($inputFile, $threshold);
+            if ($fallback['success'] ?? false) {
+                return $fallback;
+            }
+
+            return ['success' => false, 'message' => $e->getMessage().'; GD fallback failed: '.($fallback['message'] ?? 'Unknown error')];
         }
     }
 
@@ -415,40 +527,66 @@ class ImageHelper
         float $widthIn,
         float $heightIn,
         int $dpi = 300,
-        ?int $alphaThreshold = null
+        ?int $alphaThreshold = null,
+        ?string $renderer = null
     ): array {
-        if (! extension_loaded('imagick')) {
-            return ['success' => false, 'message' => 'Imagick not available'];
-        }
-
         $widthPx = max(1, (int) round($widthIn * $dpi));
         $heightPx = max(1, (int) round($heightIn * $dpi));
         $allowFallback = (bool) filter_var(env('PRODUCTION_PREP_ALLOW_FALLBACK', true), FILTER_VALIDATE_BOOL);
+        $renderer = self::validatedRenderer($renderer);
+        if ($renderer === null) {
+            return ['success' => false, 'message' => 'Unsupported image renderer.'];
+        }
+        if ($renderer === 'gd' || ($renderer === 'auto' && ! extension_loaded('imagick'))) {
+            return self::prepareForProductionWithGd(
+                $inputFile,
+                $outputFile,
+                $widthPx,
+                $heightPx,
+                $dpi,
+                $alphaThreshold
+            );
+        }
 
         try {
             $im = new Imagick($inputFile);
+            self::normalizeCmykToRgb($im);
 
             // Ensure alpha channel exists
             if (! $im->getImageAlphaChannel()) {
                 $im->setImageAlphaChannel(Imagick::ALPHACHANNEL_SET);
             }
 
-            // Set Resolution/DPI
-            $im->setImageUnits(Imagick::RESOLUTION_PIXELSPERINCH);
-            $im->setImageResolution($dpi, $dpi);
-            $im->setImageProperty('png:pHYs', "x={$dpi},y={$dpi},units=1");
+            $sourceBounds = null;
+            if ($alphaThreshold !== null) {
+                // Apply the hard threshold to the derived image only, before
+                // cropping, so discarded edge pixels cannot leave padding.
+                self::applyImagickAlphaThreshold($im, $alphaThreshold);
+                $sourceBounds = self::imagickVisibleBounds($im);
+                if ($sourceBounds === null) {
+                    $im->clear();
+                    $im->destroy();
+
+                    return [
+                        'success' => false,
+                        'reason' => 'fully_transparent_image',
+                        'message' => 'Artwork contains no pixels at or above the alpha threshold.',
+                    ];
+                }
+                $im->cropImage(
+                    $sourceBounds['width'],
+                    $sourceBounds['height'],
+                    $sourceBounds['x'],
+                    $sourceBounds['y']
+                );
+                $im->setImagePage(0, 0, 0, 0);
+            }
 
             // Hard-edge resize: nearest-neighbor / point sampling (no anti-aliasing).
             if (defined('\Imagick::INTERPOLATE_NEARESTNEIGHBOR')) {
                 $im->setImageInterpolateMethod(\Imagick::INTERPOLATE_NEARESTNEIGHBOR);
             }
             $im->resizeImage($widthPx, $heightPx, Imagick::FILTER_POINT, 1);
-
-            // Optional alpha hard-threshold only when explicitly requested.
-            if ($alphaThreshold !== null) {
-                $level = max(0, min(255, (int) $alphaThreshold)) / 255.0;
-                $im->evaluateImage(Imagick::EVALUATE_THRESHOLD, $level, Imagick::CHANNEL_ALPHA);
-            }
 
             // Ensure PNG32/RGBA
             $im->setImageFormat('png');
@@ -465,13 +603,33 @@ class ImageHelper
             $im->clear();
             $im->destroy();
 
-            return $ok ? ['success' => true] : ['success' => false, 'message' => 'Failed to write image'];
-        } catch (\Exception $e) {
+            if (! $ok) {
+                return ['success' => false, 'message' => 'Failed to write image'];
+            }
+
+            $dpiResult = self::setPngDpi($outputFile, $dpi, $dpi);
+            if (! ($dpiResult['success'] ?? false)) {
+                return $dpiResult;
+            }
+
+            return [
+                'success' => true,
+                'renderer' => 'imagick',
+                'source_bounds' => $sourceBounds,
+            ];
+        } catch (\Throwable $e) {
             $message = $e->getMessage();
             $isCacheError = stripos($message, 'cache resources exhausted') !== false;
             $isReadError = stripos($message, 'Failed to read the file') !== false;
-            if ($allowFallback && ($isCacheError || $isReadError)) {
-                $gd = self::prepareForProductionWithGd($inputFile, $outputFile, $widthPx, $heightPx, $dpi);
+            if ($renderer === 'auto' && $allowFallback && ($isCacheError || $isReadError)) {
+                $gd = self::prepareForProductionWithGd(
+                    $inputFile,
+                    $outputFile,
+                    $widthPx,
+                    $heightPx,
+                    $dpi,
+                    $alphaThreshold
+                );
                 if ($gd['success'] ?? false) {
                     return [
                         'success' => true,
@@ -744,5 +902,171 @@ class ImageHelper
         if ($image->getImageColorspace() === Imagick::COLORSPACE_CMYK) {
             $image->transformImageColorspace(Imagick::COLORSPACE_RGB);
         }
+    }
+
+    private static function validatedRenderer(?string $renderer): ?string
+    {
+        $renderer = strtolower(trim((string) ($renderer ?? 'auto')));
+
+        return in_array($renderer, ['auto', 'imagick', 'gd'], true) ? $renderer : null;
+    }
+
+    private static function applyImagickAlphaThreshold(Imagick $image, int $threshold): void
+    {
+        $threshold = max(1, min(255, $threshold));
+        $range = Imagick::getQuantumRange();
+        $quantum = (float) ($range['quantumRangeLong'] ?? $range['quantumRangeString'] ?? 65535);
+        // EVALUATE_THRESHOLD uses a strict greater-than comparison. Subtract
+        // half an 8-bit step so alpha=threshold remains visible.
+        $level = max(0.0, ($threshold - 0.5) / 255.0) * $quantum;
+        $image->evaluateImage(Imagick::EVALUATE_THRESHOLD, $level, Imagick::CHANNEL_ALPHA);
+    }
+
+    /** @return array{x: int, y: int, width: int, height: int}|null */
+    private static function imagickVisibleBounds(Imagick $image): ?array
+    {
+        $range = $image->getImageChannelRange(Imagick::CHANNEL_ALPHA);
+        if ((float) ($range['maxima'] ?? 0) <= 0.0) {
+            return null;
+        }
+
+        // trimImage() collapses a uniform mask to 1x1. A mask whose minimum
+        // alpha is non-zero is instead visible across the complete canvas.
+        if ((float) ($range['minima'] ?? 0) > 0.0) {
+            return [
+                'x' => 0,
+                'y' => 0,
+                'width' => $image->getImageWidth(),
+                'height' => $image->getImageHeight(),
+            ];
+        }
+
+        $mask = clone $image;
+        $mask->setImagePage(0, 0, 0, 0);
+        $mask->separateImageChannel(Imagick::CHANNEL_ALPHA);
+        $mask->setImageBackgroundColor(new ImagickPixel('black'));
+        $mask->trimImage(0);
+        $page = $mask->getImagePage();
+        $bounds = [
+            'x' => max(0, (int) ($page['x'] ?? 0)),
+            'y' => max(0, (int) ($page['y'] ?? 0)),
+            'width' => $mask->getImageWidth(),
+            'height' => $mask->getImageHeight(),
+        ];
+        $mask->clear();
+        $mask->destroy();
+
+        return $bounds;
+    }
+
+    private static function productionAlphaBoundsWithGd(string $inputFile, int $threshold): array
+    {
+        if (! function_exists('imagecreatefromstring')) {
+            return ['success' => false, 'message' => 'GD extension not available.'];
+        }
+        $raw = @file_get_contents($inputFile);
+        $image = is_string($raw) ? @imagecreatefromstring($raw) : false;
+        if (! $image) {
+            return ['success' => false, 'message' => 'GD could not decode source artwork.'];
+        }
+        $bounds = self::gdVisibleBounds($image, $threshold);
+        imagedestroy($image);
+        if ($bounds === null) {
+            return [
+                'success' => false,
+                'reason' => 'fully_transparent_image',
+                'message' => 'Artwork contains no pixels at or above the alpha threshold.',
+            ];
+        }
+
+        return ['success' => true, 'renderer' => 'gd'] + $bounds;
+    }
+
+    /** @return array{x: int, y: int, width: int, height: int}|null */
+    private static function gdVisibleBounds(\GdImage $image, int $threshold): ?array
+    {
+        $threshold = max(1, min(255, $threshold));
+        $width = imagesx($image);
+        $height = imagesy($image);
+        $minX = $width;
+        $minY = $height;
+        $maxX = -1;
+        $maxY = -1;
+
+        for ($y = 0; $y < $height; $y++) {
+            for ($x = 0; $x < $width; $x++) {
+                if (self::gdOpacity(imagecolorat($image, $x, $y)) < $threshold) {
+                    continue;
+                }
+                $minX = min($minX, $x);
+                $minY = min($minY, $y);
+                $maxX = max($maxX, $x);
+                $maxY = max($maxY, $y);
+            }
+        }
+
+        if ($maxX < 0 || $maxY < 0) {
+            return null;
+        }
+
+        return [
+            'x' => $minX,
+            'y' => $minY,
+            'width' => $maxX - $minX + 1,
+            'height' => $maxY - $minY + 1,
+        ];
+    }
+
+    private static function gdThresholdedCrop(\GdImage $source, array $bounds, int $threshold): \GdImage|false
+    {
+        $crop = imagecreatetruecolor($bounds['width'], $bounds['height']);
+        if (! $crop) {
+            return false;
+        }
+        imagealphablending($crop, false);
+        imagesavealpha($crop, true);
+        $transparent = imagecolorallocatealpha($crop, 0, 0, 0, 127);
+        imagefilledrectangle($crop, 0, 0, $bounds['width'], $bounds['height'], $transparent);
+
+        for ($y = 0; $y < $bounds['height']; $y++) {
+            for ($x = 0; $x < $bounds['width']; $x++) {
+                $rgba = imagecolorat($source, $bounds['x'] + $x, $bounds['y'] + $y);
+                $alpha = self::gdOpacity($rgba) >= max(1, min(255, $threshold)) ? 0 : 127;
+                imagesetpixel($crop, $x, $y, ($alpha << 24) | ($rgba & 0x00FFFFFF));
+            }
+        }
+
+        return $crop;
+    }
+
+    private static function thresholdAlphaMaskWithGd(string $inputFile, int $threshold): array
+    {
+        if (! function_exists('imagecreatefromstring')) {
+            return ['success' => false, 'message' => 'GD extension not available.'];
+        }
+        $raw = @file_get_contents($inputFile);
+        $source = is_string($raw) ? @imagecreatefromstring($raw) : false;
+        if (! $source) {
+            return ['success' => false, 'message' => 'GD could not decode source artwork.'];
+        }
+        $bounds = ['x' => 0, 'y' => 0, 'width' => imagesx($source), 'height' => imagesy($source)];
+        $thresholded = self::gdThresholdedCrop($source, $bounds, $threshold);
+        imagedestroy($source);
+        if (! $thresholded) {
+            return ['success' => false, 'message' => 'GD could not allocate thresholded image.'];
+        }
+        $ok = imagepng($thresholded, $inputFile, 9);
+        imagedestroy($thresholded);
+
+        return $ok
+            ? ['success' => true, 'fallback' => 'gd']
+            : ['success' => false, 'message' => 'GD could not write thresholded image.'];
+    }
+
+    private static function gdOpacity(int $rgba): int
+    {
+        $alpha = ($rgba >> 24) & 0x7F;
+
+        return (int) round((127 - $alpha) * 255 / 127);
     }
 }

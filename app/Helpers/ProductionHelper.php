@@ -255,13 +255,23 @@ class ProductionHelper
         }
 
         $tempImagePath = storage_path('app/temp_'.uniqid().'.png');
-        $prepareResult = ImageHelper::prepareForProduction(
-            $localPath,
-            $tempImagePath,
-            $widthIn,
-            $heightIn,
-            300
-        );
+        $alphaThreshold = $image->productionAlphaThreshold();
+        $prepareResult = $alphaThreshold === null
+            ? ImageHelper::prepareForProduction(
+                $localPath,
+                $tempImagePath,
+                $widthIn,
+                $heightIn,
+                300
+            )
+            : ImageHelper::prepareForProduction(
+                $localPath,
+                $tempImagePath,
+                $widthIn,
+                $heightIn,
+                300,
+                $alphaThreshold
+            );
 
         if (! ($prepareResult['success'] ?? false)) {
             $prefix = $remainder
