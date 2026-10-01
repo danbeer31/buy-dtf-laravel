@@ -1,0 +1,212 @@
+[
+  {
+    "exit_status": 0,
+    "path": "app/Console/Commands/ReportIncomingOrderRetention.php",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "2626f46dac64b8ea1db8f16c5c17c58cb189805541f052931ce39334b82b44d5"
+  },
+  {
+    "exit_status": 0,
+    "path": "app/Exceptions/ArtworkFetchException.php",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "007129cf0a23b915fc498414c11d45d9693dad2841e24846b39f5aa9fb88770b"
+  },
+  {
+    "exit_status": 0,
+    "path": "app/Exceptions/ArtworkValidationException.php",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "bb6e79d3ed0ce58021a5d8fe16c10a2c9385a90c62d1812d801b41dbedd43019"
+  },
+  {
+    "exit_status": 0,
+    "path": "app/Exceptions/DuplicateJsonKeyException.php",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "c43be6ed1ef92e53e4a385eab9e66a5b37eb82576a08dcc1858e7470b930264b"
+  },
+  {
+    "exit_status": 0,
+    "path": "app/Exceptions/IncomingOrderValidationException.php",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "3ddfdf9609730b77fa41ebe5a07d81aa9b3297a1f905da17ea81f5c58cc7cdc2"
+  },
+  {
+    "exit_status": 0,
+    "path": "app/Exceptions/JobLabelValidationException.php",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "3a0a6049428919071122532c90916cd249d7d610321c19b96c299005058bed15"
+  },
+  {
+    "exit_status": 0,
+    "path": "app/Helpers/ImageHelper.php",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "0cd5bd19038342e5bed8fcccba9498f132180f9a673717962f49529e989cb0c7"
+  },
+  {
+    "exit_status": 0,
+    "path": "app/Helpers/ProductionHelper.php",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "eb025226f9a985a2c7dd3b8cf8e9ee8e50010951905369fb33af128a6bc8f879"
+  },
+  {
+    "exit_status": 0,
+    "path": "app/Http/Controllers/AccountController.php",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "be8593e7e9064e442e7f4f5c7470aeae9612e87f089f3ec579a13b4f520729e9"
+  },
+  {
+    "exit_status": 0,
+    "path": "app/Http/Controllers/Admin/OrderController.php",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "b196d3239dc3f5aa23bc19d56874a637fe4a300b81665692d2a01ca775378d81"
+  },
+  {
+    "exit_status": 0,
+    "path": "app/Http/Controllers/Api/IncomingOrderController.php",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "7c48b8fec66cd0eeedd8c44c4ac63ace9eede91e97489bbd557cad3024a4c4f7"
+  },
+  {
+    "exit_status": 0,
+    "path": "app/Http/Controllers/CartController.php",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "ab62f48ab840a2f213834c12210d8a547e8836aa744920bdfc32ef74d7a3a48f"
+  },
+  {
+    "exit_status": 0,
+    "path": "app/Models/ApiAssetRecord.php",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "addea29a38fe40ae574af2b4d0e29345b94cfc0bd09b8f15f667f287d15abe6a"
+  },
+  {
+    "exit_status": 0,
+    "path": "app/Models/DtfImage.php",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "6e9a4fb56f1fb4461ea4415de2d507c7dcebc35fe7a66e1469ef630963366688"
+  },
+  {
+    "exit_status": 0,
+    "path": "app/Models/IncomingOrderJob.php",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "8178477e3642f8af66c9682b34c269e8b470714fc0165dbe861329c0234c869d"
+  },
+  {
+    "exit_status": 0,
+    "path": "app/Services/IncomingOrders/ApiProductionHandoffService.php",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "96eb63dd42b0d1afb2ced90f28b137423d08efbf9d20fe8b313cfa73f999765b"
+  },
+  {
+    "exit_status": 0,
+    "path": "app/Services/IncomingOrders/ArtworkInspector.php",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "c24d2d0801c9a4280d6e0689b651cafbd1007e0e5bc3b1a58b36d199891dbd5a"
+  },
+  {
+    "exit_status": 0,
+    "path": "app/Services/IncomingOrders/BoundedArtworkFetcher.php",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "c68778e9e21ad405ce4d6e297204beee6ba67b418b1dadfa8027de36cac01c02"
+  },
+  {
+    "exit_status": 0,
+    "path": "app/Services/IncomingOrders/FetchedArtwork.php",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "dbaa487f8ee62245a8b18e70cbe3412a730defa21f426fbbdec3a669ad966fd0"
+  },
+  {
+    "exit_status": 0,
+    "path": "app/Services/IncomingOrders/IdempotencyClaim.php",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "2545c1351fb5dcac42b7f120f1eec8038c888cb56c6bfa3c5d69819968a903b2"
+  },
+  {
+    "exit_status": 0,
+    "path": "app/Services/IncomingOrders/IncomingOrderAssetStore.php",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "4ef9b9b9067fd73d61f275a188fe8410f2a1eeb3309c944c427b61dfb04f57ad"
+  },
+  {
+    "exit_status": 0,
+    "path": "app/Services/IncomingOrders/IncomingOrderIdempotency.php",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "108548245cdfacefb27d64aefc3b99d8e7164bb3e7abb2e6e13833d7a68d8c3c"
+  },
+  {
+    "exit_status": 0,
+    "path": "app/Services/IncomingOrders/IncomingOrderV1Receiver.php",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "95005fbb13771a41ab935eff60fc37af5bb73d19d247492ce7b8869579f4fcc4"
+  },
+  {
+    "exit_status": 0,
+    "path": "app/Services/IncomingOrders/IncomingOrderV1Validator.php",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "ccfcc79ef9a81a77cc8b21a63b9f0bcfce9c65d6075bece1b96b41a580b93268"
+  },
+  {
+    "exit_status": 0,
+    "path": "app/Services/IncomingOrders/InspectedArtwork.php",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "baec498a2a6b9d17332fb6e0da110ac4259d90726aee30e0d2d1f6a4bae250a8"
+  },
+  {
+    "exit_status": 0,
+    "path": "app/Services/IncomingOrders/JobCardRenderer.php",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "f0171e32eb604d2fbc07ecf97463fe486bc766f310560484ec9277850a05b3ac"
+  },
+  {
+    "exit_status": 0,
+    "path": "app/Support/JsonCanonicalizer.php",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "ff423a3453894294f3767ddb19ce14b833aecc08ddbc097750a4212fad7c175d"
+  },
+  {
+    "exit_status": 0,
+    "path": "app/Support/StrictJson.php",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "4e669a71e258e41c3c4103176c9cb7beb84804c55abc276a05323a2dc1f949b7"
+  },
+  {
+    "exit_status": 0,
+    "path": "config/incoming_order.php",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "2ed8628916eba72c7751723fe79d1936855642ed7d515f745974d03da098fc8a"
+  },
+  {
+    "exit_status": 0,
+    "path": "database/migrations/2026_09_27_120000_create_incoming_order_v1_tables.php",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "0861829f5e93be1da62ece278be7517450677c37160638c8eb2f53c8e69cee1f"
+  },
+  {
+    "exit_status": 0,
+    "path": "resources/views/admin/orders/_incoming_job_card.blade.php",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "1da0a4f41d37bdabd23335f0bf421b75dd5fd6f46f314b0d18da9070566c41ca"
+  },
+  {
+    "exit_status": 0,
+    "path": "resources/views/admin/orders/production_order.blade.php",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "34ef3407aa1c0df1489e3dad176a6d4e14c6b7e57a80e776ccec9484ea47b438"
+  },
+  {
+    "exit_status": 0,
+    "path": "resources/views/admin/orders/show.blade.php",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "2551c3d0cdbbfcc5d64eef4bb004f67aa1750e099dc52a471541caa32a8a5e06"
+  },
+  {
+    "exit_status": 0,
+    "path": "routes/api.php",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "74530cc5a56fc7b6fe904ed974e20696e71457fa2afa2e8f8386e5043cb8617f"
+  },
+  {
+    "exit_status": 0,
+    "path": "routes/web.php",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "03c3f65d4ac6e160d7f9ccfb57a267f97c9f832153f303cc12db16e61a6ba91e"
+  }
+]

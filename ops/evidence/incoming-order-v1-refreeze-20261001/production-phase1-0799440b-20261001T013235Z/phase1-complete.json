@@ -1,0 +1,14 @@
+{
+  "evidence_manifest": {
+    "entries": 60,
+    "path": "/var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/evidence-manifest.json",
+    "sha256": "c6beb3d2c11dfbe470ae51fa1dfce31aca100479181a3cbdb8210940645decbc"
+  },
+  "generated_at_utc": "2026-10-01T01:32:41Z",
+  "release_directory": "/var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z",
+  "release_receipt": {
+    "path": "/var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/release-receipt.json",
+    "sha256": "e08e969c97065cc7e387acbcf5544355b6270e55b095d4d9fa5d8bf06e33a9ed"
+  },
+  "status": "phase1_complete_no_live_mutation"
+}

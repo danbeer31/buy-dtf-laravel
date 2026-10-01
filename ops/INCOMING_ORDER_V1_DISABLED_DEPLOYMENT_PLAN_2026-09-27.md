@@ -2,7 +2,7 @@
 
 Date: 2026-09-27 (America/Chicago)
 
-Status: **The 2026-09-30 receiver cutover attempt stopped before maintenance, migration, or source installation after the static gate inherited mode `0600`. Production was restored to its exact original front controller and independently confirmed healthy. Runner `2a7bf3966c593532af1e22db0f03d8cec1c6aecfde0902629b9f2328016c1138` is permanently NO-GO. The later dependency-only security cutover completed successfully and the phase-aware receiver runner is now re-frozen against that exact live lock/vendor/cache identity. A new staging receipt and independent review remain mandatory before any receiver migration or source deployment.**
+Status: **The 2026-09-30 receiver cutover attempt stopped before maintenance, migration, or source installation after the static gate inherited mode `0600`. Production was restored to its exact original front controller and independently confirmed healthy. Runner `2a7bf3966c593532af1e22db0f03d8cec1c6aecfde0902629b9f2328016c1138` is permanently NO-GO. The later dependency-only security cutover completed successfully. The phase-aware receiver runner has now been re-frozen against that exact live dependency identity, and its new Phase 0/1 preflight, restricted staging, and absolute-path migration pretend completed without live mutation. Independent review and separate authorization remain mandatory before any backup, maintenance, real migration, or receiver source deployment.**
 
 Nothing in this plan authorizes a migration, source deployment, service restart, capability change, ShopNLTees sender change, or retention action.
 
@@ -12,7 +12,21 @@ The authorized read-only preflight on 2026-09-27 stopped before any Phase 1 prod
 
 The complete historical stop receipt remains unchanged at `ops/evidence/incoming-order-v1-phase0-20260927/preflight-receipt.json`. All other completed Phase 0 checks passed, including all 35 then-current source CAS conditions, dependency/cache identities, Fuel connection and ledger proof, target-table absence, capability defaults, queue counts, locks, and the public health matrix. Production remained unchanged.
 
-The correction packages that exact reviewed font as the versioned application asset `resources/fonts/job-card-v2/DejaVuSans.ttf`, packages its license notice beside it, and makes renderer `separate-job-card-v2` use only that immutable application file. The renderer no longer depends on `/usr/share/fonts` and its path/hash cannot be overridden by environment configuration. The two files are reviewed additions: Phase 0 requires them to be absent from live source, Phase 1 verifies them inside the staged archive, and post-install checks require the exact font, license, renderer identity, dimensions, DPI, and readiness. This correction has not been staged or run on production.
+The correction packages that exact reviewed font as the versioned application asset `resources/fonts/job-card-v2/DejaVuSans.ttf`, packages its license notice beside it, and makes renderer `separate-job-card-v2` use only that immutable application file. The renderer no longer depends on `/usr/share/fonts` and its path/hash cannot be overridden by environment configuration. The two files are reviewed additions: Phase 0 requires them to be absent from live source, Phase 1 verifies them inside the staged archive, and post-install checks require the exact font, license, renderer identity, dimensions, DPI, and readiness. The restricted staging result is recorded below; neither file has been installed into live source.
+
+## 2026-10-01 receiver re-freeze and Phase 1 result
+
+- Artifact/evidence commit: `4af20e2a21aa795a41c18b6a31b78dd0552b3cbb`.
+- Re-frozen runner SHA-256: `569f8aec08b8493d1544a9c1c84b0dca2e0efd74cd8385091cbff13796c6119c`.
+- New restricted release: `/var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z`.
+- Release receipt SHA-256: `e08e969c97065cc7e387acbcf5544355b6270e55b095d4d9fa5d8bf06e33a9ed`.
+- Phase 0 preflight receipt SHA-256: `ccce56f438a315c75c0c345be2ab5ca0a2a317dcdbf52ad5b40d1ccb862309ff`.
+- Migration pretend receipt SHA-256: `66f090e924a92279692a0766d026a664fdc92c03a3a3e4a657ff100c1e1f524a`.
+- Phase 1 completion receipt SHA-256: `c5533a9010e1e5e2873de0d9d92a41b450608f9dc541a92252347b68182298e5`.
+
+The preflight matched all 37 expected-live source CAS entries and the exact post-security-cutover lock, vendor, bootstrap cache, package cache, service cache, and front-controller identities. Both receiver tables and the exact migration entry were absent; the Fuel ledger existed with 19 rows; all capabilities were disabled; allowed hosts and both queue counts were zero; locks were free; and every reviewed route and Vite asset was healthy.
+
+The only Artisan call was `migrate --database=fuelmysql` with the absolute staged migration path, `--realpath`, `--pretend`, `--force`, and `--no-interaction`. Its exit status was zero. The schema fingerprint remained `8e35bf9ad473e78578d29315a74ad9b87e5007f585b0d85807feb1681e605476` and the ledger-row fingerprint remained `867eda60246e2beb8cb86b927408284e2fdc4c6066d3485fe779523c68e7c8f9` before and after. Phase 1 created no backup, maintenance state, static gate, real migration, live-source/cache/configuration change, restart, capability change, ShopNLTees change, or retention action.
 
 ## Objective and fixed boundary
 

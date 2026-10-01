@@ -1,0 +1,70 @@
+[app/Console/Commands/ReportIncomingOrderRetention.php]
+No syntax errors detected in /var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/candidate/app/Console/Commands/ReportIncomingOrderRetention.php
+[app/Exceptions/ArtworkFetchException.php]
+No syntax errors detected in /var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/candidate/app/Exceptions/ArtworkFetchException.php
+[app/Exceptions/ArtworkValidationException.php]
+No syntax errors detected in /var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/candidate/app/Exceptions/ArtworkValidationException.php
+[app/Exceptions/DuplicateJsonKeyException.php]
+No syntax errors detected in /var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/candidate/app/Exceptions/DuplicateJsonKeyException.php
+[app/Exceptions/IncomingOrderValidationException.php]
+No syntax errors detected in /var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/candidate/app/Exceptions/IncomingOrderValidationException.php
+[app/Exceptions/JobLabelValidationException.php]
+No syntax errors detected in /var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/candidate/app/Exceptions/JobLabelValidationException.php
+[app/Helpers/ImageHelper.php]
+No syntax errors detected in /var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/candidate/app/Helpers/ImageHelper.php
+[app/Helpers/ProductionHelper.php]
+No syntax errors detected in /var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/candidate/app/Helpers/ProductionHelper.php
+[app/Http/Controllers/AccountController.php]
+No syntax errors detected in /var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/candidate/app/Http/Controllers/AccountController.php
+[app/Http/Controllers/Admin/OrderController.php]
+No syntax errors detected in /var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/candidate/app/Http/Controllers/Admin/OrderController.php
+[app/Http/Controllers/Api/IncomingOrderController.php]
+No syntax errors detected in /var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/candidate/app/Http/Controllers/Api/IncomingOrderController.php
+[app/Http/Controllers/CartController.php]
+No syntax errors detected in /var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/candidate/app/Http/Controllers/CartController.php
+[app/Models/ApiAssetRecord.php]
+No syntax errors detected in /var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/candidate/app/Models/ApiAssetRecord.php
+[app/Models/DtfImage.php]
+No syntax errors detected in /var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/candidate/app/Models/DtfImage.php
+[app/Models/IncomingOrderJob.php]
+No syntax errors detected in /var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/candidate/app/Models/IncomingOrderJob.php
+[app/Services/IncomingOrders/ApiProductionHandoffService.php]
+No syntax errors detected in /var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/candidate/app/Services/IncomingOrders/ApiProductionHandoffService.php
+[app/Services/IncomingOrders/ArtworkInspector.php]
+No syntax errors detected in /var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/candidate/app/Services/IncomingOrders/ArtworkInspector.php
+[app/Services/IncomingOrders/BoundedArtworkFetcher.php]
+No syntax errors detected in /var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/candidate/app/Services/IncomingOrders/BoundedArtworkFetcher.php
+[app/Services/IncomingOrders/FetchedArtwork.php]
+No syntax errors detected in /var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/candidate/app/Services/IncomingOrders/FetchedArtwork.php
+[app/Services/IncomingOrders/IdempotencyClaim.php]
+No syntax errors detected in /var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/candidate/app/Services/IncomingOrders/IdempotencyClaim.php
+[app/Services/IncomingOrders/IncomingOrderAssetStore.php]
+No syntax errors detected in /var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/candidate/app/Services/IncomingOrders/IncomingOrderAssetStore.php
+[app/Services/IncomingOrders/IncomingOrderIdempotency.php]
+No syntax errors detected in /var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/candidate/app/Services/IncomingOrders/IncomingOrderIdempotency.php
+[app/Services/IncomingOrders/IncomingOrderV1Receiver.php]
+No syntax errors detected in /var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/candidate/app/Services/IncomingOrders/IncomingOrderV1Receiver.php
+[app/Services/IncomingOrders/IncomingOrderV1Validator.php]
+No syntax errors detected in /var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/candidate/app/Services/IncomingOrders/IncomingOrderV1Validator.php
+[app/Services/IncomingOrders/InspectedArtwork.php]
+No syntax errors detected in /var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/candidate/app/Services/IncomingOrders/InspectedArtwork.php
+[app/Services/IncomingOrders/JobCardRenderer.php]
+No syntax errors detected in /var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/candidate/app/Services/IncomingOrders/JobCardRenderer.php
+[app/Support/JsonCanonicalizer.php]
+No syntax errors detected in /var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/candidate/app/Support/JsonCanonicalizer.php
+[app/Support/StrictJson.php]
+No syntax errors detected in /var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/candidate/app/Support/StrictJson.php
+[config/incoming_order.php]
+No syntax errors detected in /var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/candidate/config/incoming_order.php
+[database/migrations/2026_09_27_120000_create_incoming_order_v1_tables.php]
+No syntax errors detected in /var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/candidate/database/migrations/2026_09_27_120000_create_incoming_order_v1_tables.php
+[resources/views/admin/orders/_incoming_job_card.blade.php]
+No syntax errors detected in /var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/candidate/resources/views/admin/orders/_incoming_job_card.blade.php
+[resources/views/admin/orders/production_order.blade.php]
+No syntax errors detected in /var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/candidate/resources/views/admin/orders/production_order.blade.php
+[resources/views/admin/orders/show.blade.php]
+No syntax errors detected in /var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/candidate/resources/views/admin/orders/show.blade.php
+[routes/api.php]
+No syntax errors detected in /var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/candidate/routes/api.php
+[routes/web.php]
+No syntax errors detected in /var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/candidate/routes/web.php

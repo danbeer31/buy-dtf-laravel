@@ -1,0 +1,167 @@
+{
+  "receipt_version": 1,
+  "status": "phase1_complete_no_live_mutation_stop_for_independent_review",
+  "generated_at_utc": "2026-10-01T01:35:19Z",
+  "artifact_commit": "4af20e2a21aa795a41c18b6a31b78dd0552b3cbb",
+  "receiver_target_commit": "0799440b7cbb0bad364fc2a65b41285f20245658",
+  "runner_sha256": "569f8aec08b8493d1544a9c1c84b0dca2e0efd74cd8385091cbff13796c6119c",
+  "remote_artifact_directory": "/var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-artifact-569f8aec08b8493d",
+  "release_directory": "/var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z",
+  "receipts": {
+    "release": {
+      "path": "release-receipt.json",
+      "sha256": "e08e969c97065cc7e387acbcf5544355b6270e55b095d4d9fa5d8bf06e33a9ed"
+    },
+    "phase1_complete": {
+      "path": "phase1-complete.json",
+      "sha256": "c5533a9010e1e5e2873de0d9d92a41b450608f9dc541a92252347b68182298e5"
+    },
+    "evidence_manifest": {
+      "path": "evidence-manifest.json",
+      "sha256": "c6beb3d2c11dfbe470ae51fa1dfce31aca100479181a3cbdb8210940645decbc",
+      "entries": 60
+    },
+    "phase0_preflight": {
+      "path": "evidence/phase0-preflight-receipt.json",
+      "sha256": "ccce56f438a315c75c0c345be2ab5ca0a2a317dcdbf52ad5b40d1ccb862309ff"
+    },
+    "migration_pretend": {
+      "path": "evidence/migration-pretend-receipt.json",
+      "sha256": "66f090e924a92279692a0766d026a664fdc92c03a3a3e4a657ff100c1e1f524a"
+    }
+  },
+  "frozen_inputs": {
+    "archive_sha256": "ed1df143d219fa073efb2707508c3eb81ba17b777597cebc20a72d3c546522c2",
+    "manifest_sha256": "b6efbd5463c82f895ca8d359b665a145d88c0d363ce7f97b247eae9080853bb6",
+    "helper_sha256": "1b37d3a38834ef633cee5caa784d909b2f5be41ae6e22766f817f80f9f4a20bd",
+    "runner_sha256": "569f8aec08b8493d1544a9c1c84b0dca2e0efd74cd8385091cbff13796c6119c",
+    "migration_sha256": "79fa911b0b2ad9bb79c33080725446093dffd4df3e01c3cb3888d508087c9f9d"
+  },
+  "preflight": {
+    "status": "pass",
+    "generated_at_utc": "2026-10-01T01:32:37Z",
+    "application_device": 64513,
+    "php_version": "8.2.30",
+    "laravel_version": "12.69.0",
+    "composer_classmap_authoritative": false,
+    "imagick_loaded": true,
+    "app_environment": "local",
+    "app_debug": false,
+    "composer_lock_sha256": "22af12c7e58fcfe809735dbf9955b2d22a264e9e7345cefd74398e36bf2773b9",
+    "vendor_manifest": {
+      "sha256": "7399949f857da190c5ff07b89c85e8fba8a6f681695e20a462862be591b698ed",
+      "files": 6460,
+      "directories": 925,
+      "bytes": 26453056
+    },
+    "bootstrap_cache_manifest": {
+      "sha256": "468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9",
+      "files": 2,
+      "directories": 0,
+      "bytes": 21768
+    },
+    "packages_sha256": "21da8f9ed19687e708cc7bc5cc59394c6fcdf9b9deadf617ae70526f815a1db0",
+    "services_sha256": "1f7623b2b4ffd2c4099fb34ad86fc96c1479e27bf81b1b0ba328c988cc4ffcb5",
+    "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
+    "live_source_cas": {
+      "sha256": "9c0b081853feed397cc61be4b7b6d7c302df2298a87cca30e69e80f067cda6db",
+      "paths": 37,
+      "all_matched": true
+    },
+    "reviewed_font_and_license_absent": true,
+    "receiver_capability_enabled": false,
+    "job_label_capability_enabled": false,
+    "retention_capability_enabled": false,
+    "allowed_host_count": 0,
+    "queue_connection": "sync",
+    "queued_jobs": 0,
+    "failed_jobs": 0,
+    "dependency_lock_free": true,
+    "receiver_lock_free": true,
+    "scoped_process_count": 0,
+    "active_fpm_connections_observed": 0,
+    "maintenance_active": false,
+    "static_gate_active": false,
+    "free_disk_bytes": 50001608704,
+    "health": [
+      {"url": "https://buy-dtf.com/", "status": 200},
+      {"url": "https://buy-dtf.com/up", "status": 200},
+      {"url": "https://buy-dtf.com/login", "status": 200},
+      {"url": "https://buy-dtf.com/admin", "status": 302},
+      {"url": "https://buy-dtf.com/checkout", "status": 302},
+      {"url": "https://www.buy-dtf.com/", "status": 200},
+      {"url": "https://www.buy-dtf.com/up", "status": 200}
+    ],
+    "vite_assets_healthy": 2
+  },
+  "database_before_and_after_pretend": {
+    "connection": "fuelmysql",
+    "connection_match": true,
+    "fuel_driver": "mysql",
+    "ledger_exists": true,
+    "ledger_rows_before": 19,
+    "ledger_rows_after": 19,
+    "ledger_sha256_before": "867eda60246e2beb8cb86b927408284e2fdc4c6066d3485fe779523c68e7c8f9",
+    "ledger_sha256_after": "867eda60246e2beb8cb86b927408284e2fdc4c6066d3485fe779523c68e7c8f9",
+    "schema_sha256_before": "8e35bf9ad473e78578d29315a74ad9b87e5007f585b0d85807feb1681e605476",
+    "schema_sha256_after": "8e35bf9ad473e78578d29315a74ad9b87e5007f585b0d85807feb1681e605476",
+    "schema_section_counts_unchanged": true,
+    "incoming_order_jobs_absent_before_and_after": true,
+    "api_asset_records_absent_before_and_after": true,
+    "target_migration_absent_before_and_after": true
+  },
+  "pretend": {
+    "status": "pass",
+    "exit_status": 0,
+    "migration_path": "/var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/candidate/database/migrations/2026_09_27_120000_create_incoming_order_v1_tables.php",
+    "absolute_path": true,
+    "realpath_flag": true,
+    "pretend_flag": true,
+    "normalized_output_sha256": "2a35fa289b4002b8e5d91bbf589ce2c702ff5dd9413a3c5d352358a199a0194d",
+    "stdout_sha256": "2c6d99751417c5915621a5d7844ca8fabef151c0ff691f0cfafbe82cbcdd4e62",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "statement_count": 11,
+    "statement_set_sha256": "43296812e2f01b829d3bedb739c8bf825c63864a9d3ad55f46399460b7c28bce"
+  },
+  "candidate": {
+    "paths": 37,
+    "additions": 26,
+    "replacements": 11,
+    "tree_sha256": "5450c0e928010f875e76c165e88d7493c8b7e97f0f29277e3f78267725b09e71",
+    "tree_files": 37,
+    "tree_directories": 23,
+    "tree_bytes": 1113106,
+    "verification_sha256": "3d6c13e315cdda24b966ecc95e6ea025d9a646fa421da2aee0f360f446cacffb",
+    "php_lint_files": 35,
+    "php_lint_status": "pass",
+    "php_lint_receipt_sha256": "ed0c85ab512142dd3540048a0da44908b8204dee05cc3cd410c1290bf37b45b6",
+    "planned_metadata_sha256": "8cf0d59fd72463b70d62c98a081abdb5b8fcae5ab1d11d9d12dbe5ed0461be42",
+    "font_sha256": "ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280",
+    "font_license_sha256": "bc88ec457a574842b8f28c20e97a1fe91ecca69db14840484a22c694f2ffb6da"
+  },
+  "post_phase1": {
+    "live_source_cas_sha256": "9c0b081853feed397cc61be4b7b6d7c302df2298a87cca30e69e80f067cda6db",
+    "vendor_manifest_sha256": "7399949f857da190c5ff07b89c85e8fba8a6f681695e20a462862be591b698ed",
+    "bootstrap_cache_manifest_sha256": "468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9",
+    "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
+    "maintenance_active": false,
+    "static_gate_active": false,
+    "dependency_lock_free": true,
+    "receiver_lock_free": true,
+    "phase1_stage_lock_free": true,
+    "health_matches_preflight": true
+  },
+  "prohibited_actions": {
+    "phase2_backup_created": false,
+    "maintenance_entered": false,
+    "static_gate_installed": false,
+    "real_migration_executed": false,
+    "live_source_changed": false,
+    "live_dependency_or_cache_changed": false,
+    "configuration_changed": false,
+    "service_restarted": false,
+    "capability_enabled": false,
+    "shopnltees_changed": false,
+    "retention_or_customer_deletion_executed": false
+  }
+}

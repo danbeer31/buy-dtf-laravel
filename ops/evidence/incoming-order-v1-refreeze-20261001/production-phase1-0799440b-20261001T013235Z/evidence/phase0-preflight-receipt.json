@@ -1,0 +1,510 @@
+{
+  "active_fpm_connections_observed": 0,
+  "application_device": 64513,
+  "application_metadata": {
+    "gid": 1000,
+    "kind": "directory",
+    "mode": 493,
+    "uid": 1000
+  },
+  "application_root": "/var/www/buy-dtf",
+  "dependencies": {
+    "bootstrap_cache": {
+      "bytes": 21768,
+      "directories": 0,
+      "files": 2,
+      "sha256": "468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9"
+    },
+    "composer_lock_sha256": "22af12c7e58fcfe809735dbf9955b2d22a264e9e7345cefd74398e36bf2773b9",
+    "packages_sha256": "21da8f9ed19687e708cc7bc5cc59394c6fcdf9b9deadf617ae70526f815a1db0",
+    "services_sha256": "1f7623b2b4ffd2c4099fb34ad86fc96c1479e27bf81b1b0ba328c988cc4ffcb5",
+    "vendor": {
+      "bytes": 26453056,
+      "directories": 925,
+      "files": 6460,
+      "sha256": "7399949f857da190c5ff07b89c85e8fba8a6f681695e20a462862be591b698ed"
+    }
+  },
+  "dependency_lock_free": true,
+  "disk": {
+    "free": 50001608704,
+    "total": 124678225920,
+    "used": 74659840000
+  },
+  "font_asset": {
+    "files": [
+      {
+        "expected_sha256": "ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280",
+        "path": "/var/www/buy-dtf/resources/fonts/job-card-v2/DejaVuSans.ttf",
+        "state": "absent"
+      },
+      {
+        "expected_sha256": "bc88ec457a574842b8f28c20e97a1fe91ecca69db14840484a22c694f2ffb6da",
+        "path": "/var/www/buy-dtf/resources/fonts/job-card-v2/LICENSE.txt",
+        "state": "absent"
+      }
+    ],
+    "state": "reviewed_additions_absent"
+  },
+  "front_controller_metadata": {
+    "gid": 1000,
+    "kind": "file",
+    "mode": 420,
+    "uid": 1000
+  },
+  "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
+  "generated_at_utc": "2026-10-01T01:32:37Z",
+  "health": {
+    "routes": [
+      {
+        "bytes": 19976,
+        "redirect_present": false,
+        "status": 200,
+        "url": "https://buy-dtf.com/"
+      },
+      {
+        "bytes": 1934,
+        "redirect_present": false,
+        "status": 200,
+        "url": "https://buy-dtf.com/up"
+      },
+      {
+        "bytes": 9793,
+        "redirect_present": false,
+        "status": 200,
+        "url": "https://buy-dtf.com/login"
+      },
+      {
+        "bytes": 346,
+        "redirect_present": true,
+        "status": 302,
+        "url": "https://buy-dtf.com/admin"
+      },
+      {
+        "bytes": 346,
+        "redirect_present": true,
+        "status": 302,
+        "url": "https://buy-dtf.com/checkout"
+      },
+      {
+        "bytes": 20104,
+        "redirect_present": false,
+        "status": 200,
+        "url": "https://www.buy-dtf.com/"
+      },
+      {
+        "bytes": 1934,
+        "redirect_present": false,
+        "status": 200,
+        "url": "https://www.buy-dtf.com/up"
+      }
+    ],
+    "vite_assets": [
+      {
+        "bytes": 230956,
+        "redirect_present": false,
+        "status": 200,
+        "url": "https://buy-dtf.com/build/assets/app-B5oFf84X.css"
+      },
+      {
+        "bytes": 163857,
+        "redirect_present": false,
+        "status": 200,
+        "url": "https://buy-dtf.com/build/assets/app-cwinOvGr.js"
+      }
+    ],
+    "vite_manifest_sha256": "496deb082f252b319b12538ec2e9114589bcfbe7b3809ed74996faaf9e9e7f9f"
+  },
+  "live_source": {
+    "count": 37,
+    "expectation": "expected-live",
+    "rows": [
+      {
+        "matches": true,
+        "path": "app/Console/Commands/ReportIncomingOrderRetention.php",
+        "state": "absent"
+      },
+      {
+        "matches": true,
+        "path": "app/Exceptions/ArtworkFetchException.php",
+        "state": "absent"
+      },
+      {
+        "matches": true,
+        "path": "app/Exceptions/ArtworkValidationException.php",
+        "state": "absent"
+      },
+      {
+        "matches": true,
+        "path": "app/Exceptions/DuplicateJsonKeyException.php",
+        "state": "absent"
+      },
+      {
+        "matches": true,
+        "path": "app/Exceptions/IncomingOrderValidationException.php",
+        "state": "absent"
+      },
+      {
+        "matches": true,
+        "path": "app/Exceptions/JobLabelValidationException.php",
+        "state": "absent"
+      },
+      {
+        "bytes": 19895,
+        "matches": true,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 436,
+          "uid": 1000
+        },
+        "path": "app/Helpers/ImageHelper.php",
+        "sha256": "32d6c440e5e562b9247906e04264ba1e6640c5e6ab9796673d7c4d8d5ecc2428",
+        "state": "file"
+      },
+      {
+        "bytes": 14384,
+        "matches": true,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 436,
+          "uid": 1000
+        },
+        "path": "app/Helpers/ProductionHelper.php",
+        "sha256": "eed98d12a5c2a403eaa549bbbfaf59983a8914a4f5351439421ff77cf0f6babb",
+        "state": "file"
+      },
+      {
+        "bytes": 7980,
+        "matches": true,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 436,
+          "uid": 1000
+        },
+        "path": "app/Http/Controllers/AccountController.php",
+        "sha256": "678693860d58e462a7bdcac913b90cdffc8c27c3512404d86173607f848bdd0c",
+        "state": "file"
+      },
+      {
+        "bytes": 20061,
+        "matches": true,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 436,
+          "uid": 1000
+        },
+        "path": "app/Http/Controllers/Admin/OrderController.php",
+        "sha256": "b9ac752eb17b00db8bb6c4e93f12d8d5699f36725634d813bd92bc675ba2b9f0",
+        "state": "file"
+      },
+      {
+        "bytes": 11171,
+        "matches": true,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 436,
+          "uid": 1000
+        },
+        "path": "app/Http/Controllers/Api/IncomingOrderController.php",
+        "sha256": "eb9cf7027c3912cc4b0e41452fbff79729addc09f9a4ee921778adac23b0cfb8",
+        "state": "file"
+      },
+      {
+        "bytes": 32598,
+        "matches": true,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 436,
+          "uid": 1000
+        },
+        "path": "app/Http/Controllers/CartController.php",
+        "sha256": "ec743f8d046df2b8b9354dfefbba9be422fef66a006575d30cbf6c1257cba3f1",
+        "state": "file"
+      },
+      {
+        "matches": true,
+        "path": "app/Models/ApiAssetRecord.php",
+        "state": "absent"
+      },
+      {
+        "bytes": 7589,
+        "matches": true,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 436,
+          "uid": 1000
+        },
+        "path": "app/Models/DtfImage.php",
+        "sha256": "bd915ca439510528dc7f34c6253c9266f64bd0ead89c307ac5e17f54047949d9",
+        "state": "file"
+      },
+      {
+        "matches": true,
+        "path": "app/Models/IncomingOrderJob.php",
+        "state": "absent"
+      },
+      {
+        "matches": true,
+        "path": "app/Services/IncomingOrders/ApiProductionHandoffService.php",
+        "state": "absent"
+      },
+      {
+        "matches": true,
+        "path": "app/Services/IncomingOrders/ArtworkInspector.php",
+        "state": "absent"
+      },
+      {
+        "matches": true,
+        "path": "app/Services/IncomingOrders/BoundedArtworkFetcher.php",
+        "state": "absent"
+      },
+      {
+        "matches": true,
+        "path": "app/Services/IncomingOrders/FetchedArtwork.php",
+        "state": "absent"
+      },
+      {
+        "matches": true,
+        "path": "app/Services/IncomingOrders/IdempotencyClaim.php",
+        "state": "absent"
+      },
+      {
+        "matches": true,
+        "path": "app/Services/IncomingOrders/IncomingOrderAssetStore.php",
+        "state": "absent"
+      },
+      {
+        "matches": true,
+        "path": "app/Services/IncomingOrders/IncomingOrderIdempotency.php",
+        "state": "absent"
+      },
+      {
+        "matches": true,
+        "path": "app/Services/IncomingOrders/IncomingOrderV1Receiver.php",
+        "state": "absent"
+      },
+      {
+        "matches": true,
+        "path": "app/Services/IncomingOrders/IncomingOrderV1Validator.php",
+        "state": "absent"
+      },
+      {
+        "matches": true,
+        "path": "app/Services/IncomingOrders/InspectedArtwork.php",
+        "state": "absent"
+      },
+      {
+        "matches": true,
+        "path": "app/Services/IncomingOrders/JobCardRenderer.php",
+        "state": "absent"
+      },
+      {
+        "matches": true,
+        "path": "app/Support/JsonCanonicalizer.php",
+        "state": "absent"
+      },
+      {
+        "matches": true,
+        "path": "app/Support/StrictJson.php",
+        "state": "absent"
+      },
+      {
+        "matches": true,
+        "path": "config/incoming_order.php",
+        "state": "absent"
+      },
+      {
+        "matches": true,
+        "path": "database/migrations/2026_09_27_120000_create_incoming_order_v1_tables.php",
+        "state": "absent"
+      },
+      {
+        "matches": true,
+        "path": "resources/fonts/job-card-v2/DejaVuSans.ttf",
+        "state": "absent"
+      },
+      {
+        "matches": true,
+        "path": "resources/fonts/job-card-v2/LICENSE.txt",
+        "state": "absent"
+      },
+      {
+        "matches": true,
+        "path": "resources/views/admin/orders/_incoming_job_card.blade.php",
+        "state": "absent"
+      },
+      {
+        "bytes": 27437,
+        "matches": true,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 436,
+          "uid": 1000
+        },
+        "path": "resources/views/admin/orders/production_order.blade.php",
+        "sha256": "69aa7ecf530f2106d378481abb1b9ea6f742e730e7b08624cefb77efec3960e1",
+        "state": "file"
+      },
+      {
+        "bytes": 51797,
+        "matches": true,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 436,
+          "uid": 1000
+        },
+        "path": "resources/views/admin/orders/show.blade.php",
+        "sha256": "80a741e794338706680123ef6aa8f877f72879a989ce23345c52c72fcc2780b7",
+        "state": "file"
+      },
+      {
+        "bytes": 316,
+        "matches": true,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 436,
+          "uid": 1000
+        },
+        "path": "routes/api.php",
+        "sha256": "f7a7593fb966e7176952b42226a5250ba7566c9e84bb0e8f8b8a999b66a924e7",
+        "state": "file"
+      },
+      {
+        "bytes": 9541,
+        "matches": true,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 436,
+          "uid": 1000
+        },
+        "path": "routes/web.php",
+        "sha256": "dbb1788b52c02be92a4fc39410b41e15de59ea708cf6ceb49a77c96a50c3b058",
+        "state": "file"
+      }
+    ],
+    "sha256": "9c0b081853feed397cc61be4b7b6d7c302df2298a87cca30e69e80f067cda6db"
+  },
+  "maintenance_active": false,
+  "receiver_lock_free": true,
+  "runtime": {
+    "application_debug": false,
+    "application_environment": "local",
+    "application_root": "/var/www/buy-dtf",
+    "capabilities": {
+      "allowed_host_count": 0,
+      "job_label_enabled": false,
+      "receiver_enabled": false,
+      "retention_enabled": false
+    },
+    "connections": {
+      "configured_fuel_connection": "fuelmysql",
+      "connection_match": true,
+      "default_connection": "mysql",
+      "expected_fuel_connection": "fuelmysql",
+      "fuel_database_name_sha256": "9566898c6940c2248e1e0ee02d8460bfb42d6b407d3108ad60044bab86ac4567",
+      "fuel_driver": "mysql",
+      "migration_invocation_connection": "fuelmysql"
+    },
+    "generated_at_utc": "2026-10-01T01:32:36Z",
+    "job_card_renderer": {
+      "class_available": false,
+      "readiness": null
+    },
+    "migration_ledger": {
+      "exists": true,
+      "row_count": 19,
+      "rows_sha256": "867eda60246e2beb8cb86b927408284e2fdc4c6066d3485fe779523c68e7c8f9",
+      "table": "migrations",
+      "target_entry_count": 0,
+      "target_migration": "2026_09_27_120000_create_incoming_order_v1_tables"
+    },
+    "probe_version": 1,
+    "queue": {
+      "connection": "sync",
+      "counts": {
+        "failed_jobs": 0,
+        "failed_jobs_table_exists": true,
+        "jobs": 0,
+        "jobs_table_exists": true
+      }
+    },
+    "runtime": {
+      "composer_classmap_authoritative": false,
+      "imagick_loaded": true,
+      "imagick_version": "ImageMagick 6.9.11-60 Q16 x86_64 2021-01-25 https://imagemagick.org",
+      "laravel_version": "12.69.0",
+      "php_version": "8.2.30"
+    },
+    "schema": {
+      "required_table_row_counts": {
+        "businesses": 46,
+        "dtfimages": 19402,
+        "dtforders": 1581
+      },
+      "required_tables": {
+        "businesses": true,
+        "dtfimages": true,
+        "dtforders": true
+      },
+      "section_row_counts": {
+        "columns": 350,
+        "key_column_usage": 41,
+        "referential_constraints": 2,
+        "statistics": 58,
+        "table_constraints": 41,
+        "tables": 34
+      },
+      "sha256": "8e35bf9ad473e78578d29315a74ad9b87e5007f585b0d85807feb1681e605476",
+      "target_definitions": {
+        "columns": [],
+        "key_column_usage": [],
+        "referential_constraints": [],
+        "statistics": [],
+        "table_constraints": [],
+        "tables": []
+      },
+      "target_table_row_counts": {
+        "api_asset_records": null,
+        "incoming_order_jobs": null
+      },
+      "target_tables": {
+        "api_asset_records": false,
+        "incoming_order_jobs": false
+      }
+    }
+  },
+  "runtime_command": {
+    "command": [
+      "/usr/bin/php",
+      "/var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/inputs/incoming_order_v1_runtime_probe.php",
+      "/var/www/buy-dtf"
+    ],
+    "cwd": "/var/www/buy-dtf",
+    "duration_seconds": 0.23477,
+    "exit_status": 0,
+    "stderr": {
+      "bytes": 0,
+      "path": "/var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/evidence/phase0-runtime-probe.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stdout": {
+      "bytes": 2767,
+      "path": "/var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/evidence/phase0-runtime-probe.stdout.txt",
+      "sha256": "006bb5858599b576a23b8ef2920f11474f6e8b6c662c5506c1b784880377a8e4"
+    }
+  },
+  "scoped_processes": [],
+  "static_gate_active": false,
+  "status": "pass"
+}
