@@ -1,0 +1,63 @@
+{
+  "before": {
+    "bytes": 339,
+    "metadata": {
+      "gid": 1000,
+      "kind": "file",
+      "mode": 420,
+      "uid": 1000
+    },
+    "path": "/var/www/buy-dtf/public/index.php",
+    "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+  },
+  "exact_original_restored": true,
+  "generated_at_utc": "2026-10-01T02:05:34Z",
+  "operation": "rollback-original-front-controller-restore",
+  "replacement": {
+    "before": {
+      "bytes": 339,
+      "metadata": {
+        "gid": 1000,
+        "kind": "file",
+        "mode": 420,
+        "uid": 1000
+      },
+      "path": "/var/www/buy-dtf/public/index.php",
+      "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+    },
+    "installed": {
+      "bytes": 543,
+      "metadata": {
+        "gid": 1000,
+        "kind": "file",
+        "mode": 420,
+        "uid": 1000
+      },
+      "path": "/var/www/buy-dtf/public/index.php",
+      "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
+    },
+    "prepared": {
+      "bytes": 543,
+      "metadata": {
+        "gid": 1000,
+        "kind": "file",
+        "mode": 420,
+        "uid": 1000
+      },
+      "path": "/var/www/buy-dtf/public/.index.php.incoming-3743959-33eed1793ef6",
+      "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
+    }
+  },
+  "restored": {
+    "bytes": 543,
+    "metadata": {
+      "gid": 1000,
+      "kind": "file",
+      "mode": 420,
+      "uid": 1000
+    },
+    "path": "/var/www/buy-dtf/public/index.php",
+    "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
+  },
+  "status": "pass"
+}

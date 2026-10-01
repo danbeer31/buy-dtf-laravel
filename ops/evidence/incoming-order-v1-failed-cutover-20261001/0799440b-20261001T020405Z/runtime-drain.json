@@ -1,0 +1,72 @@
+[
+  {
+    "active_fpm_connections": 0,
+    "at_utc": "2026-10-01T02:04:13Z",
+    "scoped_processes": []
+  },
+  {
+    "active_fpm_connections": 0,
+    "at_utc": "2026-10-01T02:04:18Z",
+    "scoped_processes": []
+  },
+  {
+    "active_fpm_connections": 0,
+    "at_utc": "2026-10-01T02:04:23Z",
+    "scoped_processes": []
+  },
+  {
+    "active_fpm_connections": 0,
+    "at_utc": "2026-10-01T02:04:28Z",
+    "scoped_processes": []
+  },
+  {
+    "active_fpm_connections": 0,
+    "at_utc": "2026-10-01T02:04:33Z",
+    "scoped_processes": []
+  },
+  {
+    "active_fpm_connections": 0,
+    "at_utc": "2026-10-01T02:04:38Z",
+    "scoped_processes": []
+  },
+  {
+    "active_fpm_connections": 0,
+    "at_utc": "2026-10-01T02:04:43Z",
+    "scoped_processes": []
+  },
+  {
+    "active_fpm_connections": 0,
+    "at_utc": "2026-10-01T02:04:48Z",
+    "scoped_processes": []
+  },
+  {
+    "active_fpm_connections": 0,
+    "at_utc": "2026-10-01T02:04:53Z",
+    "scoped_processes": []
+  },
+  {
+    "active_fpm_connections": 0,
+    "at_utc": "2026-10-01T02:04:58Z",
+    "scoped_processes": []
+  },
+  {
+    "active_fpm_connections": 0,
+    "at_utc": "2026-10-01T02:05:03Z",
+    "scoped_processes": []
+  },
+  {
+    "active_fpm_connections": 0,
+    "at_utc": "2026-10-01T02:05:08Z",
+    "scoped_processes": []
+  },
+  {
+    "active_fpm_connections": 0,
+    "at_utc": "2026-10-01T02:05:13Z",
+    "scoped_processes": []
+  },
+  {
+    "active_fpm_connections": 0,
+    "at_utc": "2026-10-01T02:05:18Z",
+    "scoped_processes": []
+  }
+]

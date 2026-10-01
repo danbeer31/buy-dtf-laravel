@@ -1,0 +1,87 @@
+{
+    "probe_version": 1,
+    "generated_at_utc": "2026-10-01T02:05:20Z",
+    "application_root": "/var/www/buy-dtf",
+    "application_environment": "local",
+    "application_debug": false,
+    "runtime": {
+        "php_version": "8.2.30",
+        "laravel_version": "12.69.0",
+        "composer_classmap_authoritative": false,
+        "imagick_loaded": true,
+        "imagick_version": "ImageMagick 6.9.11-60 Q16 x86_64 2021-01-25 https://imagemagick.org"
+    },
+    "connections": {
+        "configured_fuel_connection": "fuelmysql",
+        "expected_fuel_connection": "fuelmysql",
+        "fuel_driver": "mysql",
+        "fuel_database_name_sha256": "9566898c6940c2248e1e0ee02d8460bfb42d6b407d3108ad60044bab86ac4567",
+        "default_connection": "mysql",
+        "migration_invocation_connection": "fuelmysql",
+        "connection_match": true
+    },
+    "migration_ledger": {
+        "table": "migrations",
+        "exists": true,
+        "row_count": 19,
+        "rows_sha256": "867eda60246e2beb8cb86b927408284e2fdc4c6066d3485fe779523c68e7c8f9",
+        "target_migration": "2026_09_27_120000_create_incoming_order_v1_tables",
+        "target_entry_count": 0
+    },
+    "schema": {
+        "sha256": "8e35bf9ad473e78578d29315a74ad9b87e5007f585b0d85807feb1681e605476",
+        "section_row_counts": {
+            "tables": 34,
+            "columns": 350,
+            "statistics": 58,
+            "table_constraints": 41,
+            "key_column_usage": 41,
+            "referential_constraints": 2
+        },
+        "target_definitions": {
+            "tables": [],
+            "columns": [],
+            "statistics": [],
+            "table_constraints": [],
+            "key_column_usage": [],
+            "referential_constraints": []
+        },
+        "required_tables": {
+            "businesses": true,
+            "dtforders": true,
+            "dtfimages": true
+        },
+        "required_table_row_counts": {
+            "businesses": 46,
+            "dtforders": 1581,
+            "dtfimages": 19405
+        },
+        "target_tables": {
+            "incoming_order_jobs": false,
+            "api_asset_records": false
+        },
+        "target_table_row_counts": {
+            "incoming_order_jobs": null,
+            "api_asset_records": null
+        }
+    },
+    "capabilities": {
+        "receiver_enabled": false,
+        "job_label_enabled": false,
+        "retention_enabled": false,
+        "allowed_host_count": 0
+    },
+    "job_card_renderer": {
+        "class_available": false,
+        "readiness": null
+    },
+    "queue": {
+        "connection": "sync",
+        "counts": {
+            "jobs_table_exists": true,
+            "failed_jobs_table_exists": true,
+            "jobs": 0,
+            "failed_jobs": 0
+        }
+    }
+}

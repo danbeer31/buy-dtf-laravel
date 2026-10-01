@@ -1,0 +1,26 @@
+exit_code=1
+
+Traceback (most recent call last):
+  File "/var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/inputs/incoming_order_v1_deploy.py", line 3568, in <module>
+    raise SystemExit(main())
+  File "/var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/inputs/incoming_order_v1_deploy.py", line 3515, in main
+    receipt = deploy_release(
+  File "/var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/inputs/incoming_order_v1_deploy.py", line 3240, in deploy_release
+    atomic_json(
+  File "/var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/inputs/incoming_order_v1_deploy.py", line 173, in atomic_json
+    atomic_write(path, canonical_bytes(payload), 0o600)
+  File "/var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/inputs/incoming_order_v1_deploy.py", line 136, in canonical_bytes
+    json.dumps(payload, indent=2, sort_keys=True, separators=(",", ": ")) + "\n"
+  File "/usr/lib/python3.10/json/__init__.py", line 238, in dumps
+    **kw).encode(obj)
+  File "/usr/lib/python3.10/json/encoder.py", line 201, in encode
+    chunks = list(chunks)
+  File "/usr/lib/python3.10/json/encoder.py", line 431, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/usr/lib/python3.10/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/usr/lib/python3.10/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/usr/lib/python3.10/json/encoder.py", line 376, in _iterencode_dict
+    raise TypeError(f'keys must be str, int, float, bool or None, '
+TypeError: keys must be str, int, float, bool or None, not tuple

@@ -1,0 +1,259 @@
+{
+  "after": {
+    "application_debug": false,
+    "application_environment": "local",
+    "application_root": "/var/www/buy-dtf",
+    "capabilities": {
+      "allowed_host_count": 0,
+      "job_label_enabled": false,
+      "receiver_enabled": false,
+      "retention_enabled": false
+    },
+    "connections": {
+      "configured_fuel_connection": "fuelmysql",
+      "connection_match": true,
+      "default_connection": "mysql",
+      "expected_fuel_connection": "fuelmysql",
+      "fuel_database_name_sha256": "9566898c6940c2248e1e0ee02d8460bfb42d6b407d3108ad60044bab86ac4567",
+      "fuel_driver": "mysql",
+      "migration_invocation_connection": "fuelmysql"
+    },
+    "generated_at_utc": "2026-10-01T02:05:20Z",
+    "job_card_renderer": {
+      "class_available": false,
+      "readiness": null
+    },
+    "migration_ledger": {
+      "exists": true,
+      "row_count": 19,
+      "rows_sha256": "867eda60246e2beb8cb86b927408284e2fdc4c6066d3485fe779523c68e7c8f9",
+      "table": "migrations",
+      "target_entry_count": 0,
+      "target_migration": "2026_09_27_120000_create_incoming_order_v1_tables"
+    },
+    "probe_version": 1,
+    "queue": {
+      "connection": "sync",
+      "counts": {
+        "failed_jobs": 0,
+        "failed_jobs_table_exists": true,
+        "jobs": 0,
+        "jobs_table_exists": true
+      }
+    },
+    "runtime": {
+      "composer_classmap_authoritative": false,
+      "imagick_loaded": true,
+      "imagick_version": "ImageMagick 6.9.11-60 Q16 x86_64 2021-01-25 https://imagemagick.org",
+      "laravel_version": "12.69.0",
+      "php_version": "8.2.30"
+    },
+    "schema": {
+      "required_table_row_counts": {
+        "businesses": 46,
+        "dtfimages": 19405,
+        "dtforders": 1581
+      },
+      "required_tables": {
+        "businesses": true,
+        "dtfimages": true,
+        "dtforders": true
+      },
+      "section_row_counts": {
+        "columns": 350,
+        "key_column_usage": 41,
+        "referential_constraints": 2,
+        "statistics": 58,
+        "table_constraints": 41,
+        "tables": 34
+      },
+      "sha256": "8e35bf9ad473e78578d29315a74ad9b87e5007f585b0d85807feb1681e605476",
+      "target_definitions": {
+        "columns": [],
+        "key_column_usage": [],
+        "referential_constraints": [],
+        "statistics": [],
+        "table_constraints": [],
+        "tables": []
+      },
+      "target_table_row_counts": {
+        "api_asset_records": null,
+        "incoming_order_jobs": null
+      },
+      "target_tables": {
+        "api_asset_records": false,
+        "incoming_order_jobs": false
+      }
+    }
+  },
+  "after_command": {
+    "command": [
+      "/usr/bin/php",
+      "/var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/inputs/incoming_order_v1_runtime_probe.php",
+      "/var/www/buy-dtf"
+    ],
+    "cwd": "/var/www/buy-dtf",
+    "duration_seconds": 0.347236,
+    "exit_status": 0,
+    "stderr": {
+      "bytes": 0,
+      "path": "/var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-rollbacks/0799440b-20261001T020405Z/cutover-schema-after-pretend.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stdout": {
+      "bytes": 2767,
+      "path": "/var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-rollbacks/0799440b-20261001T020405Z/cutover-schema-after-pretend.stdout.txt",
+      "sha256": "f33212c31471bda69ac7737d40f3fe60456d22e899d2a35427ccb0de52c0579f"
+    }
+  },
+  "before": {
+    "application_debug": false,
+    "application_environment": "local",
+    "application_root": "/var/www/buy-dtf",
+    "capabilities": {
+      "allowed_host_count": 0,
+      "job_label_enabled": false,
+      "receiver_enabled": false,
+      "retention_enabled": false
+    },
+    "connections": {
+      "configured_fuel_connection": "fuelmysql",
+      "connection_match": true,
+      "default_connection": "mysql",
+      "expected_fuel_connection": "fuelmysql",
+      "fuel_database_name_sha256": "9566898c6940c2248e1e0ee02d8460bfb42d6b407d3108ad60044bab86ac4567",
+      "fuel_driver": "mysql",
+      "migration_invocation_connection": "fuelmysql"
+    },
+    "generated_at_utc": "2026-10-01T02:05:19Z",
+    "job_card_renderer": {
+      "class_available": false,
+      "readiness": null
+    },
+    "migration_ledger": {
+      "exists": true,
+      "row_count": 19,
+      "rows_sha256": "867eda60246e2beb8cb86b927408284e2fdc4c6066d3485fe779523c68e7c8f9",
+      "table": "migrations",
+      "target_entry_count": 0,
+      "target_migration": "2026_09_27_120000_create_incoming_order_v1_tables"
+    },
+    "probe_version": 1,
+    "queue": {
+      "connection": "sync",
+      "counts": {
+        "failed_jobs": 0,
+        "failed_jobs_table_exists": true,
+        "jobs": 0,
+        "jobs_table_exists": true
+      }
+    },
+    "runtime": {
+      "composer_classmap_authoritative": false,
+      "imagick_loaded": true,
+      "imagick_version": "ImageMagick 6.9.11-60 Q16 x86_64 2021-01-25 https://imagemagick.org",
+      "laravel_version": "12.69.0",
+      "php_version": "8.2.30"
+    },
+    "schema": {
+      "required_table_row_counts": {
+        "businesses": 46,
+        "dtfimages": 19405,
+        "dtforders": 1581
+      },
+      "required_tables": {
+        "businesses": true,
+        "dtfimages": true,
+        "dtforders": true
+      },
+      "section_row_counts": {
+        "columns": 350,
+        "key_column_usage": 41,
+        "referential_constraints": 2,
+        "statistics": 58,
+        "table_constraints": 41,
+        "tables": 34
+      },
+      "sha256": "8e35bf9ad473e78578d29315a74ad9b87e5007f585b0d85807feb1681e605476",
+      "target_definitions": {
+        "columns": [],
+        "key_column_usage": [],
+        "referential_constraints": [],
+        "statistics": [],
+        "table_constraints": [],
+        "tables": []
+      },
+      "target_table_row_counts": {
+        "api_asset_records": null,
+        "incoming_order_jobs": null
+      },
+      "target_tables": {
+        "api_asset_records": false,
+        "incoming_order_jobs": false
+      }
+    }
+  },
+  "before_command": {
+    "command": [
+      "/usr/bin/php",
+      "/var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/inputs/incoming_order_v1_runtime_probe.php",
+      "/var/www/buy-dtf"
+    ],
+    "cwd": "/var/www/buy-dtf",
+    "duration_seconds": 0.353166,
+    "exit_status": 0,
+    "stderr": {
+      "bytes": 0,
+      "path": "/var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-rollbacks/0799440b-20261001T020405Z/cutover-schema-before-pretend.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stdout": {
+      "bytes": 2767,
+      "path": "/var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-rollbacks/0799440b-20261001T020405Z/cutover-schema-before-pretend.stdout.txt",
+      "sha256": "3a3eca82c9756cfcf0c8eac6c13e793db753baaa188db1e16256bc78c3f2d66f"
+    }
+  },
+  "comparisons": {
+    "ledger_row_count_equal": true,
+    "ledger_sha256_equal": true,
+    "schema_section_counts_equal": true,
+    "schema_sha256_equal": true,
+    "target_migration_absent_after": true,
+    "target_migration_absent_before": true,
+    "target_tables_absent_after": true,
+    "target_tables_absent_before": true
+  },
+  "pretend": {
+    "command": {
+      "command": [
+        "/usr/bin/php",
+        "artisan",
+        "migrate",
+        "--database=fuelmysql",
+        "--path=/var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/candidate/database/migrations/2026_09_27_120000_create_incoming_order_v1_tables.php",
+        "--realpath",
+        "--pretend",
+        "--force",
+        "--no-interaction"
+      ],
+      "cwd": "/var/www/buy-dtf",
+      "duration_seconds": 0.508725,
+      "exit_status": 0,
+      "stderr": {
+        "bytes": 0,
+        "path": "/var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-rollbacks/0799440b-20261001T020405Z/cutover-migration-pretend.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 4272,
+        "path": "/var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-rollbacks/0799440b-20261001T020405Z/cutover-migration-pretend.stdout.txt",
+        "sha256": "2c6d99751417c5915621a5d7844ca8fabef151c0ff691f0cfafbe82cbcdd4e62"
+      }
+    },
+    "normalized_path": "/var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-rollbacks/0799440b-20261001T020405Z/cutover-migration-pretend.normalized.txt",
+    "normalized_sha256": "2a35fa289b4002b8e5d91bbf589ce2c702ff5dd9413a3c5d352358a199a0194d",
+    "statement_count": 11,
+    "statement_set_sha256": "43296812e2f01b829d3bedb739c8bf825c63864a9d3ad55f46399460b7c28bce",
+    "statements_path": "/var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-rollbacks/0799440b-20261001T020405Z/cutover-migration-pretend.statements.json"
+  }
+}
