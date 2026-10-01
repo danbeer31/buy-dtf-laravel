@@ -1,0 +1,2410 @@
+{
+  "after_probe_command": {
+    "command": [
+      "/usr/bin/php",
+      "/var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-resume-20261001T034232Z/inputs/incoming_order_v1_runtime_probe.php",
+      "/var/www/buy-dtf"
+    ],
+    "cwd": "/var/www/buy-dtf",
+    "duration_seconds": 0.232837,
+    "exit_status": 0,
+    "stderr": {
+      "bytes": 0,
+      "path": "/var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-resume-20261001T034232Z/evidence/installed-schema-after-staging.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stdout": {
+      "bytes": 47436,
+      "path": "/var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-resume-20261001T034232Z/evidence/installed-schema-after-staging.stdout.txt",
+      "sha256": "ce2d36295365b2ded3ee672131eb0bd272578bd2153568a6a2f28c2bdc3c220b"
+    }
+  },
+  "before_probe_command": {
+    "command": [
+      "/usr/bin/php",
+      "/var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-resume-20261001T034232Z/inputs/incoming_order_v1_runtime_probe.php",
+      "/var/www/buy-dtf"
+    ],
+    "cwd": "/var/www/buy-dtf",
+    "duration_seconds": 0.233334,
+    "exit_status": 0,
+    "stderr": {
+      "bytes": 0,
+      "path": "/var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-resume-20261001T034232Z/evidence/phase0-runtime-probe.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stdout": {
+      "bytes": 47436,
+      "path": "/var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-resume-20261001T034232Z/evidence/phase0-runtime-probe.stdout.txt",
+      "sha256": "7479c11352272f221a6ae5c74e6f16e2948ddae2844796f91beed7e2cd4d2acf"
+    }
+  },
+  "comparisons": {
+    "ledger_row_count_equal": true,
+    "ledger_sha256_equal": true,
+    "schema_section_counts_equal": true,
+    "schema_sha256_equal": true,
+    "target_definitions_equal": true,
+    "target_migration_recorded_once_after": true,
+    "target_migration_recorded_once_before": true,
+    "target_tables_empty_after": true,
+    "target_tables_empty_before": true,
+    "target_tables_installed_after": true,
+    "target_tables_installed_before": true
+  },
+  "connection_proof": {
+    "configured_fuel_connection": "fuelmysql",
+    "connection_match": true,
+    "default_connection": "mysql",
+    "expected_fuel_connection": "fuelmysql",
+    "fuel_database_name_sha256": "9566898c6940c2248e1e0ee02d8460bfb42d6b407d3108ad60044bab86ac4567",
+    "fuel_driver": "mysql",
+    "migration_invocation_connection": "fuelmysql"
+  },
+  "generated_at_utc": "2026-10-01T03:42:36Z",
+  "ledger_after": {
+    "exists": true,
+    "row_count": 20,
+    "rows_sha256": "3168a7da9ca4aad0a81e673ec61c1647242916d054768f4dd48ff4b9d7eb28d4",
+    "table": "migrations",
+    "target_entry_count": 1,
+    "target_migration": "2026_09_27_120000_create_incoming_order_v1_tables"
+  },
+  "ledger_before": {
+    "exists": true,
+    "row_count": 20,
+    "rows_sha256": "3168a7da9ca4aad0a81e673ec61c1647242916d054768f4dd48ff4b9d7eb28d4",
+    "table": "migrations",
+    "target_entry_count": 1,
+    "target_migration": "2026_09_27_120000_create_incoming_order_v1_tables"
+  },
+  "migration_command_invoked": false,
+  "migration_executed_this_attempt": false,
+  "migration_path": "/var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-resume-20261001T034232Z/candidate/database/migrations/2026_09_27_120000_create_incoming_order_v1_tables.php",
+  "migration_pretend_invoked": false,
+  "migration_sha256": "79fa911b0b2ad9bb79c33080725446093dffd4df3e01c3cb3888d508087c9f9d",
+  "schema_after": {
+    "required_table_row_counts": {
+      "businesses": 46,
+      "dtfimages": 19415,
+      "dtforders": 1581
+    },
+    "required_tables": {
+      "businesses": true,
+      "dtfimages": true,
+      "dtforders": true
+    },
+    "section_row_counts": {
+      "columns": 410,
+      "key_column_usage": 49,
+      "referential_constraints": 2,
+      "statistics": 76,
+      "table_constraints": 46,
+      "tables": 36
+    },
+    "sha256": "4f1990336946bde95c6a13d0245fe4a5845eff2f23999f62e8529478d95d51ed",
+    "target_definitions": {
+      "columns": [
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "id",
+          "COLUMN_TYPE": "bigint unsigned",
+          "EXTRA": "auto_increment",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "NO",
+          "ORDINAL_POSITION": 1,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "incoming_order_job_id",
+          "COLUMN_TYPE": "bigint unsigned",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "NO",
+          "ORDINAL_POSITION": 2,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "dtfimage_id",
+          "COLUMN_TYPE": "bigint unsigned",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 3,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "origin",
+          "COLUMN_TYPE": "varchar(64)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "NO",
+          "ORDINAL_POSITION": 4,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "asset_role",
+          "COLUMN_TYPE": "varchar(64)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "NO",
+          "ORDINAL_POSITION": 5,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "storage_scope",
+          "COLUMN_TYPE": "varchar(32)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "NO",
+          "ORDINAL_POSITION": 6,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "asset_path",
+          "COLUMN_TYPE": "varchar(1024)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "NO",
+          "ORDINAL_POSITION": 7,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "path_hash",
+          "COLUMN_TYPE": "char(64)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "NO",
+          "ORDINAL_POSITION": 8,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "sha256",
+          "COLUMN_TYPE": "char(64)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 9,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "bytes",
+          "COLUMN_TYPE": "bigint unsigned",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 10,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": "forever",
+          "COLUMN_NAME": "retention_policy",
+          "COLUMN_TYPE": "varchar(32)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "NO",
+          "ORDINAL_POSITION": 11,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": "0",
+          "COLUMN_NAME": "retention_enabled",
+          "COLUMN_TYPE": "tinyint(1)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "NO",
+          "ORDINAL_POSITION": 12,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "retention_days",
+          "COLUMN_TYPE": "int unsigned",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 13,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "expires_at",
+          "COLUMN_TYPE": "datetime(6)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 14,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "customer_deleted_at",
+          "COLUMN_TYPE": "datetime(6)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 15,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "purged_at",
+          "COLUMN_TYPE": "datetime(6)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 16,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "created_at",
+          "COLUMN_TYPE": "timestamp(6)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 17,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "updated_at",
+          "COLUMN_TYPE": "timestamp(6)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 18,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "id",
+          "COLUMN_TYPE": "bigint unsigned",
+          "EXTRA": "auto_increment",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "NO",
+          "ORDINAL_POSITION": 1,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "dtfimage_id",
+          "COLUMN_TYPE": "bigint unsigned",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 2,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": "ascii",
+          "COLLATION_NAME": "ascii_bin",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "integration_client",
+          "COLUMN_TYPE": "varchar(64)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "NO",
+          "ORDINAL_POSITION": 3,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": "ascii",
+          "COLLATION_NAME": "ascii_bin",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "idempotency_key",
+          "COLUMN_TYPE": "varchar(128)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "NO",
+          "ORDINAL_POSITION": 4,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "request_fingerprint",
+          "COLUMN_TYPE": "char(64)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "NO",
+          "ORDINAL_POSITION": 5,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "expected_art_sha256",
+          "COLUMN_TYPE": "char(64)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "NO",
+          "ORDINAL_POSITION": 6,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "actual_art_sha256",
+          "COLUMN_TYPE": "char(64)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 7,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "state",
+          "COLUMN_TYPE": "varchar(32)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "NO",
+          "ORDINAL_POSITION": 8,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": "ascii",
+          "COLLATION_NAME": "ascii_bin",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "lease_owner",
+          "COLUMN_TYPE": "char(36)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 9,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "lease_expires_at",
+          "COLUMN_TYPE": "datetime(6)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 10,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "heartbeat_at",
+          "COLUMN_TYPE": "datetime(6)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 11,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": "0",
+          "COLUMN_NAME": "attempt_count",
+          "COLUMN_TYPE": "int unsigned",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "NO",
+          "ORDINAL_POSITION": 12,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "last_attempt_at",
+          "COLUMN_TYPE": "datetime(6)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 13,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "response_payload",
+          "COLUMN_TYPE": "json",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 14,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "job_label_version",
+          "COLUMN_TYPE": "smallint unsigned",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 15,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "job_label_required",
+          "COLUMN_TYPE": "tinyint(1)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 16,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "job_label_mode",
+          "COLUMN_TYPE": "varchar(32)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 17,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "job_label_status",
+          "COLUMN_TYPE": "varchar(32)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 18,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "job_label_reason",
+          "COLUMN_TYPE": "varchar(64)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 19,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "job_label_metadata",
+          "COLUMN_TYPE": "json",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 20,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "job_label_fingerprint",
+          "COLUMN_TYPE": "char(64)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 21,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "art_width_in",
+          "COLUMN_TYPE": "decimal(10,4)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "NO",
+          "ORDINAL_POSITION": 22,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "art_height_in",
+          "COLUMN_TYPE": "decimal(10,4)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "NO",
+          "ORDINAL_POSITION": 23,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "original_asset_path",
+          "COLUMN_TYPE": "varchar(1024)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 24,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "original_asset_sha256",
+          "COLUMN_TYPE": "char(64)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 25,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "normalized_asset_path",
+          "COLUMN_TYPE": "varchar(1024)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 26,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "normalized_asset_sha256",
+          "COLUMN_TYPE": "char(64)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 27,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "job_card_asset_path",
+          "COLUMN_TYPE": "varchar(1024)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 28,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "job_card_asset_sha256",
+          "COLUMN_TYPE": "char(64)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 29,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "renderer_version",
+          "COLUMN_TYPE": "varchar(64)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 30,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "production_state",
+          "COLUMN_TYPE": "varchar(32)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 31,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": "0",
+          "COLUMN_NAME": "production_attempt_count",
+          "COLUMN_TYPE": "int unsigned",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "NO",
+          "ORDINAL_POSITION": 32,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "production_group_key",
+          "COLUMN_TYPE": "char(64)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 33,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": "ascii",
+          "COLLATION_NAME": "ascii_bin",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "production_owner",
+          "COLUMN_TYPE": "char(36)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 34,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "production_heartbeat_at",
+          "COLUMN_TYPE": "datetime(6)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 35,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "production_lease_expires_at",
+          "COLUMN_TYPE": "datetime(6)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 36,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "production_result",
+          "COLUMN_TYPE": "json",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 37,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "production_started_at",
+          "COLUMN_TYPE": "datetime(6)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 38,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "production_completed_at",
+          "COLUMN_TYPE": "datetime(6)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 39,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "last_error_code",
+          "COLUMN_TYPE": "varchar(64)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 40,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "created_at",
+          "COLUMN_TYPE": "timestamp(6)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 41,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "updated_at",
+          "COLUMN_TYPE": "timestamp(6)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 42,
+          "TABLE_NAME": "incoming_order_jobs"
+        }
+      ],
+      "key_column_usage": [
+        {
+          "COLUMN_NAME": "incoming_order_job_id",
+          "CONSTRAINT_NAME": "api_assets_job_role_path_unique",
+          "ORDINAL_POSITION": 1,
+          "POSITION_IN_UNIQUE_CONSTRAINT": null,
+          "REFERENCED_COLUMN_NAME": null,
+          "REFERENCED_TABLE_NAME": null,
+          "REFERENCED_TABLE_SCHEMA": null,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "COLUMN_NAME": "asset_role",
+          "CONSTRAINT_NAME": "api_assets_job_role_path_unique",
+          "ORDINAL_POSITION": 2,
+          "POSITION_IN_UNIQUE_CONSTRAINT": null,
+          "REFERENCED_COLUMN_NAME": null,
+          "REFERENCED_TABLE_NAME": null,
+          "REFERENCED_TABLE_SCHEMA": null,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "COLUMN_NAME": "path_hash",
+          "CONSTRAINT_NAME": "api_assets_job_role_path_unique",
+          "ORDINAL_POSITION": 3,
+          "POSITION_IN_UNIQUE_CONSTRAINT": null,
+          "REFERENCED_COLUMN_NAME": null,
+          "REFERENCED_TABLE_NAME": null,
+          "REFERENCED_TABLE_SCHEMA": null,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "COLUMN_NAME": "id",
+          "CONSTRAINT_NAME": "PRIMARY",
+          "ORDINAL_POSITION": 1,
+          "POSITION_IN_UNIQUE_CONSTRAINT": null,
+          "REFERENCED_COLUMN_NAME": null,
+          "REFERENCED_TABLE_NAME": null,
+          "REFERENCED_TABLE_SCHEMA": null,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "COLUMN_NAME": "integration_client",
+          "CONSTRAINT_NAME": "incoming_jobs_client_key_unique",
+          "ORDINAL_POSITION": 1,
+          "POSITION_IN_UNIQUE_CONSTRAINT": null,
+          "REFERENCED_COLUMN_NAME": null,
+          "REFERENCED_TABLE_NAME": null,
+          "REFERENCED_TABLE_SCHEMA": null,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "COLUMN_NAME": "idempotency_key",
+          "CONSTRAINT_NAME": "incoming_jobs_client_key_unique",
+          "ORDINAL_POSITION": 2,
+          "POSITION_IN_UNIQUE_CONSTRAINT": null,
+          "REFERENCED_COLUMN_NAME": null,
+          "REFERENCED_TABLE_NAME": null,
+          "REFERENCED_TABLE_SCHEMA": null,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "COLUMN_NAME": "dtfimage_id",
+          "CONSTRAINT_NAME": "incoming_order_jobs_dtfimage_id_unique",
+          "ORDINAL_POSITION": 1,
+          "POSITION_IN_UNIQUE_CONSTRAINT": null,
+          "REFERENCED_COLUMN_NAME": null,
+          "REFERENCED_TABLE_NAME": null,
+          "REFERENCED_TABLE_SCHEMA": null,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "COLUMN_NAME": "id",
+          "CONSTRAINT_NAME": "PRIMARY",
+          "ORDINAL_POSITION": 1,
+          "POSITION_IN_UNIQUE_CONSTRAINT": null,
+          "REFERENCED_COLUMN_NAME": null,
+          "REFERENCED_TABLE_NAME": null,
+          "REFERENCED_TABLE_SCHEMA": null,
+          "TABLE_NAME": "incoming_order_jobs"
+        }
+      ],
+      "referential_constraints": [],
+      "statistics": [
+        {
+          "COLLATION": "A",
+          "COLUMN_NAME": "incoming_order_job_id",
+          "EXPRESSION": null,
+          "INDEX_NAME": "api_assets_job_role_path_unique",
+          "INDEX_TYPE": "BTREE",
+          "NON_UNIQUE": 0,
+          "NULLABLE": "",
+          "SEQ_IN_INDEX": 1,
+          "SUB_PART": null,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "COLLATION": "A",
+          "COLUMN_NAME": "asset_role",
+          "EXPRESSION": null,
+          "INDEX_NAME": "api_assets_job_role_path_unique",
+          "INDEX_TYPE": "BTREE",
+          "NON_UNIQUE": 0,
+          "NULLABLE": "",
+          "SEQ_IN_INDEX": 2,
+          "SUB_PART": null,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "COLLATION": "A",
+          "COLUMN_NAME": "path_hash",
+          "EXPRESSION": null,
+          "INDEX_NAME": "api_assets_job_role_path_unique",
+          "INDEX_TYPE": "BTREE",
+          "NON_UNIQUE": 0,
+          "NULLABLE": "",
+          "SEQ_IN_INDEX": 3,
+          "SUB_PART": null,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "COLLATION": "A",
+          "COLUMN_NAME": "path_hash",
+          "EXPRESSION": null,
+          "INDEX_NAME": "api_assets_path_hash_index",
+          "INDEX_TYPE": "BTREE",
+          "NON_UNIQUE": 1,
+          "NULLABLE": "",
+          "SEQ_IN_INDEX": 1,
+          "SUB_PART": null,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "COLLATION": "A",
+          "COLUMN_NAME": "retention_enabled",
+          "EXPRESSION": null,
+          "INDEX_NAME": "api_assets_retention_index",
+          "INDEX_TYPE": "BTREE",
+          "NON_UNIQUE": 1,
+          "NULLABLE": "",
+          "SEQ_IN_INDEX": 1,
+          "SUB_PART": null,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "COLLATION": "A",
+          "COLUMN_NAME": "expires_at",
+          "EXPRESSION": null,
+          "INDEX_NAME": "api_assets_retention_index",
+          "INDEX_TYPE": "BTREE",
+          "NON_UNIQUE": 1,
+          "NULLABLE": "YES",
+          "SEQ_IN_INDEX": 2,
+          "SUB_PART": null,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "COLLATION": "A",
+          "COLUMN_NAME": "purged_at",
+          "EXPRESSION": null,
+          "INDEX_NAME": "api_assets_retention_index",
+          "INDEX_TYPE": "BTREE",
+          "NON_UNIQUE": 1,
+          "NULLABLE": "YES",
+          "SEQ_IN_INDEX": 3,
+          "SUB_PART": null,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "COLLATION": "A",
+          "COLUMN_NAME": "id",
+          "EXPRESSION": null,
+          "INDEX_NAME": "PRIMARY",
+          "INDEX_TYPE": "BTREE",
+          "NON_UNIQUE": 0,
+          "NULLABLE": "",
+          "SEQ_IN_INDEX": 1,
+          "SUB_PART": null,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "COLLATION": "A",
+          "COLUMN_NAME": "integration_client",
+          "EXPRESSION": null,
+          "INDEX_NAME": "incoming_jobs_client_key_unique",
+          "INDEX_TYPE": "BTREE",
+          "NON_UNIQUE": 0,
+          "NULLABLE": "",
+          "SEQ_IN_INDEX": 1,
+          "SUB_PART": null,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "COLLATION": "A",
+          "COLUMN_NAME": "idempotency_key",
+          "EXPRESSION": null,
+          "INDEX_NAME": "incoming_jobs_client_key_unique",
+          "INDEX_TYPE": "BTREE",
+          "NON_UNIQUE": 0,
+          "NULLABLE": "",
+          "SEQ_IN_INDEX": 2,
+          "SUB_PART": null,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "COLLATION": "A",
+          "COLUMN_NAME": "job_label_status",
+          "EXPRESSION": null,
+          "INDEX_NAME": "incoming_jobs_label_status_index",
+          "INDEX_TYPE": "BTREE",
+          "NON_UNIQUE": 1,
+          "NULLABLE": "YES",
+          "SEQ_IN_INDEX": 1,
+          "SUB_PART": null,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "COLLATION": "A",
+          "COLUMN_NAME": "production_state",
+          "EXPRESSION": null,
+          "INDEX_NAME": "incoming_jobs_production_lease_index",
+          "INDEX_TYPE": "BTREE",
+          "NON_UNIQUE": 1,
+          "NULLABLE": "YES",
+          "SEQ_IN_INDEX": 1,
+          "SUB_PART": null,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "COLLATION": "A",
+          "COLUMN_NAME": "production_lease_expires_at",
+          "EXPRESSION": null,
+          "INDEX_NAME": "incoming_jobs_production_lease_index",
+          "INDEX_TYPE": "BTREE",
+          "NON_UNIQUE": 1,
+          "NULLABLE": "YES",
+          "SEQ_IN_INDEX": 2,
+          "SUB_PART": null,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "COLLATION": "A",
+          "COLUMN_NAME": "production_state",
+          "EXPRESSION": null,
+          "INDEX_NAME": "incoming_jobs_production_state_index",
+          "INDEX_TYPE": "BTREE",
+          "NON_UNIQUE": 1,
+          "NULLABLE": "YES",
+          "SEQ_IN_INDEX": 1,
+          "SUB_PART": null,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "COLLATION": "A",
+          "COLUMN_NAME": "state",
+          "EXPRESSION": null,
+          "INDEX_NAME": "incoming_jobs_state_lease_index",
+          "INDEX_TYPE": "BTREE",
+          "NON_UNIQUE": 1,
+          "NULLABLE": "",
+          "SEQ_IN_INDEX": 1,
+          "SUB_PART": null,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "COLLATION": "A",
+          "COLUMN_NAME": "lease_expires_at",
+          "EXPRESSION": null,
+          "INDEX_NAME": "incoming_jobs_state_lease_index",
+          "INDEX_TYPE": "BTREE",
+          "NON_UNIQUE": 1,
+          "NULLABLE": "YES",
+          "SEQ_IN_INDEX": 2,
+          "SUB_PART": null,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "COLLATION": "A",
+          "COLUMN_NAME": "dtfimage_id",
+          "EXPRESSION": null,
+          "INDEX_NAME": "incoming_order_jobs_dtfimage_id_unique",
+          "INDEX_TYPE": "BTREE",
+          "NON_UNIQUE": 0,
+          "NULLABLE": "YES",
+          "SEQ_IN_INDEX": 1,
+          "SUB_PART": null,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "COLLATION": "A",
+          "COLUMN_NAME": "id",
+          "EXPRESSION": null,
+          "INDEX_NAME": "PRIMARY",
+          "INDEX_TYPE": "BTREE",
+          "NON_UNIQUE": 0,
+          "NULLABLE": "",
+          "SEQ_IN_INDEX": 1,
+          "SUB_PART": null,
+          "TABLE_NAME": "incoming_order_jobs"
+        }
+      ],
+      "table_constraints": [
+        {
+          "CONSTRAINT_NAME": "api_assets_job_role_path_unique",
+          "CONSTRAINT_TYPE": "UNIQUE",
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "CONSTRAINT_NAME": "PRIMARY",
+          "CONSTRAINT_TYPE": "PRIMARY KEY",
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "CONSTRAINT_NAME": "incoming_jobs_client_key_unique",
+          "CONSTRAINT_TYPE": "UNIQUE",
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CONSTRAINT_NAME": "incoming_order_jobs_dtfimage_id_unique",
+          "CONSTRAINT_TYPE": "UNIQUE",
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CONSTRAINT_NAME": "PRIMARY",
+          "CONSTRAINT_TYPE": "PRIMARY KEY",
+          "TABLE_NAME": "incoming_order_jobs"
+        }
+      ],
+      "tables": [
+        {
+          "CREATE_OPTIONS": "",
+          "ENGINE": "InnoDB",
+          "TABLE_COLLATION": "utf8mb4_unicode_ci",
+          "TABLE_NAME": "api_asset_records",
+          "TABLE_TYPE": "BASE TABLE"
+        },
+        {
+          "CREATE_OPTIONS": "",
+          "ENGINE": "InnoDB",
+          "TABLE_COLLATION": "utf8mb4_unicode_ci",
+          "TABLE_NAME": "incoming_order_jobs",
+          "TABLE_TYPE": "BASE TABLE"
+        }
+      ]
+    },
+    "target_table_row_counts": {
+      "api_asset_records": 0,
+      "incoming_order_jobs": 0
+    },
+    "target_tables": {
+      "api_asset_records": true,
+      "incoming_order_jobs": true
+    }
+  },
+  "schema_before": {
+    "required_table_row_counts": {
+      "businesses": 46,
+      "dtfimages": 19415,
+      "dtforders": 1581
+    },
+    "required_tables": {
+      "businesses": true,
+      "dtfimages": true,
+      "dtforders": true
+    },
+    "section_row_counts": {
+      "columns": 410,
+      "key_column_usage": 49,
+      "referential_constraints": 2,
+      "statistics": 76,
+      "table_constraints": 46,
+      "tables": 36
+    },
+    "sha256": "4f1990336946bde95c6a13d0245fe4a5845eff2f23999f62e8529478d95d51ed",
+    "target_definitions": {
+      "columns": [
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "id",
+          "COLUMN_TYPE": "bigint unsigned",
+          "EXTRA": "auto_increment",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "NO",
+          "ORDINAL_POSITION": 1,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "incoming_order_job_id",
+          "COLUMN_TYPE": "bigint unsigned",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "NO",
+          "ORDINAL_POSITION": 2,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "dtfimage_id",
+          "COLUMN_TYPE": "bigint unsigned",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 3,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "origin",
+          "COLUMN_TYPE": "varchar(64)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "NO",
+          "ORDINAL_POSITION": 4,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "asset_role",
+          "COLUMN_TYPE": "varchar(64)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "NO",
+          "ORDINAL_POSITION": 5,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "storage_scope",
+          "COLUMN_TYPE": "varchar(32)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "NO",
+          "ORDINAL_POSITION": 6,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "asset_path",
+          "COLUMN_TYPE": "varchar(1024)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "NO",
+          "ORDINAL_POSITION": 7,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "path_hash",
+          "COLUMN_TYPE": "char(64)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "NO",
+          "ORDINAL_POSITION": 8,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "sha256",
+          "COLUMN_TYPE": "char(64)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 9,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "bytes",
+          "COLUMN_TYPE": "bigint unsigned",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 10,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": "forever",
+          "COLUMN_NAME": "retention_policy",
+          "COLUMN_TYPE": "varchar(32)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "NO",
+          "ORDINAL_POSITION": 11,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": "0",
+          "COLUMN_NAME": "retention_enabled",
+          "COLUMN_TYPE": "tinyint(1)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "NO",
+          "ORDINAL_POSITION": 12,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "retention_days",
+          "COLUMN_TYPE": "int unsigned",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 13,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "expires_at",
+          "COLUMN_TYPE": "datetime(6)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 14,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "customer_deleted_at",
+          "COLUMN_TYPE": "datetime(6)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 15,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "purged_at",
+          "COLUMN_TYPE": "datetime(6)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 16,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "created_at",
+          "COLUMN_TYPE": "timestamp(6)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 17,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "updated_at",
+          "COLUMN_TYPE": "timestamp(6)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 18,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "id",
+          "COLUMN_TYPE": "bigint unsigned",
+          "EXTRA": "auto_increment",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "NO",
+          "ORDINAL_POSITION": 1,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "dtfimage_id",
+          "COLUMN_TYPE": "bigint unsigned",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 2,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": "ascii",
+          "COLLATION_NAME": "ascii_bin",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "integration_client",
+          "COLUMN_TYPE": "varchar(64)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "NO",
+          "ORDINAL_POSITION": 3,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": "ascii",
+          "COLLATION_NAME": "ascii_bin",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "idempotency_key",
+          "COLUMN_TYPE": "varchar(128)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "NO",
+          "ORDINAL_POSITION": 4,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "request_fingerprint",
+          "COLUMN_TYPE": "char(64)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "NO",
+          "ORDINAL_POSITION": 5,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "expected_art_sha256",
+          "COLUMN_TYPE": "char(64)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "NO",
+          "ORDINAL_POSITION": 6,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "actual_art_sha256",
+          "COLUMN_TYPE": "char(64)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 7,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "state",
+          "COLUMN_TYPE": "varchar(32)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "NO",
+          "ORDINAL_POSITION": 8,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": "ascii",
+          "COLLATION_NAME": "ascii_bin",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "lease_owner",
+          "COLUMN_TYPE": "char(36)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 9,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "lease_expires_at",
+          "COLUMN_TYPE": "datetime(6)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 10,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "heartbeat_at",
+          "COLUMN_TYPE": "datetime(6)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 11,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": "0",
+          "COLUMN_NAME": "attempt_count",
+          "COLUMN_TYPE": "int unsigned",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "NO",
+          "ORDINAL_POSITION": 12,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "last_attempt_at",
+          "COLUMN_TYPE": "datetime(6)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 13,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "response_payload",
+          "COLUMN_TYPE": "json",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 14,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "job_label_version",
+          "COLUMN_TYPE": "smallint unsigned",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 15,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "job_label_required",
+          "COLUMN_TYPE": "tinyint(1)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 16,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "job_label_mode",
+          "COLUMN_TYPE": "varchar(32)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 17,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "job_label_status",
+          "COLUMN_TYPE": "varchar(32)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 18,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "job_label_reason",
+          "COLUMN_TYPE": "varchar(64)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 19,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "job_label_metadata",
+          "COLUMN_TYPE": "json",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 20,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "job_label_fingerprint",
+          "COLUMN_TYPE": "char(64)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 21,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "art_width_in",
+          "COLUMN_TYPE": "decimal(10,4)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "NO",
+          "ORDINAL_POSITION": 22,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "art_height_in",
+          "COLUMN_TYPE": "decimal(10,4)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "NO",
+          "ORDINAL_POSITION": 23,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "original_asset_path",
+          "COLUMN_TYPE": "varchar(1024)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 24,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "original_asset_sha256",
+          "COLUMN_TYPE": "char(64)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 25,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "normalized_asset_path",
+          "COLUMN_TYPE": "varchar(1024)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 26,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "normalized_asset_sha256",
+          "COLUMN_TYPE": "char(64)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 27,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "job_card_asset_path",
+          "COLUMN_TYPE": "varchar(1024)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 28,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "job_card_asset_sha256",
+          "COLUMN_TYPE": "char(64)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 29,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "renderer_version",
+          "COLUMN_TYPE": "varchar(64)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 30,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "production_state",
+          "COLUMN_TYPE": "varchar(32)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 31,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": "0",
+          "COLUMN_NAME": "production_attempt_count",
+          "COLUMN_TYPE": "int unsigned",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "NO",
+          "ORDINAL_POSITION": 32,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "production_group_key",
+          "COLUMN_TYPE": "char(64)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 33,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": "ascii",
+          "COLLATION_NAME": "ascii_bin",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "production_owner",
+          "COLUMN_TYPE": "char(36)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 34,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "production_heartbeat_at",
+          "COLUMN_TYPE": "datetime(6)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 35,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "production_lease_expires_at",
+          "COLUMN_TYPE": "datetime(6)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 36,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "production_result",
+          "COLUMN_TYPE": "json",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 37,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "production_started_at",
+          "COLUMN_TYPE": "datetime(6)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 38,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "production_completed_at",
+          "COLUMN_TYPE": "datetime(6)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 39,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": "utf8mb4",
+          "COLLATION_NAME": "utf8mb4_unicode_ci",
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "last_error_code",
+          "COLUMN_TYPE": "varchar(64)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 40,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "created_at",
+          "COLUMN_TYPE": "timestamp(6)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 41,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CHARACTER_SET_NAME": null,
+          "COLLATION_NAME": null,
+          "COLUMN_DEFAULT": null,
+          "COLUMN_NAME": "updated_at",
+          "COLUMN_TYPE": "timestamp(6)",
+          "EXTRA": "",
+          "GENERATION_EXPRESSION": "",
+          "IS_NULLABLE": "YES",
+          "ORDINAL_POSITION": 42,
+          "TABLE_NAME": "incoming_order_jobs"
+        }
+      ],
+      "key_column_usage": [
+        {
+          "COLUMN_NAME": "incoming_order_job_id",
+          "CONSTRAINT_NAME": "api_assets_job_role_path_unique",
+          "ORDINAL_POSITION": 1,
+          "POSITION_IN_UNIQUE_CONSTRAINT": null,
+          "REFERENCED_COLUMN_NAME": null,
+          "REFERENCED_TABLE_NAME": null,
+          "REFERENCED_TABLE_SCHEMA": null,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "COLUMN_NAME": "asset_role",
+          "CONSTRAINT_NAME": "api_assets_job_role_path_unique",
+          "ORDINAL_POSITION": 2,
+          "POSITION_IN_UNIQUE_CONSTRAINT": null,
+          "REFERENCED_COLUMN_NAME": null,
+          "REFERENCED_TABLE_NAME": null,
+          "REFERENCED_TABLE_SCHEMA": null,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "COLUMN_NAME": "path_hash",
+          "CONSTRAINT_NAME": "api_assets_job_role_path_unique",
+          "ORDINAL_POSITION": 3,
+          "POSITION_IN_UNIQUE_CONSTRAINT": null,
+          "REFERENCED_COLUMN_NAME": null,
+          "REFERENCED_TABLE_NAME": null,
+          "REFERENCED_TABLE_SCHEMA": null,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "COLUMN_NAME": "id",
+          "CONSTRAINT_NAME": "PRIMARY",
+          "ORDINAL_POSITION": 1,
+          "POSITION_IN_UNIQUE_CONSTRAINT": null,
+          "REFERENCED_COLUMN_NAME": null,
+          "REFERENCED_TABLE_NAME": null,
+          "REFERENCED_TABLE_SCHEMA": null,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "COLUMN_NAME": "integration_client",
+          "CONSTRAINT_NAME": "incoming_jobs_client_key_unique",
+          "ORDINAL_POSITION": 1,
+          "POSITION_IN_UNIQUE_CONSTRAINT": null,
+          "REFERENCED_COLUMN_NAME": null,
+          "REFERENCED_TABLE_NAME": null,
+          "REFERENCED_TABLE_SCHEMA": null,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "COLUMN_NAME": "idempotency_key",
+          "CONSTRAINT_NAME": "incoming_jobs_client_key_unique",
+          "ORDINAL_POSITION": 2,
+          "POSITION_IN_UNIQUE_CONSTRAINT": null,
+          "REFERENCED_COLUMN_NAME": null,
+          "REFERENCED_TABLE_NAME": null,
+          "REFERENCED_TABLE_SCHEMA": null,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "COLUMN_NAME": "dtfimage_id",
+          "CONSTRAINT_NAME": "incoming_order_jobs_dtfimage_id_unique",
+          "ORDINAL_POSITION": 1,
+          "POSITION_IN_UNIQUE_CONSTRAINT": null,
+          "REFERENCED_COLUMN_NAME": null,
+          "REFERENCED_TABLE_NAME": null,
+          "REFERENCED_TABLE_SCHEMA": null,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "COLUMN_NAME": "id",
+          "CONSTRAINT_NAME": "PRIMARY",
+          "ORDINAL_POSITION": 1,
+          "POSITION_IN_UNIQUE_CONSTRAINT": null,
+          "REFERENCED_COLUMN_NAME": null,
+          "REFERENCED_TABLE_NAME": null,
+          "REFERENCED_TABLE_SCHEMA": null,
+          "TABLE_NAME": "incoming_order_jobs"
+        }
+      ],
+      "referential_constraints": [],
+      "statistics": [
+        {
+          "COLLATION": "A",
+          "COLUMN_NAME": "incoming_order_job_id",
+          "EXPRESSION": null,
+          "INDEX_NAME": "api_assets_job_role_path_unique",
+          "INDEX_TYPE": "BTREE",
+          "NON_UNIQUE": 0,
+          "NULLABLE": "",
+          "SEQ_IN_INDEX": 1,
+          "SUB_PART": null,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "COLLATION": "A",
+          "COLUMN_NAME": "asset_role",
+          "EXPRESSION": null,
+          "INDEX_NAME": "api_assets_job_role_path_unique",
+          "INDEX_TYPE": "BTREE",
+          "NON_UNIQUE": 0,
+          "NULLABLE": "",
+          "SEQ_IN_INDEX": 2,
+          "SUB_PART": null,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "COLLATION": "A",
+          "COLUMN_NAME": "path_hash",
+          "EXPRESSION": null,
+          "INDEX_NAME": "api_assets_job_role_path_unique",
+          "INDEX_TYPE": "BTREE",
+          "NON_UNIQUE": 0,
+          "NULLABLE": "",
+          "SEQ_IN_INDEX": 3,
+          "SUB_PART": null,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "COLLATION": "A",
+          "COLUMN_NAME": "path_hash",
+          "EXPRESSION": null,
+          "INDEX_NAME": "api_assets_path_hash_index",
+          "INDEX_TYPE": "BTREE",
+          "NON_UNIQUE": 1,
+          "NULLABLE": "",
+          "SEQ_IN_INDEX": 1,
+          "SUB_PART": null,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "COLLATION": "A",
+          "COLUMN_NAME": "retention_enabled",
+          "EXPRESSION": null,
+          "INDEX_NAME": "api_assets_retention_index",
+          "INDEX_TYPE": "BTREE",
+          "NON_UNIQUE": 1,
+          "NULLABLE": "",
+          "SEQ_IN_INDEX": 1,
+          "SUB_PART": null,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "COLLATION": "A",
+          "COLUMN_NAME": "expires_at",
+          "EXPRESSION": null,
+          "INDEX_NAME": "api_assets_retention_index",
+          "INDEX_TYPE": "BTREE",
+          "NON_UNIQUE": 1,
+          "NULLABLE": "YES",
+          "SEQ_IN_INDEX": 2,
+          "SUB_PART": null,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "COLLATION": "A",
+          "COLUMN_NAME": "purged_at",
+          "EXPRESSION": null,
+          "INDEX_NAME": "api_assets_retention_index",
+          "INDEX_TYPE": "BTREE",
+          "NON_UNIQUE": 1,
+          "NULLABLE": "YES",
+          "SEQ_IN_INDEX": 3,
+          "SUB_PART": null,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "COLLATION": "A",
+          "COLUMN_NAME": "id",
+          "EXPRESSION": null,
+          "INDEX_NAME": "PRIMARY",
+          "INDEX_TYPE": "BTREE",
+          "NON_UNIQUE": 0,
+          "NULLABLE": "",
+          "SEQ_IN_INDEX": 1,
+          "SUB_PART": null,
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "COLLATION": "A",
+          "COLUMN_NAME": "integration_client",
+          "EXPRESSION": null,
+          "INDEX_NAME": "incoming_jobs_client_key_unique",
+          "INDEX_TYPE": "BTREE",
+          "NON_UNIQUE": 0,
+          "NULLABLE": "",
+          "SEQ_IN_INDEX": 1,
+          "SUB_PART": null,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "COLLATION": "A",
+          "COLUMN_NAME": "idempotency_key",
+          "EXPRESSION": null,
+          "INDEX_NAME": "incoming_jobs_client_key_unique",
+          "INDEX_TYPE": "BTREE",
+          "NON_UNIQUE": 0,
+          "NULLABLE": "",
+          "SEQ_IN_INDEX": 2,
+          "SUB_PART": null,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "COLLATION": "A",
+          "COLUMN_NAME": "job_label_status",
+          "EXPRESSION": null,
+          "INDEX_NAME": "incoming_jobs_label_status_index",
+          "INDEX_TYPE": "BTREE",
+          "NON_UNIQUE": 1,
+          "NULLABLE": "YES",
+          "SEQ_IN_INDEX": 1,
+          "SUB_PART": null,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "COLLATION": "A",
+          "COLUMN_NAME": "production_state",
+          "EXPRESSION": null,
+          "INDEX_NAME": "incoming_jobs_production_lease_index",
+          "INDEX_TYPE": "BTREE",
+          "NON_UNIQUE": 1,
+          "NULLABLE": "YES",
+          "SEQ_IN_INDEX": 1,
+          "SUB_PART": null,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "COLLATION": "A",
+          "COLUMN_NAME": "production_lease_expires_at",
+          "EXPRESSION": null,
+          "INDEX_NAME": "incoming_jobs_production_lease_index",
+          "INDEX_TYPE": "BTREE",
+          "NON_UNIQUE": 1,
+          "NULLABLE": "YES",
+          "SEQ_IN_INDEX": 2,
+          "SUB_PART": null,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "COLLATION": "A",
+          "COLUMN_NAME": "production_state",
+          "EXPRESSION": null,
+          "INDEX_NAME": "incoming_jobs_production_state_index",
+          "INDEX_TYPE": "BTREE",
+          "NON_UNIQUE": 1,
+          "NULLABLE": "YES",
+          "SEQ_IN_INDEX": 1,
+          "SUB_PART": null,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "COLLATION": "A",
+          "COLUMN_NAME": "state",
+          "EXPRESSION": null,
+          "INDEX_NAME": "incoming_jobs_state_lease_index",
+          "INDEX_TYPE": "BTREE",
+          "NON_UNIQUE": 1,
+          "NULLABLE": "",
+          "SEQ_IN_INDEX": 1,
+          "SUB_PART": null,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "COLLATION": "A",
+          "COLUMN_NAME": "lease_expires_at",
+          "EXPRESSION": null,
+          "INDEX_NAME": "incoming_jobs_state_lease_index",
+          "INDEX_TYPE": "BTREE",
+          "NON_UNIQUE": 1,
+          "NULLABLE": "YES",
+          "SEQ_IN_INDEX": 2,
+          "SUB_PART": null,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "COLLATION": "A",
+          "COLUMN_NAME": "dtfimage_id",
+          "EXPRESSION": null,
+          "INDEX_NAME": "incoming_order_jobs_dtfimage_id_unique",
+          "INDEX_TYPE": "BTREE",
+          "NON_UNIQUE": 0,
+          "NULLABLE": "YES",
+          "SEQ_IN_INDEX": 1,
+          "SUB_PART": null,
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "COLLATION": "A",
+          "COLUMN_NAME": "id",
+          "EXPRESSION": null,
+          "INDEX_NAME": "PRIMARY",
+          "INDEX_TYPE": "BTREE",
+          "NON_UNIQUE": 0,
+          "NULLABLE": "",
+          "SEQ_IN_INDEX": 1,
+          "SUB_PART": null,
+          "TABLE_NAME": "incoming_order_jobs"
+        }
+      ],
+      "table_constraints": [
+        {
+          "CONSTRAINT_NAME": "api_assets_job_role_path_unique",
+          "CONSTRAINT_TYPE": "UNIQUE",
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "CONSTRAINT_NAME": "PRIMARY",
+          "CONSTRAINT_TYPE": "PRIMARY KEY",
+          "TABLE_NAME": "api_asset_records"
+        },
+        {
+          "CONSTRAINT_NAME": "incoming_jobs_client_key_unique",
+          "CONSTRAINT_TYPE": "UNIQUE",
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CONSTRAINT_NAME": "incoming_order_jobs_dtfimage_id_unique",
+          "CONSTRAINT_TYPE": "UNIQUE",
+          "TABLE_NAME": "incoming_order_jobs"
+        },
+        {
+          "CONSTRAINT_NAME": "PRIMARY",
+          "CONSTRAINT_TYPE": "PRIMARY KEY",
+          "TABLE_NAME": "incoming_order_jobs"
+        }
+      ],
+      "tables": [
+        {
+          "CREATE_OPTIONS": "",
+          "ENGINE": "InnoDB",
+          "TABLE_COLLATION": "utf8mb4_unicode_ci",
+          "TABLE_NAME": "api_asset_records",
+          "TABLE_TYPE": "BASE TABLE"
+        },
+        {
+          "CREATE_OPTIONS": "",
+          "ENGINE": "InnoDB",
+          "TABLE_COLLATION": "utf8mb4_unicode_ci",
+          "TABLE_NAME": "incoming_order_jobs",
+          "TABLE_TYPE": "BASE TABLE"
+        }
+      ]
+    },
+    "target_table_row_counts": {
+      "api_asset_records": 0,
+      "incoming_order_jobs": 0
+    },
+    "target_tables": {
+      "api_asset_records": true,
+      "incoming_order_jobs": true
+    }
+  },
+  "state": "installed_schema_resume_v1",
+  "status": "pass",
+  "verification_after": {
+    "ascii_bin_columns": [
+      {
+        "collation": "ascii_bin",
+        "column": "idempotency_key",
+        "table": "incoming_order_jobs"
+      },
+      {
+        "collation": "ascii_bin",
+        "column": "integration_client",
+        "table": "incoming_order_jobs"
+      },
+      {
+        "collation": "ascii_bin",
+        "column": "lease_owner",
+        "table": "incoming_order_jobs"
+      },
+      {
+        "collation": "ascii_bin",
+        "column": "production_owner",
+        "table": "incoming_order_jobs"
+      }
+    ],
+    "migration_executed_this_attempt": false,
+    "migration_ledger": {
+      "row_count": 20,
+      "rows_sha256": "3168a7da9ca4aad0a81e673ec61c1647242916d054768f4dd48ff4b9d7eb28d4",
+      "table": "migrations",
+      "target_entry_count": 1,
+      "target_migration": "2026_09_27_120000_create_incoming_order_v1_tables"
+    },
+    "reviewed_indexes": [
+      "PRIMARY",
+      "api_assets_job_role_path_unique",
+      "api_assets_path_hash_index",
+      "api_assets_retention_index",
+      "incoming_jobs_client_key_unique",
+      "incoming_jobs_label_status_index",
+      "incoming_jobs_production_lease_index",
+      "incoming_jobs_production_state_index",
+      "incoming_jobs_state_lease_index",
+      "incoming_order_jobs_dtfimage_id_unique"
+    ],
+    "schema_section_row_counts": {
+      "columns": 410,
+      "key_column_usage": 49,
+      "referential_constraints": 2,
+      "statistics": 76,
+      "table_constraints": 46,
+      "tables": 36
+    },
+    "schema_sha256": "4f1990336946bde95c6a13d0245fe4a5845eff2f23999f62e8529478d95d51ed",
+    "state": "installed_schema_resume_v1",
+    "status": "pass",
+    "target_definitions_sha256": "aa0a038110dc355ffcd0ed12768c2adb7b0954ecbcc9aeb0fc4ef0efb5d287dc",
+    "target_table_row_counts": {
+      "api_asset_records": 0,
+      "incoming_order_jobs": 0
+    },
+    "target_tables": {
+      "api_asset_records": true,
+      "incoming_order_jobs": true
+    }
+  },
+  "verification_before": {
+    "ascii_bin_columns": [
+      {
+        "collation": "ascii_bin",
+        "column": "idempotency_key",
+        "table": "incoming_order_jobs"
+      },
+      {
+        "collation": "ascii_bin",
+        "column": "integration_client",
+        "table": "incoming_order_jobs"
+      },
+      {
+        "collation": "ascii_bin",
+        "column": "lease_owner",
+        "table": "incoming_order_jobs"
+      },
+      {
+        "collation": "ascii_bin",
+        "column": "production_owner",
+        "table": "incoming_order_jobs"
+      }
+    ],
+    "migration_executed_this_attempt": false,
+    "migration_ledger": {
+      "row_count": 20,
+      "rows_sha256": "3168a7da9ca4aad0a81e673ec61c1647242916d054768f4dd48ff4b9d7eb28d4",
+      "table": "migrations",
+      "target_entry_count": 1,
+      "target_migration": "2026_09_27_120000_create_incoming_order_v1_tables"
+    },
+    "reviewed_indexes": [
+      "PRIMARY",
+      "api_assets_job_role_path_unique",
+      "api_assets_path_hash_index",
+      "api_assets_retention_index",
+      "incoming_jobs_client_key_unique",
+      "incoming_jobs_label_status_index",
+      "incoming_jobs_production_lease_index",
+      "incoming_jobs_production_state_index",
+      "incoming_jobs_state_lease_index",
+      "incoming_order_jobs_dtfimage_id_unique"
+    ],
+    "schema_section_row_counts": {
+      "columns": 410,
+      "key_column_usage": 49,
+      "referential_constraints": 2,
+      "statistics": 76,
+      "table_constraints": 46,
+      "tables": 36
+    },
+    "schema_sha256": "4f1990336946bde95c6a13d0245fe4a5845eff2f23999f62e8529478d95d51ed",
+    "state": "installed_schema_resume_v1",
+    "status": "pass",
+    "target_definitions_sha256": "aa0a038110dc355ffcd0ed12768c2adb7b0954ecbcc9aeb0fc4ef0efb5d287dc",
+    "target_table_row_counts": {
+      "api_asset_records": 0,
+      "incoming_order_jobs": 0
+    },
+    "target_tables": {
+      "api_asset_records": true,
+      "incoming_order_jobs": true
+    }
+  }
+}

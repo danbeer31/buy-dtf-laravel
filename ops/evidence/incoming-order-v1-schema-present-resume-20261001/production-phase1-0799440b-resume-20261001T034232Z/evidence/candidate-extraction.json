@@ -1,0 +1,224 @@
+[
+  {
+    "bytes": 2719,
+    "path": "app/Console/Commands/ReportIncomingOrderRetention.php",
+    "sha256": "4ec3c0d93754a8eb49ae88818e2a5d339866dd059d1decf84ab58bac57671065",
+    "staged_mode": 384
+  },
+  {
+    "bytes": 288,
+    "path": "app/Exceptions/ArtworkFetchException.php",
+    "sha256": "f8c0ecf42c73f1f880217c14f88a91b2f0a99dd7a8dc525cf1222bc0a3e72e85",
+    "staged_mode": 384
+  },
+  {
+    "bytes": 233,
+    "path": "app/Exceptions/ArtworkValidationException.php",
+    "sha256": "7e626e50a7946782de06a6a1b80094a24114cbd7e2d828140af1d3f6228b7e96",
+    "staged_mode": 384
+  },
+  {
+    "bytes": 133,
+    "path": "app/Exceptions/DuplicateJsonKeyException.php",
+    "sha256": "be1cbd679134246076a0b8376e3c3868a536e940f9ebb1fe25da19df252dcec7",
+    "staged_mode": 384
+  },
+  {
+    "bytes": 336,
+    "path": "app/Exceptions/IncomingOrderValidationException.php",
+    "sha256": "b9fc3d7cc3b148bc931d49c06d17e5cc0c41fa0e12f53fa1f38c91927a7a80f0",
+    "staged_mode": 384
+  },
+  {
+    "bytes": 234,
+    "path": "app/Exceptions/JobLabelValidationException.php",
+    "sha256": "55b3c3768b33ef5b2b5d573c913c1d1cf60771bada6ea730e018d17775b95a9b",
+    "staged_mode": 384
+  },
+  {
+    "bytes": 28229,
+    "path": "app/Helpers/ImageHelper.php",
+    "sha256": "b840aa320764dca8896512422456b39162a079d7428aab78b7ad1c7ec1beb637",
+    "staged_mode": 384
+  },
+  {
+    "bytes": 17594,
+    "path": "app/Helpers/ProductionHelper.php",
+    "sha256": "fc14a5ff52714f311cc3f2bdcdf3410ade6927505bcc626eccbbc11f129d8f12",
+    "staged_mode": 384
+  },
+  {
+    "bytes": 8147,
+    "path": "app/Http/Controllers/AccountController.php",
+    "sha256": "e9a1aed0bc0800da996457758e829e823ba14171ac37cc68bd3279be7a032871",
+    "staged_mode": 384
+  },
+  {
+    "bytes": 21001,
+    "path": "app/Http/Controllers/Admin/OrderController.php",
+    "sha256": "4f3bf68204fa61963d3084ba81c3d2e6ec4111c786821e63ee99e84018b23c6d",
+    "staged_mode": 384
+  },
+  {
+    "bytes": 15744,
+    "path": "app/Http/Controllers/Api/IncomingOrderController.php",
+    "sha256": "8ff337bb007af1f24f97201528312b4449b2834c60cd29586d771a893668fb7a",
+    "staged_mode": 384
+  },
+  {
+    "bytes": 32079,
+    "path": "app/Http/Controllers/CartController.php",
+    "sha256": "713ae74db4410bb4ca22e5f4f3c77ddef17403004796a9e4418fe14ea7d6696a",
+    "staged_mode": 384
+  },
+  {
+    "bytes": 655,
+    "path": "app/Models/ApiAssetRecord.php",
+    "sha256": "fad6d6d6d9d87d91ddb6c93b4d2b80e499fb4814ebf4b30d339c48fb3e75eb1e",
+    "staged_mode": 384
+  },
+  {
+    "bytes": 8990,
+    "path": "app/Models/DtfImage.php",
+    "sha256": "14d6245a1ac65babfa6d06152bd9fc6692c9d33c5fe3ba5e2b8efabce728d0c2",
+    "staged_mode": 384
+  },
+  {
+    "bytes": 1507,
+    "path": "app/Models/IncomingOrderJob.php",
+    "sha256": "221609214a49313a53095a3601b4ec13d0804451957bfabad023db4fbe10ba86",
+    "staged_mode": 384
+  },
+  {
+    "bytes": 18936,
+    "path": "app/Services/IncomingOrders/ApiProductionHandoffService.php",
+    "sha256": "a28c87876919340bd1a26bdf2aa5efb8efdd974f52c332f10eb5b7c32d76ebbe",
+    "staged_mode": 384
+  },
+  {
+    "bytes": 5128,
+    "path": "app/Services/IncomingOrders/ArtworkInspector.php",
+    "sha256": "e9e5455ece8f9163ad9462ee4e4d18801fb332bbc4c656c33bd55b5e2a63f865",
+    "staged_mode": 384
+  },
+  {
+    "bytes": 14800,
+    "path": "app/Services/IncomingOrders/BoundedArtworkFetcher.php",
+    "sha256": "310285540571b6e56b881216d842a97e62694de53ae1d965eb22cb355b28005f",
+    "staged_mode": 384
+  },
+  {
+    "bytes": 297,
+    "path": "app/Services/IncomingOrders/FetchedArtwork.php",
+    "sha256": "ba00c340cd18b3a9e2aa5d438d50e6500683af94a48cacfe10f1a8f06bce1e0b",
+    "staged_mode": 384
+  },
+  {
+    "bytes": 388,
+    "path": "app/Services/IncomingOrders/IdempotencyClaim.php",
+    "sha256": "505919e09a7501f94cde561e3226c0cd736801c34eec791f8eb3fc1259549786",
+    "staged_mode": 384
+  },
+  {
+    "bytes": 3365,
+    "path": "app/Services/IncomingOrders/IncomingOrderAssetStore.php",
+    "sha256": "09901654749c9858308b84410af590673faff2541f957c57af725cf30c64ae65",
+    "staged_mode": 384
+  },
+  {
+    "bytes": 8030,
+    "path": "app/Services/IncomingOrders/IncomingOrderIdempotency.php",
+    "sha256": "e4545cda61ce30cb9e4219f829838a42d7a6d89611304ac0c4e63caf7d16451f",
+    "staged_mode": 384
+  },
+  {
+    "bytes": 20707,
+    "path": "app/Services/IncomingOrders/IncomingOrderV1Receiver.php",
+    "sha256": "48342103a11c61460af1f1d709cc74c024c0fdf292ee2e0d7969ea4c82b3b13c",
+    "staged_mode": 384
+  },
+  {
+    "bytes": 15166,
+    "path": "app/Services/IncomingOrders/IncomingOrderV1Validator.php",
+    "sha256": "5ba3d9ae399a5947c0fa2874424ee4b54703789c237e0389877311a181b56637",
+    "staged_mode": 384
+  },
+  {
+    "bytes": 385,
+    "path": "app/Services/IncomingOrders/InspectedArtwork.php",
+    "sha256": "6374c5d0dfc041d1b31bc01d4a35a779d097d752980f1b87d8098026a79864fe",
+    "staged_mode": 384
+  },
+  {
+    "bytes": 14953,
+    "path": "app/Services/IncomingOrders/JobCardRenderer.php",
+    "sha256": "a847eb181234a9c7db6eee87130b22264373722841f0c6fe747e529e8265e7eb",
+    "staged_mode": 384
+  },
+  {
+    "bytes": 4182,
+    "path": "app/Support/JsonCanonicalizer.php",
+    "sha256": "59db04af07d50d896395843d6ae43ba27730f5b70bacac571ed34b52b50b2249",
+    "staged_mode": 384
+  },
+  {
+    "bytes": 6393,
+    "path": "app/Support/StrictJson.php",
+    "sha256": "3ae4fc356ea723fcf4137284cddf025be096e04b6abbfd3131aa0f0ae4dadec3",
+    "staged_mode": 384
+  },
+  {
+    "bytes": 2622,
+    "path": "config/incoming_order.php",
+    "sha256": "e5f3ace351d762da2feac4ec055e4e20166737db9fc6e950899e7c4b834a2ce7",
+    "staged_mode": 384
+  },
+  {
+    "bytes": 7487,
+    "path": "database/migrations/2026_09_27_120000_create_incoming_order_v1_tables.php",
+    "sha256": "79fa911b0b2ad9bb79c33080725446093dffd4df3e01c3cb3888d508087c9f9d",
+    "staged_mode": 384
+  },
+  {
+    "bytes": 759720,
+    "path": "resources/fonts/job-card-v2/DejaVuSans.ttf",
+    "sha256": "ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280",
+    "staged_mode": 384
+  },
+  {
+    "bytes": 2637,
+    "path": "resources/fonts/job-card-v2/LICENSE.txt",
+    "sha256": "bc88ec457a574842b8f28c20e97a1fe91ecca69db14840484a22c694f2ffb6da",
+    "staged_mode": 384
+  },
+  {
+    "bytes": 1667,
+    "path": "resources/views/admin/orders/_incoming_job_card.blade.php",
+    "sha256": "c40f3d71d83c12e9a2245f6a8dfcdb41515485e47634e42e5bf4d429bdcd5783",
+    "staged_mode": 384
+  },
+  {
+    "bytes": 26768,
+    "path": "resources/views/admin/orders/production_order.blade.php",
+    "sha256": "218ad8410768288cd1ab7362622f777ee1f50fe0786c0976b7db5464c7cd442f",
+    "staged_mode": 384
+  },
+  {
+    "bytes": 51610,
+    "path": "resources/views/admin/orders/show.blade.php",
+    "sha256": "63295c02a9d3d782dca67007bcae3b6c51536192cab9b2534ac320be656e4508",
+    "staged_mode": 384
+  },
+  {
+    "bytes": 401,
+    "path": "routes/api.php",
+    "sha256": "903dc3027777c4561c4de3cca387de4a74329c309803f10eefb62e25e4d7e41a",
+    "staged_mode": 384
+  },
+  {
+    "bytes": 9575,
+    "path": "routes/web.php",
+    "sha256": "84f7ae0e04381fb02276ac5f1b97f29a6a8d84277a71353d787445aa7923926f",
+    "staged_mode": 384
+  }
+]

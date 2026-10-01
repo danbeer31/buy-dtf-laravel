@@ -1,0 +1,10 @@
+{
+  "additions_absent": 26,
+  "filesystem_mutation": false,
+  "manifest_sha256": "b6efbd5463c82f895ca8d359b665a145d88c0d363ce7f97b247eae9080853bb6",
+  "paths": 37,
+  "replacements_exact": 11,
+  "scope": "read_only_production_source_cas",
+  "source_cas_sha256": "9c0b081853feed397cc61be4b7b6d7c302df2298a87cca30e69e80f067cda6db",
+  "status": "pass"
+}

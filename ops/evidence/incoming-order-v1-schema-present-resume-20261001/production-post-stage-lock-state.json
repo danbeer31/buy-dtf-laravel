@@ -1,0 +1,22 @@
+{
+  "filesystem_mutation": false,
+  "front_controller": {
+    "bytes": 543,
+    "gid": 1000,
+    "mode": 420,
+    "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
+    "uid": 1000
+  },
+  "locks_free": {
+    "dependency": true,
+    "receiver": true
+  },
+  "maintenance_active": false,
+  "rollback_directories": [
+    "0799440b-20260930T220235Z",
+    "0799440b-20261001T020405Z"
+  ],
+  "scope": "read_only_production_lock_and_gate_state",
+  "static_gate_active": false,
+  "status": "pass"
+}

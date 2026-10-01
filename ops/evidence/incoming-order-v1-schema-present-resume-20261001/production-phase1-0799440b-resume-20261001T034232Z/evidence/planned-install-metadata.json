@@ -1,0 +1,372 @@
+[
+  {
+    "action": "A",
+    "metadata": {
+      "gid": 1000,
+      "kind": "file",
+      "mode": 436,
+      "uid": 1000
+    },
+    "path": "app/Console/Commands/ReportIncomingOrderRetention.php"
+  },
+  {
+    "action": "A",
+    "metadata": {
+      "gid": 1000,
+      "kind": "file",
+      "mode": 436,
+      "uid": 1000
+    },
+    "path": "app/Exceptions/ArtworkFetchException.php"
+  },
+  {
+    "action": "A",
+    "metadata": {
+      "gid": 1000,
+      "kind": "file",
+      "mode": 436,
+      "uid": 1000
+    },
+    "path": "app/Exceptions/ArtworkValidationException.php"
+  },
+  {
+    "action": "A",
+    "metadata": {
+      "gid": 1000,
+      "kind": "file",
+      "mode": 436,
+      "uid": 1000
+    },
+    "path": "app/Exceptions/DuplicateJsonKeyException.php"
+  },
+  {
+    "action": "A",
+    "metadata": {
+      "gid": 1000,
+      "kind": "file",
+      "mode": 436,
+      "uid": 1000
+    },
+    "path": "app/Exceptions/IncomingOrderValidationException.php"
+  },
+  {
+    "action": "A",
+    "metadata": {
+      "gid": 1000,
+      "kind": "file",
+      "mode": 436,
+      "uid": 1000
+    },
+    "path": "app/Exceptions/JobLabelValidationException.php"
+  },
+  {
+    "action": "M",
+    "metadata": {
+      "gid": 1000,
+      "kind": "file",
+      "mode": 436,
+      "uid": 1000
+    },
+    "path": "app/Helpers/ImageHelper.php"
+  },
+  {
+    "action": "M",
+    "metadata": {
+      "gid": 1000,
+      "kind": "file",
+      "mode": 436,
+      "uid": 1000
+    },
+    "path": "app/Helpers/ProductionHelper.php"
+  },
+  {
+    "action": "M",
+    "metadata": {
+      "gid": 1000,
+      "kind": "file",
+      "mode": 436,
+      "uid": 1000
+    },
+    "path": "app/Http/Controllers/AccountController.php"
+  },
+  {
+    "action": "M",
+    "metadata": {
+      "gid": 1000,
+      "kind": "file",
+      "mode": 436,
+      "uid": 1000
+    },
+    "path": "app/Http/Controllers/Admin/OrderController.php"
+  },
+  {
+    "action": "M",
+    "metadata": {
+      "gid": 1000,
+      "kind": "file",
+      "mode": 436,
+      "uid": 1000
+    },
+    "path": "app/Http/Controllers/Api/IncomingOrderController.php"
+  },
+  {
+    "action": "M",
+    "metadata": {
+      "gid": 1000,
+      "kind": "file",
+      "mode": 436,
+      "uid": 1000
+    },
+    "path": "app/Http/Controllers/CartController.php"
+  },
+  {
+    "action": "A",
+    "metadata": {
+      "gid": 1000,
+      "kind": "file",
+      "mode": 436,
+      "uid": 1000
+    },
+    "path": "app/Models/ApiAssetRecord.php"
+  },
+  {
+    "action": "M",
+    "metadata": {
+      "gid": 1000,
+      "kind": "file",
+      "mode": 436,
+      "uid": 1000
+    },
+    "path": "app/Models/DtfImage.php"
+  },
+  {
+    "action": "A",
+    "metadata": {
+      "gid": 1000,
+      "kind": "file",
+      "mode": 436,
+      "uid": 1000
+    },
+    "path": "app/Models/IncomingOrderJob.php"
+  },
+  {
+    "action": "A",
+    "metadata": {
+      "gid": 1000,
+      "kind": "file",
+      "mode": 436,
+      "uid": 1000
+    },
+    "path": "app/Services/IncomingOrders/ApiProductionHandoffService.php"
+  },
+  {
+    "action": "A",
+    "metadata": {
+      "gid": 1000,
+      "kind": "file",
+      "mode": 436,
+      "uid": 1000
+    },
+    "path": "app/Services/IncomingOrders/ArtworkInspector.php"
+  },
+  {
+    "action": "A",
+    "metadata": {
+      "gid": 1000,
+      "kind": "file",
+      "mode": 436,
+      "uid": 1000
+    },
+    "path": "app/Services/IncomingOrders/BoundedArtworkFetcher.php"
+  },
+  {
+    "action": "A",
+    "metadata": {
+      "gid": 1000,
+      "kind": "file",
+      "mode": 436,
+      "uid": 1000
+    },
+    "path": "app/Services/IncomingOrders/FetchedArtwork.php"
+  },
+  {
+    "action": "A",
+    "metadata": {
+      "gid": 1000,
+      "kind": "file",
+      "mode": 436,
+      "uid": 1000
+    },
+    "path": "app/Services/IncomingOrders/IdempotencyClaim.php"
+  },
+  {
+    "action": "A",
+    "metadata": {
+      "gid": 1000,
+      "kind": "file",
+      "mode": 436,
+      "uid": 1000
+    },
+    "path": "app/Services/IncomingOrders/IncomingOrderAssetStore.php"
+  },
+  {
+    "action": "A",
+    "metadata": {
+      "gid": 1000,
+      "kind": "file",
+      "mode": 436,
+      "uid": 1000
+    },
+    "path": "app/Services/IncomingOrders/IncomingOrderIdempotency.php"
+  },
+  {
+    "action": "A",
+    "metadata": {
+      "gid": 1000,
+      "kind": "file",
+      "mode": 436,
+      "uid": 1000
+    },
+    "path": "app/Services/IncomingOrders/IncomingOrderV1Receiver.php"
+  },
+  {
+    "action": "A",
+    "metadata": {
+      "gid": 1000,
+      "kind": "file",
+      "mode": 436,
+      "uid": 1000
+    },
+    "path": "app/Services/IncomingOrders/IncomingOrderV1Validator.php"
+  },
+  {
+    "action": "A",
+    "metadata": {
+      "gid": 1000,
+      "kind": "file",
+      "mode": 436,
+      "uid": 1000
+    },
+    "path": "app/Services/IncomingOrders/InspectedArtwork.php"
+  },
+  {
+    "action": "A",
+    "metadata": {
+      "gid": 1000,
+      "kind": "file",
+      "mode": 436,
+      "uid": 1000
+    },
+    "path": "app/Services/IncomingOrders/JobCardRenderer.php"
+  },
+  {
+    "action": "A",
+    "metadata": {
+      "gid": 1000,
+      "kind": "file",
+      "mode": 436,
+      "uid": 1000
+    },
+    "path": "app/Support/JsonCanonicalizer.php"
+  },
+  {
+    "action": "A",
+    "metadata": {
+      "gid": 1000,
+      "kind": "file",
+      "mode": 436,
+      "uid": 1000
+    },
+    "path": "app/Support/StrictJson.php"
+  },
+  {
+    "action": "A",
+    "metadata": {
+      "gid": 1000,
+      "kind": "file",
+      "mode": 436,
+      "uid": 1000
+    },
+    "path": "config/incoming_order.php"
+  },
+  {
+    "action": "A",
+    "metadata": {
+      "gid": 1000,
+      "kind": "file",
+      "mode": 436,
+      "uid": 1000
+    },
+    "path": "database/migrations/2026_09_27_120000_create_incoming_order_v1_tables.php"
+  },
+  {
+    "action": "A",
+    "metadata": {
+      "gid": 1000,
+      "kind": "file",
+      "mode": 436,
+      "uid": 1000
+    },
+    "path": "resources/fonts/job-card-v2/DejaVuSans.ttf"
+  },
+  {
+    "action": "A",
+    "metadata": {
+      "gid": 1000,
+      "kind": "file",
+      "mode": 436,
+      "uid": 1000
+    },
+    "path": "resources/fonts/job-card-v2/LICENSE.txt"
+  },
+  {
+    "action": "A",
+    "metadata": {
+      "gid": 1000,
+      "kind": "file",
+      "mode": 436,
+      "uid": 1000
+    },
+    "path": "resources/views/admin/orders/_incoming_job_card.blade.php"
+  },
+  {
+    "action": "M",
+    "metadata": {
+      "gid": 1000,
+      "kind": "file",
+      "mode": 436,
+      "uid": 1000
+    },
+    "path": "resources/views/admin/orders/production_order.blade.php"
+  },
+  {
+    "action": "M",
+    "metadata": {
+      "gid": 1000,
+      "kind": "file",
+      "mode": 436,
+      "uid": 1000
+    },
+    "path": "resources/views/admin/orders/show.blade.php"
+  },
+  {
+    "action": "M",
+    "metadata": {
+      "gid": 1000,
+      "kind": "file",
+      "mode": 436,
+      "uid": 1000
+    },
+    "path": "routes/api.php"
+  },
+  {
+    "action": "M",
+    "metadata": {
+      "gid": 1000,
+      "kind": "file",
+      "mode": 436,
+      "uid": 1000
+    },
+    "path": "routes/web.php"
+  }
+]

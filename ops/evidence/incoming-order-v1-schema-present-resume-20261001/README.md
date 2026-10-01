@@ -2,8 +2,11 @@
 
 Date: 2026-09-30 America/Chicago (2026-10-01 UTC)
 
-Status: local correction and rehearsal passed. Production had not been
-accessed or changed when this local bundle was frozen.
+Status: local correction and rehearsal passed. The subsequently authorized
+Phase 0 read-only production preflight and Phase 1 restricted private sibling
+staging also passed. Live source, schema, dependencies, configuration, caches,
+front controller, services, queues, capabilities, and public health remained
+unchanged.
 
 The new runner treats the additive incoming-order schema left by the failed
 cutover as immutable production baseline. It requires schema
@@ -50,8 +53,19 @@ source backup/install/rollback receipt, installed-schema verification, and
 event log. `resume-rehearsal-receipt.json` provides their complete hash
 inventory. Empty stderr files are retained as successful no-error evidence.
 
-This bundle authorizes no Phase 2 backup, gate installation, maintenance,
-migration command, live-source change, service restart, capability enablement,
-ShopNLTees change, retention action, or customer deletion. Restricted private
-sibling staging still requires the fresh production read-only preflight and
-must stop for independent review.
+The new private sibling release is
+`0799440b-resume-20261001T034232Z`. Its release receipt SHA-256 is
+`446d077ad837d3552e37deda28ccb84f5f06fa311a9a645e643fb151392215b9`;
+its 54-entry evidence-manifest SHA-256 is
+`197000b5c0de233c42c991cfc232ca7474fe346ecb17070da447fb1dfa175ba0`;
+and its Phase 1 completion receipt SHA-256 is
+`64002162a93916b37cd10b03b3c86adfc121073ea800dd70b5e1110744d5a7e6`.
+The complete downloaded release copy and production pre/post probes are
+retained beside this README for independent review. The SHA-256 manifest for
+the 20 production preflight/staging envelope files is
+`43bad59fc1a434a35ad81a9953d222f4279954c4b3425e877d4af3e9433ba36a`.
+
+No Phase 2 backup, gate installation, maintenance, migration command or
+pretend, live-source change, service restart, capability enablement,
+ShopNLTees change, retention action, or customer deletion occurred. Work is
+stopped after Phase 1 for independent review.

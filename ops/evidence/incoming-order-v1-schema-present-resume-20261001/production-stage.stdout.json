@@ -1,0 +1,5 @@
+{
+  "release_receipt": "/var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-resume-20261001T034232Z/release-receipt.json",
+  "release_receipt_sha256": "446d077ad837d3552e37deda28ccb84f5f06fa311a9a645e643fb151392215b9",
+  "status": "phase1_complete"
+}
