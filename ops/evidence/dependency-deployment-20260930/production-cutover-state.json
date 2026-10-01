@@ -1,0 +1,3986 @@
+{
+  "artifact": "buy-dtf-atomic-dependency-cutover-v2",
+  "cache_backup": "/var/www/buy-dtf/storage/app/private/operations/dependency-rollbacks/22af12c7e58f-20261001T001617Z/bootstrap-cache-before",
+  "cache_backup_evidence": {
+    "copy_identity": {
+      "entries": {
+        "packages.php": {
+          "bytes": 415,
+          "gid": 1000,
+          "kind": "file",
+          "mode": 436,
+          "sha256": "21da8f9ed19687e708cc7bc5cc59394c6fcdf9b9deadf617ae70526f815a1db0",
+          "uid": 1000
+        },
+        "services.php": {
+          "bytes": 21353,
+          "gid": 1000,
+          "kind": "file",
+          "mode": 436,
+          "sha256": "1f7623b2b4ffd2c4099fb34ad86fc96c1479e27bf81b1b0ba328c988cc4ffcb5",
+          "uid": 1000
+        }
+      },
+      "manifest": {
+        "bytes": 21768,
+        "directories": 0,
+        "files": 2,
+        "sha256": "468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9"
+      },
+      "root_metadata": {
+        "gid": 1000,
+        "kind": "directory",
+        "mode": 448,
+        "uid": 1000
+      }
+    },
+    "source_identity": {
+      "entries": {
+        "packages.php": {
+          "bytes": 415,
+          "gid": 33,
+          "kind": "file",
+          "mode": 436,
+          "sha256": "21da8f9ed19687e708cc7bc5cc59394c6fcdf9b9deadf617ae70526f815a1db0",
+          "uid": 1000
+        },
+        "services.php": {
+          "bytes": 21353,
+          "gid": 33,
+          "kind": "file",
+          "mode": 436,
+          "sha256": "1f7623b2b4ffd2c4099fb34ad86fc96c1479e27bf81b1b0ba328c988cc4ffcb5",
+          "uid": 1000
+        }
+      },
+      "manifest": {
+        "bytes": 21768,
+        "directories": 0,
+        "files": 2,
+        "sha256": "468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9"
+      },
+      "root_metadata": {
+        "gid": 33,
+        "kind": "directory",
+        "mode": 1533,
+        "uid": 1000
+      }
+    }
+  },
+  "cache_exchange_complete": true,
+  "cache_exchange_intent": true,
+  "candidate_cache_identity": {
+    "entries": {
+      "packages.php": {
+        "bytes": 415,
+        "gid": 33,
+        "kind": "file",
+        "mode": 436,
+        "sha256": "21da8f9ed19687e708cc7bc5cc59394c6fcdf9b9deadf617ae70526f815a1db0",
+        "uid": 1000
+      },
+      "services.php": {
+        "bytes": 21353,
+        "gid": 33,
+        "kind": "file",
+        "mode": 436,
+        "sha256": "1f7623b2b4ffd2c4099fb34ad86fc96c1479e27bf81b1b0ba328c988cc4ffcb5",
+        "uid": 1000
+      }
+    },
+    "manifest": {
+      "bytes": 21768,
+      "directories": 0,
+      "files": 2,
+      "sha256": "468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9"
+    },
+    "root_metadata": {
+      "gid": 33,
+      "kind": "directory",
+      "mode": 1533,
+      "uid": 1000
+    }
+  },
+  "candidate_fpm_probes": [
+    {
+      "guzzle_path": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle/src/Client.php",
+      "guzzle_version": "7.15.2",
+      "laravel_path": "/var/www/buy-dtf/vendor/laravel/framework/src/Illuminate/Foundation/Application.php",
+      "laravel_version": "12.69.0",
+      "package_install_paths": {
+        "guzzlehttp/guzzle": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle",
+        "laravel/framework": "/var/www/buy-dtf/vendor/laravel/framework",
+        "league/commonmark": "/var/www/buy-dtf/vendor/league/commonmark",
+        "league/flysystem": "/var/www/buy-dtf/vendor/league/flysystem",
+        "league/flysystem-local": "/var/www/buy-dtf/vendor/league/flysystem-local"
+      },
+      "package_versions": {
+        "guzzlehttp/guzzle": "7.15.2",
+        "laravel/framework": "12.69.0",
+        "league/commonmark": "2.10.2",
+        "league/flysystem": "3.35.3",
+        "league/flysystem-local": "3.35.3"
+      },
+      "php_extensions": [
+        "Core",
+        "FFI",
+        "PDO",
+        "Phar",
+        "Reflection",
+        "SPL",
+        "SimpleXML",
+        "Zend OPcache",
+        "bcmath",
+        "calendar",
+        "cgi-fcgi",
+        "ctype",
+        "curl",
+        "date",
+        "dom",
+        "exif",
+        "fileinfo",
+        "filter",
+        "ftp",
+        "gd",
+        "gettext",
+        "hash",
+        "iconv",
+        "imagick",
+        "intl",
+        "json",
+        "libxml",
+        "mbstring",
+        "mysqli",
+        "mysqlnd",
+        "openssl",
+        "pcre",
+        "pdo_mysql",
+        "posix",
+        "random",
+        "readline",
+        "session",
+        "shmop",
+        "sockets",
+        "sodium",
+        "standard",
+        "sysvmsg",
+        "sysvsem",
+        "sysvshm",
+        "tokenizer",
+        "xml",
+        "xmlreader",
+        "xmlwriter",
+        "xsl",
+        "zip",
+        "zlib"
+      ],
+      "php_version": "8.2.30"
+    },
+    {
+      "guzzle_path": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle/src/Client.php",
+      "guzzle_version": "7.15.2",
+      "laravel_path": "/var/www/buy-dtf/vendor/laravel/framework/src/Illuminate/Foundation/Application.php",
+      "laravel_version": "12.69.0",
+      "package_install_paths": {
+        "guzzlehttp/guzzle": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle",
+        "laravel/framework": "/var/www/buy-dtf/vendor/laravel/framework",
+        "league/commonmark": "/var/www/buy-dtf/vendor/league/commonmark",
+        "league/flysystem": "/var/www/buy-dtf/vendor/league/flysystem",
+        "league/flysystem-local": "/var/www/buy-dtf/vendor/league/flysystem-local"
+      },
+      "package_versions": {
+        "guzzlehttp/guzzle": "7.15.2",
+        "laravel/framework": "12.69.0",
+        "league/commonmark": "2.10.2",
+        "league/flysystem": "3.35.3",
+        "league/flysystem-local": "3.35.3"
+      },
+      "php_extensions": [
+        "Core",
+        "FFI",
+        "PDO",
+        "Phar",
+        "Reflection",
+        "SPL",
+        "SimpleXML",
+        "Zend OPcache",
+        "bcmath",
+        "calendar",
+        "cgi-fcgi",
+        "ctype",
+        "curl",
+        "date",
+        "dom",
+        "exif",
+        "fileinfo",
+        "filter",
+        "ftp",
+        "gd",
+        "gettext",
+        "hash",
+        "iconv",
+        "imagick",
+        "intl",
+        "json",
+        "libxml",
+        "mbstring",
+        "mysqli",
+        "mysqlnd",
+        "openssl",
+        "pcre",
+        "pdo_mysql",
+        "posix",
+        "random",
+        "readline",
+        "session",
+        "shmop",
+        "sockets",
+        "sodium",
+        "standard",
+        "sysvmsg",
+        "sysvsem",
+        "sysvshm",
+        "tokenizer",
+        "xml",
+        "xmlreader",
+        "xmlwriter",
+        "xsl",
+        "zip",
+        "zlib"
+      ],
+      "php_version": "8.2.30"
+    }
+  ],
+  "candidate_runtime": {
+    "app_debug": false,
+    "app_environment": "local",
+    "business_activity": {
+      "dtfimages": {
+        "count": 19396,
+        "latest_sha256": "ae2213e6e6d9ff6b0d028da2fea87f1d171c634d43a80aedd8fc87ce43334478"
+      },
+      "dtforders": {
+        "count": 1580,
+        "latest_sha256": "2284e0fde5efa2000d7271cc973648afc291041dd900052142a9f8f127a4f111"
+      },
+      "paymentinfos": {
+        "count": 1709,
+        "latest_sha256": "0fb5fd75d006763d2a3ff733e2b7acd8b9f4a9a6634f1cd7ec29fb8cb2666567"
+      },
+      "stripe_sync_logs": {
+        "count": 4894,
+        "latest_sha256": "bb45dc167851291f9b6d6e668b21b9b9568fcf8c714caac6a1daa3977cdfec2c"
+      }
+    },
+    "config_cached": false,
+    "default_database_connection": "mysql",
+    "fuel_database_connection": "fuelmysql",
+    "guzzle_class_path": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle/src/Client.php",
+    "guzzle_version": "7.15.2",
+    "laravel_class_path": "/var/www/buy-dtf/vendor/laravel/framework/src/Illuminate/Foundation/Application.php",
+    "laravel_version": "12.69.0",
+    "package_install_paths": {
+      "guzzlehttp/guzzle": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle",
+      "laravel/framework": "/var/www/buy-dtf/vendor/laravel/framework",
+      "league/commonmark": "/var/www/buy-dtf/vendor/league/commonmark",
+      "league/flysystem": "/var/www/buy-dtf/vendor/league/flysystem",
+      "league/flysystem-local": "/var/www/buy-dtf/vendor/league/flysystem-local"
+    },
+    "package_versions": {
+      "guzzlehttp/guzzle": "7.15.2",
+      "laravel/framework": "12.69.0",
+      "league/commonmark": "2.10.2",
+      "league/flysystem": "3.35.3",
+      "league/flysystem-local": "3.35.3"
+    },
+    "php_extensions": [
+      "Core",
+      "FFI",
+      "PDO",
+      "Phar",
+      "Reflection",
+      "SPL",
+      "SimpleXML",
+      "Zend OPcache",
+      "bcmath",
+      "calendar",
+      "ctype",
+      "curl",
+      "date",
+      "dom",
+      "exif",
+      "fileinfo",
+      "filter",
+      "ftp",
+      "gd",
+      "gettext",
+      "hash",
+      "iconv",
+      "imagick",
+      "intl",
+      "json",
+      "libxml",
+      "mbstring",
+      "mysqli",
+      "mysqlnd",
+      "openssl",
+      "pcntl",
+      "pcre",
+      "pdo_mysql",
+      "posix",
+      "random",
+      "readline",
+      "session",
+      "shmop",
+      "sockets",
+      "sodium",
+      "standard",
+      "sysvmsg",
+      "sysvsem",
+      "sysvshm",
+      "tokenizer",
+      "xml",
+      "xmlreader",
+      "xmlwriter",
+      "xsl",
+      "zip",
+      "zlib"
+    ],
+    "php_version": "8.2.30",
+    "queue_connection": "sync",
+    "queue_tables": {
+      "failed_jobs": 0,
+      "jobs": 0
+    }
+  },
+  "candidate_vendor_sha256": "7399949f857da190c5ff07b89c85e8fba8a6f681695e20a462862be591b698ed",
+  "completed_at_utc": "2026-10-01T00:47:44Z",
+  "front_controller_backup": "/var/www/buy-dtf/storage/app/private/operations/dependency-rollbacks/22af12c7e58f-20261001T001617Z/public-index.before.php",
+  "front_controller_backup_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
+  "front_controller_metadata": {
+    "gid": 1000,
+    "kind": "file",
+    "mode": 420,
+    "uid": 1000
+  },
+  "front_controller_restored": {
+    "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
+    "restored_at_utc": "2026-10-01T00:17:44Z"
+  },
+  "gate_active": false,
+  "gate_reassertions": [
+    {
+      "gate_sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03",
+      "method": "atomic_static_front_controller",
+      "public_statuses": {
+        "https://buy-dtf.com/": 503,
+        "https://buy-dtf.com/__dependency_gate_5729e6b60cec0b8f6b6bd67f": 503
+      },
+      "reason": "initial_cutover",
+      "verified_at_utc": "2026-10-01T00:16:22Z"
+    }
+  ],
+  "gate_verified": false,
+  "health_after": {
+    "https://buy-dtf.com/": 200,
+    "https://buy-dtf.com/admin": 302,
+    "https://buy-dtf.com/checkout": 302,
+    "https://buy-dtf.com/login": 200,
+    "https://buy-dtf.com/up": 200
+  },
+  "health_before": {
+    "https://buy-dtf.com/": 200,
+    "https://buy-dtf.com/admin": 302,
+    "https://buy-dtf.com/checkout": 302,
+    "https://buy-dtf.com/login": 200,
+    "https://buy-dtf.com/up": 200
+  },
+  "lock_replaced": true,
+  "maintenance_gate_sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03",
+  "monitor_samples": [
+    {
+      "at_utc": "2026-10-01T00:17:44Z",
+      "health": {
+        "https://buy-dtf.com/": 200,
+        "https://buy-dtf.com/admin": 302,
+        "https://buy-dtf.com/checkout": 302,
+        "https://buy-dtf.com/login": 200,
+        "https://buy-dtf.com/up": 200
+      },
+      "runtime": {
+        "app_debug": false,
+        "app_environment": "local",
+        "business_activity": {
+          "dtfimages": {
+            "count": 19396,
+            "latest_sha256": "ae2213e6e6d9ff6b0d028da2fea87f1d171c634d43a80aedd8fc87ce43334478"
+          },
+          "dtforders": {
+            "count": 1580,
+            "latest_sha256": "2284e0fde5efa2000d7271cc973648afc291041dd900052142a9f8f127a4f111"
+          },
+          "paymentinfos": {
+            "count": 1709,
+            "latest_sha256": "0fb5fd75d006763d2a3ff733e2b7acd8b9f4a9a6634f1cd7ec29fb8cb2666567"
+          },
+          "stripe_sync_logs": {
+            "count": 4894,
+            "latest_sha256": "bb45dc167851291f9b6d6e668b21b9b9568fcf8c714caac6a1daa3977cdfec2c"
+          }
+        },
+        "config_cached": false,
+        "default_database_connection": "mysql",
+        "fuel_database_connection": "fuelmysql",
+        "guzzle_class_path": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle/src/Client.php",
+        "guzzle_version": "7.15.2",
+        "laravel_class_path": "/var/www/buy-dtf/vendor/laravel/framework/src/Illuminate/Foundation/Application.php",
+        "laravel_version": "12.69.0",
+        "package_install_paths": {
+          "guzzlehttp/guzzle": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle",
+          "laravel/framework": "/var/www/buy-dtf/vendor/laravel/framework",
+          "league/commonmark": "/var/www/buy-dtf/vendor/league/commonmark",
+          "league/flysystem": "/var/www/buy-dtf/vendor/league/flysystem",
+          "league/flysystem-local": "/var/www/buy-dtf/vendor/league/flysystem-local"
+        },
+        "package_versions": {
+          "guzzlehttp/guzzle": "7.15.2",
+          "laravel/framework": "12.69.0",
+          "league/commonmark": "2.10.2",
+          "league/flysystem": "3.35.3",
+          "league/flysystem-local": "3.35.3"
+        },
+        "php_extensions": [
+          "Core",
+          "FFI",
+          "PDO",
+          "Phar",
+          "Reflection",
+          "SPL",
+          "SimpleXML",
+          "Zend OPcache",
+          "bcmath",
+          "calendar",
+          "ctype",
+          "curl",
+          "date",
+          "dom",
+          "exif",
+          "fileinfo",
+          "filter",
+          "ftp",
+          "gd",
+          "gettext",
+          "hash",
+          "iconv",
+          "imagick",
+          "intl",
+          "json",
+          "libxml",
+          "mbstring",
+          "mysqli",
+          "mysqlnd",
+          "openssl",
+          "pcntl",
+          "pcre",
+          "pdo_mysql",
+          "posix",
+          "random",
+          "readline",
+          "session",
+          "shmop",
+          "sockets",
+          "sodium",
+          "standard",
+          "sysvmsg",
+          "sysvsem",
+          "sysvshm",
+          "tokenizer",
+          "xml",
+          "xmlreader",
+          "xmlwriter",
+          "xsl",
+          "zip",
+          "zlib"
+        ],
+        "php_version": "8.2.30",
+        "queue_connection": "sync",
+        "queue_tables": {
+          "failed_jobs": 0,
+          "jobs": 0
+        }
+      }
+    },
+    {
+      "at_utc": "2026-10-01T00:18:46Z",
+      "health": {
+        "https://buy-dtf.com/": 200,
+        "https://buy-dtf.com/admin": 302,
+        "https://buy-dtf.com/checkout": 302,
+        "https://buy-dtf.com/login": 200,
+        "https://buy-dtf.com/up": 200
+      },
+      "runtime": {
+        "app_debug": false,
+        "app_environment": "local",
+        "business_activity": {
+          "dtfimages": {
+            "count": 19396,
+            "latest_sha256": "ae2213e6e6d9ff6b0d028da2fea87f1d171c634d43a80aedd8fc87ce43334478"
+          },
+          "dtforders": {
+            "count": 1580,
+            "latest_sha256": "2284e0fde5efa2000d7271cc973648afc291041dd900052142a9f8f127a4f111"
+          },
+          "paymentinfos": {
+            "count": 1709,
+            "latest_sha256": "0fb5fd75d006763d2a3ff733e2b7acd8b9f4a9a6634f1cd7ec29fb8cb2666567"
+          },
+          "stripe_sync_logs": {
+            "count": 4894,
+            "latest_sha256": "bb45dc167851291f9b6d6e668b21b9b9568fcf8c714caac6a1daa3977cdfec2c"
+          }
+        },
+        "config_cached": false,
+        "default_database_connection": "mysql",
+        "fuel_database_connection": "fuelmysql",
+        "guzzle_class_path": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle/src/Client.php",
+        "guzzle_version": "7.15.2",
+        "laravel_class_path": "/var/www/buy-dtf/vendor/laravel/framework/src/Illuminate/Foundation/Application.php",
+        "laravel_version": "12.69.0",
+        "package_install_paths": {
+          "guzzlehttp/guzzle": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle",
+          "laravel/framework": "/var/www/buy-dtf/vendor/laravel/framework",
+          "league/commonmark": "/var/www/buy-dtf/vendor/league/commonmark",
+          "league/flysystem": "/var/www/buy-dtf/vendor/league/flysystem",
+          "league/flysystem-local": "/var/www/buy-dtf/vendor/league/flysystem-local"
+        },
+        "package_versions": {
+          "guzzlehttp/guzzle": "7.15.2",
+          "laravel/framework": "12.69.0",
+          "league/commonmark": "2.10.2",
+          "league/flysystem": "3.35.3",
+          "league/flysystem-local": "3.35.3"
+        },
+        "php_extensions": [
+          "Core",
+          "FFI",
+          "PDO",
+          "Phar",
+          "Reflection",
+          "SPL",
+          "SimpleXML",
+          "Zend OPcache",
+          "bcmath",
+          "calendar",
+          "ctype",
+          "curl",
+          "date",
+          "dom",
+          "exif",
+          "fileinfo",
+          "filter",
+          "ftp",
+          "gd",
+          "gettext",
+          "hash",
+          "iconv",
+          "imagick",
+          "intl",
+          "json",
+          "libxml",
+          "mbstring",
+          "mysqli",
+          "mysqlnd",
+          "openssl",
+          "pcntl",
+          "pcre",
+          "pdo_mysql",
+          "posix",
+          "random",
+          "readline",
+          "session",
+          "shmop",
+          "sockets",
+          "sodium",
+          "standard",
+          "sysvmsg",
+          "sysvsem",
+          "sysvshm",
+          "tokenizer",
+          "xml",
+          "xmlreader",
+          "xmlwriter",
+          "xsl",
+          "zip",
+          "zlib"
+        ],
+        "php_version": "8.2.30",
+        "queue_connection": "sync",
+        "queue_tables": {
+          "failed_jobs": 0,
+          "jobs": 0
+        }
+      }
+    },
+    {
+      "at_utc": "2026-10-01T00:19:47Z",
+      "health": {
+        "https://buy-dtf.com/": 200,
+        "https://buy-dtf.com/admin": 302,
+        "https://buy-dtf.com/checkout": 302,
+        "https://buy-dtf.com/login": 200,
+        "https://buy-dtf.com/up": 200
+      },
+      "runtime": {
+        "app_debug": false,
+        "app_environment": "local",
+        "business_activity": {
+          "dtfimages": {
+            "count": 19396,
+            "latest_sha256": "ae2213e6e6d9ff6b0d028da2fea87f1d171c634d43a80aedd8fc87ce43334478"
+          },
+          "dtforders": {
+            "count": 1580,
+            "latest_sha256": "2284e0fde5efa2000d7271cc973648afc291041dd900052142a9f8f127a4f111"
+          },
+          "paymentinfos": {
+            "count": 1709,
+            "latest_sha256": "0fb5fd75d006763d2a3ff733e2b7acd8b9f4a9a6634f1cd7ec29fb8cb2666567"
+          },
+          "stripe_sync_logs": {
+            "count": 4894,
+            "latest_sha256": "bb45dc167851291f9b6d6e668b21b9b9568fcf8c714caac6a1daa3977cdfec2c"
+          }
+        },
+        "config_cached": false,
+        "default_database_connection": "mysql",
+        "fuel_database_connection": "fuelmysql",
+        "guzzle_class_path": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle/src/Client.php",
+        "guzzle_version": "7.15.2",
+        "laravel_class_path": "/var/www/buy-dtf/vendor/laravel/framework/src/Illuminate/Foundation/Application.php",
+        "laravel_version": "12.69.0",
+        "package_install_paths": {
+          "guzzlehttp/guzzle": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle",
+          "laravel/framework": "/var/www/buy-dtf/vendor/laravel/framework",
+          "league/commonmark": "/var/www/buy-dtf/vendor/league/commonmark",
+          "league/flysystem": "/var/www/buy-dtf/vendor/league/flysystem",
+          "league/flysystem-local": "/var/www/buy-dtf/vendor/league/flysystem-local"
+        },
+        "package_versions": {
+          "guzzlehttp/guzzle": "7.15.2",
+          "laravel/framework": "12.69.0",
+          "league/commonmark": "2.10.2",
+          "league/flysystem": "3.35.3",
+          "league/flysystem-local": "3.35.3"
+        },
+        "php_extensions": [
+          "Core",
+          "FFI",
+          "PDO",
+          "Phar",
+          "Reflection",
+          "SPL",
+          "SimpleXML",
+          "Zend OPcache",
+          "bcmath",
+          "calendar",
+          "ctype",
+          "curl",
+          "date",
+          "dom",
+          "exif",
+          "fileinfo",
+          "filter",
+          "ftp",
+          "gd",
+          "gettext",
+          "hash",
+          "iconv",
+          "imagick",
+          "intl",
+          "json",
+          "libxml",
+          "mbstring",
+          "mysqli",
+          "mysqlnd",
+          "openssl",
+          "pcntl",
+          "pcre",
+          "pdo_mysql",
+          "posix",
+          "random",
+          "readline",
+          "session",
+          "shmop",
+          "sockets",
+          "sodium",
+          "standard",
+          "sysvmsg",
+          "sysvsem",
+          "sysvshm",
+          "tokenizer",
+          "xml",
+          "xmlreader",
+          "xmlwriter",
+          "xsl",
+          "zip",
+          "zlib"
+        ],
+        "php_version": "8.2.30",
+        "queue_connection": "sync",
+        "queue_tables": {
+          "failed_jobs": 0,
+          "jobs": 0
+        }
+      }
+    },
+    {
+      "at_utc": "2026-10-01T00:20:47Z",
+      "health": {
+        "https://buy-dtf.com/": 200,
+        "https://buy-dtf.com/admin": 302,
+        "https://buy-dtf.com/checkout": 302,
+        "https://buy-dtf.com/login": 200,
+        "https://buy-dtf.com/up": 200
+      },
+      "runtime": {
+        "app_debug": false,
+        "app_environment": "local",
+        "business_activity": {
+          "dtfimages": {
+            "count": 19396,
+            "latest_sha256": "ae2213e6e6d9ff6b0d028da2fea87f1d171c634d43a80aedd8fc87ce43334478"
+          },
+          "dtforders": {
+            "count": 1580,
+            "latest_sha256": "2284e0fde5efa2000d7271cc973648afc291041dd900052142a9f8f127a4f111"
+          },
+          "paymentinfos": {
+            "count": 1709,
+            "latest_sha256": "0fb5fd75d006763d2a3ff733e2b7acd8b9f4a9a6634f1cd7ec29fb8cb2666567"
+          },
+          "stripe_sync_logs": {
+            "count": 4894,
+            "latest_sha256": "bb45dc167851291f9b6d6e668b21b9b9568fcf8c714caac6a1daa3977cdfec2c"
+          }
+        },
+        "config_cached": false,
+        "default_database_connection": "mysql",
+        "fuel_database_connection": "fuelmysql",
+        "guzzle_class_path": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle/src/Client.php",
+        "guzzle_version": "7.15.2",
+        "laravel_class_path": "/var/www/buy-dtf/vendor/laravel/framework/src/Illuminate/Foundation/Application.php",
+        "laravel_version": "12.69.0",
+        "package_install_paths": {
+          "guzzlehttp/guzzle": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle",
+          "laravel/framework": "/var/www/buy-dtf/vendor/laravel/framework",
+          "league/commonmark": "/var/www/buy-dtf/vendor/league/commonmark",
+          "league/flysystem": "/var/www/buy-dtf/vendor/league/flysystem",
+          "league/flysystem-local": "/var/www/buy-dtf/vendor/league/flysystem-local"
+        },
+        "package_versions": {
+          "guzzlehttp/guzzle": "7.15.2",
+          "laravel/framework": "12.69.0",
+          "league/commonmark": "2.10.2",
+          "league/flysystem": "3.35.3",
+          "league/flysystem-local": "3.35.3"
+        },
+        "php_extensions": [
+          "Core",
+          "FFI",
+          "PDO",
+          "Phar",
+          "Reflection",
+          "SPL",
+          "SimpleXML",
+          "Zend OPcache",
+          "bcmath",
+          "calendar",
+          "ctype",
+          "curl",
+          "date",
+          "dom",
+          "exif",
+          "fileinfo",
+          "filter",
+          "ftp",
+          "gd",
+          "gettext",
+          "hash",
+          "iconv",
+          "imagick",
+          "intl",
+          "json",
+          "libxml",
+          "mbstring",
+          "mysqli",
+          "mysqlnd",
+          "openssl",
+          "pcntl",
+          "pcre",
+          "pdo_mysql",
+          "posix",
+          "random",
+          "readline",
+          "session",
+          "shmop",
+          "sockets",
+          "sodium",
+          "standard",
+          "sysvmsg",
+          "sysvsem",
+          "sysvshm",
+          "tokenizer",
+          "xml",
+          "xmlreader",
+          "xmlwriter",
+          "xsl",
+          "zip",
+          "zlib"
+        ],
+        "php_version": "8.2.30",
+        "queue_connection": "sync",
+        "queue_tables": {
+          "failed_jobs": 0,
+          "jobs": 0
+        }
+      }
+    },
+    {
+      "at_utc": "2026-10-01T00:21:48Z",
+      "health": {
+        "https://buy-dtf.com/": 200,
+        "https://buy-dtf.com/admin": 302,
+        "https://buy-dtf.com/checkout": 302,
+        "https://buy-dtf.com/login": 200,
+        "https://buy-dtf.com/up": 200
+      },
+      "runtime": {
+        "app_debug": false,
+        "app_environment": "local",
+        "business_activity": {
+          "dtfimages": {
+            "count": 19396,
+            "latest_sha256": "0a8a8a20cc5415f871ccb618833697f6d2fc9a2a971ad879f17406a3c17f57f2"
+          },
+          "dtforders": {
+            "count": 1580,
+            "latest_sha256": "0a8a8a20cc5415f871ccb618833697f6d2fc9a2a971ad879f17406a3c17f57f2"
+          },
+          "paymentinfos": {
+            "count": 1709,
+            "latest_sha256": "0fb5fd75d006763d2a3ff733e2b7acd8b9f4a9a6634f1cd7ec29fb8cb2666567"
+          },
+          "stripe_sync_logs": {
+            "count": 4894,
+            "latest_sha256": "bb45dc167851291f9b6d6e668b21b9b9568fcf8c714caac6a1daa3977cdfec2c"
+          }
+        },
+        "config_cached": false,
+        "default_database_connection": "mysql",
+        "fuel_database_connection": "fuelmysql",
+        "guzzle_class_path": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle/src/Client.php",
+        "guzzle_version": "7.15.2",
+        "laravel_class_path": "/var/www/buy-dtf/vendor/laravel/framework/src/Illuminate/Foundation/Application.php",
+        "laravel_version": "12.69.0",
+        "package_install_paths": {
+          "guzzlehttp/guzzle": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle",
+          "laravel/framework": "/var/www/buy-dtf/vendor/laravel/framework",
+          "league/commonmark": "/var/www/buy-dtf/vendor/league/commonmark",
+          "league/flysystem": "/var/www/buy-dtf/vendor/league/flysystem",
+          "league/flysystem-local": "/var/www/buy-dtf/vendor/league/flysystem-local"
+        },
+        "package_versions": {
+          "guzzlehttp/guzzle": "7.15.2",
+          "laravel/framework": "12.69.0",
+          "league/commonmark": "2.10.2",
+          "league/flysystem": "3.35.3",
+          "league/flysystem-local": "3.35.3"
+        },
+        "php_extensions": [
+          "Core",
+          "FFI",
+          "PDO",
+          "Phar",
+          "Reflection",
+          "SPL",
+          "SimpleXML",
+          "Zend OPcache",
+          "bcmath",
+          "calendar",
+          "ctype",
+          "curl",
+          "date",
+          "dom",
+          "exif",
+          "fileinfo",
+          "filter",
+          "ftp",
+          "gd",
+          "gettext",
+          "hash",
+          "iconv",
+          "imagick",
+          "intl",
+          "json",
+          "libxml",
+          "mbstring",
+          "mysqli",
+          "mysqlnd",
+          "openssl",
+          "pcntl",
+          "pcre",
+          "pdo_mysql",
+          "posix",
+          "random",
+          "readline",
+          "session",
+          "shmop",
+          "sockets",
+          "sodium",
+          "standard",
+          "sysvmsg",
+          "sysvsem",
+          "sysvshm",
+          "tokenizer",
+          "xml",
+          "xmlreader",
+          "xmlwriter",
+          "xsl",
+          "zip",
+          "zlib"
+        ],
+        "php_version": "8.2.30",
+        "queue_connection": "sync",
+        "queue_tables": {
+          "failed_jobs": 0,
+          "jobs": 0
+        }
+      }
+    },
+    {
+      "at_utc": "2026-10-01T00:22:49Z",
+      "health": {
+        "https://buy-dtf.com/": 200,
+        "https://buy-dtf.com/admin": 302,
+        "https://buy-dtf.com/checkout": 302,
+        "https://buy-dtf.com/login": 200,
+        "https://buy-dtf.com/up": 200
+      },
+      "runtime": {
+        "app_debug": false,
+        "app_environment": "local",
+        "business_activity": {
+          "dtfimages": {
+            "count": 19396,
+            "latest_sha256": "0a8a8a20cc5415f871ccb618833697f6d2fc9a2a971ad879f17406a3c17f57f2"
+          },
+          "dtforders": {
+            "count": 1580,
+            "latest_sha256": "0a8a8a20cc5415f871ccb618833697f6d2fc9a2a971ad879f17406a3c17f57f2"
+          },
+          "paymentinfos": {
+            "count": 1709,
+            "latest_sha256": "0fb5fd75d006763d2a3ff733e2b7acd8b9f4a9a6634f1cd7ec29fb8cb2666567"
+          },
+          "stripe_sync_logs": {
+            "count": 4894,
+            "latest_sha256": "bb45dc167851291f9b6d6e668b21b9b9568fcf8c714caac6a1daa3977cdfec2c"
+          }
+        },
+        "config_cached": false,
+        "default_database_connection": "mysql",
+        "fuel_database_connection": "fuelmysql",
+        "guzzle_class_path": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle/src/Client.php",
+        "guzzle_version": "7.15.2",
+        "laravel_class_path": "/var/www/buy-dtf/vendor/laravel/framework/src/Illuminate/Foundation/Application.php",
+        "laravel_version": "12.69.0",
+        "package_install_paths": {
+          "guzzlehttp/guzzle": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle",
+          "laravel/framework": "/var/www/buy-dtf/vendor/laravel/framework",
+          "league/commonmark": "/var/www/buy-dtf/vendor/league/commonmark",
+          "league/flysystem": "/var/www/buy-dtf/vendor/league/flysystem",
+          "league/flysystem-local": "/var/www/buy-dtf/vendor/league/flysystem-local"
+        },
+        "package_versions": {
+          "guzzlehttp/guzzle": "7.15.2",
+          "laravel/framework": "12.69.0",
+          "league/commonmark": "2.10.2",
+          "league/flysystem": "3.35.3",
+          "league/flysystem-local": "3.35.3"
+        },
+        "php_extensions": [
+          "Core",
+          "FFI",
+          "PDO",
+          "Phar",
+          "Reflection",
+          "SPL",
+          "SimpleXML",
+          "Zend OPcache",
+          "bcmath",
+          "calendar",
+          "ctype",
+          "curl",
+          "date",
+          "dom",
+          "exif",
+          "fileinfo",
+          "filter",
+          "ftp",
+          "gd",
+          "gettext",
+          "hash",
+          "iconv",
+          "imagick",
+          "intl",
+          "json",
+          "libxml",
+          "mbstring",
+          "mysqli",
+          "mysqlnd",
+          "openssl",
+          "pcntl",
+          "pcre",
+          "pdo_mysql",
+          "posix",
+          "random",
+          "readline",
+          "session",
+          "shmop",
+          "sockets",
+          "sodium",
+          "standard",
+          "sysvmsg",
+          "sysvsem",
+          "sysvshm",
+          "tokenizer",
+          "xml",
+          "xmlreader",
+          "xmlwriter",
+          "xsl",
+          "zip",
+          "zlib"
+        ],
+        "php_version": "8.2.30",
+        "queue_connection": "sync",
+        "queue_tables": {
+          "failed_jobs": 0,
+          "jobs": 0
+        }
+      }
+    },
+    {
+      "at_utc": "2026-10-01T00:23:50Z",
+      "health": {
+        "https://buy-dtf.com/": 200,
+        "https://buy-dtf.com/admin": 302,
+        "https://buy-dtf.com/checkout": 302,
+        "https://buy-dtf.com/login": 200,
+        "https://buy-dtf.com/up": 200
+      },
+      "runtime": {
+        "app_debug": false,
+        "app_environment": "local",
+        "business_activity": {
+          "dtfimages": {
+            "count": 19396,
+            "latest_sha256": "0a8a8a20cc5415f871ccb618833697f6d2fc9a2a971ad879f17406a3c17f57f2"
+          },
+          "dtforders": {
+            "count": 1580,
+            "latest_sha256": "0a8a8a20cc5415f871ccb618833697f6d2fc9a2a971ad879f17406a3c17f57f2"
+          },
+          "paymentinfos": {
+            "count": 1709,
+            "latest_sha256": "0fb5fd75d006763d2a3ff733e2b7acd8b9f4a9a6634f1cd7ec29fb8cb2666567"
+          },
+          "stripe_sync_logs": {
+            "count": 4894,
+            "latest_sha256": "bb45dc167851291f9b6d6e668b21b9b9568fcf8c714caac6a1daa3977cdfec2c"
+          }
+        },
+        "config_cached": false,
+        "default_database_connection": "mysql",
+        "fuel_database_connection": "fuelmysql",
+        "guzzle_class_path": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle/src/Client.php",
+        "guzzle_version": "7.15.2",
+        "laravel_class_path": "/var/www/buy-dtf/vendor/laravel/framework/src/Illuminate/Foundation/Application.php",
+        "laravel_version": "12.69.0",
+        "package_install_paths": {
+          "guzzlehttp/guzzle": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle",
+          "laravel/framework": "/var/www/buy-dtf/vendor/laravel/framework",
+          "league/commonmark": "/var/www/buy-dtf/vendor/league/commonmark",
+          "league/flysystem": "/var/www/buy-dtf/vendor/league/flysystem",
+          "league/flysystem-local": "/var/www/buy-dtf/vendor/league/flysystem-local"
+        },
+        "package_versions": {
+          "guzzlehttp/guzzle": "7.15.2",
+          "laravel/framework": "12.69.0",
+          "league/commonmark": "2.10.2",
+          "league/flysystem": "3.35.3",
+          "league/flysystem-local": "3.35.3"
+        },
+        "php_extensions": [
+          "Core",
+          "FFI",
+          "PDO",
+          "Phar",
+          "Reflection",
+          "SPL",
+          "SimpleXML",
+          "Zend OPcache",
+          "bcmath",
+          "calendar",
+          "ctype",
+          "curl",
+          "date",
+          "dom",
+          "exif",
+          "fileinfo",
+          "filter",
+          "ftp",
+          "gd",
+          "gettext",
+          "hash",
+          "iconv",
+          "imagick",
+          "intl",
+          "json",
+          "libxml",
+          "mbstring",
+          "mysqli",
+          "mysqlnd",
+          "openssl",
+          "pcntl",
+          "pcre",
+          "pdo_mysql",
+          "posix",
+          "random",
+          "readline",
+          "session",
+          "shmop",
+          "sockets",
+          "sodium",
+          "standard",
+          "sysvmsg",
+          "sysvsem",
+          "sysvshm",
+          "tokenizer",
+          "xml",
+          "xmlreader",
+          "xmlwriter",
+          "xsl",
+          "zip",
+          "zlib"
+        ],
+        "php_version": "8.2.30",
+        "queue_connection": "sync",
+        "queue_tables": {
+          "failed_jobs": 0,
+          "jobs": 0
+        }
+      }
+    },
+    {
+      "at_utc": "2026-10-01T00:24:51Z",
+      "health": {
+        "https://buy-dtf.com/": 200,
+        "https://buy-dtf.com/admin": 302,
+        "https://buy-dtf.com/checkout": 302,
+        "https://buy-dtf.com/login": 200,
+        "https://buy-dtf.com/up": 200
+      },
+      "runtime": {
+        "app_debug": false,
+        "app_environment": "local",
+        "business_activity": {
+          "dtfimages": {
+            "count": 19396,
+            "latest_sha256": "0a8a8a20cc5415f871ccb618833697f6d2fc9a2a971ad879f17406a3c17f57f2"
+          },
+          "dtforders": {
+            "count": 1580,
+            "latest_sha256": "0a8a8a20cc5415f871ccb618833697f6d2fc9a2a971ad879f17406a3c17f57f2"
+          },
+          "paymentinfos": {
+            "count": 1709,
+            "latest_sha256": "0fb5fd75d006763d2a3ff733e2b7acd8b9f4a9a6634f1cd7ec29fb8cb2666567"
+          },
+          "stripe_sync_logs": {
+            "count": 4894,
+            "latest_sha256": "bb45dc167851291f9b6d6e668b21b9b9568fcf8c714caac6a1daa3977cdfec2c"
+          }
+        },
+        "config_cached": false,
+        "default_database_connection": "mysql",
+        "fuel_database_connection": "fuelmysql",
+        "guzzle_class_path": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle/src/Client.php",
+        "guzzle_version": "7.15.2",
+        "laravel_class_path": "/var/www/buy-dtf/vendor/laravel/framework/src/Illuminate/Foundation/Application.php",
+        "laravel_version": "12.69.0",
+        "package_install_paths": {
+          "guzzlehttp/guzzle": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle",
+          "laravel/framework": "/var/www/buy-dtf/vendor/laravel/framework",
+          "league/commonmark": "/var/www/buy-dtf/vendor/league/commonmark",
+          "league/flysystem": "/var/www/buy-dtf/vendor/league/flysystem",
+          "league/flysystem-local": "/var/www/buy-dtf/vendor/league/flysystem-local"
+        },
+        "package_versions": {
+          "guzzlehttp/guzzle": "7.15.2",
+          "laravel/framework": "12.69.0",
+          "league/commonmark": "2.10.2",
+          "league/flysystem": "3.35.3",
+          "league/flysystem-local": "3.35.3"
+        },
+        "php_extensions": [
+          "Core",
+          "FFI",
+          "PDO",
+          "Phar",
+          "Reflection",
+          "SPL",
+          "SimpleXML",
+          "Zend OPcache",
+          "bcmath",
+          "calendar",
+          "ctype",
+          "curl",
+          "date",
+          "dom",
+          "exif",
+          "fileinfo",
+          "filter",
+          "ftp",
+          "gd",
+          "gettext",
+          "hash",
+          "iconv",
+          "imagick",
+          "intl",
+          "json",
+          "libxml",
+          "mbstring",
+          "mysqli",
+          "mysqlnd",
+          "openssl",
+          "pcntl",
+          "pcre",
+          "pdo_mysql",
+          "posix",
+          "random",
+          "readline",
+          "session",
+          "shmop",
+          "sockets",
+          "sodium",
+          "standard",
+          "sysvmsg",
+          "sysvsem",
+          "sysvshm",
+          "tokenizer",
+          "xml",
+          "xmlreader",
+          "xmlwriter",
+          "xsl",
+          "zip",
+          "zlib"
+        ],
+        "php_version": "8.2.30",
+        "queue_connection": "sync",
+        "queue_tables": {
+          "failed_jobs": 0,
+          "jobs": 0
+        }
+      }
+    },
+    {
+      "at_utc": "2026-10-01T00:25:52Z",
+      "health": {
+        "https://buy-dtf.com/": 200,
+        "https://buy-dtf.com/admin": 302,
+        "https://buy-dtf.com/checkout": 302,
+        "https://buy-dtf.com/login": 200,
+        "https://buy-dtf.com/up": 200
+      },
+      "runtime": {
+        "app_debug": false,
+        "app_environment": "local",
+        "business_activity": {
+          "dtfimages": {
+            "count": 19396,
+            "latest_sha256": "671ccc2f60ad41d426cc6c881bced55e1dbd5a9033ba982dce010187f9112d97"
+          },
+          "dtforders": {
+            "count": 1580,
+            "latest_sha256": "0a8a8a20cc5415f871ccb618833697f6d2fc9a2a971ad879f17406a3c17f57f2"
+          },
+          "paymentinfos": {
+            "count": 1709,
+            "latest_sha256": "0fb5fd75d006763d2a3ff733e2b7acd8b9f4a9a6634f1cd7ec29fb8cb2666567"
+          },
+          "stripe_sync_logs": {
+            "count": 4894,
+            "latest_sha256": "bb45dc167851291f9b6d6e668b21b9b9568fcf8c714caac6a1daa3977cdfec2c"
+          }
+        },
+        "config_cached": false,
+        "default_database_connection": "mysql",
+        "fuel_database_connection": "fuelmysql",
+        "guzzle_class_path": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle/src/Client.php",
+        "guzzle_version": "7.15.2",
+        "laravel_class_path": "/var/www/buy-dtf/vendor/laravel/framework/src/Illuminate/Foundation/Application.php",
+        "laravel_version": "12.69.0",
+        "package_install_paths": {
+          "guzzlehttp/guzzle": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle",
+          "laravel/framework": "/var/www/buy-dtf/vendor/laravel/framework",
+          "league/commonmark": "/var/www/buy-dtf/vendor/league/commonmark",
+          "league/flysystem": "/var/www/buy-dtf/vendor/league/flysystem",
+          "league/flysystem-local": "/var/www/buy-dtf/vendor/league/flysystem-local"
+        },
+        "package_versions": {
+          "guzzlehttp/guzzle": "7.15.2",
+          "laravel/framework": "12.69.0",
+          "league/commonmark": "2.10.2",
+          "league/flysystem": "3.35.3",
+          "league/flysystem-local": "3.35.3"
+        },
+        "php_extensions": [
+          "Core",
+          "FFI",
+          "PDO",
+          "Phar",
+          "Reflection",
+          "SPL",
+          "SimpleXML",
+          "Zend OPcache",
+          "bcmath",
+          "calendar",
+          "ctype",
+          "curl",
+          "date",
+          "dom",
+          "exif",
+          "fileinfo",
+          "filter",
+          "ftp",
+          "gd",
+          "gettext",
+          "hash",
+          "iconv",
+          "imagick",
+          "intl",
+          "json",
+          "libxml",
+          "mbstring",
+          "mysqli",
+          "mysqlnd",
+          "openssl",
+          "pcntl",
+          "pcre",
+          "pdo_mysql",
+          "posix",
+          "random",
+          "readline",
+          "session",
+          "shmop",
+          "sockets",
+          "sodium",
+          "standard",
+          "sysvmsg",
+          "sysvsem",
+          "sysvshm",
+          "tokenizer",
+          "xml",
+          "xmlreader",
+          "xmlwriter",
+          "xsl",
+          "zip",
+          "zlib"
+        ],
+        "php_version": "8.2.30",
+        "queue_connection": "sync",
+        "queue_tables": {
+          "failed_jobs": 0,
+          "jobs": 0
+        }
+      }
+    },
+    {
+      "at_utc": "2026-10-01T00:26:53Z",
+      "health": {
+        "https://buy-dtf.com/": 200,
+        "https://buy-dtf.com/admin": 302,
+        "https://buy-dtf.com/checkout": 302,
+        "https://buy-dtf.com/login": 200,
+        "https://buy-dtf.com/up": 200
+      },
+      "runtime": {
+        "app_debug": false,
+        "app_environment": "local",
+        "business_activity": {
+          "dtfimages": {
+            "count": 19396,
+            "latest_sha256": "4297511e9aaa7e2f9f4b6e3f5837a3b24037ceee950ddd4feb9cf351019d190f"
+          },
+          "dtforders": {
+            "count": 1580,
+            "latest_sha256": "0a8a8a20cc5415f871ccb618833697f6d2fc9a2a971ad879f17406a3c17f57f2"
+          },
+          "paymentinfos": {
+            "count": 1709,
+            "latest_sha256": "0fb5fd75d006763d2a3ff733e2b7acd8b9f4a9a6634f1cd7ec29fb8cb2666567"
+          },
+          "stripe_sync_logs": {
+            "count": 4894,
+            "latest_sha256": "bb45dc167851291f9b6d6e668b21b9b9568fcf8c714caac6a1daa3977cdfec2c"
+          }
+        },
+        "config_cached": false,
+        "default_database_connection": "mysql",
+        "fuel_database_connection": "fuelmysql",
+        "guzzle_class_path": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle/src/Client.php",
+        "guzzle_version": "7.15.2",
+        "laravel_class_path": "/var/www/buy-dtf/vendor/laravel/framework/src/Illuminate/Foundation/Application.php",
+        "laravel_version": "12.69.0",
+        "package_install_paths": {
+          "guzzlehttp/guzzle": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle",
+          "laravel/framework": "/var/www/buy-dtf/vendor/laravel/framework",
+          "league/commonmark": "/var/www/buy-dtf/vendor/league/commonmark",
+          "league/flysystem": "/var/www/buy-dtf/vendor/league/flysystem",
+          "league/flysystem-local": "/var/www/buy-dtf/vendor/league/flysystem-local"
+        },
+        "package_versions": {
+          "guzzlehttp/guzzle": "7.15.2",
+          "laravel/framework": "12.69.0",
+          "league/commonmark": "2.10.2",
+          "league/flysystem": "3.35.3",
+          "league/flysystem-local": "3.35.3"
+        },
+        "php_extensions": [
+          "Core",
+          "FFI",
+          "PDO",
+          "Phar",
+          "Reflection",
+          "SPL",
+          "SimpleXML",
+          "Zend OPcache",
+          "bcmath",
+          "calendar",
+          "ctype",
+          "curl",
+          "date",
+          "dom",
+          "exif",
+          "fileinfo",
+          "filter",
+          "ftp",
+          "gd",
+          "gettext",
+          "hash",
+          "iconv",
+          "imagick",
+          "intl",
+          "json",
+          "libxml",
+          "mbstring",
+          "mysqli",
+          "mysqlnd",
+          "openssl",
+          "pcntl",
+          "pcre",
+          "pdo_mysql",
+          "posix",
+          "random",
+          "readline",
+          "session",
+          "shmop",
+          "sockets",
+          "sodium",
+          "standard",
+          "sysvmsg",
+          "sysvsem",
+          "sysvshm",
+          "tokenizer",
+          "xml",
+          "xmlreader",
+          "xmlwriter",
+          "xsl",
+          "zip",
+          "zlib"
+        ],
+        "php_version": "8.2.30",
+        "queue_connection": "sync",
+        "queue_tables": {
+          "failed_jobs": 0,
+          "jobs": 0
+        }
+      }
+    },
+    {
+      "at_utc": "2026-10-01T00:27:54Z",
+      "health": {
+        "https://buy-dtf.com/": 200,
+        "https://buy-dtf.com/admin": 302,
+        "https://buy-dtf.com/checkout": 302,
+        "https://buy-dtf.com/login": 200,
+        "https://buy-dtf.com/up": 200
+      },
+      "runtime": {
+        "app_debug": false,
+        "app_environment": "local",
+        "business_activity": {
+          "dtfimages": {
+            "count": 19396,
+            "latest_sha256": "4297511e9aaa7e2f9f4b6e3f5837a3b24037ceee950ddd4feb9cf351019d190f"
+          },
+          "dtforders": {
+            "count": 1580,
+            "latest_sha256": "0a8a8a20cc5415f871ccb618833697f6d2fc9a2a971ad879f17406a3c17f57f2"
+          },
+          "paymentinfos": {
+            "count": 1709,
+            "latest_sha256": "0fb5fd75d006763d2a3ff733e2b7acd8b9f4a9a6634f1cd7ec29fb8cb2666567"
+          },
+          "stripe_sync_logs": {
+            "count": 4894,
+            "latest_sha256": "bb45dc167851291f9b6d6e668b21b9b9568fcf8c714caac6a1daa3977cdfec2c"
+          }
+        },
+        "config_cached": false,
+        "default_database_connection": "mysql",
+        "fuel_database_connection": "fuelmysql",
+        "guzzle_class_path": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle/src/Client.php",
+        "guzzle_version": "7.15.2",
+        "laravel_class_path": "/var/www/buy-dtf/vendor/laravel/framework/src/Illuminate/Foundation/Application.php",
+        "laravel_version": "12.69.0",
+        "package_install_paths": {
+          "guzzlehttp/guzzle": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle",
+          "laravel/framework": "/var/www/buy-dtf/vendor/laravel/framework",
+          "league/commonmark": "/var/www/buy-dtf/vendor/league/commonmark",
+          "league/flysystem": "/var/www/buy-dtf/vendor/league/flysystem",
+          "league/flysystem-local": "/var/www/buy-dtf/vendor/league/flysystem-local"
+        },
+        "package_versions": {
+          "guzzlehttp/guzzle": "7.15.2",
+          "laravel/framework": "12.69.0",
+          "league/commonmark": "2.10.2",
+          "league/flysystem": "3.35.3",
+          "league/flysystem-local": "3.35.3"
+        },
+        "php_extensions": [
+          "Core",
+          "FFI",
+          "PDO",
+          "Phar",
+          "Reflection",
+          "SPL",
+          "SimpleXML",
+          "Zend OPcache",
+          "bcmath",
+          "calendar",
+          "ctype",
+          "curl",
+          "date",
+          "dom",
+          "exif",
+          "fileinfo",
+          "filter",
+          "ftp",
+          "gd",
+          "gettext",
+          "hash",
+          "iconv",
+          "imagick",
+          "intl",
+          "json",
+          "libxml",
+          "mbstring",
+          "mysqli",
+          "mysqlnd",
+          "openssl",
+          "pcntl",
+          "pcre",
+          "pdo_mysql",
+          "posix",
+          "random",
+          "readline",
+          "session",
+          "shmop",
+          "sockets",
+          "sodium",
+          "standard",
+          "sysvmsg",
+          "sysvsem",
+          "sysvshm",
+          "tokenizer",
+          "xml",
+          "xmlreader",
+          "xmlwriter",
+          "xsl",
+          "zip",
+          "zlib"
+        ],
+        "php_version": "8.2.30",
+        "queue_connection": "sync",
+        "queue_tables": {
+          "failed_jobs": 0,
+          "jobs": 0
+        }
+      }
+    },
+    {
+      "at_utc": "2026-10-01T00:28:55Z",
+      "health": {
+        "https://buy-dtf.com/": 200,
+        "https://buy-dtf.com/admin": 302,
+        "https://buy-dtf.com/checkout": 302,
+        "https://buy-dtf.com/login": 200,
+        "https://buy-dtf.com/up": 200
+      },
+      "runtime": {
+        "app_debug": false,
+        "app_environment": "local",
+        "business_activity": {
+          "dtfimages": {
+            "count": 19396,
+            "latest_sha256": "4297511e9aaa7e2f9f4b6e3f5837a3b24037ceee950ddd4feb9cf351019d190f"
+          },
+          "dtforders": {
+            "count": 1580,
+            "latest_sha256": "0a8a8a20cc5415f871ccb618833697f6d2fc9a2a971ad879f17406a3c17f57f2"
+          },
+          "paymentinfos": {
+            "count": 1709,
+            "latest_sha256": "0fb5fd75d006763d2a3ff733e2b7acd8b9f4a9a6634f1cd7ec29fb8cb2666567"
+          },
+          "stripe_sync_logs": {
+            "count": 4894,
+            "latest_sha256": "bb45dc167851291f9b6d6e668b21b9b9568fcf8c714caac6a1daa3977cdfec2c"
+          }
+        },
+        "config_cached": false,
+        "default_database_connection": "mysql",
+        "fuel_database_connection": "fuelmysql",
+        "guzzle_class_path": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle/src/Client.php",
+        "guzzle_version": "7.15.2",
+        "laravel_class_path": "/var/www/buy-dtf/vendor/laravel/framework/src/Illuminate/Foundation/Application.php",
+        "laravel_version": "12.69.0",
+        "package_install_paths": {
+          "guzzlehttp/guzzle": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle",
+          "laravel/framework": "/var/www/buy-dtf/vendor/laravel/framework",
+          "league/commonmark": "/var/www/buy-dtf/vendor/league/commonmark",
+          "league/flysystem": "/var/www/buy-dtf/vendor/league/flysystem",
+          "league/flysystem-local": "/var/www/buy-dtf/vendor/league/flysystem-local"
+        },
+        "package_versions": {
+          "guzzlehttp/guzzle": "7.15.2",
+          "laravel/framework": "12.69.0",
+          "league/commonmark": "2.10.2",
+          "league/flysystem": "3.35.3",
+          "league/flysystem-local": "3.35.3"
+        },
+        "php_extensions": [
+          "Core",
+          "FFI",
+          "PDO",
+          "Phar",
+          "Reflection",
+          "SPL",
+          "SimpleXML",
+          "Zend OPcache",
+          "bcmath",
+          "calendar",
+          "ctype",
+          "curl",
+          "date",
+          "dom",
+          "exif",
+          "fileinfo",
+          "filter",
+          "ftp",
+          "gd",
+          "gettext",
+          "hash",
+          "iconv",
+          "imagick",
+          "intl",
+          "json",
+          "libxml",
+          "mbstring",
+          "mysqli",
+          "mysqlnd",
+          "openssl",
+          "pcntl",
+          "pcre",
+          "pdo_mysql",
+          "posix",
+          "random",
+          "readline",
+          "session",
+          "shmop",
+          "sockets",
+          "sodium",
+          "standard",
+          "sysvmsg",
+          "sysvsem",
+          "sysvshm",
+          "tokenizer",
+          "xml",
+          "xmlreader",
+          "xmlwriter",
+          "xsl",
+          "zip",
+          "zlib"
+        ],
+        "php_version": "8.2.30",
+        "queue_connection": "sync",
+        "queue_tables": {
+          "failed_jobs": 0,
+          "jobs": 0
+        }
+      }
+    },
+    {
+      "at_utc": "2026-10-01T00:29:56Z",
+      "health": {
+        "https://buy-dtf.com/": 200,
+        "https://buy-dtf.com/admin": 302,
+        "https://buy-dtf.com/checkout": 302,
+        "https://buy-dtf.com/login": 200,
+        "https://buy-dtf.com/up": 200
+      },
+      "runtime": {
+        "app_debug": false,
+        "app_environment": "local",
+        "business_activity": {
+          "dtfimages": {
+            "count": 19396,
+            "latest_sha256": "4297511e9aaa7e2f9f4b6e3f5837a3b24037ceee950ddd4feb9cf351019d190f"
+          },
+          "dtforders": {
+            "count": 1580,
+            "latest_sha256": "0a8a8a20cc5415f871ccb618833697f6d2fc9a2a971ad879f17406a3c17f57f2"
+          },
+          "paymentinfos": {
+            "count": 1709,
+            "latest_sha256": "0fb5fd75d006763d2a3ff733e2b7acd8b9f4a9a6634f1cd7ec29fb8cb2666567"
+          },
+          "stripe_sync_logs": {
+            "count": 4894,
+            "latest_sha256": "bb45dc167851291f9b6d6e668b21b9b9568fcf8c714caac6a1daa3977cdfec2c"
+          }
+        },
+        "config_cached": false,
+        "default_database_connection": "mysql",
+        "fuel_database_connection": "fuelmysql",
+        "guzzle_class_path": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle/src/Client.php",
+        "guzzle_version": "7.15.2",
+        "laravel_class_path": "/var/www/buy-dtf/vendor/laravel/framework/src/Illuminate/Foundation/Application.php",
+        "laravel_version": "12.69.0",
+        "package_install_paths": {
+          "guzzlehttp/guzzle": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle",
+          "laravel/framework": "/var/www/buy-dtf/vendor/laravel/framework",
+          "league/commonmark": "/var/www/buy-dtf/vendor/league/commonmark",
+          "league/flysystem": "/var/www/buy-dtf/vendor/league/flysystem",
+          "league/flysystem-local": "/var/www/buy-dtf/vendor/league/flysystem-local"
+        },
+        "package_versions": {
+          "guzzlehttp/guzzle": "7.15.2",
+          "laravel/framework": "12.69.0",
+          "league/commonmark": "2.10.2",
+          "league/flysystem": "3.35.3",
+          "league/flysystem-local": "3.35.3"
+        },
+        "php_extensions": [
+          "Core",
+          "FFI",
+          "PDO",
+          "Phar",
+          "Reflection",
+          "SPL",
+          "SimpleXML",
+          "Zend OPcache",
+          "bcmath",
+          "calendar",
+          "ctype",
+          "curl",
+          "date",
+          "dom",
+          "exif",
+          "fileinfo",
+          "filter",
+          "ftp",
+          "gd",
+          "gettext",
+          "hash",
+          "iconv",
+          "imagick",
+          "intl",
+          "json",
+          "libxml",
+          "mbstring",
+          "mysqli",
+          "mysqlnd",
+          "openssl",
+          "pcntl",
+          "pcre",
+          "pdo_mysql",
+          "posix",
+          "random",
+          "readline",
+          "session",
+          "shmop",
+          "sockets",
+          "sodium",
+          "standard",
+          "sysvmsg",
+          "sysvsem",
+          "sysvshm",
+          "tokenizer",
+          "xml",
+          "xmlreader",
+          "xmlwriter",
+          "xsl",
+          "zip",
+          "zlib"
+        ],
+        "php_version": "8.2.30",
+        "queue_connection": "sync",
+        "queue_tables": {
+          "failed_jobs": 0,
+          "jobs": 0
+        }
+      }
+    },
+    {
+      "at_utc": "2026-10-01T00:30:57Z",
+      "health": {
+        "https://buy-dtf.com/": 200,
+        "https://buy-dtf.com/admin": 302,
+        "https://buy-dtf.com/checkout": 302,
+        "https://buy-dtf.com/login": 200,
+        "https://buy-dtf.com/up": 200
+      },
+      "runtime": {
+        "app_debug": false,
+        "app_environment": "local",
+        "business_activity": {
+          "dtfimages": {
+            "count": 19396,
+            "latest_sha256": "4297511e9aaa7e2f9f4b6e3f5837a3b24037ceee950ddd4feb9cf351019d190f"
+          },
+          "dtforders": {
+            "count": 1580,
+            "latest_sha256": "0a8a8a20cc5415f871ccb618833697f6d2fc9a2a971ad879f17406a3c17f57f2"
+          },
+          "paymentinfos": {
+            "count": 1709,
+            "latest_sha256": "0fb5fd75d006763d2a3ff733e2b7acd8b9f4a9a6634f1cd7ec29fb8cb2666567"
+          },
+          "stripe_sync_logs": {
+            "count": 4894,
+            "latest_sha256": "bb45dc167851291f9b6d6e668b21b9b9568fcf8c714caac6a1daa3977cdfec2c"
+          }
+        },
+        "config_cached": false,
+        "default_database_connection": "mysql",
+        "fuel_database_connection": "fuelmysql",
+        "guzzle_class_path": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle/src/Client.php",
+        "guzzle_version": "7.15.2",
+        "laravel_class_path": "/var/www/buy-dtf/vendor/laravel/framework/src/Illuminate/Foundation/Application.php",
+        "laravel_version": "12.69.0",
+        "package_install_paths": {
+          "guzzlehttp/guzzle": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle",
+          "laravel/framework": "/var/www/buy-dtf/vendor/laravel/framework",
+          "league/commonmark": "/var/www/buy-dtf/vendor/league/commonmark",
+          "league/flysystem": "/var/www/buy-dtf/vendor/league/flysystem",
+          "league/flysystem-local": "/var/www/buy-dtf/vendor/league/flysystem-local"
+        },
+        "package_versions": {
+          "guzzlehttp/guzzle": "7.15.2",
+          "laravel/framework": "12.69.0",
+          "league/commonmark": "2.10.2",
+          "league/flysystem": "3.35.3",
+          "league/flysystem-local": "3.35.3"
+        },
+        "php_extensions": [
+          "Core",
+          "FFI",
+          "PDO",
+          "Phar",
+          "Reflection",
+          "SPL",
+          "SimpleXML",
+          "Zend OPcache",
+          "bcmath",
+          "calendar",
+          "ctype",
+          "curl",
+          "date",
+          "dom",
+          "exif",
+          "fileinfo",
+          "filter",
+          "ftp",
+          "gd",
+          "gettext",
+          "hash",
+          "iconv",
+          "imagick",
+          "intl",
+          "json",
+          "libxml",
+          "mbstring",
+          "mysqli",
+          "mysqlnd",
+          "openssl",
+          "pcntl",
+          "pcre",
+          "pdo_mysql",
+          "posix",
+          "random",
+          "readline",
+          "session",
+          "shmop",
+          "sockets",
+          "sodium",
+          "standard",
+          "sysvmsg",
+          "sysvsem",
+          "sysvshm",
+          "tokenizer",
+          "xml",
+          "xmlreader",
+          "xmlwriter",
+          "xsl",
+          "zip",
+          "zlib"
+        ],
+        "php_version": "8.2.30",
+        "queue_connection": "sync",
+        "queue_tables": {
+          "failed_jobs": 0,
+          "jobs": 0
+        }
+      }
+    },
+    {
+      "at_utc": "2026-10-01T00:31:58Z",
+      "health": {
+        "https://buy-dtf.com/": 200,
+        "https://buy-dtf.com/admin": 302,
+        "https://buy-dtf.com/checkout": 302,
+        "https://buy-dtf.com/login": 200,
+        "https://buy-dtf.com/up": 200
+      },
+      "runtime": {
+        "app_debug": false,
+        "app_environment": "local",
+        "business_activity": {
+          "dtfimages": {
+            "count": 19396,
+            "latest_sha256": "4297511e9aaa7e2f9f4b6e3f5837a3b24037ceee950ddd4feb9cf351019d190f"
+          },
+          "dtforders": {
+            "count": 1580,
+            "latest_sha256": "0a8a8a20cc5415f871ccb618833697f6d2fc9a2a971ad879f17406a3c17f57f2"
+          },
+          "paymentinfos": {
+            "count": 1709,
+            "latest_sha256": "0fb5fd75d006763d2a3ff733e2b7acd8b9f4a9a6634f1cd7ec29fb8cb2666567"
+          },
+          "stripe_sync_logs": {
+            "count": 4894,
+            "latest_sha256": "bb45dc167851291f9b6d6e668b21b9b9568fcf8c714caac6a1daa3977cdfec2c"
+          }
+        },
+        "config_cached": false,
+        "default_database_connection": "mysql",
+        "fuel_database_connection": "fuelmysql",
+        "guzzle_class_path": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle/src/Client.php",
+        "guzzle_version": "7.15.2",
+        "laravel_class_path": "/var/www/buy-dtf/vendor/laravel/framework/src/Illuminate/Foundation/Application.php",
+        "laravel_version": "12.69.0",
+        "package_install_paths": {
+          "guzzlehttp/guzzle": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle",
+          "laravel/framework": "/var/www/buy-dtf/vendor/laravel/framework",
+          "league/commonmark": "/var/www/buy-dtf/vendor/league/commonmark",
+          "league/flysystem": "/var/www/buy-dtf/vendor/league/flysystem",
+          "league/flysystem-local": "/var/www/buy-dtf/vendor/league/flysystem-local"
+        },
+        "package_versions": {
+          "guzzlehttp/guzzle": "7.15.2",
+          "laravel/framework": "12.69.0",
+          "league/commonmark": "2.10.2",
+          "league/flysystem": "3.35.3",
+          "league/flysystem-local": "3.35.3"
+        },
+        "php_extensions": [
+          "Core",
+          "FFI",
+          "PDO",
+          "Phar",
+          "Reflection",
+          "SPL",
+          "SimpleXML",
+          "Zend OPcache",
+          "bcmath",
+          "calendar",
+          "ctype",
+          "curl",
+          "date",
+          "dom",
+          "exif",
+          "fileinfo",
+          "filter",
+          "ftp",
+          "gd",
+          "gettext",
+          "hash",
+          "iconv",
+          "imagick",
+          "intl",
+          "json",
+          "libxml",
+          "mbstring",
+          "mysqli",
+          "mysqlnd",
+          "openssl",
+          "pcntl",
+          "pcre",
+          "pdo_mysql",
+          "posix",
+          "random",
+          "readline",
+          "session",
+          "shmop",
+          "sockets",
+          "sodium",
+          "standard",
+          "sysvmsg",
+          "sysvsem",
+          "sysvshm",
+          "tokenizer",
+          "xml",
+          "xmlreader",
+          "xmlwriter",
+          "xsl",
+          "zip",
+          "zlib"
+        ],
+        "php_version": "8.2.30",
+        "queue_connection": "sync",
+        "queue_tables": {
+          "failed_jobs": 0,
+          "jobs": 0
+        }
+      }
+    },
+    {
+      "at_utc": "2026-10-01T00:32:58Z",
+      "health": {
+        "https://buy-dtf.com/": 200,
+        "https://buy-dtf.com/admin": 302,
+        "https://buy-dtf.com/checkout": 302,
+        "https://buy-dtf.com/login": 200,
+        "https://buy-dtf.com/up": 200
+      },
+      "runtime": {
+        "app_debug": false,
+        "app_environment": "local",
+        "business_activity": {
+          "dtfimages": {
+            "count": 19396,
+            "latest_sha256": "4297511e9aaa7e2f9f4b6e3f5837a3b24037ceee950ddd4feb9cf351019d190f"
+          },
+          "dtforders": {
+            "count": 1580,
+            "latest_sha256": "0a8a8a20cc5415f871ccb618833697f6d2fc9a2a971ad879f17406a3c17f57f2"
+          },
+          "paymentinfos": {
+            "count": 1709,
+            "latest_sha256": "0fb5fd75d006763d2a3ff733e2b7acd8b9f4a9a6634f1cd7ec29fb8cb2666567"
+          },
+          "stripe_sync_logs": {
+            "count": 4895,
+            "latest_sha256": "a273f04b3bdef69eb2e173bbf024d044cf45d4f01eaea4959bc0fa315fbccb42"
+          }
+        },
+        "config_cached": false,
+        "default_database_connection": "mysql",
+        "fuel_database_connection": "fuelmysql",
+        "guzzle_class_path": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle/src/Client.php",
+        "guzzle_version": "7.15.2",
+        "laravel_class_path": "/var/www/buy-dtf/vendor/laravel/framework/src/Illuminate/Foundation/Application.php",
+        "laravel_version": "12.69.0",
+        "package_install_paths": {
+          "guzzlehttp/guzzle": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle",
+          "laravel/framework": "/var/www/buy-dtf/vendor/laravel/framework",
+          "league/commonmark": "/var/www/buy-dtf/vendor/league/commonmark",
+          "league/flysystem": "/var/www/buy-dtf/vendor/league/flysystem",
+          "league/flysystem-local": "/var/www/buy-dtf/vendor/league/flysystem-local"
+        },
+        "package_versions": {
+          "guzzlehttp/guzzle": "7.15.2",
+          "laravel/framework": "12.69.0",
+          "league/commonmark": "2.10.2",
+          "league/flysystem": "3.35.3",
+          "league/flysystem-local": "3.35.3"
+        },
+        "php_extensions": [
+          "Core",
+          "FFI",
+          "PDO",
+          "Phar",
+          "Reflection",
+          "SPL",
+          "SimpleXML",
+          "Zend OPcache",
+          "bcmath",
+          "calendar",
+          "ctype",
+          "curl",
+          "date",
+          "dom",
+          "exif",
+          "fileinfo",
+          "filter",
+          "ftp",
+          "gd",
+          "gettext",
+          "hash",
+          "iconv",
+          "imagick",
+          "intl",
+          "json",
+          "libxml",
+          "mbstring",
+          "mysqli",
+          "mysqlnd",
+          "openssl",
+          "pcntl",
+          "pcre",
+          "pdo_mysql",
+          "posix",
+          "random",
+          "readline",
+          "session",
+          "shmop",
+          "sockets",
+          "sodium",
+          "standard",
+          "sysvmsg",
+          "sysvsem",
+          "sysvshm",
+          "tokenizer",
+          "xml",
+          "xmlreader",
+          "xmlwriter",
+          "xsl",
+          "zip",
+          "zlib"
+        ],
+        "php_version": "8.2.30",
+        "queue_connection": "sync",
+        "queue_tables": {
+          "failed_jobs": 0,
+          "jobs": 0
+        }
+      }
+    },
+    {
+      "at_utc": "2026-10-01T00:33:59Z",
+      "health": {
+        "https://buy-dtf.com/": 200,
+        "https://buy-dtf.com/admin": 302,
+        "https://buy-dtf.com/checkout": 302,
+        "https://buy-dtf.com/login": 200,
+        "https://buy-dtf.com/up": 200
+      },
+      "runtime": {
+        "app_debug": false,
+        "app_environment": "local",
+        "business_activity": {
+          "dtfimages": {
+            "count": 19396,
+            "latest_sha256": "4297511e9aaa7e2f9f4b6e3f5837a3b24037ceee950ddd4feb9cf351019d190f"
+          },
+          "dtforders": {
+            "count": 1580,
+            "latest_sha256": "0a8a8a20cc5415f871ccb618833697f6d2fc9a2a971ad879f17406a3c17f57f2"
+          },
+          "paymentinfos": {
+            "count": 1709,
+            "latest_sha256": "0fb5fd75d006763d2a3ff733e2b7acd8b9f4a9a6634f1cd7ec29fb8cb2666567"
+          },
+          "stripe_sync_logs": {
+            "count": 4895,
+            "latest_sha256": "a273f04b3bdef69eb2e173bbf024d044cf45d4f01eaea4959bc0fa315fbccb42"
+          }
+        },
+        "config_cached": false,
+        "default_database_connection": "mysql",
+        "fuel_database_connection": "fuelmysql",
+        "guzzle_class_path": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle/src/Client.php",
+        "guzzle_version": "7.15.2",
+        "laravel_class_path": "/var/www/buy-dtf/vendor/laravel/framework/src/Illuminate/Foundation/Application.php",
+        "laravel_version": "12.69.0",
+        "package_install_paths": {
+          "guzzlehttp/guzzle": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle",
+          "laravel/framework": "/var/www/buy-dtf/vendor/laravel/framework",
+          "league/commonmark": "/var/www/buy-dtf/vendor/league/commonmark",
+          "league/flysystem": "/var/www/buy-dtf/vendor/league/flysystem",
+          "league/flysystem-local": "/var/www/buy-dtf/vendor/league/flysystem-local"
+        },
+        "package_versions": {
+          "guzzlehttp/guzzle": "7.15.2",
+          "laravel/framework": "12.69.0",
+          "league/commonmark": "2.10.2",
+          "league/flysystem": "3.35.3",
+          "league/flysystem-local": "3.35.3"
+        },
+        "php_extensions": [
+          "Core",
+          "FFI",
+          "PDO",
+          "Phar",
+          "Reflection",
+          "SPL",
+          "SimpleXML",
+          "Zend OPcache",
+          "bcmath",
+          "calendar",
+          "ctype",
+          "curl",
+          "date",
+          "dom",
+          "exif",
+          "fileinfo",
+          "filter",
+          "ftp",
+          "gd",
+          "gettext",
+          "hash",
+          "iconv",
+          "imagick",
+          "intl",
+          "json",
+          "libxml",
+          "mbstring",
+          "mysqli",
+          "mysqlnd",
+          "openssl",
+          "pcntl",
+          "pcre",
+          "pdo_mysql",
+          "posix",
+          "random",
+          "readline",
+          "session",
+          "shmop",
+          "sockets",
+          "sodium",
+          "standard",
+          "sysvmsg",
+          "sysvsem",
+          "sysvshm",
+          "tokenizer",
+          "xml",
+          "xmlreader",
+          "xmlwriter",
+          "xsl",
+          "zip",
+          "zlib"
+        ],
+        "php_version": "8.2.30",
+        "queue_connection": "sync",
+        "queue_tables": {
+          "failed_jobs": 0,
+          "jobs": 0
+        }
+      }
+    },
+    {
+      "at_utc": "2026-10-01T00:35:00Z",
+      "health": {
+        "https://buy-dtf.com/": 200,
+        "https://buy-dtf.com/admin": 302,
+        "https://buy-dtf.com/checkout": 302,
+        "https://buy-dtf.com/login": 200,
+        "https://buy-dtf.com/up": 200
+      },
+      "runtime": {
+        "app_debug": false,
+        "app_environment": "local",
+        "business_activity": {
+          "dtfimages": {
+            "count": 19396,
+            "latest_sha256": "4297511e9aaa7e2f9f4b6e3f5837a3b24037ceee950ddd4feb9cf351019d190f"
+          },
+          "dtforders": {
+            "count": 1580,
+            "latest_sha256": "0a8a8a20cc5415f871ccb618833697f6d2fc9a2a971ad879f17406a3c17f57f2"
+          },
+          "paymentinfos": {
+            "count": 1709,
+            "latest_sha256": "0fb5fd75d006763d2a3ff733e2b7acd8b9f4a9a6634f1cd7ec29fb8cb2666567"
+          },
+          "stripe_sync_logs": {
+            "count": 4895,
+            "latest_sha256": "a273f04b3bdef69eb2e173bbf024d044cf45d4f01eaea4959bc0fa315fbccb42"
+          }
+        },
+        "config_cached": false,
+        "default_database_connection": "mysql",
+        "fuel_database_connection": "fuelmysql",
+        "guzzle_class_path": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle/src/Client.php",
+        "guzzle_version": "7.15.2",
+        "laravel_class_path": "/var/www/buy-dtf/vendor/laravel/framework/src/Illuminate/Foundation/Application.php",
+        "laravel_version": "12.69.0",
+        "package_install_paths": {
+          "guzzlehttp/guzzle": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle",
+          "laravel/framework": "/var/www/buy-dtf/vendor/laravel/framework",
+          "league/commonmark": "/var/www/buy-dtf/vendor/league/commonmark",
+          "league/flysystem": "/var/www/buy-dtf/vendor/league/flysystem",
+          "league/flysystem-local": "/var/www/buy-dtf/vendor/league/flysystem-local"
+        },
+        "package_versions": {
+          "guzzlehttp/guzzle": "7.15.2",
+          "laravel/framework": "12.69.0",
+          "league/commonmark": "2.10.2",
+          "league/flysystem": "3.35.3",
+          "league/flysystem-local": "3.35.3"
+        },
+        "php_extensions": [
+          "Core",
+          "FFI",
+          "PDO",
+          "Phar",
+          "Reflection",
+          "SPL",
+          "SimpleXML",
+          "Zend OPcache",
+          "bcmath",
+          "calendar",
+          "ctype",
+          "curl",
+          "date",
+          "dom",
+          "exif",
+          "fileinfo",
+          "filter",
+          "ftp",
+          "gd",
+          "gettext",
+          "hash",
+          "iconv",
+          "imagick",
+          "intl",
+          "json",
+          "libxml",
+          "mbstring",
+          "mysqli",
+          "mysqlnd",
+          "openssl",
+          "pcntl",
+          "pcre",
+          "pdo_mysql",
+          "posix",
+          "random",
+          "readline",
+          "session",
+          "shmop",
+          "sockets",
+          "sodium",
+          "standard",
+          "sysvmsg",
+          "sysvsem",
+          "sysvshm",
+          "tokenizer",
+          "xml",
+          "xmlreader",
+          "xmlwriter",
+          "xsl",
+          "zip",
+          "zlib"
+        ],
+        "php_version": "8.2.30",
+        "queue_connection": "sync",
+        "queue_tables": {
+          "failed_jobs": 0,
+          "jobs": 0
+        }
+      }
+    },
+    {
+      "at_utc": "2026-10-01T00:36:04Z",
+      "health": {
+        "https://buy-dtf.com/": 200,
+        "https://buy-dtf.com/admin": 302,
+        "https://buy-dtf.com/checkout": 302,
+        "https://buy-dtf.com/login": 200,
+        "https://buy-dtf.com/up": 200
+      },
+      "runtime": {
+        "app_debug": false,
+        "app_environment": "local",
+        "business_activity": {
+          "dtfimages": {
+            "count": 19396,
+            "latest_sha256": "4297511e9aaa7e2f9f4b6e3f5837a3b24037ceee950ddd4feb9cf351019d190f"
+          },
+          "dtforders": {
+            "count": 1580,
+            "latest_sha256": "0a8a8a20cc5415f871ccb618833697f6d2fc9a2a971ad879f17406a3c17f57f2"
+          },
+          "paymentinfos": {
+            "count": 1709,
+            "latest_sha256": "0fb5fd75d006763d2a3ff733e2b7acd8b9f4a9a6634f1cd7ec29fb8cb2666567"
+          },
+          "stripe_sync_logs": {
+            "count": 4895,
+            "latest_sha256": "a273f04b3bdef69eb2e173bbf024d044cf45d4f01eaea4959bc0fa315fbccb42"
+          }
+        },
+        "config_cached": false,
+        "default_database_connection": "mysql",
+        "fuel_database_connection": "fuelmysql",
+        "guzzle_class_path": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle/src/Client.php",
+        "guzzle_version": "7.15.2",
+        "laravel_class_path": "/var/www/buy-dtf/vendor/laravel/framework/src/Illuminate/Foundation/Application.php",
+        "laravel_version": "12.69.0",
+        "package_install_paths": {
+          "guzzlehttp/guzzle": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle",
+          "laravel/framework": "/var/www/buy-dtf/vendor/laravel/framework",
+          "league/commonmark": "/var/www/buy-dtf/vendor/league/commonmark",
+          "league/flysystem": "/var/www/buy-dtf/vendor/league/flysystem",
+          "league/flysystem-local": "/var/www/buy-dtf/vendor/league/flysystem-local"
+        },
+        "package_versions": {
+          "guzzlehttp/guzzle": "7.15.2",
+          "laravel/framework": "12.69.0",
+          "league/commonmark": "2.10.2",
+          "league/flysystem": "3.35.3",
+          "league/flysystem-local": "3.35.3"
+        },
+        "php_extensions": [
+          "Core",
+          "FFI",
+          "PDO",
+          "Phar",
+          "Reflection",
+          "SPL",
+          "SimpleXML",
+          "Zend OPcache",
+          "bcmath",
+          "calendar",
+          "ctype",
+          "curl",
+          "date",
+          "dom",
+          "exif",
+          "fileinfo",
+          "filter",
+          "ftp",
+          "gd",
+          "gettext",
+          "hash",
+          "iconv",
+          "imagick",
+          "intl",
+          "json",
+          "libxml",
+          "mbstring",
+          "mysqli",
+          "mysqlnd",
+          "openssl",
+          "pcntl",
+          "pcre",
+          "pdo_mysql",
+          "posix",
+          "random",
+          "readline",
+          "session",
+          "shmop",
+          "sockets",
+          "sodium",
+          "standard",
+          "sysvmsg",
+          "sysvsem",
+          "sysvshm",
+          "tokenizer",
+          "xml",
+          "xmlreader",
+          "xmlwriter",
+          "xsl",
+          "zip",
+          "zlib"
+        ],
+        "php_version": "8.2.30",
+        "queue_connection": "sync",
+        "queue_tables": {
+          "failed_jobs": 0,
+          "jobs": 0
+        }
+      }
+    },
+    {
+      "at_utc": "2026-10-01T00:37:05Z",
+      "health": {
+        "https://buy-dtf.com/": 200,
+        "https://buy-dtf.com/admin": 302,
+        "https://buy-dtf.com/checkout": 302,
+        "https://buy-dtf.com/login": 200,
+        "https://buy-dtf.com/up": 200
+      },
+      "runtime": {
+        "app_debug": false,
+        "app_environment": "local",
+        "business_activity": {
+          "dtfimages": {
+            "count": 19396,
+            "latest_sha256": "4297511e9aaa7e2f9f4b6e3f5837a3b24037ceee950ddd4feb9cf351019d190f"
+          },
+          "dtforders": {
+            "count": 1580,
+            "latest_sha256": "0a8a8a20cc5415f871ccb618833697f6d2fc9a2a971ad879f17406a3c17f57f2"
+          },
+          "paymentinfos": {
+            "count": 1709,
+            "latest_sha256": "0fb5fd75d006763d2a3ff733e2b7acd8b9f4a9a6634f1cd7ec29fb8cb2666567"
+          },
+          "stripe_sync_logs": {
+            "count": 4895,
+            "latest_sha256": "a273f04b3bdef69eb2e173bbf024d044cf45d4f01eaea4959bc0fa315fbccb42"
+          }
+        },
+        "config_cached": false,
+        "default_database_connection": "mysql",
+        "fuel_database_connection": "fuelmysql",
+        "guzzle_class_path": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle/src/Client.php",
+        "guzzle_version": "7.15.2",
+        "laravel_class_path": "/var/www/buy-dtf/vendor/laravel/framework/src/Illuminate/Foundation/Application.php",
+        "laravel_version": "12.69.0",
+        "package_install_paths": {
+          "guzzlehttp/guzzle": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle",
+          "laravel/framework": "/var/www/buy-dtf/vendor/laravel/framework",
+          "league/commonmark": "/var/www/buy-dtf/vendor/league/commonmark",
+          "league/flysystem": "/var/www/buy-dtf/vendor/league/flysystem",
+          "league/flysystem-local": "/var/www/buy-dtf/vendor/league/flysystem-local"
+        },
+        "package_versions": {
+          "guzzlehttp/guzzle": "7.15.2",
+          "laravel/framework": "12.69.0",
+          "league/commonmark": "2.10.2",
+          "league/flysystem": "3.35.3",
+          "league/flysystem-local": "3.35.3"
+        },
+        "php_extensions": [
+          "Core",
+          "FFI",
+          "PDO",
+          "Phar",
+          "Reflection",
+          "SPL",
+          "SimpleXML",
+          "Zend OPcache",
+          "bcmath",
+          "calendar",
+          "ctype",
+          "curl",
+          "date",
+          "dom",
+          "exif",
+          "fileinfo",
+          "filter",
+          "ftp",
+          "gd",
+          "gettext",
+          "hash",
+          "iconv",
+          "imagick",
+          "intl",
+          "json",
+          "libxml",
+          "mbstring",
+          "mysqli",
+          "mysqlnd",
+          "openssl",
+          "pcntl",
+          "pcre",
+          "pdo_mysql",
+          "posix",
+          "random",
+          "readline",
+          "session",
+          "shmop",
+          "sockets",
+          "sodium",
+          "standard",
+          "sysvmsg",
+          "sysvsem",
+          "sysvshm",
+          "tokenizer",
+          "xml",
+          "xmlreader",
+          "xmlwriter",
+          "xsl",
+          "zip",
+          "zlib"
+        ],
+        "php_version": "8.2.30",
+        "queue_connection": "sync",
+        "queue_tables": {
+          "failed_jobs": 0,
+          "jobs": 0
+        }
+      }
+    },
+    {
+      "at_utc": "2026-10-01T00:38:06Z",
+      "health": {
+        "https://buy-dtf.com/": 200,
+        "https://buy-dtf.com/admin": 302,
+        "https://buy-dtf.com/checkout": 302,
+        "https://buy-dtf.com/login": 200,
+        "https://buy-dtf.com/up": 200
+      },
+      "runtime": {
+        "app_debug": false,
+        "app_environment": "local",
+        "business_activity": {
+          "dtfimages": {
+            "count": 19396,
+            "latest_sha256": "4297511e9aaa7e2f9f4b6e3f5837a3b24037ceee950ddd4feb9cf351019d190f"
+          },
+          "dtforders": {
+            "count": 1580,
+            "latest_sha256": "0a8a8a20cc5415f871ccb618833697f6d2fc9a2a971ad879f17406a3c17f57f2"
+          },
+          "paymentinfos": {
+            "count": 1709,
+            "latest_sha256": "0fb5fd75d006763d2a3ff733e2b7acd8b9f4a9a6634f1cd7ec29fb8cb2666567"
+          },
+          "stripe_sync_logs": {
+            "count": 4895,
+            "latest_sha256": "a273f04b3bdef69eb2e173bbf024d044cf45d4f01eaea4959bc0fa315fbccb42"
+          }
+        },
+        "config_cached": false,
+        "default_database_connection": "mysql",
+        "fuel_database_connection": "fuelmysql",
+        "guzzle_class_path": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle/src/Client.php",
+        "guzzle_version": "7.15.2",
+        "laravel_class_path": "/var/www/buy-dtf/vendor/laravel/framework/src/Illuminate/Foundation/Application.php",
+        "laravel_version": "12.69.0",
+        "package_install_paths": {
+          "guzzlehttp/guzzle": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle",
+          "laravel/framework": "/var/www/buy-dtf/vendor/laravel/framework",
+          "league/commonmark": "/var/www/buy-dtf/vendor/league/commonmark",
+          "league/flysystem": "/var/www/buy-dtf/vendor/league/flysystem",
+          "league/flysystem-local": "/var/www/buy-dtf/vendor/league/flysystem-local"
+        },
+        "package_versions": {
+          "guzzlehttp/guzzle": "7.15.2",
+          "laravel/framework": "12.69.0",
+          "league/commonmark": "2.10.2",
+          "league/flysystem": "3.35.3",
+          "league/flysystem-local": "3.35.3"
+        },
+        "php_extensions": [
+          "Core",
+          "FFI",
+          "PDO",
+          "Phar",
+          "Reflection",
+          "SPL",
+          "SimpleXML",
+          "Zend OPcache",
+          "bcmath",
+          "calendar",
+          "ctype",
+          "curl",
+          "date",
+          "dom",
+          "exif",
+          "fileinfo",
+          "filter",
+          "ftp",
+          "gd",
+          "gettext",
+          "hash",
+          "iconv",
+          "imagick",
+          "intl",
+          "json",
+          "libxml",
+          "mbstring",
+          "mysqli",
+          "mysqlnd",
+          "openssl",
+          "pcntl",
+          "pcre",
+          "pdo_mysql",
+          "posix",
+          "random",
+          "readline",
+          "session",
+          "shmop",
+          "sockets",
+          "sodium",
+          "standard",
+          "sysvmsg",
+          "sysvsem",
+          "sysvshm",
+          "tokenizer",
+          "xml",
+          "xmlreader",
+          "xmlwriter",
+          "xsl",
+          "zip",
+          "zlib"
+        ],
+        "php_version": "8.2.30",
+        "queue_connection": "sync",
+        "queue_tables": {
+          "failed_jobs": 0,
+          "jobs": 0
+        }
+      }
+    },
+    {
+      "at_utc": "2026-10-01T00:39:06Z",
+      "health": {
+        "https://buy-dtf.com/": 200,
+        "https://buy-dtf.com/admin": 302,
+        "https://buy-dtf.com/checkout": 302,
+        "https://buy-dtf.com/login": 200,
+        "https://buy-dtf.com/up": 200
+      },
+      "runtime": {
+        "app_debug": false,
+        "app_environment": "local",
+        "business_activity": {
+          "dtfimages": {
+            "count": 19396,
+            "latest_sha256": "3304ae79a8753e97843016c25290d9b565b650192c319a075a9f2f7477dde4b9"
+          },
+          "dtforders": {
+            "count": 1580,
+            "latest_sha256": "0a8a8a20cc5415f871ccb618833697f6d2fc9a2a971ad879f17406a3c17f57f2"
+          },
+          "paymentinfos": {
+            "count": 1709,
+            "latest_sha256": "0fb5fd75d006763d2a3ff733e2b7acd8b9f4a9a6634f1cd7ec29fb8cb2666567"
+          },
+          "stripe_sync_logs": {
+            "count": 4895,
+            "latest_sha256": "a273f04b3bdef69eb2e173bbf024d044cf45d4f01eaea4959bc0fa315fbccb42"
+          }
+        },
+        "config_cached": false,
+        "default_database_connection": "mysql",
+        "fuel_database_connection": "fuelmysql",
+        "guzzle_class_path": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle/src/Client.php",
+        "guzzle_version": "7.15.2",
+        "laravel_class_path": "/var/www/buy-dtf/vendor/laravel/framework/src/Illuminate/Foundation/Application.php",
+        "laravel_version": "12.69.0",
+        "package_install_paths": {
+          "guzzlehttp/guzzle": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle",
+          "laravel/framework": "/var/www/buy-dtf/vendor/laravel/framework",
+          "league/commonmark": "/var/www/buy-dtf/vendor/league/commonmark",
+          "league/flysystem": "/var/www/buy-dtf/vendor/league/flysystem",
+          "league/flysystem-local": "/var/www/buy-dtf/vendor/league/flysystem-local"
+        },
+        "package_versions": {
+          "guzzlehttp/guzzle": "7.15.2",
+          "laravel/framework": "12.69.0",
+          "league/commonmark": "2.10.2",
+          "league/flysystem": "3.35.3",
+          "league/flysystem-local": "3.35.3"
+        },
+        "php_extensions": [
+          "Core",
+          "FFI",
+          "PDO",
+          "Phar",
+          "Reflection",
+          "SPL",
+          "SimpleXML",
+          "Zend OPcache",
+          "bcmath",
+          "calendar",
+          "ctype",
+          "curl",
+          "date",
+          "dom",
+          "exif",
+          "fileinfo",
+          "filter",
+          "ftp",
+          "gd",
+          "gettext",
+          "hash",
+          "iconv",
+          "imagick",
+          "intl",
+          "json",
+          "libxml",
+          "mbstring",
+          "mysqli",
+          "mysqlnd",
+          "openssl",
+          "pcntl",
+          "pcre",
+          "pdo_mysql",
+          "posix",
+          "random",
+          "readline",
+          "session",
+          "shmop",
+          "sockets",
+          "sodium",
+          "standard",
+          "sysvmsg",
+          "sysvsem",
+          "sysvshm",
+          "tokenizer",
+          "xml",
+          "xmlreader",
+          "xmlwriter",
+          "xsl",
+          "zip",
+          "zlib"
+        ],
+        "php_version": "8.2.30",
+        "queue_connection": "sync",
+        "queue_tables": {
+          "failed_jobs": 0,
+          "jobs": 0
+        }
+      }
+    },
+    {
+      "at_utc": "2026-10-01T00:40:09Z",
+      "health": {
+        "https://buy-dtf.com/": 200,
+        "https://buy-dtf.com/admin": 302,
+        "https://buy-dtf.com/checkout": 302,
+        "https://buy-dtf.com/login": 200,
+        "https://buy-dtf.com/up": 200
+      },
+      "runtime": {
+        "app_debug": false,
+        "app_environment": "local",
+        "business_activity": {
+          "dtfimages": {
+            "count": 19397,
+            "latest_sha256": "833a1bcc1cb25a1eecbfac0683920c20ab7a7e88024adda0c0c6f62123130561"
+          },
+          "dtforders": {
+            "count": 1580,
+            "latest_sha256": "0a8a8a20cc5415f871ccb618833697f6d2fc9a2a971ad879f17406a3c17f57f2"
+          },
+          "paymentinfos": {
+            "count": 1709,
+            "latest_sha256": "0fb5fd75d006763d2a3ff733e2b7acd8b9f4a9a6634f1cd7ec29fb8cb2666567"
+          },
+          "stripe_sync_logs": {
+            "count": 4895,
+            "latest_sha256": "a273f04b3bdef69eb2e173bbf024d044cf45d4f01eaea4959bc0fa315fbccb42"
+          }
+        },
+        "config_cached": false,
+        "default_database_connection": "mysql",
+        "fuel_database_connection": "fuelmysql",
+        "guzzle_class_path": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle/src/Client.php",
+        "guzzle_version": "7.15.2",
+        "laravel_class_path": "/var/www/buy-dtf/vendor/laravel/framework/src/Illuminate/Foundation/Application.php",
+        "laravel_version": "12.69.0",
+        "package_install_paths": {
+          "guzzlehttp/guzzle": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle",
+          "laravel/framework": "/var/www/buy-dtf/vendor/laravel/framework",
+          "league/commonmark": "/var/www/buy-dtf/vendor/league/commonmark",
+          "league/flysystem": "/var/www/buy-dtf/vendor/league/flysystem",
+          "league/flysystem-local": "/var/www/buy-dtf/vendor/league/flysystem-local"
+        },
+        "package_versions": {
+          "guzzlehttp/guzzle": "7.15.2",
+          "laravel/framework": "12.69.0",
+          "league/commonmark": "2.10.2",
+          "league/flysystem": "3.35.3",
+          "league/flysystem-local": "3.35.3"
+        },
+        "php_extensions": [
+          "Core",
+          "FFI",
+          "PDO",
+          "Phar",
+          "Reflection",
+          "SPL",
+          "SimpleXML",
+          "Zend OPcache",
+          "bcmath",
+          "calendar",
+          "ctype",
+          "curl",
+          "date",
+          "dom",
+          "exif",
+          "fileinfo",
+          "filter",
+          "ftp",
+          "gd",
+          "gettext",
+          "hash",
+          "iconv",
+          "imagick",
+          "intl",
+          "json",
+          "libxml",
+          "mbstring",
+          "mysqli",
+          "mysqlnd",
+          "openssl",
+          "pcntl",
+          "pcre",
+          "pdo_mysql",
+          "posix",
+          "random",
+          "readline",
+          "session",
+          "shmop",
+          "sockets",
+          "sodium",
+          "standard",
+          "sysvmsg",
+          "sysvsem",
+          "sysvshm",
+          "tokenizer",
+          "xml",
+          "xmlreader",
+          "xmlwriter",
+          "xsl",
+          "zip",
+          "zlib"
+        ],
+        "php_version": "8.2.30",
+        "queue_connection": "sync",
+        "queue_tables": {
+          "failed_jobs": 0,
+          "jobs": 0
+        }
+      }
+    },
+    {
+      "at_utc": "2026-10-01T00:41:11Z",
+      "health": {
+        "https://buy-dtf.com/": 200,
+        "https://buy-dtf.com/admin": 302,
+        "https://buy-dtf.com/checkout": 302,
+        "https://buy-dtf.com/login": 200,
+        "https://buy-dtf.com/up": 200
+      },
+      "runtime": {
+        "app_debug": false,
+        "app_environment": "local",
+        "business_activity": {
+          "dtfimages": {
+            "count": 19397,
+            "latest_sha256": "833a1bcc1cb25a1eecbfac0683920c20ab7a7e88024adda0c0c6f62123130561"
+          },
+          "dtforders": {
+            "count": 1580,
+            "latest_sha256": "0a8a8a20cc5415f871ccb618833697f6d2fc9a2a971ad879f17406a3c17f57f2"
+          },
+          "paymentinfos": {
+            "count": 1709,
+            "latest_sha256": "0fb5fd75d006763d2a3ff733e2b7acd8b9f4a9a6634f1cd7ec29fb8cb2666567"
+          },
+          "stripe_sync_logs": {
+            "count": 4895,
+            "latest_sha256": "a273f04b3bdef69eb2e173bbf024d044cf45d4f01eaea4959bc0fa315fbccb42"
+          }
+        },
+        "config_cached": false,
+        "default_database_connection": "mysql",
+        "fuel_database_connection": "fuelmysql",
+        "guzzle_class_path": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle/src/Client.php",
+        "guzzle_version": "7.15.2",
+        "laravel_class_path": "/var/www/buy-dtf/vendor/laravel/framework/src/Illuminate/Foundation/Application.php",
+        "laravel_version": "12.69.0",
+        "package_install_paths": {
+          "guzzlehttp/guzzle": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle",
+          "laravel/framework": "/var/www/buy-dtf/vendor/laravel/framework",
+          "league/commonmark": "/var/www/buy-dtf/vendor/league/commonmark",
+          "league/flysystem": "/var/www/buy-dtf/vendor/league/flysystem",
+          "league/flysystem-local": "/var/www/buy-dtf/vendor/league/flysystem-local"
+        },
+        "package_versions": {
+          "guzzlehttp/guzzle": "7.15.2",
+          "laravel/framework": "12.69.0",
+          "league/commonmark": "2.10.2",
+          "league/flysystem": "3.35.3",
+          "league/flysystem-local": "3.35.3"
+        },
+        "php_extensions": [
+          "Core",
+          "FFI",
+          "PDO",
+          "Phar",
+          "Reflection",
+          "SPL",
+          "SimpleXML",
+          "Zend OPcache",
+          "bcmath",
+          "calendar",
+          "ctype",
+          "curl",
+          "date",
+          "dom",
+          "exif",
+          "fileinfo",
+          "filter",
+          "ftp",
+          "gd",
+          "gettext",
+          "hash",
+          "iconv",
+          "imagick",
+          "intl",
+          "json",
+          "libxml",
+          "mbstring",
+          "mysqli",
+          "mysqlnd",
+          "openssl",
+          "pcntl",
+          "pcre",
+          "pdo_mysql",
+          "posix",
+          "random",
+          "readline",
+          "session",
+          "shmop",
+          "sockets",
+          "sodium",
+          "standard",
+          "sysvmsg",
+          "sysvsem",
+          "sysvshm",
+          "tokenizer",
+          "xml",
+          "xmlreader",
+          "xmlwriter",
+          "xsl",
+          "zip",
+          "zlib"
+        ],
+        "php_version": "8.2.30",
+        "queue_connection": "sync",
+        "queue_tables": {
+          "failed_jobs": 0,
+          "jobs": 0
+        }
+      }
+    },
+    {
+      "at_utc": "2026-10-01T00:42:12Z",
+      "health": {
+        "https://buy-dtf.com/": 200,
+        "https://buy-dtf.com/admin": 302,
+        "https://buy-dtf.com/checkout": 302,
+        "https://buy-dtf.com/login": 200,
+        "https://buy-dtf.com/up": 200
+      },
+      "runtime": {
+        "app_debug": false,
+        "app_environment": "local",
+        "business_activity": {
+          "dtfimages": {
+            "count": 19397,
+            "latest_sha256": "833a1bcc1cb25a1eecbfac0683920c20ab7a7e88024adda0c0c6f62123130561"
+          },
+          "dtforders": {
+            "count": 1580,
+            "latest_sha256": "0a8a8a20cc5415f871ccb618833697f6d2fc9a2a971ad879f17406a3c17f57f2"
+          },
+          "paymentinfos": {
+            "count": 1709,
+            "latest_sha256": "0fb5fd75d006763d2a3ff733e2b7acd8b9f4a9a6634f1cd7ec29fb8cb2666567"
+          },
+          "stripe_sync_logs": {
+            "count": 4895,
+            "latest_sha256": "a273f04b3bdef69eb2e173bbf024d044cf45d4f01eaea4959bc0fa315fbccb42"
+          }
+        },
+        "config_cached": false,
+        "default_database_connection": "mysql",
+        "fuel_database_connection": "fuelmysql",
+        "guzzle_class_path": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle/src/Client.php",
+        "guzzle_version": "7.15.2",
+        "laravel_class_path": "/var/www/buy-dtf/vendor/laravel/framework/src/Illuminate/Foundation/Application.php",
+        "laravel_version": "12.69.0",
+        "package_install_paths": {
+          "guzzlehttp/guzzle": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle",
+          "laravel/framework": "/var/www/buy-dtf/vendor/laravel/framework",
+          "league/commonmark": "/var/www/buy-dtf/vendor/league/commonmark",
+          "league/flysystem": "/var/www/buy-dtf/vendor/league/flysystem",
+          "league/flysystem-local": "/var/www/buy-dtf/vendor/league/flysystem-local"
+        },
+        "package_versions": {
+          "guzzlehttp/guzzle": "7.15.2",
+          "laravel/framework": "12.69.0",
+          "league/commonmark": "2.10.2",
+          "league/flysystem": "3.35.3",
+          "league/flysystem-local": "3.35.3"
+        },
+        "php_extensions": [
+          "Core",
+          "FFI",
+          "PDO",
+          "Phar",
+          "Reflection",
+          "SPL",
+          "SimpleXML",
+          "Zend OPcache",
+          "bcmath",
+          "calendar",
+          "ctype",
+          "curl",
+          "date",
+          "dom",
+          "exif",
+          "fileinfo",
+          "filter",
+          "ftp",
+          "gd",
+          "gettext",
+          "hash",
+          "iconv",
+          "imagick",
+          "intl",
+          "json",
+          "libxml",
+          "mbstring",
+          "mysqli",
+          "mysqlnd",
+          "openssl",
+          "pcntl",
+          "pcre",
+          "pdo_mysql",
+          "posix",
+          "random",
+          "readline",
+          "session",
+          "shmop",
+          "sockets",
+          "sodium",
+          "standard",
+          "sysvmsg",
+          "sysvsem",
+          "sysvshm",
+          "tokenizer",
+          "xml",
+          "xmlreader",
+          "xmlwriter",
+          "xsl",
+          "zip",
+          "zlib"
+        ],
+        "php_version": "8.2.30",
+        "queue_connection": "sync",
+        "queue_tables": {
+          "failed_jobs": 0,
+          "jobs": 0
+        }
+      }
+    },
+    {
+      "at_utc": "2026-10-01T00:43:13Z",
+      "health": {
+        "https://buy-dtf.com/": 200,
+        "https://buy-dtf.com/admin": 302,
+        "https://buy-dtf.com/checkout": 302,
+        "https://buy-dtf.com/login": 200,
+        "https://buy-dtf.com/up": 200
+      },
+      "runtime": {
+        "app_debug": false,
+        "app_environment": "local",
+        "business_activity": {
+          "dtfimages": {
+            "count": 19397,
+            "latest_sha256": "833a1bcc1cb25a1eecbfac0683920c20ab7a7e88024adda0c0c6f62123130561"
+          },
+          "dtforders": {
+            "count": 1580,
+            "latest_sha256": "0a8a8a20cc5415f871ccb618833697f6d2fc9a2a971ad879f17406a3c17f57f2"
+          },
+          "paymentinfos": {
+            "count": 1709,
+            "latest_sha256": "0fb5fd75d006763d2a3ff733e2b7acd8b9f4a9a6634f1cd7ec29fb8cb2666567"
+          },
+          "stripe_sync_logs": {
+            "count": 4895,
+            "latest_sha256": "a273f04b3bdef69eb2e173bbf024d044cf45d4f01eaea4959bc0fa315fbccb42"
+          }
+        },
+        "config_cached": false,
+        "default_database_connection": "mysql",
+        "fuel_database_connection": "fuelmysql",
+        "guzzle_class_path": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle/src/Client.php",
+        "guzzle_version": "7.15.2",
+        "laravel_class_path": "/var/www/buy-dtf/vendor/laravel/framework/src/Illuminate/Foundation/Application.php",
+        "laravel_version": "12.69.0",
+        "package_install_paths": {
+          "guzzlehttp/guzzle": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle",
+          "laravel/framework": "/var/www/buy-dtf/vendor/laravel/framework",
+          "league/commonmark": "/var/www/buy-dtf/vendor/league/commonmark",
+          "league/flysystem": "/var/www/buy-dtf/vendor/league/flysystem",
+          "league/flysystem-local": "/var/www/buy-dtf/vendor/league/flysystem-local"
+        },
+        "package_versions": {
+          "guzzlehttp/guzzle": "7.15.2",
+          "laravel/framework": "12.69.0",
+          "league/commonmark": "2.10.2",
+          "league/flysystem": "3.35.3",
+          "league/flysystem-local": "3.35.3"
+        },
+        "php_extensions": [
+          "Core",
+          "FFI",
+          "PDO",
+          "Phar",
+          "Reflection",
+          "SPL",
+          "SimpleXML",
+          "Zend OPcache",
+          "bcmath",
+          "calendar",
+          "ctype",
+          "curl",
+          "date",
+          "dom",
+          "exif",
+          "fileinfo",
+          "filter",
+          "ftp",
+          "gd",
+          "gettext",
+          "hash",
+          "iconv",
+          "imagick",
+          "intl",
+          "json",
+          "libxml",
+          "mbstring",
+          "mysqli",
+          "mysqlnd",
+          "openssl",
+          "pcntl",
+          "pcre",
+          "pdo_mysql",
+          "posix",
+          "random",
+          "readline",
+          "session",
+          "shmop",
+          "sockets",
+          "sodium",
+          "standard",
+          "sysvmsg",
+          "sysvsem",
+          "sysvshm",
+          "tokenizer",
+          "xml",
+          "xmlreader",
+          "xmlwriter",
+          "xsl",
+          "zip",
+          "zlib"
+        ],
+        "php_version": "8.2.30",
+        "queue_connection": "sync",
+        "queue_tables": {
+          "failed_jobs": 0,
+          "jobs": 0
+        }
+      }
+    },
+    {
+      "at_utc": "2026-10-01T00:44:14Z",
+      "health": {
+        "https://buy-dtf.com/": 200,
+        "https://buy-dtf.com/admin": 302,
+        "https://buy-dtf.com/checkout": 302,
+        "https://buy-dtf.com/login": 200,
+        "https://buy-dtf.com/up": 200
+      },
+      "runtime": {
+        "app_debug": false,
+        "app_environment": "local",
+        "business_activity": {
+          "dtfimages": {
+            "count": 19397,
+            "latest_sha256": "833a1bcc1cb25a1eecbfac0683920c20ab7a7e88024adda0c0c6f62123130561"
+          },
+          "dtforders": {
+            "count": 1580,
+            "latest_sha256": "0a8a8a20cc5415f871ccb618833697f6d2fc9a2a971ad879f17406a3c17f57f2"
+          },
+          "paymentinfos": {
+            "count": 1709,
+            "latest_sha256": "0fb5fd75d006763d2a3ff733e2b7acd8b9f4a9a6634f1cd7ec29fb8cb2666567"
+          },
+          "stripe_sync_logs": {
+            "count": 4895,
+            "latest_sha256": "a273f04b3bdef69eb2e173bbf024d044cf45d4f01eaea4959bc0fa315fbccb42"
+          }
+        },
+        "config_cached": false,
+        "default_database_connection": "mysql",
+        "fuel_database_connection": "fuelmysql",
+        "guzzle_class_path": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle/src/Client.php",
+        "guzzle_version": "7.15.2",
+        "laravel_class_path": "/var/www/buy-dtf/vendor/laravel/framework/src/Illuminate/Foundation/Application.php",
+        "laravel_version": "12.69.0",
+        "package_install_paths": {
+          "guzzlehttp/guzzle": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle",
+          "laravel/framework": "/var/www/buy-dtf/vendor/laravel/framework",
+          "league/commonmark": "/var/www/buy-dtf/vendor/league/commonmark",
+          "league/flysystem": "/var/www/buy-dtf/vendor/league/flysystem",
+          "league/flysystem-local": "/var/www/buy-dtf/vendor/league/flysystem-local"
+        },
+        "package_versions": {
+          "guzzlehttp/guzzle": "7.15.2",
+          "laravel/framework": "12.69.0",
+          "league/commonmark": "2.10.2",
+          "league/flysystem": "3.35.3",
+          "league/flysystem-local": "3.35.3"
+        },
+        "php_extensions": [
+          "Core",
+          "FFI",
+          "PDO",
+          "Phar",
+          "Reflection",
+          "SPL",
+          "SimpleXML",
+          "Zend OPcache",
+          "bcmath",
+          "calendar",
+          "ctype",
+          "curl",
+          "date",
+          "dom",
+          "exif",
+          "fileinfo",
+          "filter",
+          "ftp",
+          "gd",
+          "gettext",
+          "hash",
+          "iconv",
+          "imagick",
+          "intl",
+          "json",
+          "libxml",
+          "mbstring",
+          "mysqli",
+          "mysqlnd",
+          "openssl",
+          "pcntl",
+          "pcre",
+          "pdo_mysql",
+          "posix",
+          "random",
+          "readline",
+          "session",
+          "shmop",
+          "sockets",
+          "sodium",
+          "standard",
+          "sysvmsg",
+          "sysvsem",
+          "sysvshm",
+          "tokenizer",
+          "xml",
+          "xmlreader",
+          "xmlwriter",
+          "xsl",
+          "zip",
+          "zlib"
+        ],
+        "php_version": "8.2.30",
+        "queue_connection": "sync",
+        "queue_tables": {
+          "failed_jobs": 0,
+          "jobs": 0
+        }
+      }
+    },
+    {
+      "at_utc": "2026-10-01T00:45:15Z",
+      "health": {
+        "https://buy-dtf.com/": 200,
+        "https://buy-dtf.com/admin": 302,
+        "https://buy-dtf.com/checkout": 302,
+        "https://buy-dtf.com/login": 200,
+        "https://buy-dtf.com/up": 200
+      },
+      "runtime": {
+        "app_debug": false,
+        "app_environment": "local",
+        "business_activity": {
+          "dtfimages": {
+            "count": 19397,
+            "latest_sha256": "833a1bcc1cb25a1eecbfac0683920c20ab7a7e88024adda0c0c6f62123130561"
+          },
+          "dtforders": {
+            "count": 1580,
+            "latest_sha256": "0a8a8a20cc5415f871ccb618833697f6d2fc9a2a971ad879f17406a3c17f57f2"
+          },
+          "paymentinfos": {
+            "count": 1709,
+            "latest_sha256": "0fb5fd75d006763d2a3ff733e2b7acd8b9f4a9a6634f1cd7ec29fb8cb2666567"
+          },
+          "stripe_sync_logs": {
+            "count": 4895,
+            "latest_sha256": "a273f04b3bdef69eb2e173bbf024d044cf45d4f01eaea4959bc0fa315fbccb42"
+          }
+        },
+        "config_cached": false,
+        "default_database_connection": "mysql",
+        "fuel_database_connection": "fuelmysql",
+        "guzzle_class_path": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle/src/Client.php",
+        "guzzle_version": "7.15.2",
+        "laravel_class_path": "/var/www/buy-dtf/vendor/laravel/framework/src/Illuminate/Foundation/Application.php",
+        "laravel_version": "12.69.0",
+        "package_install_paths": {
+          "guzzlehttp/guzzle": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle",
+          "laravel/framework": "/var/www/buy-dtf/vendor/laravel/framework",
+          "league/commonmark": "/var/www/buy-dtf/vendor/league/commonmark",
+          "league/flysystem": "/var/www/buy-dtf/vendor/league/flysystem",
+          "league/flysystem-local": "/var/www/buy-dtf/vendor/league/flysystem-local"
+        },
+        "package_versions": {
+          "guzzlehttp/guzzle": "7.15.2",
+          "laravel/framework": "12.69.0",
+          "league/commonmark": "2.10.2",
+          "league/flysystem": "3.35.3",
+          "league/flysystem-local": "3.35.3"
+        },
+        "php_extensions": [
+          "Core",
+          "FFI",
+          "PDO",
+          "Phar",
+          "Reflection",
+          "SPL",
+          "SimpleXML",
+          "Zend OPcache",
+          "bcmath",
+          "calendar",
+          "ctype",
+          "curl",
+          "date",
+          "dom",
+          "exif",
+          "fileinfo",
+          "filter",
+          "ftp",
+          "gd",
+          "gettext",
+          "hash",
+          "iconv",
+          "imagick",
+          "intl",
+          "json",
+          "libxml",
+          "mbstring",
+          "mysqli",
+          "mysqlnd",
+          "openssl",
+          "pcntl",
+          "pcre",
+          "pdo_mysql",
+          "posix",
+          "random",
+          "readline",
+          "session",
+          "shmop",
+          "sockets",
+          "sodium",
+          "standard",
+          "sysvmsg",
+          "sysvsem",
+          "sysvshm",
+          "tokenizer",
+          "xml",
+          "xmlreader",
+          "xmlwriter",
+          "xsl",
+          "zip",
+          "zlib"
+        ],
+        "php_version": "8.2.30",
+        "queue_connection": "sync",
+        "queue_tables": {
+          "failed_jobs": 0,
+          "jobs": 0
+        }
+      }
+    },
+    {
+      "at_utc": "2026-10-01T00:46:16Z",
+      "health": {
+        "https://buy-dtf.com/": 200,
+        "https://buy-dtf.com/admin": 302,
+        "https://buy-dtf.com/checkout": 302,
+        "https://buy-dtf.com/login": 200,
+        "https://buy-dtf.com/up": 200
+      },
+      "runtime": {
+        "app_debug": false,
+        "app_environment": "local",
+        "business_activity": {
+          "dtfimages": {
+            "count": 19397,
+            "latest_sha256": "833a1bcc1cb25a1eecbfac0683920c20ab7a7e88024adda0c0c6f62123130561"
+          },
+          "dtforders": {
+            "count": 1580,
+            "latest_sha256": "0a8a8a20cc5415f871ccb618833697f6d2fc9a2a971ad879f17406a3c17f57f2"
+          },
+          "paymentinfos": {
+            "count": 1709,
+            "latest_sha256": "0fb5fd75d006763d2a3ff733e2b7acd8b9f4a9a6634f1cd7ec29fb8cb2666567"
+          },
+          "stripe_sync_logs": {
+            "count": 4895,
+            "latest_sha256": "a273f04b3bdef69eb2e173bbf024d044cf45d4f01eaea4959bc0fa315fbccb42"
+          }
+        },
+        "config_cached": false,
+        "default_database_connection": "mysql",
+        "fuel_database_connection": "fuelmysql",
+        "guzzle_class_path": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle/src/Client.php",
+        "guzzle_version": "7.15.2",
+        "laravel_class_path": "/var/www/buy-dtf/vendor/laravel/framework/src/Illuminate/Foundation/Application.php",
+        "laravel_version": "12.69.0",
+        "package_install_paths": {
+          "guzzlehttp/guzzle": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle",
+          "laravel/framework": "/var/www/buy-dtf/vendor/laravel/framework",
+          "league/commonmark": "/var/www/buy-dtf/vendor/league/commonmark",
+          "league/flysystem": "/var/www/buy-dtf/vendor/league/flysystem",
+          "league/flysystem-local": "/var/www/buy-dtf/vendor/league/flysystem-local"
+        },
+        "package_versions": {
+          "guzzlehttp/guzzle": "7.15.2",
+          "laravel/framework": "12.69.0",
+          "league/commonmark": "2.10.2",
+          "league/flysystem": "3.35.3",
+          "league/flysystem-local": "3.35.3"
+        },
+        "php_extensions": [
+          "Core",
+          "FFI",
+          "PDO",
+          "Phar",
+          "Reflection",
+          "SPL",
+          "SimpleXML",
+          "Zend OPcache",
+          "bcmath",
+          "calendar",
+          "ctype",
+          "curl",
+          "date",
+          "dom",
+          "exif",
+          "fileinfo",
+          "filter",
+          "ftp",
+          "gd",
+          "gettext",
+          "hash",
+          "iconv",
+          "imagick",
+          "intl",
+          "json",
+          "libxml",
+          "mbstring",
+          "mysqli",
+          "mysqlnd",
+          "openssl",
+          "pcntl",
+          "pcre",
+          "pdo_mysql",
+          "posix",
+          "random",
+          "readline",
+          "session",
+          "shmop",
+          "sockets",
+          "sodium",
+          "standard",
+          "sysvmsg",
+          "sysvsem",
+          "sysvshm",
+          "tokenizer",
+          "xml",
+          "xmlreader",
+          "xmlwriter",
+          "xsl",
+          "zip",
+          "zlib"
+        ],
+        "php_version": "8.2.30",
+        "queue_connection": "sync",
+        "queue_tables": {
+          "failed_jobs": 0,
+          "jobs": 0
+        }
+      }
+    },
+    {
+      "at_utc": "2026-10-01T00:47:17Z",
+      "health": {
+        "https://buy-dtf.com/": 200,
+        "https://buy-dtf.com/admin": 302,
+        "https://buy-dtf.com/checkout": 302,
+        "https://buy-dtf.com/login": 200,
+        "https://buy-dtf.com/up": 200
+      },
+      "runtime": {
+        "app_debug": false,
+        "app_environment": "local",
+        "business_activity": {
+          "dtfimages": {
+            "count": 19397,
+            "latest_sha256": "833a1bcc1cb25a1eecbfac0683920c20ab7a7e88024adda0c0c6f62123130561"
+          },
+          "dtforders": {
+            "count": 1580,
+            "latest_sha256": "0a8a8a20cc5415f871ccb618833697f6d2fc9a2a971ad879f17406a3c17f57f2"
+          },
+          "paymentinfos": {
+            "count": 1709,
+            "latest_sha256": "0fb5fd75d006763d2a3ff733e2b7acd8b9f4a9a6634f1cd7ec29fb8cb2666567"
+          },
+          "stripe_sync_logs": {
+            "count": 4895,
+            "latest_sha256": "a273f04b3bdef69eb2e173bbf024d044cf45d4f01eaea4959bc0fa315fbccb42"
+          }
+        },
+        "config_cached": false,
+        "default_database_connection": "mysql",
+        "fuel_database_connection": "fuelmysql",
+        "guzzle_class_path": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle/src/Client.php",
+        "guzzle_version": "7.15.2",
+        "laravel_class_path": "/var/www/buy-dtf/vendor/laravel/framework/src/Illuminate/Foundation/Application.php",
+        "laravel_version": "12.69.0",
+        "package_install_paths": {
+          "guzzlehttp/guzzle": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle",
+          "laravel/framework": "/var/www/buy-dtf/vendor/laravel/framework",
+          "league/commonmark": "/var/www/buy-dtf/vendor/league/commonmark",
+          "league/flysystem": "/var/www/buy-dtf/vendor/league/flysystem",
+          "league/flysystem-local": "/var/www/buy-dtf/vendor/league/flysystem-local"
+        },
+        "package_versions": {
+          "guzzlehttp/guzzle": "7.15.2",
+          "laravel/framework": "12.69.0",
+          "league/commonmark": "2.10.2",
+          "league/flysystem": "3.35.3",
+          "league/flysystem-local": "3.35.3"
+        },
+        "php_extensions": [
+          "Core",
+          "FFI",
+          "PDO",
+          "Phar",
+          "Reflection",
+          "SPL",
+          "SimpleXML",
+          "Zend OPcache",
+          "bcmath",
+          "calendar",
+          "ctype",
+          "curl",
+          "date",
+          "dom",
+          "exif",
+          "fileinfo",
+          "filter",
+          "ftp",
+          "gd",
+          "gettext",
+          "hash",
+          "iconv",
+          "imagick",
+          "intl",
+          "json",
+          "libxml",
+          "mbstring",
+          "mysqli",
+          "mysqlnd",
+          "openssl",
+          "pcntl",
+          "pcre",
+          "pdo_mysql",
+          "posix",
+          "random",
+          "readline",
+          "session",
+          "shmop",
+          "sockets",
+          "sodium",
+          "standard",
+          "sysvmsg",
+          "sysvsem",
+          "sysvshm",
+          "tokenizer",
+          "xml",
+          "xmlreader",
+          "xmlwriter",
+          "xsl",
+          "zip",
+          "zlib"
+        ],
+        "php_version": "8.2.30",
+        "queue_connection": "sync",
+        "queue_tables": {
+          "failed_jobs": 0,
+          "jobs": 0
+        }
+      }
+    }
+  ],
+  "old_fpm_preflight": {
+    "guzzle_path": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle/src/Client.php",
+    "guzzle_version": "7.15.2",
+    "laravel_path": "/var/www/buy-dtf/vendor/laravel/framework/src/Illuminate/Foundation/Application.php",
+    "laravel_version": "12.61.1",
+    "package_install_paths": {
+      "guzzlehttp/guzzle": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle",
+      "laravel/framework": "/var/www/buy-dtf/vendor/laravel/framework",
+      "league/commonmark": "/var/www/buy-dtf/vendor/league/commonmark",
+      "league/flysystem": "/var/www/buy-dtf/vendor/league/flysystem",
+      "league/flysystem-local": "/var/www/buy-dtf/vendor/league/flysystem-local"
+    },
+    "package_versions": {
+      "guzzlehttp/guzzle": "7.15.2",
+      "laravel/framework": "12.61.1",
+      "league/commonmark": "2.10.0",
+      "league/flysystem": "3.30.2",
+      "league/flysystem-local": "3.30.2"
+    },
+    "php_extensions": [
+      "Core",
+      "FFI",
+      "PDO",
+      "Phar",
+      "Reflection",
+      "SPL",
+      "SimpleXML",
+      "Zend OPcache",
+      "bcmath",
+      "calendar",
+      "cgi-fcgi",
+      "ctype",
+      "curl",
+      "date",
+      "dom",
+      "exif",
+      "fileinfo",
+      "filter",
+      "ftp",
+      "gd",
+      "gettext",
+      "hash",
+      "iconv",
+      "imagick",
+      "intl",
+      "json",
+      "libxml",
+      "mbstring",
+      "mysqli",
+      "mysqlnd",
+      "openssl",
+      "pcre",
+      "pdo_mysql",
+      "posix",
+      "random",
+      "readline",
+      "session",
+      "shmop",
+      "sockets",
+      "sodium",
+      "standard",
+      "sysvmsg",
+      "sysvsem",
+      "sysvshm",
+      "tokenizer",
+      "xml",
+      "xmlreader",
+      "xmlwriter",
+      "xsl",
+      "zip",
+      "zlib"
+    ],
+    "php_version": "8.2.30"
+  },
+  "old_lock_backup": "/var/www/buy-dtf/storage/app/private/operations/dependency-rollbacks/22af12c7e58f-20261001T001617Z/composer.lock.before",
+  "release_receipt": "/var/www/buy-dtf/storage/app/private/operations/dependency-releases/22af12c7e58f-20261001T000259Z/release-receipt.json",
+  "release_receipt_sha256": "98cb72f1d1aca02e94a5cad2989f981782551d7d7c5cb254f7defc6fbeba79d3",
+  "retained_cache_identity": {
+    "entries": {
+      "packages.php": {
+        "bytes": 415,
+        "gid": 33,
+        "kind": "file",
+        "mode": 436,
+        "sha256": "21da8f9ed19687e708cc7bc5cc59394c6fcdf9b9deadf617ae70526f815a1db0",
+        "uid": 1000
+      },
+      "services.php": {
+        "bytes": 21353,
+        "gid": 33,
+        "kind": "file",
+        "mode": 436,
+        "sha256": "1f7623b2b4ffd2c4099fb34ad86fc96c1479e27bf81b1b0ba328c988cc4ffcb5",
+        "uid": 1000
+      }
+    },
+    "manifest": {
+      "bytes": 21768,
+      "directories": 0,
+      "files": 2,
+      "sha256": "468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9"
+    },
+    "root_metadata": {
+      "gid": 33,
+      "kind": "directory",
+      "mode": 1533,
+      "uid": 1000
+    }
+  },
+  "rollback_complete": false,
+  "rollback_retained_cache_path": "/var/www/buy-dtf/storage/app/private/operations/dependency-releases/22af12c7e58f-20261001T000259Z/shadow/bootstrap/cache",
+  "rollback_retained_vendor_path": "/var/www/buy-dtf/storage/app/private/operations/dependency-releases/22af12c7e58f-20261001T000259Z/shadow/vendor",
+  "rollback_started": false,
+  "runtime_before": {
+    "app_debug": false,
+    "app_environment": "local",
+    "business_activity": {
+      "dtfimages": {
+        "count": 19396,
+        "latest_sha256": "ae2213e6e6d9ff6b0d028da2fea87f1d171c634d43a80aedd8fc87ce43334478"
+      },
+      "dtforders": {
+        "count": 1580,
+        "latest_sha256": "2284e0fde5efa2000d7271cc973648afc291041dd900052142a9f8f127a4f111"
+      },
+      "paymentinfos": {
+        "count": 1709,
+        "latest_sha256": "0fb5fd75d006763d2a3ff733e2b7acd8b9f4a9a6634f1cd7ec29fb8cb2666567"
+      },
+      "stripe_sync_logs": {
+        "count": 4894,
+        "latest_sha256": "bb45dc167851291f9b6d6e668b21b9b9568fcf8c714caac6a1daa3977cdfec2c"
+      }
+    },
+    "config_cached": false,
+    "default_database_connection": "mysql",
+    "fuel_database_connection": "fuelmysql",
+    "guzzle_class_path": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle/src/Client.php",
+    "guzzle_version": "7.15.2",
+    "laravel_class_path": "/var/www/buy-dtf/vendor/laravel/framework/src/Illuminate/Foundation/Application.php",
+    "laravel_version": "12.61.1",
+    "package_install_paths": {
+      "guzzlehttp/guzzle": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle",
+      "laravel/framework": "/var/www/buy-dtf/vendor/laravel/framework",
+      "league/commonmark": "/var/www/buy-dtf/vendor/league/commonmark",
+      "league/flysystem": "/var/www/buy-dtf/vendor/league/flysystem",
+      "league/flysystem-local": "/var/www/buy-dtf/vendor/league/flysystem-local"
+    },
+    "package_versions": {
+      "guzzlehttp/guzzle": "7.15.2",
+      "laravel/framework": "12.61.1",
+      "league/commonmark": "2.10.0",
+      "league/flysystem": "3.30.2",
+      "league/flysystem-local": "3.30.2"
+    },
+    "php_extensions": [
+      "Core",
+      "FFI",
+      "PDO",
+      "Phar",
+      "Reflection",
+      "SPL",
+      "SimpleXML",
+      "Zend OPcache",
+      "bcmath",
+      "calendar",
+      "ctype",
+      "curl",
+      "date",
+      "dom",
+      "exif",
+      "fileinfo",
+      "filter",
+      "ftp",
+      "gd",
+      "gettext",
+      "hash",
+      "iconv",
+      "imagick",
+      "intl",
+      "json",
+      "libxml",
+      "mbstring",
+      "mysqli",
+      "mysqlnd",
+      "openssl",
+      "pcntl",
+      "pcre",
+      "pdo_mysql",
+      "posix",
+      "random",
+      "readline",
+      "session",
+      "shmop",
+      "sockets",
+      "sodium",
+      "standard",
+      "sysvmsg",
+      "sysvsem",
+      "sysvshm",
+      "tokenizer",
+      "xml",
+      "xmlreader",
+      "xmlwriter",
+      "xsl",
+      "zip",
+      "zlib"
+    ],
+    "php_version": "8.2.30",
+    "queue_connection": "sync",
+    "queue_tables": {
+      "failed_jobs": 0,
+      "jobs": 0
+    }
+  },
+  "runtime_helper_sha256": "16e1f7cf814112120eb71afa3385dd0ae5251dac85e5407d88ed0b639bc93cb0",
+  "script_sha256": "9a8d130eeee5b9aab1cbe89632a9357af6dcdcb8bbd1b484b6d2fdf7f0ce56be",
+  "staged_cache": "/var/www/buy-dtf/storage/app/private/operations/dependency-releases/22af12c7e58f-20261001T000259Z/shadow/bootstrap/cache",
+  "staged_vendor": "/var/www/buy-dtf/storage/app/private/operations/dependency-releases/22af12c7e58f-20261001T000259Z/shadow/vendor",
+  "started_at_utc": "2026-10-01T00:16:17Z",
+  "status": "success",
+  "updated_at_utc": "2026-10-01T00:47:44Z",
+  "vendor_exchange_complete": true,
+  "vendor_exchange_intent": true
+}

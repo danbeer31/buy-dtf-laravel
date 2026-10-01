@@ -1,0 +1,146 @@
+{
+  "artifact": "buy-dtf-dependency-cutover-evidence-v2",
+  "status": "success",
+  "collected_through_utc": "2026-10-01T00:50:35Z",
+  "branch": "security/dependency-advisories-20260930",
+  "artifact_commit": "27f455ea16325ae336c686757d59a7a81af81c64",
+  "staging_evidence_commit": "af84c4909754e0c673530dd952e6719733a4172c",
+  "runner_sha256": "9a8d130eeee5b9aab1cbe89632a9357af6dcdcb8bbd1b484b6d2fdf7f0ce56be",
+  "runtime_helper_sha256": "16e1f7cf814112120eb71afa3385dd0ae5251dac85e5407d88ed0b639bc93cb0",
+  "release_receipt": {
+    "path": "/var/www/buy-dtf/storage/app/private/operations/dependency-releases/22af12c7e58f-20261001T000259Z/release-receipt.json",
+    "sha256": "98cb72f1d1aca02e94a5cad2989f981782551d7d7c5cb254f7defc6fbeba79d3"
+  },
+  "final_state": {
+    "path": "/var/www/buy-dtf/storage/app/private/operations/dependency-rollbacks/22af12c7e58f-20261001T001617Z/deployment-state.json",
+    "sha256": "434bb8dd8649a9eff41741248a66ff8fb93c1b865d887390373cfa5b23660e15",
+    "bytes": 118640,
+    "started_at_utc": "2026-10-01T00:16:17Z",
+    "completed_at_utc": "2026-10-01T00:47:44Z",
+    "rollback_started": false,
+    "rollback_complete": false
+  },
+  "live_dependencies": {
+    "composer_json_sha256": "7098f3a19cb65f88bcc945f019dda0aa7f515737eb5d4918c30705f25c6ad872",
+    "composer_lock_sha256": "22af12c7e58fcfe809735dbf9955b2d22a264e9e7345cefd74398e36bf2773b9",
+    "vendor_manifest": {
+      "sha256": "7399949f857da190c5ff07b89c85e8fba8a6f681695e20a462862be591b698ed",
+      "files": 6460,
+      "directories": 925,
+      "bytes": 26453056
+    },
+    "bootstrap_cache_manifest_sha256": "468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9",
+    "bootstrap_packages_sha256": "21da8f9ed19687e708cc7bc5cc59394c6fcdf9b9deadf617ae70526f815a1db0",
+    "bootstrap_services_sha256": "1f7623b2b4ffd2c4099fb34ad86fc96c1479e27bf81b1b0ba328c988cc4ffcb5",
+    "versions": {
+      "guzzlehttp/guzzle": "7.15.2",
+      "laravel/framework": "12.69.0",
+      "league/commonmark": "2.10.2",
+      "league/flysystem": "3.35.3",
+      "league/flysystem-local": "3.35.3"
+    }
+  },
+  "retained_dependencies": {
+    "vendor_path": "/var/www/buy-dtf/storage/app/private/operations/dependency-releases/22af12c7e58f-20261001T000259Z/shadow/vendor",
+    "vendor_manifest": {
+      "sha256": "97cd0bb104c42b57fbf90204ee74837ec1359b0ab1cbf8dac7d6929a154922d7",
+      "files": 6454,
+      "directories": 925,
+      "bytes": 26397293
+    },
+    "cache_path": "/var/www/buy-dtf/storage/app/private/operations/dependency-releases/22af12c7e58f-20261001T000259Z/shadow/bootstrap/cache",
+    "cache_manifest_sha256": "468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9",
+    "lock_backup_path": "/var/www/buy-dtf/storage/app/private/operations/dependency-rollbacks/22af12c7e58f-20261001T001617Z/composer.lock.before",
+    "lock_backup_sha256": "eeac4637272ca2b9aeaa797a4440cfc8b4e31f5a469619c46ebfa5791c701831",
+    "front_controller_backup_path": "/var/www/buy-dtf/storage/app/private/operations/dependency-rollbacks/22af12c7e58f-20261001T001617Z/public-index.before.php",
+    "front_controller_backup_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
+  },
+  "fpm_probes": {
+    "old_preflight_versions": {
+      "guzzlehttp/guzzle": "7.15.2",
+      "laravel/framework": "12.61.1",
+      "league/commonmark": "2.10.0",
+      "league/flysystem": "3.30.2",
+      "league/flysystem-local": "3.30.2"
+    },
+    "candidate_probe_count": 2,
+    "candidate_probes_identical": true,
+    "candidate_versions": {
+      "guzzlehttp/guzzle": "7.15.2",
+      "laravel/framework": "12.69.0",
+      "league/commonmark": "2.10.2",
+      "league/flysystem": "3.35.3",
+      "league/flysystem-local": "3.35.3"
+    },
+    "php_version": "8.2.30",
+    "extension_count_each": 51,
+    "all_install_and_reflection_paths_under_live_vendor": true,
+    "full_probe_payloads_in_final_state": true
+  },
+  "static_gate": {
+    "reviewed_gate_sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03",
+    "verified_at_utc": "2026-10-01T00:16:22Z",
+    "verified_statuses": [503, 503],
+    "front_controller_restored_at_utc": "2026-10-01T00:17:44Z",
+    "live_front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
+    "active_after_cutover": false
+  },
+  "monitoring": {
+    "sample_count": 30,
+    "first_sample_at_utc": "2026-10-01T00:17:44Z",
+    "last_sample_at_utc": "2026-10-01T00:47:17Z",
+    "health_variants": 1,
+    "package_version_variants": 1,
+    "queue_variants": 1,
+    "business_activity_variants": 7,
+    "all_samples_app_environment": "local",
+    "all_samples_app_debug": false,
+    "all_samples_queue_jobs": 0,
+    "all_samples_failed_jobs": 0,
+    "all_samples_health": {
+      "https://buy-dtf.com/": 200,
+      "https://buy-dtf.com/up": 200,
+      "https://buy-dtf.com/login": 200,
+      "https://buy-dtf.com/admin": 302,
+      "https://buy-dtf.com/checkout": 302
+    },
+    "full_samples_in_final_state": true
+  },
+  "final_production_state": {
+    "runtime_source_manifest_sha256": "46f6a1ffa03364b550395c89111a0d69a844d1379f3c5aba6ed5c1e17616abca",
+    "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
+    "maintenance_active": false,
+    "static_gate_active": false,
+    "deployment_lock_free": true,
+    "scoped_artisan_or_payout_processes": [],
+    "queue_jobs": 0,
+    "failed_jobs": 0,
+    "health": {
+      "https://buy-dtf.com/": 200,
+      "https://buy-dtf.com/up": 200,
+      "https://buy-dtf.com/login": 200,
+      "https://buy-dtf.com/admin": 302,
+      "https://buy-dtf.com/checkout": 302
+    },
+    "php_fpm": {
+      "active": true,
+      "nrestarts": 0,
+      "main_started_at": "2026-05-19T03:05:48Z"
+    },
+    "nginx": {
+      "active": true,
+      "nrestarts": 0,
+      "main_started_at": "2026-09-15T06:26:36Z"
+    }
+  },
+  "scope_confirmation": {
+    "dependency_cutover_performed": true,
+    "migration_run": false,
+    "receiver_staged_or_deployed": false,
+    "service_restarted": false,
+    "capability_changed": false,
+    "shopnltees_changed": false,
+    "retention_run": false,
+    "customer_deletion_run": false
+  }
+}
