@@ -1,0 +1,15 @@
+test_describe_records_schema_resume_and_no_migration (__main__.InstalledSchemaResumeTest.test_describe_records_schema_resume_and_no_migration) ... ok
+test_enabled_capabilities_and_artwork_hosts_are_refused (__main__.InstalledSchemaResumeTest.test_enabled_capabilities_and_artwork_hosts_are_refused) ... ok
+test_exact_retained_post_migration_fixture_is_json_safe (__main__.InstalledSchemaResumeTest.test_exact_retained_post_migration_fixture_is_json_safe) ... ok
+test_ledger_hash_count_and_entry_drift_are_refused (__main__.InstalledSchemaResumeTest.test_ledger_hash_count_and_entry_drift_are_refused) ... ok
+test_nonempty_target_tables_are_refused (__main__.InstalledSchemaResumeTest.test_nonempty_target_tables_are_refused) ... ok
+test_original_source_drift_is_refused (__main__.InstalledSchemaResumeTest.test_original_source_drift_is_refused) ... ok
+test_retired_receipt_hash_and_path_are_refused_before_io (__main__.InstalledSchemaResumeTest.test_retired_receipt_hash_and_path_are_refused_before_io) ... ok
+test_runner_contains_no_migration_command_path (__main__.InstalledSchemaResumeTest.test_runner_contains_no_migration_command_path) ... ok
+test_schema_definition_and_index_drift_are_refused (__main__.InstalledSchemaResumeTest.test_schema_definition_and_index_drift_are_refused) ... ok
+test_schema_hash_drift_is_refused (__main__.InstalledSchemaResumeTest.test_schema_hash_drift_is_refused) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.067s
+
+OK

@@ -1,0 +1,126 @@
+{
+  "status": "pass",
+  "generated_at_utc": "2026-10-01T03:34:42Z",
+  "scope": "local_schema_present_resume_artifact_validation_only",
+  "branch": "feature/incoming-order-v1-job-card-20260927",
+  "starting_commit": "83b50be196bd52619403ee22d09b1a1029b77b0c",
+  "receiver_target": "0799440b7cbb0bad364fc2a65b41285f20245658",
+  "artifact_identities": {
+    "runner_sha256": "c97f4250742dadc8af0a00632f856b120c8f3ec6425e81b647c261f47d56692d",
+    "gate_rehearsal_script_sha256": "7a8c486e91ee51f771cc6b6dcff6181d40b36c1dc9bc6cb3cabe7ae7c23492cb",
+    "resume_rehearsal_script_sha256": "35d8fcca0b5a892f4ee2a5cfa56dcaa24c329be38afac9370894a951fb321fed",
+    "resume_regression_test_sha256": "4cfb1017b5f7b894f5eb444532522a7d8db95e7f8ea19d5dd44b5c30b00deae9",
+    "archive_sha256": "ed1df143d219fa073efb2707508c3eb81ba17b777597cebc20a72d3c546522c2",
+    "manifest_sha256": "b6efbd5463c82f895ca8d359b665a145d88c0d363ce7f97b247eae9080853bb6",
+    "runtime_helper_sha256": "1b37d3a38834ef633cee5caa784d909b2f5be41ae6e22766f817f80f9f4a20bd",
+    "candidate_composer_lock_sha256": "22af12c7e58fcfe809735dbf9955b2d22a264e9e7345cefd74398e36bf2773b9"
+  },
+  "installed_schema_baseline": {
+    "state": "installed_schema_resume_v1",
+    "schema_sha256": "4f1990336946bde95c6a13d0245fe4a5845eff2f23999f62e8529478d95d51ed",
+    "ledger_rows": 20,
+    "ledger_sha256": "3168a7da9ca4aad0a81e673ec61c1647242916d054768f4dd48ff4b9d7eb28d4",
+    "target_migration_entries": 1,
+    "target_definitions_sha256": "aa0a038110dc355ffcd0ed12768c2adb7b0954ecbcc9aeb0fc4ef0efb5d287dc",
+    "target_table_row_counts": {
+      "api_asset_records": 0,
+      "incoming_order_jobs": 0
+    },
+    "original_source_cas_sha256": "9c0b081853feed397cc61be4b7b6d7c302df2298a87cca30e69e80f067cda6db"
+  },
+  "resume_regressions": {
+    "status": "pass",
+    "tests": 10,
+    "fixture": "exact retained post-migration runtime probe",
+    "json_safe_ascii_bin_records": true,
+    "schema_drift_refused": true,
+    "ledger_drift_refused": true,
+    "nonempty_target_tables_refused": true,
+    "source_drift_refused": true,
+    "enabled_capabilities_refused": true,
+    "nonempty_artwork_hosts_refused": true,
+    "retired_artifact_reuse_refused": true,
+    "migration_command_path_absent": true
+  },
+  "resume_rehearsal": {
+    "status": "pass",
+    "scenarios": 5,
+    "receipt_sha256": "99a3a25224f39bd90d5749933a8e709ebba97c88f20de4780d89e6e1f71919fd",
+    "archive_sha256": "91a1f46e8e81c17f1e8afbd6a3fe3649087b38dfe04552cc3e25b21b1c7565c3",
+    "successful_schema_present_resume": true,
+    "failure_before_source_installation": "rolled_back",
+    "failure_during_source_installation": "rolled_back",
+    "failure_during_candidate_checks": "rolled_back",
+    "failure_after_reopening": "rolled_back",
+    "every_failure_restored_original_source_cas": true,
+    "every_failure_preserved_installed_schema_and_ledger": true,
+    "migration_command_invoked": false,
+    "migration_pretend_invoked": false,
+    "migration_executed_this_attempt": false
+  },
+  "gate_rehearsal": {
+    "status": "pass",
+    "scenarios": 8,
+    "receipt_sha256": "3d1e637d2288903477bd3eae773916f7dc268383ee3585bd5c4ae5668839f8f8",
+    "canonical_sha256": "ae143560f567dc15b7638d5efe4057961672e7a21088fe58f8b89ec105a48da1",
+    "umask": "0077",
+    "separate_web_identity": "33:33",
+    "later_phase_failure_retained_exact_gate": true,
+    "later_phase_failure_original_restoration_receipts": []
+  },
+  "application_validation": {
+    "dependency_baseline_worktree": "buy-dtf-receiver-validation-20261001b",
+    "phpunit": {
+      "status": "pass",
+      "php": "8.2.0",
+      "tests": 170,
+      "assertions": 1099,
+      "skipped": 1,
+      "stdout_sha256": "a7de0178e9046fda1bf6de10c9a336f40c6f8487964188a4f041adc5046724f9"
+    },
+    "composer_validate": "pass",
+    "composer_audit": {
+      "status": "pass",
+      "advisories": 0,
+      "abandoned": 0,
+      "receipt_sha256": "e464a6f19a008d852b61fd0966a47b663d20d70ccfba0b30edd6483a787f15f5"
+    },
+    "npm_production_audit": {
+      "status": "pass",
+      "vulnerabilities": 0,
+      "receipt_sha256": "02421f7c383a056c60b8d2545bbcfce6ca887d8771e4c88b4036ad6e4df95439"
+    },
+    "frontend_build": {
+      "status": "pass",
+      "modules_transformed": 112,
+      "stdout_sha256": "833550af05cf913f2baa62d1f53737dfbc7763a6696de37100a0eb911f03cba7"
+    },
+    "git_diff_check": "pass"
+  },
+  "real_imagick_renders": {
+    "status": "pass",
+    "runtime": "WSL PHP 8.3.6 with Imagick on Linux-native storage",
+    "receipt_sha256": "db8e2d6316b408b4e63897e3d18c4d2d1e9057ea49fe79e9a0095678da62dd5f",
+    "renderer_version": "separate-job-card-v2",
+    "font_sha256": "ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280",
+    "width_px": 1500,
+    "height_px": 900,
+    "dpi": 300,
+    "normal_png_sha256": "fa4d42b35ddf99736345d76a8a65c5275c1980b1af323a794b5678d889b5b136",
+    "maximum_fields_png_sha256": "cadf92ae4e1f7b2b0b6496e66d2f426e9701ad5617986e8abebaef0b32258ddf"
+  },
+  "production_actions": {
+    "production_accessed_during_local_validation": false,
+    "release_staged": false,
+    "gate_installed": false,
+    "maintenance_entered": false,
+    "migration_command_invoked": false,
+    "migration_pretend_invoked": false,
+    "migration_executed_this_attempt": false,
+    "live_source_changed": false,
+    "service_restarted": false,
+    "capability_enabled": false,
+    "shopnltees_changed": false,
+    "retention_or_customer_deletion_executed": false
+  }
+}

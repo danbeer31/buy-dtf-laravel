@@ -1,0 +1,1959 @@
+{
+  "all_final_front_controllers_safe": true,
+  "artifact": "buy-dtf-incoming-order-front-controller-gate-rehearsal-v3",
+  "canonical_sha256": "ae143560f567dc15b7638d5efe4057961672e7a21088fe58f8b89ec105a48da1",
+  "later_phase_failure_original_restoration_receipts": [],
+  "later_phase_failure_retained_exact_gate": true,
+  "mode_0600_negative_control": {
+    "command": {
+      "argv_sha256": "8e800d68ebeaceb9415d64b0e9ad95970319aad39de9d30a334e787c9ccb2f9a",
+      "executable_chain": [
+        "setpriv",
+        "python3"
+      ],
+      "exit_status": 1,
+      "stderr_sha256": "c719abe610cc6e6c843407ec4d3bf26754b9e0575612be71999775f0b78d860b",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "identity": {
+      "bytes": 339,
+      "metadata": {
+        "gid": 1000,
+        "kind": "file",
+        "mode": 384,
+        "uid": 1000
+      },
+      "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/negative-control/negative-control-mode-0600.php",
+      "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+    },
+    "read_denied": true,
+    "reader_gid": 33,
+    "reader_uid": 33,
+    "status": "pass"
+  },
+  "rehearsal_script_sha256": "7a8c486e91ee51f771cc6b6dcff6181d40b36c1dc9bc6cb3cabe7ae7c23492cb",
+  "runner_identity": {
+    "egid": 0,
+    "euid": 0
+  },
+  "runner_sha256": "c97f4250742dadc8af0a00632f856b120c8f3ec6425e81b647c261f47d56692d",
+  "scenario_count": 8,
+  "scenarios": {
+    "failure-after-replacement": {
+      "automatic_original_restoration_receipts": [
+        "after-replacement-gate-automatic-original-restore-receipt.json"
+      ],
+      "canonical_sha256": "ee7eaf7a0972e469fa909b120c9b2b1e676bead18d192e8d2d4b124c02929617",
+      "details": {
+        "expected_failure_sha256": "132165784bf4e4dcbf061c7e14da9bc2b2d060621eeb5a8d0ebfa0635b881aad"
+      },
+      "durable_transitions": [
+        {
+          "operation": "after-replacement-gate",
+          "phase": "replacement_pending",
+          "sequence": 1
+        },
+        {
+          "operation": "after-replacement-gate",
+          "phase": "installed",
+          "sequence": 2
+        },
+        {
+          "operation": "after-replacement-gate-automatic-original-restore",
+          "phase": "replacement_pending",
+          "sequence": 3
+        },
+        {
+          "operation": "after-replacement-gate-automatic-original-restore",
+          "phase": "installed",
+          "sequence": 4
+        },
+        {
+          "operation": "after-replacement-gate-automatic-original-restore",
+          "phase": "exact_original_verified",
+          "sequence": 5
+        }
+      ],
+      "evidence_manifest": [
+        {
+          "bytes": 1979,
+          "mode": "0o600",
+          "path": "after-replacement-gate-automatic-original-restore-receipt.json",
+          "sha256": "bcaed90eb2a6739e2a99b8cefaa12b93d692e3c904273b04fee3e82ecc18beb0"
+        },
+        {
+          "bytes": 2064,
+          "mode": "0o600",
+          "path": "after-replacement-gate-gate-failure-receipt.json",
+          "sha256": "5b13af1d8806ad13d785cf27fcbc2d41c99b74abb25a5f8b45e581859a4c2457"
+        },
+        {
+          "bytes": 780,
+          "mode": "0o600",
+          "path": "events.jsonl",
+          "sha256": "1b8754bf0ad538ca6b215c6e8dcc9223e4951d960eba6277219c995eea3959d2"
+        },
+        {
+          "bytes": 40,
+          "mode": "0o600",
+          "path": "front-controller-before.php",
+          "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+        },
+        {
+          "bytes": 6824,
+          "mode": "0o600",
+          "path": "state.json",
+          "sha256": "d7afb3cc54caed9b052b12a63b031ec0bdd62882f2797030fcd9c09e343b5cfc"
+        }
+      ],
+      "final_durable_state": {
+        "containment_active": false,
+        "gate_failure_receipt_present": true,
+        "migration_executed_this_attempt": false,
+        "source_install_started": false,
+        "static_gate_active": false,
+        "status": "after-replacement-gate_failed_original_restored"
+      },
+      "final_front_controller": {
+        "bytes": 40,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+      },
+      "final_is_exact_gate": false,
+      "final_is_original": true,
+      "receipt_hashes": {
+        "after-replacement-gate-automatic-original-restore-receipt.json": "bcaed90eb2a6739e2a99b8cefaa12b93d692e3c904273b04fee3e82ecc18beb0",
+        "after-replacement-gate-gate-failure-receipt.json": "5b13af1d8806ad13d785cf27fcbc2d41c99b74abb25a5f8b45e581859a4c2457"
+      },
+      "receipt_payloads": {
+        "after-replacement-gate-automatic-original-restore-receipt.json": {
+          "before": {
+            "bytes": 339,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/failure-after-replacement/application/public/index.php",
+            "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+          },
+          "exact_original_restored": true,
+          "generated_at_utc": "2026-10-01T03:30:02Z",
+          "operation": "after-replacement-gate-automatic-original-restore",
+          "replacement": {
+            "before": {
+              "bytes": 339,
+              "metadata": {
+                "gid": 1000,
+                "kind": "file",
+                "mode": 420,
+                "uid": 1000
+              },
+              "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/failure-after-replacement/application/public/index.php",
+              "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+            },
+            "installed": {
+              "bytes": 40,
+              "metadata": {
+                "gid": 1000,
+                "kind": "file",
+                "mode": 420,
+                "uid": 1000
+              },
+              "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/failure-after-replacement/application/public/index.php",
+              "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+            },
+            "prepared": {
+              "bytes": 40,
+              "metadata": {
+                "gid": 1000,
+                "kind": "file",
+                "mode": 420,
+                "uid": 1000
+              },
+              "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/failure-after-replacement/application/public/.index.php.incoming-16744-271a6e67c905",
+              "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+            }
+          },
+          "restored": {
+            "bytes": 40,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/failure-after-replacement/application/public/index.php",
+            "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+          },
+          "status": "pass"
+        },
+        "after-replacement-gate-gate-failure-receipt.json": {
+          "failure_message_sha256": "56d02af64f09c6931f17eefc1f79b88b3ba4cffb549cc10f8e8415ff45e62ba1",
+          "failure_type": "DeploymentError",
+          "final": {
+            "bytes": 40,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/failure-after-replacement/application/public/index.php",
+            "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+          },
+          "generated_at_utc": "2026-10-01T03:30:02Z",
+          "initial": {
+            "bytes": 40,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/failure-after-replacement/application/public/index.php",
+            "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+          },
+          "live_after_failure": {
+            "bytes": 339,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/failure-after-replacement/application/public/index.php",
+            "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+          },
+          "mutation_started": false,
+          "operation": "after-replacement-gate",
+          "origin_probe": null,
+          "original_restoration_performed": true,
+          "post_restoration_health": {
+            "result": {
+              "application_healthy": true,
+              "front_controller": {
+                "bytes": 40,
+                "metadata": {
+                  "gid": 1000,
+                  "kind": "file",
+                  "mode": 420,
+                  "uid": 1000
+                },
+                "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+              }
+            },
+            "status": "pass"
+          },
+          "public_probe": null,
+          "restoration_receipt": {
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/failure-after-replacement/evidence/after-replacement-gate-automatic-original-restore-receipt.json",
+            "sha256": "bcaed90eb2a6739e2a99b8cefaa12b93d692e3c904273b04fee3e82ecc18beb0"
+          },
+          "status": "gate_failed_original_restored"
+        }
+      },
+      "scenario": "failure-after-replacement",
+      "status": "pass"
+    },
+    "failure-before-replacement": {
+      "automatic_original_restoration_receipts": [
+        "before-replacement-gate-automatic-original-restore-receipt.json"
+      ],
+      "canonical_sha256": "df5aebe246c98eb264d2b614df3b7d07f77ccb40dd2df507ae1c295b3db57664",
+      "details": {
+        "expected_failure_sha256": "fe4e2d23d2a7d31aeb20563bd5abf91e0bc9bdadd80dad43f33860178867fab8"
+      },
+      "durable_transitions": [
+        {
+          "operation": "before-replacement-gate",
+          "phase": "replacement_pending",
+          "sequence": 1
+        },
+        {
+          "operation": "before-replacement-gate-automatic-original-restore",
+          "phase": "original_already_present",
+          "sequence": 2
+        },
+        {
+          "operation": "before-replacement-gate-automatic-original-restore",
+          "phase": "exact_original_verified",
+          "sequence": 3
+        }
+      ],
+      "evidence_manifest": [
+        {
+          "bytes": 872,
+          "mode": "0o600",
+          "path": "before-replacement-gate-automatic-original-restore-receipt.json",
+          "sha256": "24c462ffd2c94db5950929b2b59a21f429fe219fe91062999ce97a31db040662"
+        },
+        {
+          "bytes": 2069,
+          "mode": "0o600",
+          "path": "before-replacement-gate-gate-failure-receipt.json",
+          "sha256": "d213f1ee4d58c41d019f0f0133bd2bbd4d25e80abb1721eab9fc7990a22864d3"
+        },
+        {
+          "bytes": 495,
+          "mode": "0o600",
+          "path": "events.jsonl",
+          "sha256": "8b64f819bba01a2cb69bf742201405aeea9f3947379ca979fb610f6ba8191be7"
+        },
+        {
+          "bytes": 40,
+          "mode": "0o600",
+          "path": "front-controller-before.php",
+          "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+        },
+        {
+          "bytes": 4165,
+          "mode": "0o600",
+          "path": "state.json",
+          "sha256": "474f348bf38490f6eac72c95362355b7b702af27820dc9f04d423926591e7b12"
+        }
+      ],
+      "final_durable_state": {
+        "containment_active": false,
+        "gate_failure_receipt_present": true,
+        "migration_executed_this_attempt": false,
+        "source_install_started": false,
+        "static_gate_active": false,
+        "status": "before-replacement-gate_failed_original_restored"
+      },
+      "final_front_controller": {
+        "bytes": 40,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+      },
+      "final_is_exact_gate": false,
+      "final_is_original": true,
+      "receipt_hashes": {
+        "before-replacement-gate-automatic-original-restore-receipt.json": "24c462ffd2c94db5950929b2b59a21f429fe219fe91062999ce97a31db040662",
+        "before-replacement-gate-gate-failure-receipt.json": "d213f1ee4d58c41d019f0f0133bd2bbd4d25e80abb1721eab9fc7990a22864d3"
+      },
+      "receipt_payloads": {
+        "before-replacement-gate-automatic-original-restore-receipt.json": {
+          "before": {
+            "bytes": 40,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/failure-before-replacement/application/public/index.php",
+            "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+          },
+          "exact_original_restored": true,
+          "generated_at_utc": "2026-10-01T03:30:02Z",
+          "operation": "before-replacement-gate-automatic-original-restore",
+          "replacement": null,
+          "restored": {
+            "bytes": 40,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/failure-before-replacement/application/public/index.php",
+            "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+          },
+          "status": "pass"
+        },
+        "before-replacement-gate-gate-failure-receipt.json": {
+          "failure_message_sha256": "09327c7a7d0a967fca4571b23d0150e67582c98b92955817e28f0d0728f839a0",
+          "failure_type": "DeploymentError",
+          "final": {
+            "bytes": 40,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/failure-before-replacement/application/public/index.php",
+            "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+          },
+          "generated_at_utc": "2026-10-01T03:30:02Z",
+          "initial": {
+            "bytes": 40,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/failure-before-replacement/application/public/index.php",
+            "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+          },
+          "live_after_failure": {
+            "bytes": 40,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/failure-before-replacement/application/public/index.php",
+            "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+          },
+          "mutation_started": false,
+          "operation": "before-replacement-gate",
+          "origin_probe": null,
+          "original_restoration_performed": true,
+          "post_restoration_health": {
+            "result": {
+              "application_healthy": true,
+              "front_controller": {
+                "bytes": 40,
+                "metadata": {
+                  "gid": 1000,
+                  "kind": "file",
+                  "mode": 420,
+                  "uid": 1000
+                },
+                "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+              }
+            },
+            "status": "pass"
+          },
+          "public_probe": null,
+          "restoration_receipt": {
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/failure-before-replacement/evidence/before-replacement-gate-automatic-original-restore-receipt.json",
+            "sha256": "24c462ffd2c94db5950929b2b59a21f429fe219fe91062999ce97a31db040662"
+          },
+          "status": "gate_failed_original_restored"
+        }
+      },
+      "scenario": "failure-before-replacement",
+      "status": "pass"
+    },
+    "failure-during-verification": {
+      "automatic_original_restoration_receipts": [
+        "verification-failure-gate-automatic-original-restore-receipt.json"
+      ],
+      "canonical_sha256": "2135630ac0798222294e821eb1c343209068d32f5a10923e247412d2c8f4f65a",
+      "details": {
+        "expected_failure_sha256": "9941f79a6bf57d6735112114573d24859a3f75e8b6ea6a37be354e5840bdbbf5"
+      },
+      "durable_transitions": [
+        {
+          "operation": "verification-failure-gate",
+          "phase": "replacement_pending",
+          "sequence": 1
+        },
+        {
+          "operation": "verification-failure-gate",
+          "phase": "installed",
+          "sequence": 2
+        },
+        {
+          "operation": "verification-failure-gate-automatic-original-restore",
+          "phase": "replacement_pending",
+          "sequence": 3
+        },
+        {
+          "operation": "verification-failure-gate-automatic-original-restore",
+          "phase": "installed",
+          "sequence": 4
+        },
+        {
+          "operation": "verification-failure-gate-automatic-original-restore",
+          "phase": "exact_original_verified",
+          "sequence": 5
+        }
+      ],
+      "evidence_manifest": [
+        {
+          "bytes": 795,
+          "mode": "0o600",
+          "path": "events.jsonl",
+          "sha256": "d6fe3503f370f3587f68617af561ebf5d7cda8ab7e8643bc8a4f15ee933c7b28"
+        },
+        {
+          "bytes": 40,
+          "mode": "0o600",
+          "path": "front-controller-before.php",
+          "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+        },
+        {
+          "bytes": 6884,
+          "mode": "0o600",
+          "path": "state.json",
+          "sha256": "54b950e3c318a78ad2d8cab2bed35e1906e36bb66bfc971466cc54280e59590c"
+        },
+        {
+          "bytes": 1992,
+          "mode": "0o600",
+          "path": "verification-failure-gate-automatic-original-restore-receipt.json",
+          "sha256": "687f750187510189ea6980b8e2f16860382273fffcc94649c7bf3cad57f7985f"
+        },
+        {
+          "bytes": 4951,
+          "mode": "0o600",
+          "path": "verification-failure-gate-gate-failure-receipt.json",
+          "sha256": "49489a069b736e8a24925568c5eb24761f4fdf2d979a94cfe190fad01b4fc957"
+        }
+      ],
+      "final_durable_state": {
+        "containment_active": false,
+        "gate_failure_receipt_present": true,
+        "migration_executed_this_attempt": false,
+        "source_install_started": false,
+        "static_gate_active": false,
+        "status": "verification-failure-gate_failed_original_restored"
+      },
+      "final_front_controller": {
+        "bytes": 40,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+      },
+      "final_is_exact_gate": false,
+      "final_is_original": true,
+      "receipt_hashes": {
+        "verification-failure-gate-automatic-original-restore-receipt.json": "687f750187510189ea6980b8e2f16860382273fffcc94649c7bf3cad57f7985f",
+        "verification-failure-gate-gate-failure-receipt.json": "49489a069b736e8a24925568c5eb24761f4fdf2d979a94cfe190fad01b4fc957"
+      },
+      "receipt_payloads": {
+        "verification-failure-gate-automatic-original-restore-receipt.json": {
+          "before": {
+            "bytes": 339,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/failure-during-verification/application/public/index.php",
+            "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+          },
+          "exact_original_restored": true,
+          "generated_at_utc": "2026-10-01T03:30:03Z",
+          "operation": "verification-failure-gate-automatic-original-restore",
+          "replacement": {
+            "before": {
+              "bytes": 339,
+              "metadata": {
+                "gid": 1000,
+                "kind": "file",
+                "mode": 420,
+                "uid": 1000
+              },
+              "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/failure-during-verification/application/public/index.php",
+              "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+            },
+            "installed": {
+              "bytes": 40,
+              "metadata": {
+                "gid": 1000,
+                "kind": "file",
+                "mode": 420,
+                "uid": 1000
+              },
+              "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/failure-during-verification/application/public/index.php",
+              "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+            },
+            "prepared": {
+              "bytes": 40,
+              "metadata": {
+                "gid": 1000,
+                "kind": "file",
+                "mode": 420,
+                "uid": 1000
+              },
+              "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/failure-during-verification/application/public/.index.php.incoming-16744-0f93c78b2f12",
+              "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+            }
+          },
+          "restored": {
+            "bytes": 40,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/failure-during-verification/application/public/index.php",
+            "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+          },
+          "status": "pass"
+        },
+        "verification-failure-gate-gate-failure-receipt.json": {
+          "failure_message_sha256": "ec3927d67b3a2821b1063fb438c83a093ffe6cfa4e553cb2d98c9468cdbfe620",
+          "failure_type": "DeploymentError",
+          "final": {
+            "bytes": 40,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/failure-during-verification/application/public/index.php",
+            "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+          },
+          "generated_at_utc": "2026-10-01T03:30:03Z",
+          "initial": {
+            "bytes": 40,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/failure-during-verification/application/public/index.php",
+            "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+          },
+          "live_after_failure": {
+            "bytes": 339,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/failure-during-verification/application/public/index.php",
+            "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+          },
+          "mutation_started": false,
+          "operation": "verification-failure-gate",
+          "origin_probe": {
+            "front_controller": {
+              "bytes": 339,
+              "metadata": {
+                "gid": 1000,
+                "kind": "file",
+                "mode": 420,
+                "uid": 1000
+              },
+              "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/failure-during-verification/application/public/index.php",
+              "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+            },
+            "header_verified": true,
+            "php_command": {
+              "argv_sha256": "a59cbb2b4dfe36e41254b3eca7ebb98616dcf1eef534bb950c09866243346e47",
+              "executable_chain": [
+                "setpriv",
+                "php"
+              ],
+              "exit_status": 0,
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout_sha256": "2fdceb579aa8e0aa62c46d0b44b7a0efe95736f468889531f13cc605ad55ef57"
+            },
+            "reader": {
+              "bytes": 339,
+              "egid": 33,
+              "euid": 33,
+              "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+            },
+            "reader_command": {
+              "argv_sha256": "6fd2bb24a8c919d4d2cf3304f7b4b39d202d4f4ffe440c4eb73821bf28719cb1",
+              "executable_chain": [
+                "setpriv",
+                "python3"
+              ],
+              "exit_status": 0,
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout_sha256": "8935255040cf75b970c3a7c0191e70bcbc91852cd1ac558607c2624f472d5bc9"
+            },
+            "route": "origin_loopback",
+            "sentinel_verified": true,
+            "status": 503
+          },
+          "original_restoration_performed": true,
+          "post_restoration_health": {
+            "result": {
+              "application_healthy": true,
+              "front_controller": {
+                "bytes": 40,
+                "metadata": {
+                  "gid": 1000,
+                  "kind": "file",
+                  "mode": 420,
+                  "uid": 1000
+                },
+                "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+              }
+            },
+            "status": "pass"
+          },
+          "public_probe": {
+            "front_controller": {
+              "bytes": 339,
+              "metadata": {
+                "gid": 1000,
+                "kind": "file",
+                "mode": 420,
+                "uid": 1000
+              },
+              "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/failure-during-verification/application/public/index.php",
+              "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+            },
+            "header_verified": false,
+            "php_command": {
+              "argv_sha256": "a59cbb2b4dfe36e41254b3eca7ebb98616dcf1eef534bb950c09866243346e47",
+              "executable_chain": [
+                "setpriv",
+                "php"
+              ],
+              "exit_status": 0,
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout_sha256": "2fdceb579aa8e0aa62c46d0b44b7a0efe95736f468889531f13cc605ad55ef57"
+            },
+            "reader": {
+              "bytes": 339,
+              "egid": 33,
+              "euid": 33,
+              "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+            },
+            "reader_command": {
+              "argv_sha256": "6fd2bb24a8c919d4d2cf3304f7b4b39d202d4f4ffe440c4eb73821bf28719cb1",
+              "executable_chain": [
+                "setpriv",
+                "python3"
+              ],
+              "exit_status": 0,
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout_sha256": "8935255040cf75b970c3a7c0191e70bcbc91852cd1ac558607c2624f472d5bc9"
+            },
+            "route": "public_cloudflare",
+            "sentinel_verified": true,
+            "status": 500
+          },
+          "restoration_receipt": {
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/failure-during-verification/evidence/verification-failure-gate-automatic-original-restore-receipt.json",
+            "sha256": "687f750187510189ea6980b8e2f16860382273fffcc94649c7bf3cad57f7985f"
+          },
+          "status": "gate_failed_original_restored"
+        }
+      },
+      "scenario": "failure-during-verification",
+      "status": "pass"
+    },
+    "later-phase-gate-verification-failure": {
+      "automatic_original_restoration_receipts": [],
+      "canonical_sha256": "0f005a14efa6449000476e610c8a59dfb861ddb8f85ab10e3b9ce4c426415026",
+      "details": {
+        "expected_fail_closed_result": "exact_gate_retained_without_original_restore",
+        "expected_failure_sha256": "6976b0b54a41e46134dd6a76b9aac680202b239ac10aa21d71d680cd210f5fb1",
+        "migration_executed_this_attempt": false,
+        "source_install_started": true
+      },
+      "durable_transitions": [
+        {
+          "operation": "later-phase-verification-failure-gate",
+          "phase": "replacement_pending",
+          "sequence": 1
+        },
+        {
+          "operation": "later-phase-verification-failure-gate",
+          "phase": "installed",
+          "sequence": 2
+        },
+        {
+          "operation": "later-phase-verification-failure-gate-verification-failure",
+          "phase": "containment_retained",
+          "sequence": 3
+        }
+      ],
+      "evidence_manifest": [
+        {
+          "bytes": 1092,
+          "mode": "0o600",
+          "path": "events.jsonl",
+          "sha256": "a7ecef698fa7e5ccbca74d1756629bdad3c703e11da72fe84287dac3a1997d98"
+        },
+        {
+          "bytes": 40,
+          "mode": "0o600",
+          "path": "front-controller-before.php",
+          "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+        },
+        {
+          "bytes": 4652,
+          "mode": "0o600",
+          "path": "later-phase-verification-failure-gate-gate-failure-receipt.json",
+          "sha256": "0328459ccef5d6cce0854a241005f038e0237b8c746ab2d2004b988498e03006"
+        },
+        {
+          "bytes": 974,
+          "mode": "0o600",
+          "path": "later-phase-verification-failure-gate-verification-failure-containment-receipt.json",
+          "sha256": "4479571fef05e44502728b9f0da996577706190c77d7cc4c4816ff84084a5a5b"
+        },
+        {
+          "bytes": 4830,
+          "mode": "0o600",
+          "path": "state.json",
+          "sha256": "ba08596d2f7cb1a178bca40c4e77eb68b32087d9141913563e22275ab6e4172d"
+        }
+      ],
+      "final_durable_state": {
+        "containment_active": true,
+        "gate_failure_receipt_present": true,
+        "migration_executed_this_attempt": false,
+        "source_install_started": true,
+        "static_gate_active": true,
+        "status": "later-phase-verification-failure-gate_verification_failed_site_gated"
+      },
+      "final_front_controller": {
+        "bytes": 339,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+      },
+      "final_is_exact_gate": true,
+      "final_is_original": false,
+      "receipt_hashes": {
+        "later-phase-verification-failure-gate-gate-failure-receipt.json": "0328459ccef5d6cce0854a241005f038e0237b8c746ab2d2004b988498e03006",
+        "later-phase-verification-failure-gate-verification-failure-containment-receipt.json": "4479571fef05e44502728b9f0da996577706190c77d7cc4c4816ff84084a5a5b"
+      },
+      "receipt_payloads": {
+        "later-phase-verification-failure-gate-gate-failure-receipt.json": {
+          "containment_receipt": {
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/later-phase-gate-verification-failure/evidence/later-phase-verification-failure-gate-verification-failure-containment-receipt.json",
+            "sha256": "4479571fef05e44502728b9f0da996577706190c77d7cc4c4816ff84084a5a5b"
+          },
+          "failure_message_sha256": "ec3927d67b3a2821b1063fb438c83a093ffe6cfa4e553cb2d98c9468cdbfe620",
+          "failure_type": "DeploymentError",
+          "final": {
+            "bytes": 339,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/later-phase-gate-verification-failure/application/public/index.php",
+            "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+          },
+          "generated_at_utc": "2026-10-01T03:30:03Z",
+          "initial": {
+            "bytes": 40,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/later-phase-gate-verification-failure/application/public/index.php",
+            "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+          },
+          "live_after_failure": {
+            "bytes": 339,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/later-phase-gate-verification-failure/application/public/index.php",
+            "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+          },
+          "mutation_started": true,
+          "operation": "later-phase-verification-failure-gate",
+          "origin_probe": {
+            "front_controller": {
+              "bytes": 339,
+              "metadata": {
+                "gid": 1000,
+                "kind": "file",
+                "mode": 420,
+                "uid": 1000
+              },
+              "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/later-phase-gate-verification-failure/application/public/index.php",
+              "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+            },
+            "header_verified": true,
+            "php_command": {
+              "argv_sha256": "6a18f30aa58813383bef959c51271dcc0fe4165d9d733cede3bbed3683eee1cf",
+              "executable_chain": [
+                "setpriv",
+                "php"
+              ],
+              "exit_status": 0,
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout_sha256": "2fdceb579aa8e0aa62c46d0b44b7a0efe95736f468889531f13cc605ad55ef57"
+            },
+            "reader": {
+              "bytes": 339,
+              "egid": 33,
+              "euid": 33,
+              "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+            },
+            "reader_command": {
+              "argv_sha256": "21cb998ce6f1a39e990062750cc52db373284c2e02796e1b2639d54b430d5b3a",
+              "executable_chain": [
+                "setpriv",
+                "python3"
+              ],
+              "exit_status": 0,
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout_sha256": "8935255040cf75b970c3a7c0191e70bcbc91852cd1ac558607c2624f472d5bc9"
+            },
+            "route": "origin_loopback",
+            "sentinel_verified": true,
+            "status": 503
+          },
+          "original_restoration_performed": false,
+          "public_probe": {
+            "front_controller": {
+              "bytes": 339,
+              "metadata": {
+                "gid": 1000,
+                "kind": "file",
+                "mode": 420,
+                "uid": 1000
+              },
+              "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/later-phase-gate-verification-failure/application/public/index.php",
+              "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+            },
+            "header_verified": false,
+            "php_command": {
+              "argv_sha256": "6a18f30aa58813383bef959c51271dcc0fe4165d9d733cede3bbed3683eee1cf",
+              "executable_chain": [
+                "setpriv",
+                "php"
+              ],
+              "exit_status": 0,
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout_sha256": "2fdceb579aa8e0aa62c46d0b44b7a0efe95736f468889531f13cc605ad55ef57"
+            },
+            "reader": {
+              "bytes": 339,
+              "egid": 33,
+              "euid": 33,
+              "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+            },
+            "reader_command": {
+              "argv_sha256": "21cb998ce6f1a39e990062750cc52db373284c2e02796e1b2639d54b430d5b3a",
+              "executable_chain": [
+                "setpriv",
+                "python3"
+              ],
+              "exit_status": 0,
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout_sha256": "8935255040cf75b970c3a7c0191e70bcbc91852cd1ac558607c2624f472d5bc9"
+            },
+            "route": "public_cloudflare",
+            "sentinel_verified": false,
+            "status": 522
+          },
+          "status": "gate_failed_site_gated"
+        },
+        "later-phase-verification-failure-gate-verification-failure-containment-receipt.json": {
+          "before": {
+            "bytes": 339,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/later-phase-gate-verification-failure/application/public/index.php",
+            "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+          },
+          "exact_gate_retained": true,
+          "final": {
+            "bytes": 339,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/later-phase-gate-verification-failure/application/public/index.php",
+            "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+          },
+          "generated_at_utc": "2026-10-01T03:30:03Z",
+          "mutation_started": true,
+          "operation": "later-phase-verification-failure-gate-verification-failure",
+          "original_restoration_performed": false,
+          "replacement": null,
+          "status": "site_gated"
+        }
+      },
+      "scenario": "later-phase-gate-verification-failure",
+      "status": "pass"
+    },
+    "later-phase-rollback-gate": {
+      "automatic_original_restoration_receipts": [],
+      "canonical_sha256": "5b7da17071a7b8a023b5cc0a6df1d1f321eecddcf81ae5ad11f34dfc8db7a45a",
+      "details": {
+        "durable_later_phase_state_used": true,
+        "gate": {
+          "installed": {
+            "bytes": 339,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+          },
+          "metadata": {
+            "gid": 1000,
+            "kind": "file",
+            "mode": 420,
+            "uid": 1000
+          },
+          "origin_probe": {
+            "header_verified": true,
+            "php_command": {
+              "argv_sha256": "7734a109f8b55080a7f0b0e4b2a95e3a4de9d1340858ce4049664a7ba1344f7d",
+              "executable_chain": [
+                "setpriv",
+                "php"
+              ],
+              "exit_status": 0,
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout_sha256": "2fdceb579aa8e0aa62c46d0b44b7a0efe95736f468889531f13cc605ad55ef57"
+            },
+            "reader": {
+              "bytes": 339,
+              "egid": 33,
+              "euid": 33,
+              "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+            },
+            "reader_command": {
+              "argv_sha256": "836edd44f8db5600908fc00aec30478bee0bdbde847e669ae7df9e12a0d60633",
+              "executable_chain": [
+                "setpriv",
+                "python3"
+              ],
+              "exit_status": 0,
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout_sha256": "8935255040cf75b970c3a7c0191e70bcbc91852cd1ac558607c2624f472d5bc9"
+            },
+            "route": "origin_loopback",
+            "sentinel_verified": true,
+            "status": 503
+          },
+          "prepared": {
+            "bytes": 339,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+          },
+          "public_probe": {
+            "header_verified": true,
+            "php_command": {
+              "argv_sha256": "7734a109f8b55080a7f0b0e4b2a95e3a4de9d1340858ce4049664a7ba1344f7d",
+              "executable_chain": [
+                "setpriv",
+                "php"
+              ],
+              "exit_status": 0,
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout_sha256": "2fdceb579aa8e0aa62c46d0b44b7a0efe95736f468889531f13cc605ad55ef57"
+            },
+            "reader": {
+              "bytes": 339,
+              "egid": 33,
+              "euid": 33,
+              "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+            },
+            "reader_command": {
+              "argv_sha256": "836edd44f8db5600908fc00aec30478bee0bdbde847e669ae7df9e12a0d60633",
+              "executable_chain": [
+                "setpriv",
+                "python3"
+              ],
+              "exit_status": 0,
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout_sha256": "8935255040cf75b970c3a7c0191e70bcbc91852cd1ac558607c2624f472d5bc9"
+            },
+            "route": "public_cloudflare",
+            "sentinel_verified": true,
+            "status": 503
+          },
+          "reconciled_from_live_identity": false,
+          "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+        },
+        "restore_receipt_sha256": "dd897faa9994e7be3ea9f687b30e65f374eb36082c2dbaaf1c92ffb84553d9c0"
+      },
+      "durable_transitions": [
+        {
+          "operation": "later-phase-rollback-gate",
+          "phase": "replacement_pending",
+          "sequence": 1
+        },
+        {
+          "operation": "later-phase-rollback-gate",
+          "phase": "installed",
+          "sequence": 2
+        },
+        {
+          "operation": "later-phase-rollback-gate",
+          "phase": "verified",
+          "sequence": 3
+        },
+        {
+          "operation": "later-phase-rollback-reopen",
+          "phase": "replacement_pending",
+          "sequence": 4
+        },
+        {
+          "operation": "later-phase-rollback-reopen",
+          "phase": "installed",
+          "sequence": 5
+        },
+        {
+          "operation": "later-phase-rollback-reopen",
+          "phase": "exact_original_verified",
+          "sequence": 6
+        }
+      ],
+      "evidence_manifest": [
+        {
+          "bytes": 1403,
+          "mode": "0o600",
+          "path": "events.jsonl",
+          "sha256": "fb24e5c5e70f84a004a3e832ccd069ea762cfa54729e79447b825fdc86e79e43"
+        },
+        {
+          "bytes": 40,
+          "mode": "0o600",
+          "path": "front-controller-before.php",
+          "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+        },
+        {
+          "bytes": 1957,
+          "mode": "0o600",
+          "path": "later-phase-rollback-reopen-receipt.json",
+          "sha256": "dd897faa9994e7be3ea9f687b30e65f374eb36082c2dbaaf1c92ffb84553d9c0"
+        },
+        {
+          "bytes": 10756,
+          "mode": "0o600",
+          "path": "state.json",
+          "sha256": "0d88cf87f09aeabb1e31ebca23530df121d799d20cabccb0472698edf61fe5f7"
+        }
+      ],
+      "final_durable_state": {
+        "containment_active": false,
+        "gate_failure_receipt_present": false,
+        "migration_executed_this_attempt": false,
+        "source_install_started": true,
+        "static_gate_active": false,
+        "status": "later-phase-rollback-gate_containment_verified"
+      },
+      "final_front_controller": {
+        "bytes": 40,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+      },
+      "final_is_exact_gate": false,
+      "final_is_original": true,
+      "receipt_hashes": {
+        "later-phase-rollback-reopen-receipt.json": "dd897faa9994e7be3ea9f687b30e65f374eb36082c2dbaaf1c92ffb84553d9c0"
+      },
+      "receipt_payloads": {
+        "later-phase-rollback-reopen-receipt.json": {
+          "before": {
+            "bytes": 339,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/later-phase-rollback-gate/application/public/index.php",
+            "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+          },
+          "exact_original_restored": true,
+          "generated_at_utc": "2026-10-01T03:30:03Z",
+          "operation": "later-phase-rollback-reopen",
+          "replacement": {
+            "before": {
+              "bytes": 339,
+              "metadata": {
+                "gid": 1000,
+                "kind": "file",
+                "mode": 420,
+                "uid": 1000
+              },
+              "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/later-phase-rollback-gate/application/public/index.php",
+              "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+            },
+            "installed": {
+              "bytes": 40,
+              "metadata": {
+                "gid": 1000,
+                "kind": "file",
+                "mode": 420,
+                "uid": 1000
+              },
+              "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/later-phase-rollback-gate/application/public/index.php",
+              "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+            },
+            "prepared": {
+              "bytes": 40,
+              "metadata": {
+                "gid": 1000,
+                "kind": "file",
+                "mode": 420,
+                "uid": 1000
+              },
+              "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/later-phase-rollback-gate/application/public/.index.php.incoming-16744-a08641568b30",
+              "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+            }
+          },
+          "restored": {
+            "bytes": 40,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/later-phase-rollback-gate/application/public/index.php",
+            "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+          },
+          "status": "pass"
+        }
+      },
+      "scenario": "later-phase-rollback-gate",
+      "status": "pass"
+    },
+    "recovery-from-live-mode-0600-gate": {
+      "automatic_original_restoration_receipts": [
+        "legacy-mode-0600-gate-recovery-automatic-original-restore-receipt.json"
+      ],
+      "canonical_sha256": "f2b2f536bda3b67621dfc9382cdcf2f7e600543c5b74ed3349039298678d16d0",
+      "details": {
+        "expected_failure_sha256": "9fa017f86ce84d7288746fef0b0bf2d03dcf9a51fd9ffc62aab6cc2178d6a022",
+        "unreadable_gate_identified_by_sha256_not_boolean": true
+      },
+      "durable_transitions": [
+        {
+          "operation": "legacy-unreadable-gate",
+          "phase": "replacement_pending",
+          "sequence": 1
+        },
+        {
+          "operation": "legacy-mode-0600-gate-recovery-automatic-original-restore",
+          "phase": "replacement_pending",
+          "sequence": 2
+        },
+        {
+          "operation": "legacy-mode-0600-gate-recovery-automatic-original-restore",
+          "phase": "installed",
+          "sequence": 3
+        },
+        {
+          "operation": "legacy-mode-0600-gate-recovery-automatic-original-restore",
+          "phase": "exact_original_verified",
+          "sequence": 4
+        }
+      ],
+      "evidence_manifest": [
+        {
+          "bytes": 671,
+          "mode": "0o600",
+          "path": "events.jsonl",
+          "sha256": "e72cc40cabb7d2a4f0cfd52c05feae773cd1597eea835ef7c938fac61f03bf7c"
+        },
+        {
+          "bytes": 40,
+          "mode": "0o600",
+          "path": "front-controller-before.php",
+          "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+        },
+        {
+          "bytes": 2027,
+          "mode": "0o600",
+          "path": "legacy-mode-0600-gate-recovery-automatic-original-restore-receipt.json",
+          "sha256": "bb2282c5c3723919b242fe8f38c92ed51d10ed302aacffa7df5dce686dee8ca6"
+        },
+        {
+          "bytes": 2113,
+          "mode": "0o600",
+          "path": "legacy-mode-0600-gate-recovery-gate-failure-receipt.json",
+          "sha256": "844b5b8d560896af983bdc392d662a415a37a4be056b002cdccfbab61a04b04c"
+        },
+        {
+          "bytes": 5096,
+          "mode": "0o600",
+          "path": "state.json",
+          "sha256": "e4922d301057953439663853c756027001de3f9b79220a5a044ae6104499ba76"
+        }
+      ],
+      "final_durable_state": {
+        "containment_active": false,
+        "gate_failure_receipt_present": true,
+        "migration_executed_this_attempt": false,
+        "source_install_started": false,
+        "static_gate_active": false,
+        "status": "legacy-mode-0600-gate-recovery_failed_original_restored"
+      },
+      "final_front_controller": {
+        "bytes": 40,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+      },
+      "final_is_exact_gate": false,
+      "final_is_original": true,
+      "receipt_hashes": {
+        "legacy-mode-0600-gate-recovery-automatic-original-restore-receipt.json": "bb2282c5c3723919b242fe8f38c92ed51d10ed302aacffa7df5dce686dee8ca6",
+        "legacy-mode-0600-gate-recovery-gate-failure-receipt.json": "844b5b8d560896af983bdc392d662a415a37a4be056b002cdccfbab61a04b04c"
+      },
+      "receipt_payloads": {
+        "legacy-mode-0600-gate-recovery-automatic-original-restore-receipt.json": {
+          "before": {
+            "bytes": 339,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 384,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/recovery-from-live-mode-0600-gate/application/public/index.php",
+            "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+          },
+          "exact_original_restored": true,
+          "generated_at_utc": "2026-10-01T03:30:03Z",
+          "operation": "legacy-mode-0600-gate-recovery-automatic-original-restore",
+          "replacement": {
+            "before": {
+              "bytes": 339,
+              "metadata": {
+                "gid": 1000,
+                "kind": "file",
+                "mode": 384,
+                "uid": 1000
+              },
+              "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/recovery-from-live-mode-0600-gate/application/public/index.php",
+              "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+            },
+            "installed": {
+              "bytes": 40,
+              "metadata": {
+                "gid": 1000,
+                "kind": "file",
+                "mode": 420,
+                "uid": 1000
+              },
+              "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/recovery-from-live-mode-0600-gate/application/public/index.php",
+              "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+            },
+            "prepared": {
+              "bytes": 40,
+              "metadata": {
+                "gid": 1000,
+                "kind": "file",
+                "mode": 420,
+                "uid": 1000
+              },
+              "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/recovery-from-live-mode-0600-gate/application/public/.index.php.incoming-16744-3ac8da3b2967",
+              "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+            }
+          },
+          "restored": {
+            "bytes": 40,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/recovery-from-live-mode-0600-gate/application/public/index.php",
+            "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+          },
+          "status": "pass"
+        },
+        "legacy-mode-0600-gate-recovery-gate-failure-receipt.json": {
+          "failure_message_sha256": "e707dab5d173c891134a0418dd183e2e5c36fca65bc8423ae619734977f1b0de",
+          "failure_type": "DeploymentError",
+          "final": {
+            "bytes": 40,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/recovery-from-live-mode-0600-gate/application/public/index.php",
+            "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+          },
+          "generated_at_utc": "2026-10-01T03:30:03Z",
+          "initial": {
+            "bytes": 339,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 384,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/recovery-from-live-mode-0600-gate/application/public/index.php",
+            "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+          },
+          "live_after_failure": {
+            "bytes": 339,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 384,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/recovery-from-live-mode-0600-gate/application/public/index.php",
+            "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+          },
+          "mutation_started": false,
+          "operation": "legacy-mode-0600-gate-recovery",
+          "origin_probe": null,
+          "original_restoration_performed": true,
+          "post_restoration_health": {
+            "result": {
+              "application_healthy": true,
+              "front_controller": {
+                "bytes": 40,
+                "metadata": {
+                  "gid": 1000,
+                  "kind": "file",
+                  "mode": 420,
+                  "uid": 1000
+                },
+                "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+              }
+            },
+            "status": "pass"
+          },
+          "public_probe": null,
+          "restoration_receipt": {
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/recovery-from-live-mode-0600-gate/evidence/legacy-mode-0600-gate-recovery-automatic-original-restore-receipt.json",
+            "sha256": "bb2282c5c3723919b242fe8f38c92ed51d10ed302aacffa7df5dce686dee8ca6"
+          },
+          "status": "gate_failed_original_restored"
+        }
+      },
+      "scenario": "recovery-from-live-mode-0600-gate",
+      "status": "pass"
+    },
+    "recovery-from-pending-state-and-live-gate": {
+      "automatic_original_restoration_receipts": [],
+      "canonical_sha256": "93a9b646bfa41091f3a7449df2be55fe5ad680f897a6d6a703f05677e1be6f51",
+      "details": {
+        "gate": {
+          "installed": null,
+          "metadata": {
+            "gid": 1000,
+            "kind": "file",
+            "mode": 420,
+            "uid": 1000
+          },
+          "origin_probe": {
+            "header_verified": true,
+            "php_command": {
+              "argv_sha256": "da1556d1ca820198c91f435609a4c80803f14ab63223db6f2f03815cb1383c98",
+              "executable_chain": [
+                "setpriv",
+                "php"
+              ],
+              "exit_status": 0,
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout_sha256": "2fdceb579aa8e0aa62c46d0b44b7a0efe95736f468889531f13cc605ad55ef57"
+            },
+            "reader": {
+              "bytes": 339,
+              "egid": 33,
+              "euid": 33,
+              "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+            },
+            "reader_command": {
+              "argv_sha256": "8c99986c1ef0c8f1ad53fe88d41e7078b270054885201f1b980f5e19ea5df08b",
+              "executable_chain": [
+                "setpriv",
+                "python3"
+              ],
+              "exit_status": 0,
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout_sha256": "8935255040cf75b970c3a7c0191e70bcbc91852cd1ac558607c2624f472d5bc9"
+            },
+            "route": "origin_loopback",
+            "sentinel_verified": true,
+            "status": 503
+          },
+          "prepared": null,
+          "public_probe": {
+            "header_verified": true,
+            "php_command": {
+              "argv_sha256": "da1556d1ca820198c91f435609a4c80803f14ab63223db6f2f03815cb1383c98",
+              "executable_chain": [
+                "setpriv",
+                "php"
+              ],
+              "exit_status": 0,
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout_sha256": "2fdceb579aa8e0aa62c46d0b44b7a0efe95736f468889531f13cc605ad55ef57"
+            },
+            "reader": {
+              "bytes": 339,
+              "egid": 33,
+              "euid": 33,
+              "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+            },
+            "reader_command": {
+              "argv_sha256": "8c99986c1ef0c8f1ad53fe88d41e7078b270054885201f1b980f5e19ea5df08b",
+              "executable_chain": [
+                "setpriv",
+                "python3"
+              ],
+              "exit_status": 0,
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout_sha256": "8935255040cf75b970c3a7c0191e70bcbc91852cd1ac558607c2624f472d5bc9"
+            },
+            "route": "public_cloudflare",
+            "sentinel_verified": true,
+            "status": 503
+          },
+          "reconciled_from_live_identity": true,
+          "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+        },
+        "restore_receipt_sha256": "f523e93c1bccfe121fc38b540480cce7966e5ed78227ff0a12c8df100b98c5ff",
+        "stale_boolean_ignored": true
+      },
+      "durable_transitions": [
+        {
+          "operation": "interrupted-gate",
+          "phase": "replacement_pending",
+          "sequence": 1
+        },
+        {
+          "operation": "reconciled-recovery-gate",
+          "phase": "installed_reconciled_from_live_identity",
+          "sequence": 2
+        },
+        {
+          "operation": "reconciled-recovery-gate",
+          "phase": "verified",
+          "sequence": 3
+        },
+        {
+          "operation": "reconciled-recovery-reopen",
+          "phase": "replacement_pending",
+          "sequence": 4
+        },
+        {
+          "operation": "reconciled-recovery-reopen",
+          "phase": "installed",
+          "sequence": 5
+        },
+        {
+          "operation": "reconciled-recovery-reopen",
+          "phase": "exact_original_verified",
+          "sequence": 6
+        }
+      ],
+      "evidence_manifest": [
+        {
+          "bytes": 871,
+          "mode": "0o600",
+          "path": "events.jsonl",
+          "sha256": "38e00a94e9cae348f416ed7001b6a25bf449b7cbc60cb9fdaec4f4b313700fc1"
+        },
+        {
+          "bytes": 40,
+          "mode": "0o600",
+          "path": "front-controller-before.php",
+          "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+        },
+        {
+          "bytes": 2036,
+          "mode": "0o600",
+          "path": "reconciled-recovery-reopen-receipt.json",
+          "sha256": "f523e93c1bccfe121fc38b540480cce7966e5ed78227ff0a12c8df100b98c5ff"
+        },
+        {
+          "bytes": 10279,
+          "mode": "0o600",
+          "path": "state.json",
+          "sha256": "16a5492c784aa17d421c20f9d97c2c4b11de0ffab6e0ea333683183d408b0d1b"
+        }
+      ],
+      "final_durable_state": {
+        "containment_active": false,
+        "gate_failure_receipt_present": false,
+        "migration_executed_this_attempt": false,
+        "source_install_started": false,
+        "static_gate_active": false,
+        "status": "rehearsal"
+      },
+      "final_front_controller": {
+        "bytes": 40,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+      },
+      "final_is_exact_gate": false,
+      "final_is_original": true,
+      "receipt_hashes": {
+        "reconciled-recovery-reopen-receipt.json": "f523e93c1bccfe121fc38b540480cce7966e5ed78227ff0a12c8df100b98c5ff"
+      },
+      "receipt_payloads": {
+        "reconciled-recovery-reopen-receipt.json": {
+          "before": {
+            "bytes": 339,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/recovery-from-pending-state-and-live-gate/application/public/index.php",
+            "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+          },
+          "exact_original_restored": true,
+          "generated_at_utc": "2026-10-01T03:30:03Z",
+          "operation": "reconciled-recovery-reopen",
+          "replacement": {
+            "before": {
+              "bytes": 339,
+              "metadata": {
+                "gid": 1000,
+                "kind": "file",
+                "mode": 420,
+                "uid": 1000
+              },
+              "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/recovery-from-pending-state-and-live-gate/application/public/index.php",
+              "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+            },
+            "installed": {
+              "bytes": 40,
+              "metadata": {
+                "gid": 1000,
+                "kind": "file",
+                "mode": 420,
+                "uid": 1000
+              },
+              "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/recovery-from-pending-state-and-live-gate/application/public/index.php",
+              "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+            },
+            "prepared": {
+              "bytes": 40,
+              "metadata": {
+                "gid": 1000,
+                "kind": "file",
+                "mode": 420,
+                "uid": 1000
+              },
+              "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/recovery-from-pending-state-and-live-gate/application/public/.index.php.incoming-16744-27647df6ad39",
+              "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+            }
+          },
+          "restored": {
+            "bytes": 40,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/recovery-from-pending-state-and-live-gate/application/public/index.php",
+            "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+          },
+          "status": "pass"
+        }
+      },
+      "scenario": "recovery-from-pending-state-and-live-gate",
+      "status": "pass"
+    },
+    "success-under-umask-077": {
+      "automatic_original_restoration_receipts": [],
+      "canonical_sha256": "fd374e6ff0d4c5a6e73f58fcfa5f12d334cbd881e7bbf37743de5ae68b68e997",
+      "details": {
+        "gate": {
+          "installed": {
+            "bytes": 339,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+          },
+          "metadata": {
+            "gid": 1000,
+            "kind": "file",
+            "mode": 420,
+            "uid": 1000
+          },
+          "origin_probe": {
+            "header_verified": true,
+            "php_command": {
+              "argv_sha256": "f560628ac4dd997c1c4f98f5df26bbefce3576ac5e028ee22a7e623c43456716",
+              "executable_chain": [
+                "setpriv",
+                "php"
+              ],
+              "exit_status": 0,
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout_sha256": "2fdceb579aa8e0aa62c46d0b44b7a0efe95736f468889531f13cc605ad55ef57"
+            },
+            "reader": {
+              "bytes": 339,
+              "egid": 33,
+              "euid": 33,
+              "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+            },
+            "reader_command": {
+              "argv_sha256": "33ce1fba942ea7e1479f448c8f6960f07135500d5d6f069577ffd3817672b3bb",
+              "executable_chain": [
+                "setpriv",
+                "python3"
+              ],
+              "exit_status": 0,
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout_sha256": "8935255040cf75b970c3a7c0191e70bcbc91852cd1ac558607c2624f472d5bc9"
+            },
+            "route": "origin_loopback",
+            "sentinel_verified": true,
+            "status": 503
+          },
+          "prepared": {
+            "bytes": 339,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+          },
+          "public_probe": {
+            "header_verified": true,
+            "php_command": {
+              "argv_sha256": "f560628ac4dd997c1c4f98f5df26bbefce3576ac5e028ee22a7e623c43456716",
+              "executable_chain": [
+                "setpriv",
+                "php"
+              ],
+              "exit_status": 0,
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout_sha256": "2fdceb579aa8e0aa62c46d0b44b7a0efe95736f468889531f13cc605ad55ef57"
+            },
+            "reader": {
+              "bytes": 339,
+              "egid": 33,
+              "euid": 33,
+              "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+            },
+            "reader_command": {
+              "argv_sha256": "33ce1fba942ea7e1479f448c8f6960f07135500d5d6f069577ffd3817672b3bb",
+              "executable_chain": [
+                "setpriv",
+                "python3"
+              ],
+              "exit_status": 0,
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout_sha256": "8935255040cf75b970c3a7c0191e70bcbc91852cd1ac558607c2624f472d5bc9"
+            },
+            "route": "public_cloudflare",
+            "sentinel_verified": true,
+            "status": 503
+          },
+          "reconciled_from_live_identity": false,
+          "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+        },
+        "restore_receipt_sha256": "23501b7e7b97b68b389b45b22b14483f9c5f3ff0fc13e85303e18a44a378ef96"
+      },
+      "durable_transitions": [
+        {
+          "operation": "successful-cutover-gate",
+          "phase": "replacement_pending",
+          "sequence": 1
+        },
+        {
+          "operation": "successful-cutover-gate",
+          "phase": "installed",
+          "sequence": 2
+        },
+        {
+          "operation": "successful-cutover-gate",
+          "phase": "verified",
+          "sequence": 3
+        },
+        {
+          "operation": "successful-cutover-reopen",
+          "phase": "replacement_pending",
+          "sequence": 4
+        },
+        {
+          "operation": "successful-cutover-reopen",
+          "phase": "installed",
+          "sequence": 5
+        },
+        {
+          "operation": "successful-cutover-reopen",
+          "phase": "exact_original_verified",
+          "sequence": 6
+        }
+      ],
+      "evidence_manifest": [
+        {
+          "bytes": 843,
+          "mode": "0o600",
+          "path": "events.jsonl",
+          "sha256": "24d11267ccea5f7bfabc2565a3f3f9222cf4ca7e0d1af3257e77907d4264d57f"
+        },
+        {
+          "bytes": 40,
+          "mode": "0o600",
+          "path": "front-controller-before.php",
+          "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+        },
+        {
+          "bytes": 10631,
+          "mode": "0o600",
+          "path": "state.json",
+          "sha256": "3096ebc599ac57321cc19f6dd9b3b1ab3382d27ad65096c24edb8eeaae8006fc"
+        },
+        {
+          "bytes": 1945,
+          "mode": "0o600",
+          "path": "successful-cutover-reopen-receipt.json",
+          "sha256": "23501b7e7b97b68b389b45b22b14483f9c5f3ff0fc13e85303e18a44a378ef96"
+        }
+      ],
+      "final_durable_state": {
+        "containment_active": false,
+        "gate_failure_receipt_present": false,
+        "migration_executed_this_attempt": false,
+        "source_install_started": false,
+        "static_gate_active": false,
+        "status": "rehearsal"
+      },
+      "final_front_controller": {
+        "bytes": 40,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+      },
+      "final_is_exact_gate": false,
+      "final_is_original": true,
+      "receipt_hashes": {
+        "successful-cutover-reopen-receipt.json": "23501b7e7b97b68b389b45b22b14483f9c5f3ff0fc13e85303e18a44a378ef96"
+      },
+      "receipt_payloads": {
+        "successful-cutover-reopen-receipt.json": {
+          "before": {
+            "bytes": 339,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/success-under-umask-077/application/public/index.php",
+            "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+          },
+          "exact_original_restored": true,
+          "generated_at_utc": "2026-10-01T03:30:02Z",
+          "operation": "successful-cutover-reopen",
+          "replacement": {
+            "before": {
+              "bytes": 339,
+              "metadata": {
+                "gid": 1000,
+                "kind": "file",
+                "mode": 420,
+                "uid": 1000
+              },
+              "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/success-under-umask-077/application/public/index.php",
+              "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+            },
+            "installed": {
+              "bytes": 40,
+              "metadata": {
+                "gid": 1000,
+                "kind": "file",
+                "mode": 420,
+                "uid": 1000
+              },
+              "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/success-under-umask-077/application/public/index.php",
+              "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+            },
+            "prepared": {
+              "bytes": 40,
+              "metadata": {
+                "gid": 1000,
+                "kind": "file",
+                "mode": 420,
+                "uid": 1000
+              },
+              "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/success-under-umask-077/application/public/.index.php.incoming-16744-ed36c2ce3b42",
+              "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+            }
+          },
+          "restored": {
+            "bytes": 40,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-incoming-gate-rehearsal-luw49v8i/success-under-umask-077/application/public/index.php",
+            "sha256": "855867d8970dfcb8938b2b50fa746c2cfc87f2f5bd5ff3da37f313ec0c798bcc"
+          },
+          "status": "pass"
+        }
+      },
+      "scenario": "success-under-umask-077",
+      "status": "pass"
+    }
+  },
+  "static_gate_sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03",
+  "status": "pass",
+  "umask": "0077",
+  "web_identity": {
+    "egid": 33,
+    "euid": 33
+  }
+}

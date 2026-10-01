@@ -1,0 +1,13 @@
+PHPUnit 11.5.50 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.2.0
+Configuration: C:\Users\danie\projects\buy-dtf-receiver-validation-20261001b\phpunit.xml
+
+...............................................................  63 / 170 ( 37%)
+............................................................... 126 / 170 ( 74%)
+..................S.........................                    170 / 170 (100%)
+
+Time: 00:10.697, Memory: 78.00 MB
+
+OK, but some tests were skipped!
+Tests: 170, Assertions: 1099, Skipped: 1.

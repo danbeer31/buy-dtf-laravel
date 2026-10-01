@@ -213,7 +213,8 @@ def fixture(rehearsal_root: Path, name: str) -> dict[str, Any]:
         "front_controller_transitions": [],
         "static_gate_active": False,
         "containment_active": False,
-        "migration_executed": False,
+        "schema_state": deploy.SCHEMA_STATE,
+        "migration_executed_this_attempt": False,
         "source_install_started": False,
     }
     deploy.write_state(state_path, state)
@@ -277,7 +278,9 @@ def scenario_receipt(item: dict[str, Any], details: dict[str, Any]) -> dict[str,
         "final_durable_state": {
             "static_gate_active": state["static_gate_active"],
             "containment_active": state.get("containment_active", False),
-            "migration_executed": state["migration_executed"],
+            "migration_executed_this_attempt": state[
+                "migration_executed_this_attempt"
+            ],
             "source_install_started": state["source_install_started"],
             "status": state["status"],
             "gate_failure_receipt_present": "gate_failure_receipt" in state,
@@ -558,7 +561,6 @@ def run_rehearsal(parent: Path) -> dict[str, Any]:
         )
 
         rollback = fixture(rehearsal_root, "later-phase-rollback-gate")
-        rollback["state"]["migration_executed"] = True
         rollback["state"]["source_install_started"] = True
         rollback["state"]["static_gate_active"] = False
         deploy.write_state(rollback["state_path"], rollback["state"])
@@ -586,7 +588,6 @@ def run_rehearsal(parent: Path) -> dict[str, Any]:
         containment_failure = fixture(
             rehearsal_root, "later-phase-gate-verification-failure"
         )
-        containment_failure["state"]["migration_executed"] = True
         containment_failure["state"]["source_install_started"] = True
         deploy.write_state(
             containment_failure["state_path"], containment_failure["state"]
@@ -614,7 +615,7 @@ def run_rehearsal(parent: Path) -> dict[str, Any]:
             containment_failure,
             {
                 "expected_failure_sha256": containment_failure_sha256,
-                "migration_executed": True,
+                "migration_executed_this_attempt": False,
                 "source_install_started": True,
                 "expected_fail_closed_result": "exact_gate_retained_without_original_restore",
             },

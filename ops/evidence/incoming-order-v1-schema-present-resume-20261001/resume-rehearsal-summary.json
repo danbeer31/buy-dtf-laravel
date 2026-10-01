@@ -1,0 +1,7 @@
+{
+  "receipt": "/tmp/buy-dtf-schema-present-resume-rehearsal-jumm2gmc/resume-rehearsal-receipt.json",
+  "receipt_sha256": "99a3a25224f39bd90d5749933a8e709ebba97c88f20de4780d89e6e1f71919fd",
+  "rehearsal_root": "/tmp/buy-dtf-schema-present-resume-rehearsal-jumm2gmc",
+  "scenario_count": 5,
+  "status": "pass"
+}

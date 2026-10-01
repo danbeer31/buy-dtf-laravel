@@ -1,0 +1,99 @@
+{
+  "application_root": "/var/www/buy-dtf",
+  "approval_tokens": {
+    "deploy": "DEPLOY-BUYDTF-INCOMING-RESUME-0799440b7cbb0bad",
+    "recover": "RECOVER-BUYDTF-INCOMING-RESUME-0799440b7cbb0bad",
+    "stage": "STAGE-BUYDTF-INCOMING-RESUME-0799440b7cbb0bad"
+  },
+  "archive_sha256": "ed1df143d219fa073efb2707508c3eb81ba17b777597cebc20a72d3c546522c2",
+  "artifact": "BuyDTF incoming-order v1 installed-schema resume runner",
+  "dependency_identity": {
+    "cache_manifest_sha256": "468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9",
+    "composer_lock_sha256": "22af12c7e58fcfe809735dbf9955b2d22a264e9e7345cefd74398e36bf2773b9",
+    "packages_sha256": "21da8f9ed19687e708cc7bc5cc59394c6fcdf9b9deadf617ae70526f815a1db0",
+    "services_sha256": "1f7623b2b4ffd2c4099fb34ad86fc96c1479e27bf81b1b0ba328c988cc4ffcb5",
+    "vendor_manifest_sha256": "7399949f857da190c5ff07b89c85e8fba8a6f681695e20a462862be591b698ed"
+  },
+  "font_asset": {
+    "license_path": "/var/www/buy-dtf/resources/fonts/job-card-v2/LICENSE.txt",
+    "license_sha256": "bc88ec457a574842b8f28c20e97a1fe91ecca69db14840484a22c694f2ffb6da",
+    "path": "/var/www/buy-dtf/resources/fonts/job-card-v2/DejaVuSans.ttf",
+    "predeployment_state": "absent_reviewed_addition",
+    "renderer_version": "separate-job-card-v2",
+    "sha256": "ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280"
+  },
+  "front_controller_gate": {
+    "gid": 1000,
+    "installed_persisted_before_http_verification": true,
+    "mode": "0o644",
+    "post_source_mutation_verification_failure": "retain_exact_0644_gate_with_durable_rollback_containment",
+    "pre_mutation_verification_failure": "restore_exact_original_front_controller_with_receipt_and_health_check",
+    "recovery_uses_live_identity_and_durable_state": true,
+    "replacement_pending_persisted_before_swap": true,
+    "uid": 1000,
+    "web_reader_gid": 33,
+    "web_reader_uid": 33
+  },
+  "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
+  "helper_sha256": "1b37d3a38834ef633cee5caa784d909b2f5be41ae6e22766f817f80f9f4a20bd",
+  "manifest_sha256": "b6efbd5463c82f895ca8d359b665a145d88c0d363ce7f97b247eae9080853bb6",
+  "migration": {
+    "command_invoked": false,
+    "executed_this_attempt": false,
+    "ledger_row_count": 20,
+    "ledger_sha256": "3168a7da9ca4aad0a81e673ec61c1647242916d054768f4dd48ff4b9d7eb28d4",
+    "path": "database/migrations/2026_09_27_120000_create_incoming_order_v1_tables.php",
+    "pretend_invoked": false,
+    "schema_sha256": "4f1990336946bde95c6a13d0245fe4a5845eff2f23999f62e8529478d95d51ed",
+    "schema_state": "installed_schema_resume_v1",
+    "sha256": "79fa911b0b2ad9bb79c33080725446093dffd4df3e01c3cb3888d508087c9f9d",
+    "target_definitions_sha256": "aa0a038110dc355ffcd0ed12768c2adb7b0954ecbcc9aeb0fc4ef0efb5d287dc",
+    "target_entry_count": 1,
+    "target_table_row_counts": {
+      "api_asset_records": 0,
+      "incoming_order_jobs": 0
+    },
+    "target_tables": {
+      "api_asset_records": true,
+      "incoming_order_jobs": true
+    }
+  },
+  "release_root": "/var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases",
+  "retired_artifacts": {
+    "release_receipt_paths": [
+      "/var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20260928T020518Z/release-receipt.json",
+      "/var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-releases/0799440b-20261001T013235Z/release-receipt.json"
+    ],
+    "release_receipt_sha256": [
+      "0ae00bbbf5a3fbccc2e69d1318ed17896d4b33ea107f716059018eab710af184",
+      "e08e969c97065cc7e387acbcf5544355b6270e55b095d4d9fa5d8bf06e33a9ed"
+    ],
+    "runner_sha256": [
+      "2a7bf3966c593532af1e22db0f03d8cec1c6aecfde0902629b9f2328016c1138",
+      "569f8aec08b8493d1544a9c1c84b0dca2e0efd74cd8385091cbff13796c6119c"
+    ]
+  },
+  "rollback_root": "/var/www/buy-dtf/storage/app/private/operations/incoming-order-v1-rollbacks",
+  "runtime_paths": {
+    "additions": 26,
+    "replacements": 11,
+    "total": 37
+  },
+  "safety": {
+    "capability_enablement": false,
+    "composer_operations": false,
+    "environment_change": false,
+    "general_migration": false,
+    "git_operations": false,
+    "migration_command_invoked": false,
+    "migration_executed_this_attempt": false,
+    "migration_pretend_invoked": false,
+    "post_mutation_gate_failure_retains_exact_0644_gate": true,
+    "pre_mutation_gate_failure_restores_original_with_receipt": true,
+    "retention_execution": false,
+    "service_restart": false,
+    "source_rollback_drops_additive_schema": false
+  },
+  "static_gate_sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03",
+  "target_commit": "0799440b7cbb0bad364fc2a65b41285f20245658"
+}
