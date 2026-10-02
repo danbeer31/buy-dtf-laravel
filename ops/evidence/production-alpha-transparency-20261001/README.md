@@ -23,6 +23,31 @@ All raw source/before/after PNGs report 300 PPI (11,811 pixels per meter).
 auto-fitting each panel, so the incorrect and corrected visible bounds remain
 visually comparable.
 
+## Independent-review corrections
+
+The follow-up correction closes both workflow gaps identified against the
+original repair candidate:
+
+- The authenticated admin comparison route now calls
+  `DtfImage::productionAlphaThreshold()` and takes the same five-argument
+  legacy or six-argument policy path as `ProductionHelper`. Its cache version
+  includes the effective policy identity. A real Imagick route/production
+  regression compares exact RGBA pixels, visible bounds, alpha values, output
+  dimensions, and 300-PPI metadata for both policy and legacy records.
+- A guarded nullable `savedimages.item_meta` column stores the complete frozen
+  metadata snapshot, including the versioned alpha policy and original-artwork
+  reference. Tests cover upload, save, deletion of the only source row, and
+  reuse; identical paths across businesses; deterministic newest-row fallback;
+  and legacy Saved Images without metadata.
+- The migration is bound to the migrator's audited Fuel connection, refuses a
+  mismatched connection, is idempotent, emits one nullable MySQL `TEXT` column,
+  and intentionally preserves the column on code rollback.
+
+`APPLICATION_MANIFEST.json` is a review-only expected-live/target manifest for
+the seven source files and one migration. It is not a production staging
+receipt. Production staging and the absolute-path migration pretend remain
+separately gated by the schema-aware deployment plan.
+
 ## Reproduction command
 
 From the repository root in the approved WSL PHP environment:

@@ -677,16 +677,29 @@ class CartController extends Controller
             ]);
         }
 
-        // FuelPHP logic tries to find an existing DtfImage by path to get metadata
-        // For simplicity, we'll try to find any DtfImage with this path or just use defaults
-        $sourceImg = DtfImage::where('image', $saved->image)->first();
+        // New Saved Images carry their own immutable metadata snapshot. For a
+        // legacy row, consult only this business's newest matching source row.
+        $hasMetadataSnapshot = $saved->hasItemMetadataSnapshot();
+        $sourceImg = $hasMetadataSnapshot
+            ? null
+            : DtfImage::where('image', $saved->image)
+                ->whereHas('dtfOrder', function ($query) use ($saved) {
+                    $query->where('business_id', $saved->business_id);
+                })
+                ->orderByDesc('id')
+                ->first();
+        $itemMetadata = $hasMetadataSnapshot
+            ? $saved->getItemMetadata()
+            : ($sourceImg ? $sourceImg->getItemMetadata() : []);
+        $savedSourceMetadata = data_get($itemMetadata, 'source_artwork');
+        $savedSourceMetadata = is_array($savedSourceMetadata) ? $savedSourceMetadata : [];
 
         $newImg = DtfImage::createUsingExistingColumns([
             'dtforder_id' => $order->id,
             'image' => $saved->image,
             'thumbnail' => $sourceImg ? $sourceImg->thumbnail : $saved->thumbnail,
             'item_type' => 'standard',
-            'item_meta' => $sourceImg ? $sourceImg->getItemMetadata() : null,
+            'item_meta' => $itemMetadata,
             'image_name' => $saved->image_name,
             'image_notes' => $saved->image_notes ?? '',
             'width' => $saved->width ?: ($sourceImg ? $sourceImg->width : 0),
@@ -696,10 +709,10 @@ class CartController extends Controller
             'orig_width' => $sourceImg ? $sourceImg->orig_width : null,
             'orig_height' => $sourceImg ? $sourceImg->orig_height : null,
             'native_filename' => $sourceImg ? $sourceImg->native_filename : basename($saved->image),
-            'file_size' => $sourceImg ? $sourceImg->file_size : 0,
-            'sha256_original' => $sourceImg ? $sourceImg->sha256_original : null,
+            'file_size' => $sourceImg ? $sourceImg->file_size : (int)($savedSourceMetadata['bytes'] ?? 0),
+            'sha256_original' => $sourceImg ? $sourceImg->sha256_original : ($savedSourceMetadata['sha256'] ?? null),
             'sha256_bitmap' => $sourceImg ? $sourceImg->sha256_bitmap : null,
-            'upload_mime' => $sourceImg ? $sourceImg->upload_mime : null,
+            'upload_mime' => $sourceImg ? $sourceImg->upload_mime : ($savedSourceMetadata['mime'] ?? null),
             'quantity' => 1,
             'production' => 0,
             'date_uploaded' => now(),
@@ -725,17 +738,20 @@ class CartController extends Controller
             abort(403);
         }
 
-        $saved = SavedImage::firstOrCreate(
-            ['business_id' => $business->id, 'image' => $img->image],
-            [
-                'thumbnail' => $img->thumbnail,
-                'image_name' => $img->image_name,
-                'image_notes' => $img->image_notes,
-                'width' => $img->width,
-                'height' => $img->height,
-                'date_uploaded' => now(),
-            ]
-        );
+        $saved = SavedImage::firstOrNew([
+            'business_id' => $business->id,
+            'image' => $img->image,
+        ]);
+        $saved->fill([
+            'thumbnail' => $img->thumbnail,
+            'image_name' => $img->image_name,
+            'image_notes' => $img->image_notes,
+            'item_meta' => $img->getItemMetadata(),
+            'width' => $img->width,
+            'height' => $img->height,
+            'date_uploaded' => now(),
+        ]);
+        $saved->save();
 
         return response()->json(['success' => true]);
     }

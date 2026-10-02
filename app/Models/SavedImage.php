@@ -14,12 +14,14 @@ class SavedImage extends FuelModel
         'thumbnail',
         'image_name',
         'image_notes',
+        'item_meta',
         'width',
         'height',
         'date_uploaded',
     ];
 
     protected $casts = [
+        'item_meta' => 'array',
         'width' => 'float',
         'height' => 'float',
     ];
@@ -41,5 +43,27 @@ class SavedImage extends FuelModel
     public function business(): BelongsTo
     {
         return $this->belongsTo(Business::class);
+    }
+
+    public function hasItemMetadataSnapshot(): bool
+    {
+        return $this->getRawOriginal('item_meta') !== null;
+    }
+
+    public function getItemMetadata(): array
+    {
+        $meta = $this->item_meta;
+
+        if (is_array($meta)) {
+            return $meta;
+        }
+
+        if (is_string($meta) && $meta !== '') {
+            $decoded = json_decode($meta, true);
+
+            return is_array($decoded) ? $decoded : [];
+        }
+
+        return [];
     }
 }

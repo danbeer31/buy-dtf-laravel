@@ -341,6 +341,7 @@ final class IsolatedTestDatabase
             $table->string('thumbnail')->nullable();
             $table->string('image_name')->nullable();
             $table->text('image_notes')->nullable();
+            $table->text('item_meta')->nullable();
             $table->decimal('width', 12, 4)->nullable();
             $table->decimal('height', 12, 4)->nullable();
             $table->dateTime('date_uploaded')->nullable();

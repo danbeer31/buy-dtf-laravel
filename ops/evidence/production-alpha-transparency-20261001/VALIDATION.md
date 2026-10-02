@@ -16,12 +16,22 @@ the approved dependency worktree vendor. It was not committed.
 
 ## Results
 
-- `php vendor/bin/phpunit`: 181 tests, 1,717 assertions, PASS.
-- Focused transparency/flow matrix: 12 tests, 642 assertions, PASS.
-- PHP syntax: 12 changed/new PHP files, PASS.
-- Laravel Pint check: 10 in-scope formatted files, PASS. The two legacy-style
-  application files were kept narrowly diffed rather than mechanically
-  reformatting unrelated code.
+- `php vendor/bin/phpunit`: 189 tests, 1,799 assertions, PASS in one invocation.
+- Focused transparency, admin-comparison, Saved Image, and migration matrix:
+  20 tests, 724 assertions, PASS.
+- Real admin comparison parity: PASS for policy and legacy records, including
+  exact RGBA pixels, visible bounds, alpha set, pixel dimensions, and PNG
+  300-PPI metadata against `ProductionHelper` output.
+- Durable Saved Image policy: PASS for upload -> save -> delete only source row
+  -> reuse, same-path cross-business isolation, deterministic newest owner-row
+  fallback, and legacy no-policy behavior.
+- Migration matrix: PASS for guarded/idempotent addition, wrong-connection
+  refusal, data-preserving `down()`, isolated pretend, and exact MySQL grammar.
+- PHP syntax: all eight candidate application/migration files and all three new
+  regression files, PASS.
+- Laravel Pint check: the five new/touched modern-style files, PASS. The
+  legacy-style controllers and `DtfImage` were kept narrowly diffed rather than
+  mechanically reformatting unrelated code.
 - `composer validate --strict`: PASS.
 - Exact approved live Composer lock
   `22af12c7e58fcfe809735dbf9955b2d22a264e9e7345cefd74398e36bf2773b9`:
@@ -31,7 +41,9 @@ the approved dependency worktree vendor. It was not committed.
   warnings only).
 - `git diff --check`: PASS.
 - Fixture manifest: 8/8 PASS.
-- Render-evidence manifest: PASS.
+- Fresh deterministic render-evidence manifest: PASS with the approved visual
+  comparison SHA-256
+  `3cfb2f36cb51b8cf42f16ec8a8809658c38fd5bdb706bf3c38c23aff29387054`.
 
 The Composer `test` script delegates to PHPUnit but retains Composer's
 300-second process timeout. The real maximum-field job-card render takes about
@@ -63,3 +75,8 @@ branch lock.
   legacy production-preparation signature.
 - Incoming-order derivatives continue through the separate aspect-safe path;
   no incoming job receives the cart/team alpha policy.
+- Incoming-order receiver, job-label, and retention capabilities remain
+  disabled; the artwork-host default remains empty.
+- `APPLICATION_MANIFEST.json` is local review evidence only. No production
+  preflight, staging, migration pretend, backup, migration, source install, or
+  deployment was performed.

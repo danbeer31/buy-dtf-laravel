@@ -247,6 +247,15 @@ class DtfImage extends FuelModel
         return max(1, min(255, (int) $policy['threshold']));
     }
 
+    public function productionAlphaPolicyIdentity(): string
+    {
+        $threshold = $this->productionAlphaThreshold();
+
+        return $threshold === null
+            ? 'legacy'
+            : 'production_derivative:v1:threshold:'.$threshold;
+    }
+
     public function downloadFilename(?string $absolutePath = null): string
     {
         $storedBasename = basename($absolutePath ?: (string) $this->image);

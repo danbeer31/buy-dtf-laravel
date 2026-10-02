@@ -355,6 +355,7 @@ class OrderImageController extends Controller
                 (string)$image->height,
                 (string)@filemtime($originalAbs),
                 (string)($image->updated_at?->timestamp ?? ''),
+                $image->productionAlphaPolicyIdentity(),
             ])
         );
 
@@ -375,13 +376,23 @@ class OrderImageController extends Controller
                 }
             }
 
-            $prepared = ImageHelper::prepareForProduction(
-                $originalAbs,
-                $compareAbs,
-                (float)$image->width,
-                (float)$image->height,
-                300
-            );
+            $alphaThreshold = $image->productionAlphaThreshold();
+            $prepared = $alphaThreshold === null
+                ? ImageHelper::prepareForProduction(
+                    $originalAbs,
+                    $compareAbs,
+                    (float)$image->width,
+                    (float)$image->height,
+                    300
+                )
+                : ImageHelper::prepareForProduction(
+                    $originalAbs,
+                    $compareAbs,
+                    (float)$image->width,
+                    (float)$image->height,
+                    300,
+                    $alphaThreshold
+                );
 
             if (!($prepared['success'] ?? false)) {
                 return response()->json([
