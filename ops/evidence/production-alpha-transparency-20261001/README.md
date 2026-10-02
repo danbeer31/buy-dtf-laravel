@@ -48,6 +48,14 @@ the seven source files and one migration. It is not a production staging
 receipt. Production staging and the absolute-path migration pretend remain
 separately gated by the schema-aware deployment plan.
 
+Two expected-live files currently use CRLF bytes in production. Their raw
+SHA-256 values and byte counts are the authoritative preflight, backup, and
+rollback identities in `APPLICATION_MANIFEST.json`. The manifest also records
+their LF-normalized hashes and sizes under `normalized_evidence_only` solely to
+prove that the difference from the reviewed Git baseline is line endings. A
+runner must never use those normalized identities for compare-and-swap or
+restoration checks.
+
 ## Reproduction command
 
 From the repository root in the approved WSL PHP environment:

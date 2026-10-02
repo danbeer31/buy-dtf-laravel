@@ -35,7 +35,9 @@ The future runner must stop before mutation unless every condition is true:
 - production dependency identities remain the accepted Laravel 12.69.0
   generation;
 - source hashes for all seven existing paths match the frozen expected-live
-  hashes in the reviewed artifact manifest;
+  raw-byte hashes and byte counts in the reviewed artifact manifest; the two
+  separately recorded LF-normalized identities are explanatory evidence only
+  and must never satisfy a compare-and-swap check;
 - the new migration path does not exist in live source;
 - Fuel schema fingerprint is
   `4f1990336946bde95c6a13d0245fe4a5845eff2f23999f62e8529478d95d51ed`;
@@ -57,8 +59,8 @@ resume. It requires a separately reviewed schema-present artifact.
 ## Phase 0: read-only production preflight
 
 1. Acquire only a read-only deployment-inspection lock.
-2. Record hashes, byte counts, owner, and mode for the seven existing paths;
-   record the migration path as absent.
+2. Record raw-byte hashes, byte counts, owner, and mode for the seven existing
+   paths; record the migration path as absent. Do not normalize line endings.
 3. Record Composer lock/vendor/cache/front-controller identities without
    changing them.
 4. Produce deterministic, redacted schema and migration-ledger fingerprints.
@@ -120,6 +122,10 @@ approval token, and explicit production authorization.
    - a consistent full `savedimages` table dump, including row count;
    - the complete migration ledger and its deterministic fingerprint.
 3. Verify every backup is readable and its receipt is durable before mutation.
+   Backups of existing source must preserve exact raw bytes, line endings,
+   ownership, and mode. Rollback verification must compare the restored raw
+   SHA-256 and byte count, including files currently containing CRLF bytes,
+   without normalization.
 4. Install and verify the reviewed boot-independent 0644 static gate. Separate
    local/origin validation from the public Cloudflare 503 probe.
 5. Recheck source CAS, schema, ledger, column absence, row count, capabilities,
@@ -150,8 +156,8 @@ requires separate explicit approval.
 ## Failure containment and rollback
 
 - Before the migration executes, restore the exact original seven source files
-  and original front controller. The schema and ledger must remain at their
-  preflight identities.
+  and original front controller, preserving their raw bytes and metadata. The
+  schema and ledger must remain at their preflight identities.
 - Once the migration begins, any failure retains the static gate until source
   rollback and health checks finish. Never reopen partially installed code.
 - After the migration succeeds, automatic rollback restores the exact original

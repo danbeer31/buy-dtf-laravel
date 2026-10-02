@@ -3,6 +3,7 @@
   "baseline_commit": "ef0cb6b35a977fcafac455c2f89c9fc6c901d39f",
   "superseded_candidate_commit": "92256f4f77b4dca4a3085e97ea00bfb9b82aa345",
   "hash_algorithm": "sha256 over exact raw file bytes",
+  "expected_live_identity_authority": "expected_live_sha256 and expected_live_bytes are the sole preflight CAS, backup, and rollback authority",
   "expected_schema_sha256": "4f1990336946bde95c6a13d0245fe4a5845eff2f23999f62e8529478d95d51ed",
   "expected_ledger": {
     "row_count": 20,
@@ -30,7 +31,18 @@
     },
     {
       "path": "app/Http/Controllers/Admin/OrderImageController.php",
-      "expected_live_sha256": "06a0011dfbef4c3f4502a5c940e29a6267960360921f6f414fd4f57f1c936af9",
+      "expected_live_sha256": "49c2925ad3dfb0aeea32f5baf98926a2cc5112ba543d9178c6297273ff6442f1",
+      "expected_live_bytes": 14948,
+      "expected_live_line_endings": {
+        "crlf_count": 234,
+        "remaining_lf_count": 177
+      },
+      "normalized_evidence_only": {
+        "algorithm": "replace each CRLF byte pair with one LF byte; make no other byte changes",
+        "sha256": "06a0011dfbef4c3f4502a5c940e29a6267960360921f6f414fd4f57f1c936af9",
+        "bytes": 14714,
+        "authority": "non-authoritative; never use for preflight CAS, backup verification, or rollback verification"
+      },
       "target_sha256": "9567e7950999b7ea9b744e9cd59a8fa9e9563490ad8ce069549a4137c3687bcb",
       "target_bytes": 15188
     },
@@ -54,7 +66,18 @@
     },
     {
       "path": "app/Models/SavedImage.php",
-      "expected_live_sha256": "dd6d7f7b1f1144e77447912c698c06351d30ac85bf1800b1d60dbe149fc00d7e",
+      "expected_live_sha256": "0282da64284bdddc2ad11ccc48c3f32c8ef0443823bbb4dcbe1d05b7973d12f7",
+      "expected_live_bytes": 1043,
+      "expected_live_line_endings": {
+        "crlf_count": 45,
+        "remaining_lf_count": 0
+      },
+      "normalized_evidence_only": {
+        "algorithm": "replace each CRLF byte pair with one LF byte; make no other byte changes",
+        "sha256": "dd6d7f7b1f1144e77447912c698c06351d30ac85bf1800b1d60dbe149fc00d7e",
+        "bytes": 998,
+        "authority": "non-authoritative; never use for preflight CAS, backup verification, or rollback verification"
+      },
       "target_sha256": "41b4ffcfa94ba9648b7c7e717efc1a82da37ed890d0ef31f96b00264b94f1a66",
       "target_bytes": 1520
     },
