@@ -45,6 +45,43 @@ the approved dependency worktree vendor. It was not committed.
   comparison SHA-256
   `3cfb2f36cb51b8cf42f16ec8a8809658c38fd5bdb706bf3c38c23aff29387054`.
 
+## Local runner freeze validation
+
+The final local artifact freeze repeated the complete direct PHPUnit run:
+**189 tests, 1,799 assertions, PASS** in 12:06.995. The Composer wrapper again
+reached its documented 300-second process timeout during the long native-image
+tests; the direct run completed every test without changing the test bootstrap
+or skipping an assertion.
+
+- Deployment-runner unit suite: 17 tests, PASS.
+- Disposable rehearsal: 7/7 scenarios, PASS under umask `077` on a native
+  Linux filesystem.
+- Required failure matrix: pre-migration, migration, source swap, candidate
+  check, post-reopen, and schema-preserving rollback, all PASS.
+- Separate static-gate readability checks under `www-data`: PASS in every
+  scenario.
+- Candidate archive extraction and all eight target identities: PASS.
+- PHP syntax for the seven replacement files, migration, and runtime probe:
+  PASS.
+- Fixture hashes: 8/8 PASS.
+- Fresh render hashes: unchanged; comparison remains
+  `3cfb2f36cb51b8cf42f16ec8a8809658c38fd5bdb706bf3c38c23aff29387054`.
+- `composer validate --strict`: PASS.
+- Exact approved production lock `22af12c7...`: zero production advisories.
+- `npm audit --omit=dev`: zero vulnerabilities.
+- `npm run build`: PASS with existing Sass/Browserslist warnings only.
+- Sorted PHP extension evidence:
+  `4c91e93322f2362e73ab2913a4b7d5118c84e671c0b5a5dbb471876880b9f4ef`.
+- `git diff --check`: PASS.
+
+The first filesystem rehearsal intentionally used the Windows-mounted local
+workspace and stopped before mutation because its reported `0777` mode could
+not satisfy the exact reviewed `0644` gate requirement. That fail-closed
+evidence is preserved outside Git. The successful run used a disposable native
+Linux filesystem and its raw 279-file evidence package is also preserved
+outside Git; the committed receipts contain hashes and no logs, dumps, source
+backups, credentials, customer data, or payment data.
+
 The Composer `test` script delegates to PHPUnit but retains Composer's
 300-second process timeout. The real maximum-field job-card render takes about
 five minutes by itself on this Windows-mounted WSL workspace, so the wrapper

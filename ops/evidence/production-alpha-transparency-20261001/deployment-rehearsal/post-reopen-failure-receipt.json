@@ -1,0 +1,28 @@
+{
+  "additive_schema_preserved": true,
+  "expected_failure": true,
+  "final_receipt_sha256": null,
+  "final_state_status": "rolled_back",
+  "front_controller_mode": "0o644",
+  "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
+  "migration_command_count": 2,
+  "migration_executed": true,
+  "migration_execution_started": true,
+  "observed_failure": {
+    "message_sha256": "a0f04cdcf850ba4c93dba20482614651b2fb99a36161a0431d43f1e994a3d05c",
+    "type": "DeploymentError"
+  },
+  "prohibited_command_count": 0,
+  "raw_evidence_entries": 21,
+  "raw_evidence_manifest_sha256": "d6bf67fa7248782d20bda09bdd2a2c02a13742f946ab8748ca27b62858613c83",
+  "raw_state_directory_name": "5b2d06cd-20261002T013715Z",
+  "rollback_complete": true,
+  "scenario": "post-reopen-failure",
+  "schema_state": "installed",
+  "separate_web_identity_all_passed": true,
+  "separate_web_identity_probe_count": 4,
+  "source_cas_sha256": "dd17d2cb76f227773f7faa7f830e3bf6cd4b8f152ec342190690d4baa3719cbd",
+  "source_expectation": "expected-live",
+  "state_sha256": "15422cc9067e23b02c639f6b8a82a3a0e720d3b0dbd4bb9d5ac2191dcef240f3",
+  "status": "pass"
+}

@@ -1,0 +1,300 @@
+{
+  "application_manifest_sha256": "26d988f87ac27b7dd034a532c22eaec207c60a32d16e890812ef5bbf0a1f5c2a",
+  "artifact": "buy-dtf-production-alpha-transparency-local-rehearsal-v1",
+  "artifact_base_commit": "fca0484505348a40f31c372fa3642d1039504704",
+  "baseline_source_records": [
+    {
+      "baseline_root_index": 1,
+      "bytes": 28229,
+      "path": "app/Helpers/ImageHelper.php",
+      "sha256": "b840aa320764dca8896512422456b39162a079d7428aab78b7ad1c7ec1beb637"
+    },
+    {
+      "baseline_root_index": 1,
+      "bytes": 17594,
+      "path": "app/Helpers/ProductionHelper.php",
+      "sha256": "fc14a5ff52714f311cc3f2bdcdf3410ade6927505bcc626eccbbc11f129d8f12"
+    },
+    {
+      "baseline_root_index": 2,
+      "bytes": 14948,
+      "path": "app/Http/Controllers/Admin/OrderImageController.php",
+      "sha256": "49c2925ad3dfb0aeea32f5baf98926a2cc5112ba543d9178c6297273ff6442f1"
+    },
+    {
+      "baseline_root_index": 1,
+      "bytes": 32079,
+      "path": "app/Http/Controllers/CartController.php",
+      "sha256": "713ae74db4410bb4ca22e5f4f3c77ddef17403004796a9e4418fe14ea7d6696a"
+    },
+    {
+      "baseline_root_index": 1,
+      "bytes": 9957,
+      "path": "app/Http/Controllers/TeamCustomizationController.php",
+      "sha256": "46c5f4079915e25f3466e0e98305918812376039546f91ed8a9f220737f56fc3"
+    },
+    {
+      "baseline_root_index": 1,
+      "bytes": 8990,
+      "path": "app/Models/DtfImage.php",
+      "sha256": "14d6245a1ac65babfa6d06152bd9fc6692c9d33c5fe3ba5e2b8efabce728d0c2"
+    },
+    {
+      "baseline_root_index": 2,
+      "bytes": 1043,
+      "path": "app/Models/SavedImage.php",
+      "sha256": "0282da64284bdddc2ad11ccc48c3f32c8ef0443823bbb4dcbe1d05b7973d12f7"
+    }
+  ],
+  "candidate_archive_sha256": "5dea236046e77a27922933b1650a318b9a685aaa19445be811dd948de156d0fb",
+  "candidate_archive_verification": {
+    "extraction": {
+      "files": 8,
+      "log_bytes": 1525,
+      "log_sha256": "f8211eecb6c5f55a95e4fc4bd7a17293d0025746c74fe0f7aa95fd1ff6f230b8",
+      "rows_sha256": "f8211eecb6c5f55a95e4fc4bd7a17293d0025746c74fe0f7aa95fd1ff6f230b8",
+      "tree": {
+        "bytes": 134259,
+        "directories": 8,
+        "files": 8,
+        "sha256": "9bb0cc3593033c2542df2dc08dc693cec6d70126d1ef6f8867552a0007db1238"
+      }
+    },
+    "verification": {
+      "evidence_bytes": 1469,
+      "evidence_sha256": "6f9d6e40e3e13ce0c3ba674a508ab53c9efb9b72b7c5ca24b66f95afd38bec87",
+      "files": 8,
+      "records_sha256": "6f9d6e40e3e13ce0c3ba674a508ab53c9efb9b72b7c5ca24b66f95afd38bec87",
+      "tree": {
+        "bytes": 134259,
+        "directories": 8,
+        "files": 8,
+        "sha256": "9bb0cc3593033c2542df2dc08dc693cec6d70126d1ef6f8867552a0007db1238"
+      }
+    }
+  },
+  "external_command_allowlist": [
+    "setpriv",
+    "php <disposable static gate>"
+  ],
+  "migration_invoked_outside_simulation": false,
+  "private_evidence_manifest": {
+    "entries": 279,
+    "entries_sha256": "ebeb1bd6860d389feff9f07696336a02b956775d006d6256e0518a33b9460fdd",
+    "manifest_sha256": "d64b956f7df4b416151604b419c9ba5163a84290bcd02033f6df615a46c54d03"
+  },
+  "production_accessed": false,
+  "production_staged": false,
+  "rehearsal_script_sha256": "407ebf29f7ef91d65b32de9cf519e41fb8140dce5c091b41f616190daed2ccbd",
+  "runner_sha256": "76cfff204e86ee1119251b1d79931b1219cd19704b099f75d4e3db202ffe5b17",
+  "runtime_probe_sha256": "df1f627ccd2844c888373e9aa135d8e4971ac2900ccce105d3081a04e7b3ad61",
+  "scenario_count": 7,
+  "scenarios": {
+    "candidate-check-failure": {
+      "additive_schema_preserved": true,
+      "expected_failure": true,
+      "final_receipt_sha256": null,
+      "final_state_status": "rolled_back",
+      "front_controller_mode": "0o644",
+      "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
+      "migration_command_count": 2,
+      "migration_executed": true,
+      "migration_execution_started": true,
+      "observed_failure": {
+        "message_sha256": "dd4bd08ecf73d317bcb63acd5d6e856a5c5c37758f8b319fbaf81bf0f450666a",
+        "type": "DeploymentError"
+      },
+      "prohibited_command_count": 0,
+      "raw_evidence_entries": 19,
+      "raw_evidence_manifest_sha256": "17dac4e1a7c718cb7699c91efc933a70a8da7f57bf14ef4922caafedad889395",
+      "raw_state_directory_name": "5b2d06cd-20261002T013714Z",
+      "rollback_complete": true,
+      "scenario": "candidate-check-failure",
+      "schema_state": "installed",
+      "separate_web_identity_all_passed": true,
+      "separate_web_identity_probe_count": 4,
+      "source_cas_sha256": "dd17d2cb76f227773f7faa7f830e3bf6cd4b8f152ec342190690d4baa3719cbd",
+      "source_expectation": "expected-live",
+      "state_sha256": "c46ef6f7c84f1d0eaa0ed7e8e1a4e40d0016144bd86a95197c2952295ccf7f26",
+      "status": "pass"
+    },
+    "migration-failure": {
+      "additive_schema_preserved": false,
+      "expected_failure": true,
+      "final_receipt_sha256": null,
+      "final_state_status": "rolled_back",
+      "front_controller_mode": "0o644",
+      "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
+      "migration_command_count": 2,
+      "migration_executed": false,
+      "migration_execution_started": true,
+      "observed_failure": {
+        "message_sha256": "fce7b9a81cff25d26ff769e4123ac65130c8e027a71beb67518a11947df34abd",
+        "type": "DeploymentError"
+      },
+      "prohibited_command_count": 0,
+      "raw_evidence_entries": 17,
+      "raw_evidence_manifest_sha256": "ee9c777138299cdd72e8699337afb7360726d6846f00add8ddfc1e2ef268bc74",
+      "raw_state_directory_name": "5b2d06cd-20261002T013713Z",
+      "rollback_complete": true,
+      "scenario": "migration-failure",
+      "schema_state": "absent",
+      "separate_web_identity_all_passed": true,
+      "separate_web_identity_probe_count": 4,
+      "source_cas_sha256": "dd17d2cb76f227773f7faa7f830e3bf6cd4b8f152ec342190690d4baa3719cbd",
+      "source_expectation": "expected-live",
+      "state_sha256": "f4544fa79c6103442de1a4574d00f6cd7913c5989a345929514ff1f19318df63",
+      "status": "pass"
+    },
+    "post-reopen-failure": {
+      "additive_schema_preserved": true,
+      "expected_failure": true,
+      "final_receipt_sha256": null,
+      "final_state_status": "rolled_back",
+      "front_controller_mode": "0o644",
+      "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
+      "migration_command_count": 2,
+      "migration_executed": true,
+      "migration_execution_started": true,
+      "observed_failure": {
+        "message_sha256": "a0f04cdcf850ba4c93dba20482614651b2fb99a36161a0431d43f1e994a3d05c",
+        "type": "DeploymentError"
+      },
+      "prohibited_command_count": 0,
+      "raw_evidence_entries": 21,
+      "raw_evidence_manifest_sha256": "d6bf67fa7248782d20bda09bdd2a2c02a13742f946ab8748ca27b62858613c83",
+      "raw_state_directory_name": "5b2d06cd-20261002T013715Z",
+      "rollback_complete": true,
+      "scenario": "post-reopen-failure",
+      "schema_state": "installed",
+      "separate_web_identity_all_passed": true,
+      "separate_web_identity_probe_count": 4,
+      "source_cas_sha256": "dd17d2cb76f227773f7faa7f830e3bf6cd4b8f152ec342190690d4baa3719cbd",
+      "source_expectation": "expected-live",
+      "state_sha256": "15422cc9067e23b02c639f6b8a82a3a0e720d3b0dbd4bb9d5ac2191dcef240f3",
+      "status": "pass"
+    },
+    "pre-migration-failure": {
+      "additive_schema_preserved": false,
+      "expected_failure": true,
+      "final_receipt_sha256": null,
+      "final_state_status": "rolled_back",
+      "front_controller_mode": "0o644",
+      "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
+      "migration_command_count": 0,
+      "migration_executed": false,
+      "migration_execution_started": false,
+      "observed_failure": {
+        "message_sha256": "f6ac5872b883947e6df11f1b5c42b23b5c8ff31f0492b0efa42679593f4a79b4",
+        "type": "DeploymentError"
+      },
+      "prohibited_command_count": 0,
+      "raw_evidence_entries": 16,
+      "raw_evidence_manifest_sha256": "9bf8c4180134bef4ae06a7c4d880207c8e3e0579b5c44f5ce74696082d294bd6",
+      "raw_state_directory_name": "5b2d06cd-20261002T013713Z",
+      "rollback_complete": true,
+      "scenario": "pre-migration-failure",
+      "schema_state": "absent",
+      "separate_web_identity_all_passed": true,
+      "separate_web_identity_probe_count": 4,
+      "source_cas_sha256": "dd17d2cb76f227773f7faa7f830e3bf6cd4b8f152ec342190690d4baa3719cbd",
+      "source_expectation": "expected-live",
+      "state_sha256": "d8292f9631e6aa759725ac4a49394e9f960d8d8484fa5df3f60e6db82a3c91b8",
+      "status": "pass"
+    },
+    "schema-preserving-rollback": {
+      "additive_schema_preserved": true,
+      "expected_failure": true,
+      "final_receipt_sha256": null,
+      "final_state_status": "rolled_back",
+      "front_controller_mode": "0o644",
+      "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
+      "migration_command_count": 2,
+      "migration_executed": false,
+      "migration_execution_started": true,
+      "observed_failure": {
+        "message_sha256": "ce0fe32e8eed2013c4fd095d515d276d3a077d5906905a06c5400b10adee766e",
+        "type": "DeploymentError"
+      },
+      "prohibited_command_count": 0,
+      "raw_evidence_entries": 17,
+      "raw_evidence_manifest_sha256": "0c80437f0c8834c85d99c71d7a47666d8045303f0359b3a31bd003c8d3c8cc09",
+      "raw_state_directory_name": "5b2d06cd-20261002T013716Z",
+      "rollback_complete": true,
+      "scenario": "schema-preserving-rollback",
+      "schema_state": "installed",
+      "separate_web_identity_all_passed": true,
+      "separate_web_identity_probe_count": 4,
+      "source_cas_sha256": "dd17d2cb76f227773f7faa7f830e3bf6cd4b8f152ec342190690d4baa3719cbd",
+      "source_expectation": "expected-live",
+      "state_sha256": "d351698323a0dd0a6a371339faf4017ad548bbaad14df2c888aa02a4722ca315",
+      "status": "pass"
+    },
+    "source-swap-failure": {
+      "additive_schema_preserved": true,
+      "expected_failure": true,
+      "final_receipt_sha256": null,
+      "final_state_status": "rolled_back",
+      "front_controller_mode": "0o644",
+      "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
+      "migration_command_count": 2,
+      "migration_executed": true,
+      "migration_execution_started": true,
+      "observed_failure": {
+        "message_sha256": "77da5c61761540b302becec52b81e7cc0d4ab692713717929a68ddf441405422",
+        "type": "DeploymentError"
+      },
+      "prohibited_command_count": 0,
+      "raw_evidence_entries": 18,
+      "raw_evidence_manifest_sha256": "7d40ea6f70bd53ec4eca1d84579612efe2d7c6f742dfc82f55517e9730880f50",
+      "raw_state_directory_name": "5b2d06cd-20261002T013713Z",
+      "rollback_complete": true,
+      "scenario": "source-swap-failure",
+      "schema_state": "installed",
+      "separate_web_identity_all_passed": true,
+      "separate_web_identity_probe_count": 4,
+      "source_cas_sha256": "dd17d2cb76f227773f7faa7f830e3bf6cd4b8f152ec342190690d4baa3719cbd",
+      "source_expectation": "expected-live",
+      "state_sha256": "d0c499d36731691e7c27e5c40f1923892a9c4f7a875e913d24c7705f43a9a027",
+      "status": "pass"
+    },
+    "success": {
+      "additive_schema_preserved": true,
+      "expected_failure": false,
+      "final_receipt_sha256": "9cb1094107fc21ee52bfeab4705f98e8994f43eaff904db1eaceb7780abfe7ca",
+      "final_state_status": "success",
+      "front_controller_mode": "0o644",
+      "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
+      "migration_command_count": 2,
+      "migration_executed": true,
+      "migration_execution_started": true,
+      "observed_failure": null,
+      "prohibited_command_count": 0,
+      "raw_evidence_entries": 20,
+      "raw_evidence_manifest_sha256": "1a99a004496e5cc86ef554ef02104efc28f33bb5ebccf606a3ecb1c28f01c1fd",
+      "raw_state_directory_name": "5b2d06cd-20261002T013712Z",
+      "rollback_complete": false,
+      "scenario": "success",
+      "schema_state": "installed",
+      "separate_web_identity_all_passed": true,
+      "separate_web_identity_probe_count": 2,
+      "source_cas_sha256": "daad3c0809ab2f295ede6d2daa75dcbfa3cb1db78d2a987b5f811516f4aa900f",
+      "source_expectation": "target",
+      "state_sha256": "ae432a208a7fd7c6aa847d2ef3505cbbe63b3164c555f542b9715e43eac30edf",
+      "status": "pass"
+    }
+  },
+  "scenarios_required": [
+    "success",
+    "pre-migration-failure",
+    "migration-failure",
+    "source-swap-failure",
+    "candidate-check-failure",
+    "post-reopen-failure",
+    "schema-preserving-rollback"
+  ],
+  "scope": "disposable-local-filesystem-only-no-production-access",
+  "status": "pass",
+  "target_application_commit": "5b2d06cd66bd599d8a7ab1f5518790d414ee9874",
+  "umask": "0o077"
+}

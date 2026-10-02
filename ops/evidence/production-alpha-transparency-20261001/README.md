@@ -56,6 +56,39 @@ prove that the difference from the reviewed Git baseline is line endings. A
 runner must never use those normalized identities for compare-and-swap or
 restoration checks.
 
+## Frozen local deployment package
+
+The runner package is review evidence only. It was assembled locally from
+artifact base `fca0484505348a40f31c372fa3642d1039504704` for application target
+`5b2d06cd66bd599d8a7ab1f5518790d414ee9874`. No production host was accessed
+and no production release was staged.
+
+The seven authoritative expected-live byte counts in
+`APPLICATION_MANIFEST.json` are 28,229; 17,594; 14,948; 32,079; 9,957; 8,990;
+and 1,043 bytes in manifest order. The manifest's raw hashes and byte counts
+are the only acceptable live compare-and-swap identities.
+
+The portable rehearsal receipt records seven passing scenarios: success,
+pre-migration failure, migration failure, source-swap failure, candidate-check
+failure, post-reopen failure, and schema-preserving rollback. The failure
+scenarios all restored the exact original source and front controller. The
+four scenarios that reached or discovered the additive schema preserved it;
+the earlier failures retained the absent schema. All static-gate checks were
+also executed by a separate `www-data` identity.
+
+The final rehearsal ran under umask `077` on a disposable native Linux
+filesystem. A preceding Windows-mounted-filesystem attempt correctly stopped
+before gate installation, migration simulation, or source replacement because
+that filesystem could not represent the reviewed `0644` gate mode. Its raw
+evidence remains preserved outside Git. The successful raw rehearsal package,
+candidate archive, source backups, and command logs likewise remain under the
+ignored private operations directory; only redacted receipts and portable
+hash manifests are committed.
+
+Frozen identities and private-evidence locations are recorded in
+`LOCAL_REHEARSAL_PACKAGE_RECEIPT.json`. `PHP_EXTENSIONS.txt` is the sorted,
+deduplicated extension list from the PHP runtime used for final validation.
+
 ## Reproduction command
 
 From the repository root in the approved WSL PHP environment:

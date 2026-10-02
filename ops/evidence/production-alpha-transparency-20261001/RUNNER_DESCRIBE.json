@@ -1,0 +1,75 @@
+{
+  "application_root": "/var/www/buy-dtf",
+  "approval_tokens": {
+    "deploy": "DEPLOY-BUYDTF-ALPHA-5b2d06cd66bd599d",
+    "recover": "RECOVER-BUYDTF-ALPHA-5b2d06cd66bd599d",
+    "stage": "STAGE-BUYDTF-ALPHA-5b2d06cd66bd599d"
+  },
+  "archive_sha256": "5dea236046e77a27922933b1650a318b9a685aaa19445be811dd948de156d0fb",
+  "artifact": "BuyDTF production-alpha transparency repair deployment runner v1",
+  "artifact_base_commit": "fca0484505348a40f31c372fa3642d1039504704",
+  "dependency_identity": {
+    "cache_manifest_sha256": "468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9",
+    "composer_lock_sha256": "22af12c7e58fcfe809735dbf9955b2d22a264e9e7345cefd74398e36bf2773b9",
+    "packages_sha256": "21da8f9ed19687e708cc7bc5cc59394c6fcdf9b9deadf617ae70526f815a1db0",
+    "services_sha256": "1f7623b2b4ffd2c4099fb34ad86fc96c1479e27bf81b1b0ba328c988cc4ffcb5",
+    "vendor_manifest_sha256": "7399949f857da190c5ff07b89c85e8fba8a6f681695e20a462862be591b698ed"
+  },
+  "front_controller_gate": {
+    "gid": 1000,
+    "installed_persisted_before_http_verification": true,
+    "mode": "0o644",
+    "post_migration_or_source_mutation_verification_failure": "retain_exact_0644_gate_with_durable_rollback_containment",
+    "pre_mutation_verification_failure": "restore_exact_original_front_controller_with_receipt_and_health_check",
+    "recovery_uses_live_identity_and_durable_state": true,
+    "replacement_pending_persisted_before_swap": true,
+    "uid": 1000,
+    "web_reader_gid": 33,
+    "web_reader_uid": 33
+  },
+  "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
+  "helper_sha256": "df1f627ccd2844c888373e9aa135d8e4971ac2900ccce105d3081a04e7b3ad61",
+  "manifest_sha256": "26d988f87ac27b7dd034a532c22eaec207c60a32d16e890812ef5bbf0a1f5c2a",
+  "migration": {
+    "connection": "fuelmysql",
+    "general_migrate_allowed": false,
+    "path": "database/migrations/2026_10_01_120000_add_item_meta_to_savedimages_table.php",
+    "pretend_statement": "alter table `savedimages` add `item_meta` text null",
+    "rollback_command_allowed": false,
+    "sha256": "992fbfe8086732e9bde10be89c3f52ddb4fef49edfdec12b744377c2e4181bbf"
+  },
+  "pre_migration_identity": {
+    "item_meta": "absent",
+    "ledger_rows": 20,
+    "ledger_sha256": "3168a7da9ca4aad0a81e673ec61c1647242916d054768f4dd48ff4b9d7eb28d4",
+    "schema_sha256": "4f1990336946bde95c6a13d0245fe4a5845eff2f23999f62e8529478d95d51ed",
+    "source_cas_sha256": "dd17d2cb76f227773f7faa7f830e3bf6cd4b8f152ec342190690d4baa3719cbd",
+    "target_migration_entries": 0,
+    "target_source_cas_sha256": "daad3c0809ab2f295ede6d2daa75dcbfa3cb1db78d2a987b5f811516f4aa900f"
+  },
+  "release_root": "/var/www/buy-dtf/storage/app/private/operations/production-alpha-transparency-releases",
+  "rollback_root": "/var/www/buy-dtf/storage/app/private/operations/production-alpha-transparency-rollbacks",
+  "runtime_paths": {
+    "additions": 1,
+    "replacements": 7,
+    "total": 8
+  },
+  "safety": {
+    "cache_change": false,
+    "capability_enablement": false,
+    "composer_operations": false,
+    "environment_change": false,
+    "general_migration": false,
+    "git_operations": false,
+    "migration_failure_accepts_only_exact_absent_or_exact_installed_state": true,
+    "migration_rollback": false,
+    "post_mutation_gate_failure_retains_exact_0644_gate": true,
+    "pre_mutation_gate_failure_restores_original_with_receipt": true,
+    "retention_execution": false,
+    "schema_preserved_after_successful_migration": true,
+    "service_restart": false,
+    "source_rollback_drops_additive_schema": false
+  },
+  "static_gate_sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03",
+  "target_application_commit": "5b2d06cd66bd599d8a7ab1f5518790d414ee9874"
+}

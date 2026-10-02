@@ -1,0 +1,46 @@
+{
+  "algorithm": "sort regular files by POSIX relative path; for each record store path, exact byte count, and lowercase SHA-256 of raw bytes; serialize as UTF-8 JSON with sorted keys, two-space indentation, and one LF",
+  "entries": [
+    {
+      "bytes": 1171,
+      "path": "candidate-check-failure-receipt.json",
+      "sha256": "3580bfa79eb52ead9267c73f40380b09cff786c1282c91d1ca188b312def9595"
+    },
+    {
+      "bytes": 1164,
+      "path": "migration-failure-receipt.json",
+      "sha256": "280194251eae7b4ed5b264e6b02408290bbdbbf332ff04cb8ebca36dc06cc870"
+    },
+    {
+      "bytes": 1167,
+      "path": "post-reopen-failure-receipt.json",
+      "sha256": "911a469ee3a65c1a98bba7cb1051636ac92a9ae37704a382ef5ea93916f3062b"
+    },
+    {
+      "bytes": 1169,
+      "path": "pre-migration-failure-receipt.json",
+      "sha256": "c23553b67d8c5430e6ed56fc0cd29824fecc5959f698e6646faea4f08b5465e1"
+    },
+    {
+      "bytes": 12914,
+      "path": "rehearsal-receipt.json",
+      "sha256": "5c5ff38834655e19db24550ffe82607a7665eaaf2e0482fd9ed4e5c433e9601e"
+    },
+    {
+      "bytes": 1175,
+      "path": "schema-preserving-rollback-receipt.json",
+      "sha256": "4826d5cdb77c48ad5cf144dc716fe110cbd589799327db9322e238808a8a73b9"
+    },
+    {
+      "bytes": 1167,
+      "path": "source-swap-failure-receipt.json",
+      "sha256": "acdc2f6368dd3ba2fe81e3958e2c1a8410b91bfe12521426065439ce1054dde2"
+    },
+    {
+      "bytes": 1087,
+      "path": "success-receipt.json",
+      "sha256": "751ced417511d1af78501eb946da4283cb9d11c0ae6887bd2966ff8197956093"
+    }
+  ],
+  "entries_sha256": "9234dbc0b8e7b8187de480bb6904a60dad8f68e0271b209ae4cd438ec42ca342"
+}

@@ -1,6 +1,7 @@
 # Production alpha transparency repair deployment plan
 
-Status: review only; do not stage or deploy.
+Status: local runner and rehearsal package frozen for independent review; do
+not access production, stage, migrate, or deploy.
 
 ## Scope and invariant
 
@@ -55,6 +56,38 @@ The future runner must stop before mutation unless every condition is true:
 
 Any already-present column or migration entry is drift, not permission to
 resume. It requires a separately reviewed schema-present artifact.
+
+## Frozen local runner package
+
+The local-only package was built from artifact base
+`fca0484505348a40f31c372fa3642d1039504704` for application target
+`5b2d06cd66bd599d8a7ab1f5518790d414ee9874`. The application manifest includes
+the independently supplied raw production byte counts for all seven existing
+source files. Its expected-live and target identities remain distinct.
+
+The frozen package identities are:
+
+- deployment runner SHA-256:
+  `76cfff204e86ee1119251b1d79931b1219cd19704b099f75d4e3db202ffe5b17`;
+- runtime probe SHA-256:
+  `df1f627ccd2844c888373e9aa135d8e4971ac2900ccce105d3081a04e7b3ad61`;
+- local rehearsal harness SHA-256:
+  `407ebf29f7ef91d65b32de9cf519e41fb8140dce5c091b41f616190daed2ccbd`;
+- application manifest SHA-256:
+  `26d988f87ac27b7dd034a532c22eaec207c60a32d16e890812ef5bbf0a1f5c2a`;
+- candidate archive SHA-256:
+  `5dea236046e77a27922933b1650a318b9a685aaa19445be811dd948de156d0fb`.
+
+The disposable native-Linux-filesystem rehearsal passed the success path and
+all six required injected failures: pre-migration, migration, source swap,
+candidate check, post-reopen, and schema-preserving rollback. Every failed
+scenario restored the exact original source and front controller. Scenarios
+that observed the additive schema retained it; earlier failures retained the
+absent schema. The rehearsal invoked no real migration, network, production,
+or staging command.
+
+These local results do not authorize Phase 0, Phase 1, or Phase 2. Any future
+production access or staging requires separate approval of this exact package.
 
 ## Phase 0: read-only production preflight
 

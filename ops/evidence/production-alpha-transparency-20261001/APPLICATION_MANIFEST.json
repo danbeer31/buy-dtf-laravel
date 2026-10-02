@@ -20,12 +20,14 @@
     {
       "path": "app/Helpers/ImageHelper.php",
       "expected_live_sha256": "b840aa320764dca8896512422456b39162a079d7428aab78b7ad1c7ec1beb637",
+      "expected_live_bytes": 28229,
       "target_sha256": "852eeb5843c27c8c8272adb8ebd0940e3961109ade2a727329b0c41f7c2ecede",
       "target_bytes": 40050
     },
     {
       "path": "app/Helpers/ProductionHelper.php",
       "expected_live_sha256": "fc14a5ff52714f311cc3f2bdcdf3410ade6927505bcc626eccbbc11f129d8f12",
+      "expected_live_bytes": 17594,
       "target_sha256": "8d0a18fcbe6c1297ac5f41c082100d9e6baa9ed4b7252ce5b36994a7c5d551a7",
       "target_bytes": 17948
     },
@@ -49,18 +51,21 @@
     {
       "path": "app/Http/Controllers/CartController.php",
       "expected_live_sha256": "713ae74db4410bb4ca22e5f4f3c77ddef17403004796a9e4418fe14ea7d6696a",
+      "expected_live_bytes": 32079,
       "target_sha256": "deb8a5265bc371c24e358f59d2b12fb81d03d414e29f585f658f7d43b6aca051",
       "target_bytes": 36241
     },
     {
       "path": "app/Http/Controllers/TeamCustomizationController.php",
       "expected_live_sha256": "46c5f4079915e25f3466e0e98305918812376039546f91ed8a9f220737f56fc3",
+      "expected_live_bytes": 9957,
       "target_sha256": "ffff301f85fd02c0913d5d7f492b5a5f0661088aac8ba1f53973e563e06a89af",
       "target_bytes": 11172
     },
     {
       "path": "app/Models/DtfImage.php",
       "expected_live_sha256": "14d6245a1ac65babfa6d06152bd9fc6692c9d33c5fe3ba5e2b8efabce728d0c2",
+      "expected_live_bytes": 8990,
       "target_sha256": "9f67088a0a6c760ebccf02a510d72fa0bafa6bf157ddcff712ce74af6b3c55ed",
       "target_bytes": 9837
     },

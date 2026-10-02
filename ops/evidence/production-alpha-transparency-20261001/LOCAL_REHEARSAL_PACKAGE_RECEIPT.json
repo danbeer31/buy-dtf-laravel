@@ -1,0 +1,127 @@
+{
+  "application_manifest": {
+    "bytes": 4425,
+    "path": "ops/evidence/production-alpha-transparency-20261001/APPLICATION_MANIFEST.json",
+    "sha256": "26d988f87ac27b7dd034a532c22eaec207c60a32d16e890812ef5bbf0a1f5c2a"
+  },
+  "artifact": "buy-dtf-production-alpha-transparency-local-package-v1",
+  "artifact_base_commit": "fca0484505348a40f31c372fa3642d1039504704",
+  "candidate_archive": {
+    "bytes": 153600,
+    "committed": false,
+    "path": "storage/app/private/operations/production-alpha-transparency-local-package-20261001/production-alpha-transparency-5b2d06cd.tar",
+    "sha256": "5dea236046e77a27922933b1650a318b9a685aaa19445be811dd948de156d0fb"
+  },
+  "dependency_baseline": {
+    "bootstrap_cache_sha256": "468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9",
+    "composer_lock_sha256": "22af12c7e58fcfe809735dbf9955b2d22a264e9e7345cefd74398e36bf2773b9",
+    "composer_production_audit": "zero_advisories",
+    "vendor_manifest_sha256": "7399949f857da190c5ff07b89c85e8fba8a6f681695e20a462862be591b698ed"
+  },
+  "failed_drvfs_attempt": {
+    "canonical_inventory_entries": 42,
+    "canonical_inventory_sha256": "2c21927a74a44d47d1f1b913a5c5288aea0568e065717f84119ea610a34388f1",
+    "mutation_started": false,
+    "path": "storage/app/private/operations/production-alpha-transparency-local-package-20261001/buy-dtf-alpha-rehearsal-jwpxykde",
+    "preserved": true,
+    "reason": "Windows-mounted filesystem reported mode 0777 instead of the reviewed 0644 static-gate mode"
+  },
+  "php_extensions": {
+    "bytes": 360,
+    "path": "ops/evidence/production-alpha-transparency-20261001/PHP_EXTENSIONS.txt",
+    "sha256": "4c91e93322f2362e73ab2913a4b7d5118c84e671c0b5a5dbb471876880b9f4ef"
+  },
+  "production_accessed": false,
+  "production_migration_invoked": false,
+  "production_staged": false,
+  "raw_successful_rehearsal_archive": {
+    "bytes": 4034560,
+    "committed": false,
+    "path": "storage/app/private/operations/production-alpha-transparency-local-package-20261001/raw-rehearsal-7-scenarios.tar",
+    "sha256": "56183c2d470f8b0d6077c77eda06d79bc95fed3d6a07b5175c422d3ff2152ee5",
+    "tar_compare": "pass"
+  },
+  "rehearsal": {
+    "private_evidence_entries": 279,
+    "private_evidence_entries_sha256": "ebeb1bd6860d389feff9f07696336a02b956775d006d6256e0518a33b9460fdd",
+    "private_manifest_sha256": "d64b956f7df4b416151604b419c9ba5163a84290bcd02033f6df615a46c54d03",
+    "scenario_count": 7,
+    "scenarios_passed": 7,
+    "status": "pass",
+    "umask": "0077"
+  },
+  "rehearsal_harness": {
+    "bytes": 36718,
+    "path": "ops/deployment/rehearse_production_alpha_transparency.py",
+    "sha256": "407ebf29f7ef91d65b32de9cf519e41fb8140dce5c091b41f616190daed2ccbd"
+  },
+  "rehearsal_portable_manifest": {
+    "bytes": 1655,
+    "entries": 8,
+    "entries_sha256": "9234dbc0b8e7b8187de480bb6904a60dad8f68e0271b209ae4cd438ec42ca342",
+    "path": "ops/evidence/production-alpha-transparency-20261001/deployment-rehearsal/PORTABLE_MANIFEST.json",
+    "sha256": "f7b7909e285853d6806181789e034301f837bf401f1fdf5598c488db4d48d5da"
+  },
+  "rehearsal_receipt": {
+    "bytes": 12914,
+    "path": "ops/evidence/production-alpha-transparency-20261001/deployment-rehearsal/rehearsal-receipt.json",
+    "sha256": "5c5ff38834655e19db24550ffe82607a7665eaaf2e0482fd9ed4e5c433e9601e"
+  },
+  "runner": {
+    "bytes": 161094,
+    "path": "ops/deployment/production_alpha_transparency_deploy.py",
+    "sha256": "76cfff204e86ee1119251b1d79931b1219cd19704b099f75d4e3db202ffe5b17"
+  },
+  "runner_unit_tests": {
+    "bytes": 11344,
+    "path": "ops/deployment/test_production_alpha_transparency_runner.py",
+    "sha256": "3cf72aa444dda7990de93088cc15c424468db24ceb5ec79e77e9c56d86139c8d",
+    "status": "pass",
+    "tests": 17
+  },
+  "runtime_probe": {
+    "bytes": 18161,
+    "path": "ops/deployment/production_alpha_transparency_runtime_probe.php",
+    "sha256": "df1f627ccd2844c888373e9aa135d8e4971ac2900ccce105d3081a04e7b3ad61"
+  },
+  "scope": "local_only_no_production_access_or_staging",
+  "target_application_commit": "5b2d06cd66bd599d8a7ab1f5518790d414ee9874",
+  "validation": {
+    "approved_production_composer_lock_audit": {
+      "advisories": 0,
+      "lock_sha256": "22af12c7e58fcfe809735dbf9955b2d22a264e9e7345cefd74398e36bf2773b9",
+      "status": "pass"
+    },
+    "composer_validate_strict": "pass",
+    "feature_branch_historical_lock": {
+      "deployed_by_this_artifact": false,
+      "modified_by_this_artifact": false,
+      "sha256": "eeac4637272ca2b9aeaa797a4440cfc8b4e31f5a469619c46ebfa5791c701831"
+    },
+    "fixture_manifest": {
+      "entries": 8,
+      "status": "pass"
+    },
+    "frontend_build": {
+      "status": "pass",
+      "warnings": "existing Sass deprecations and stale Browserslist data only"
+    },
+    "git_diff_check": "pass",
+    "npm_production_audit": {
+      "status": "pass",
+      "vulnerabilities": 0
+    },
+    "php_syntax": {
+      "files": 9,
+      "status": "pass"
+    },
+    "phpunit": {
+      "assertions": 1799,
+      "composer_wrapper": "expected_300_second_timeout_during_long_native_image_test",
+      "direct_duration_seconds": 726.995,
+      "direct_status": "pass",
+      "tests": 189
+    },
+    "render_comparison_sha256": "3cfb2f36cb51b8cf42f16ec8a8809658c38fd5bdb706bf3c38c23aff29387054"
+  }
+}
