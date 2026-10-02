@@ -1,0 +1,58 @@
+{
+  "artifact": "buy-dtf-production-alpha-transparency-log-regression-v1",
+  "classification": "private-source-redacted-nonfatal-regression-fixture",
+  "private_source": {
+    "custody": "outside-git-private-evidence",
+    "label": "rollback-5b2d06cd-20261002T023737Z/laravel-log-delta.txt",
+    "sha256": "81e429a215856b401d74a361c86a37453e65047af6faf3802127b04f61100a08",
+    "bytes": 29612,
+    "laravel_entries": 185,
+    "level_counts": {
+      "ERROR": 56,
+      "INFO": 129
+    },
+    "reviewed_error_entries": 56,
+    "reviewed_error_entries_with_continuation_lines": 0
+  },
+  "independent_review": {
+    "label": "rollback review",
+    "sha256": "bbfd8079f73f5196ee4e519fbdee523058e0d843f375cb369fafe90c327fa760",
+    "conclusion": "all 56 ERROR entries were normal checkout and Shippo diagnostics"
+  },
+  "redaction": {
+    "method": "reconstructed two identical 28-entry diagnostic sequences while preserving reviewed message categories",
+    "customer_addresses_included": false,
+    "postal_codes_included": false,
+    "order_identifiers_included": false,
+    "full_carrier_payloads_included": false,
+    "raw_private_records_copied": false
+  },
+  "fixture": {
+    "path": "reviewed-56-error-delta.redacted.txt",
+    "sha256": "d8bf0641949f96ac39240e92f0b5545c4ac5fb6a8fbfa4af2fe2f6029dd27f53",
+    "bytes": 4894,
+    "sequence_count": 2,
+    "entries_per_sequence": 28,
+    "laravel_entries": 56,
+    "level_counts": {
+      "ERROR": 56
+    },
+    "expected_fatal_entries": 0,
+    "expected_nonfatal_error_entries": 56,
+    "per_sequence_category_counts": {
+      "checkout_entry": 1,
+      "checkout_summary": 1,
+      "checkout_quote": 1,
+      "shippo_request": 1,
+      "shippo_rate_count": 1,
+      "shippo_messages": 1,
+      "shippo_rate_checked": 10,
+      "shippo_non_ups_filtered": 3,
+      "shippo_ups_filtered": 5,
+      "checkout_rates_found": 1,
+      "checkout_pickup_setting": 1,
+      "checkout_pickup_added": 1,
+      "checkout_final_count": 1
+    }
+  }
+}

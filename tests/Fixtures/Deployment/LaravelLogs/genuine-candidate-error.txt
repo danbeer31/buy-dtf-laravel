@@ -1,0 +1,6 @@
+[2026-10-02 01:06:00] production.WARNING: Compare probe failed: synthetic fixture input.
+[2026-10-02 01:06:01] production.ERROR: Image probe failed: synthetic fixture input.
+[2026-10-02 01:06:02] production.WARNING: Upload processing failed: synthetic fixture input.
+[2026-10-02 01:06:03] production.ERROR: AttachToOrder failed: synthetic fixture input.
+[2026-10-02 01:06:04] production.WARNING: Failed to prepare image for production: synthetic fixture input.
+[2026-10-02 01:06:05] production.ERROR: Failed to prepare image for production (remainder): synthetic fixture input.

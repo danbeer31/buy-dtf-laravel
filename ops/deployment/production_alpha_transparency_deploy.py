@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """Stage, deploy, verify, and source-roll back the BuyDTF alpha repair.
 
-The production boundary, artifact identities, source allowlist, migration, and
-commands are fixed in this reviewed artifact.  Staging performs read-only live
-preflight plus a single absolute-path ``artisan migrate --pretend``.  Cutover
-and recovery are separate modes with separate approval tokens; staging never
-invokes them.
+The nullable Saved Image metadata schema is already installed and is immutable
+input to this replacement artifact.  Every mode requires its exact reviewed
+schema and migration-ledger identity.  No mode invokes a migration command,
+including a pretend or reverse operation.  Staging and cutover remain separate
+modes with separate exact approval tokens.
 """
 
 from __future__ import annotations
@@ -14,6 +14,7 @@ import argparse
 from contextlib import contextmanager
 import fcntl
 import hashlib
+import importlib.util
 import json
 import os
 from pathlib import Path, PurePosixPath
@@ -46,11 +47,11 @@ EXPECTED_WEB_UID = 33
 EXPECTED_WEB_GID = 33
 EXPECTED_FRONT_CONTROLLER_MODE = 0o644
 
-TARGET_COMMIT = "5b2d06cd66bd599d8a7ab1f5518790d414ee9874"
-ARTIFACT_BASE_COMMIT = "fca0484505348a40f31c372fa3642d1039504704"
+TARGET_COMMIT = "b02fce3213fc632891036f1b5c98b9cddb94e499"
+ARTIFACT_BASE_COMMIT = "307b99e9429ca4623c72cc121e12997bdb4dfcad"
 TARGET_SHORT = TARGET_COMMIT[:8]
-EXPECTED_ARCHIVE_SHA256 = "5dea236046e77a27922933b1650a318b9a685aaa19445be811dd948de156d0fb"
-EXPECTED_MANIFEST_SHA256 = "26d988f87ac27b7dd034a532c22eaec207c60a32d16e890812ef5bbf0a1f5c2a"
+EXPECTED_ARCHIVE_SHA256 = "3067bca578201a39254d8544b633a04ff6a9e43fc0de2a2783a95ccde9a1bfcd"
+EXPECTED_MANIFEST_SHA256 = "93bc5ff1427693539faabda97d7fc1b9b8a5bca8075dea7bec5cb17d75a7faf2"
 EXPECTED_HELPER_SHA256 = "df1f627ccd2844c888373e9aa135d8e4971ac2900ccce105d3081a04e7b3ad61"
 EXPECTED_MIGRATION_SHA256 = "992fbfe8086732e9bde10be89c3f52ddb4fef49edfdec12b744377c2e4181bbf"
 MIGRATION_RELATIVE_PATH = Path(
@@ -59,15 +60,40 @@ MIGRATION_RELATIVE_PATH = Path(
 TARGET_MIGRATION = "2026_10_01_120000_add_item_meta_to_savedimages_table"
 TARGET_TABLE = "savedimages"
 TARGET_COLUMN = "item_meta"
-EXPECTED_RUNTIME_PATHS = 8
+EXPECTED_RUNTIME_PATHS = 11
 EXPECTED_ADDITIONS = 1
-EXPECTED_REPLACEMENTS = 7
-EXPECTED_PRE_SCHEMA_SHA256 = "4f1990336946bde95c6a13d0245fe4a5845eff2f23999f62e8529478d95d51ed"
-EXPECTED_PRE_LEDGER_ROW_COUNT = 20
-EXPECTED_PRE_LEDGER_SHA256 = "3168a7da9ca4aad0a81e673ec61c1647242916d054768f4dd48ff4b9d7eb28d4"
-EXPECTED_PRE_SOURCE_CAS_SHA256 = "dd17d2cb76f227773f7faa7f830e3bf6cd4b8f152ec342190690d4baa3719cbd"
-EXPECTED_TARGET_SOURCE_CAS_SHA256 = "daad3c0809ab2f295ede6d2daa75dcbfa3cb1db78d2a987b5f811516f4aa900f"
-EXPECTED_PRETEND_STATEMENT = "alter table `savedimages` add `item_meta` text null"
+EXPECTED_REPLACEMENTS = 10
+
+SCHEMA_STATE = "installed_schema_source_only_v1"
+EXPECTED_SCHEMA_SHA256 = "5485779bdcf0ea3a4372410ef76cd0bc418d1f6400128868606e901b8e9e85da"
+EXPECTED_LEDGER_ROW_COUNT = 21
+EXPECTED_LEDGER_SHA256 = "f1140209ad897fbdba506d87329f9e4481ccfa5aff7fb6a423e6ec7a0dbe5f53"
+EXPECTED_TARGET_MIGRATION_ENTRIES = 1
+EXPECTED_SCHEMA_WITHOUT_ITEM_META_SHA256 = (
+    "4f1990336946bde95c6a13d0245fe4a5845eff2f23999f62e8529478d95d51ed"
+)
+EXPECTED_LEDGER_WITHOUT_TARGET_ROW_COUNT = 20
+EXPECTED_LEDGER_WITHOUT_TARGET_SHA256 = (
+    "3168a7da9ca4aad0a81e673ec61c1647242916d054768f4dd48ff4b9d7eb28d4"
+)
+EXPECTED_PRE_SOURCE_CAS_SHA256 = "0ceca182384a8e68560ec542c0c2c0c695971b8488321ca0899ea7a880d6fd17"
+EXPECTED_TARGET_SOURCE_CAS_SHA256 = "b3379cd90676d8b3214371e17ffd3278cd43ba1885a6223b12998a8b40e5ea27"
+
+EXPECTED_LOG_GUARD_SHA256 = "219698ba8196d206b0d2512df5a078370a82f69be8ec92fd57f949f808da655a"
+
+RETIRED_RUNNER_SHA256S = frozenset(
+    {"76cfff204e86ee1119251b1d79931b1219cd19704b099f75d4e3db202ffe5b17"}
+)
+RETIRED_RELEASE_RECEIPT_SHA256S = frozenset(
+    {"15271bdf4a33a85f247bbcaba45cb115b1beed429dd6bc48349fbe4a84bc7eee"}
+)
+RETIRED_RELEASE_RECEIPT_PATHS = frozenset(
+    {
+        "/var/www/buy-dtf/storage/app/private/operations/"
+        "production-alpha-transparency-releases/"
+        "5b2d06cd-20261002T021532Z/release-receipt.json"
+    }
+)
 
 EXPECTED_COMPOSER_LOCK_SHA256 = "22af12c7e58fcfe809735dbf9955b2d22a264e9e7345cefd74398e36bf2773b9"
 EXPECTED_VENDOR_MANIFEST_SHA256 = "7399949f857da190c5ff07b89c85e8fba8a6f681695e20a462862be591b698ed"
@@ -84,6 +110,7 @@ DRAIN_SECONDS = 65
 OPCACHE_WAIT_SECONDS = 5
 MONITOR_SECONDS = 30 * 60
 MONITOR_INTERVAL_SECONDS = 60
+LOG_CONTINUITY_ANCHOR_BYTES = 64 * 1024
 
 NORMAL_HEALTH_CHECKS: tuple[tuple[str, frozenset[int]], ...] = (
     ("https://buy-dtf.com/", frozenset({200})),
@@ -405,22 +432,28 @@ def parse_manifest(path: Path) -> list[dict[str, Any]]:
         raise DeploymentError("The reviewed application manifest is invalid JSON.") from exception
     if not isinstance(document, dict) or not isinstance(document.get("paths"), list):
         raise DeploymentError("The reviewed application manifest has an invalid shape.")
+    if document.get("application_target_commit") != TARGET_COMMIT:
+        raise DeploymentError("The manifest application target differs from the runner.")
     if document.get("hash_algorithm") != "sha256 over exact raw file bytes":
         raise DeploymentError("The manifest does not declare raw-byte hashing.")
-    if document.get("expected_schema_sha256") != EXPECTED_PRE_SCHEMA_SHA256:
+    if document.get("expected_schema_sha256") != EXPECTED_SCHEMA_SHA256:
         raise DeploymentError("The manifest schema baseline differs from the runner.")
     ledger = document.get("expected_ledger", {})
     if (
-        ledger.get("row_count") != EXPECTED_PRE_LEDGER_ROW_COUNT
-        or ledger.get("sha256") != EXPECTED_PRE_LEDGER_SHA256
-        or ledger.get("target_entry_count") != 0
+        ledger.get("row_count") != EXPECTED_LEDGER_ROW_COUNT
+        or ledger.get("sha256") != EXPECTED_LEDGER_SHA256
+        or ledger.get("target_entry_count") != EXPECTED_TARGET_MIGRATION_ENTRIES
     ):
         raise DeploymentError("The manifest ledger baseline differs from the runner.")
     migration = document.get("migration", {})
     if (
         migration.get("name") != TARGET_MIGRATION
         or migration.get("expected_live_state") != "absent"
-        or migration.get("expected_pretend_statement") != EXPECTED_PRETEND_STATEMENT
+        or migration.get("installed_schema_required") is not True
+        or migration.get("source_install_only") is not True
+        or migration.get("migration_command_allowed") is not False
+        or migration.get("migration_pretend_allowed") is not False
+        or migration.get("migration_reverse_allowed") is not False
         or migration.get("target_sha256") != EXPECTED_MIGRATION_SHA256
     ):
         raise DeploymentError("The manifest migration identity differs from the runner.")
@@ -538,7 +571,9 @@ def live_manifest_snapshot(rows: list[dict[str, Any]], *, target: bool = False) 
     )
     if snapshot["sha256"] != expected_cas:
         label = "target" if target else "original"
-        raise DeploymentError(f"The eight-path {label} source CAS differs from baseline.")
+        raise DeploymentError(
+            f"The {EXPECTED_RUNTIME_PATHS}-path {label} source CAS differs from baseline."
+        )
     return snapshot
 
 
@@ -692,12 +727,7 @@ def runtime_probe(helper: Path, evidence_directory: Path, name: str) -> tuple[di
     return payload, result
 
 
-def validate_runtime_snapshot(
-    payload: dict[str, Any],
-    *,
-    require_target_absent: bool,
-    require_all_item_meta_null: bool = False,
-) -> dict[str, Any]:
+def validate_runtime_snapshot(payload: dict[str, Any]) -> dict[str, Any]:
     if (
         payload.get("probe_version") != 2
         or payload.get("artifact")
@@ -729,12 +759,22 @@ def validate_runtime_snapshot(
         raise DeploymentError("Fuel migration ledger proof is unavailable.")
     schema = payload.get("schema", {})
     if (
-        not isinstance(schema.get("sha256"), str)
-        or not re.fullmatch(r"[0-9a-f]{64}", schema["sha256"])
-        or not isinstance(ledger.get("rows_sha256"), str)
-        or not re.fullmatch(r"[0-9a-f]{64}", ledger["rows_sha256"])
+        ledger.get("table") != "migrations"
+        or ledger.get("row_count") != EXPECTED_LEDGER_ROW_COUNT
+        or ledger.get("rows_sha256") != EXPECTED_LEDGER_SHA256
+        or ledger.get("target_entry_count") != EXPECTED_TARGET_MIGRATION_ENTRIES
+        or ledger.get("without_target_row_count")
+        != EXPECTED_LEDGER_WITHOUT_TARGET_ROW_COUNT
+        or ledger.get("without_target_rows_sha256")
+        != EXPECTED_LEDGER_WITHOUT_TARGET_SHA256
     ):
-        raise DeploymentError("Schema or ledger fingerprint is malformed.")
+        raise DeploymentError("Fuel migration ledger differs from the installed-schema baseline.")
+    if (
+        schema.get("sha256") != EXPECTED_SCHEMA_SHA256
+        or schema.get("without_item_meta_sha256")
+        != EXPECTED_SCHEMA_WITHOUT_ITEM_META_SHA256
+    ):
+        raise DeploymentError("Fuel schema differs from the installed-schema baseline.")
     required = schema.get("required_tables", {})
     if any(
         required.get(name) is not True
@@ -752,48 +792,26 @@ def validate_runtime_snapshot(
         or not re.fullmatch(r"[0-9a-f]{64}", data_sha256)
     ):
         raise DeploymentError("The deterministic savedimages data fingerprint is unavailable.")
+    definition = item_meta.get("definition")
     if (
-        schema.get("without_item_meta_sha256") != EXPECTED_PRE_SCHEMA_SHA256
-        or ledger.get("without_target_row_count") != EXPECTED_PRE_LEDGER_ROW_COUNT
-        or ledger.get("without_target_rows_sha256") != EXPECTED_PRE_LEDGER_SHA256
+        item_meta.get("exists") is not True
+        or not isinstance(definition, list)
+        or len(definition) != 1
+        or not isinstance(item_meta.get("nonnull_rows"), int)
+        or item_meta.get("nonnull_rows", -1) < 0
     ):
-        raise DeploymentError("Schema or ledger contains drift outside the reviewed additive change.")
-    if require_target_absent:
-        if (
-            schema.get("sha256") != EXPECTED_PRE_SCHEMA_SHA256
-            or ledger.get("row_count") != EXPECTED_PRE_LEDGER_ROW_COUNT
-            or ledger.get("rows_sha256") != EXPECTED_PRE_LEDGER_SHA256
-            or ledger.get("target_entry_count") != 0
-            or item_meta.get("exists") is not False
-            or item_meta.get("definition") != []
-            or item_meta.get("nonnull_rows") is not None
-        ):
-            raise DeploymentError("The pre-migration schema or ledger differs from baseline.")
-        schema_state = "absent"
-    else:
-        definition = item_meta.get("definition")
-        if (
-            ledger.get("row_count") != EXPECTED_PRE_LEDGER_ROW_COUNT + 1
-            or ledger.get("target_entry_count") != 1
-            or item_meta.get("exists") is not True
-            or not isinstance(definition, list)
-            or len(definition) != 1
-        ):
-            raise DeploymentError("The guarded item_meta migration is not exactly installed.")
-        column = definition[0]
-        if (
-            column.get("TABLE_NAME") != TARGET_TABLE
-            or column.get("COLUMN_NAME") != TARGET_COLUMN
-            or str(column.get("COLUMN_TYPE", "")).lower() != "text"
-            or column.get("IS_NULLABLE") != "YES"
-            or column.get("COLUMN_DEFAULT") is not None
-            or str(column.get("EXTRA", "")) != ""
-            or str(column.get("GENERATION_EXPRESSION", "")) != ""
-        ):
-            raise DeploymentError("savedimages.item_meta does not have the reviewed nullable TEXT definition.")
-        if require_all_item_meta_null and item_meta.get("nonnull_rows") != 0:
-            raise DeploymentError("A pre-existing Saved Image row has non-null item_meta metadata.")
-        schema_state = "installed"
+        raise DeploymentError("The guarded item_meta schema is not exactly installed.")
+    column = definition[0]
+    if (
+        column.get("TABLE_NAME") != TARGET_TABLE
+        or column.get("COLUMN_NAME") != TARGET_COLUMN
+        or str(column.get("COLUMN_TYPE", "")).lower() != "text"
+        or column.get("IS_NULLABLE") != "YES"
+        or column.get("COLUMN_DEFAULT") is not None
+        or str(column.get("EXTRA", "")) != ""
+        or str(column.get("GENERATION_EXPRESSION", "")) != ""
+    ):
+        raise DeploymentError("savedimages.item_meta does not have the reviewed nullable TEXT definition.")
     capabilities = payload.get("capabilities", {})
     if (
         capabilities.get("receiver_enabled") is not False
@@ -817,7 +835,7 @@ def validate_runtime_snapshot(
         raise DeploymentError("Scheduled work or an overlap mutex differs from baseline.")
     return {
         "status": "pass",
-        "schema_state": schema_state,
+        "schema_state": SCHEMA_STATE,
         "schema_sha256": schema.get("sha256"),
         "schema_without_item_meta_sha256": schema.get("without_item_meta_sha256"),
         "ledger_row_count": ledger.get("row_count"),
@@ -828,33 +846,61 @@ def validate_runtime_snapshot(
         "savedimages_data_columns": data_columns,
         "savedimages_data_sha256": data_sha256,
         "item_meta_nonnull_rows": item_meta.get("nonnull_rows"),
+        "migration_command_invoked": False,
+        "migration_pretend_invoked": False,
+        "migration_executed_this_attempt": False,
+    }
+
+
+def compare_installed_schema_snapshots(
+    before: dict[str, Any], after: dict[str, Any]
+) -> dict[str, Any]:
+    before_verification = validate_runtime_snapshot(before)
+    after_verification = validate_runtime_snapshot(after)
+    stable_keys = (
+        "schema_state",
+        "schema_sha256",
+        "schema_without_item_meta_sha256",
+        "ledger_row_count",
+        "ledger_sha256",
+        "ledger_without_target_sha256",
+        "target_migration_entries",
+        "savedimages_data_columns",
+    )
+    if any(before_verification[key] != after_verification[key] for key in stable_keys):
+        raise DeploymentError("Installed schema or migration ledger changed during the operation.")
+    return {
+        "status": "pass",
+        "state": SCHEMA_STATE,
+        "before": before_verification,
+        "after": after_verification,
+        "schema_and_ledger_unchanged": True,
+        "customer_row_counts_compared": False,
+        "customer_row_data_compared": False,
     }
 
 
 def verify_rollback_schema_state(
     payload: dict[str, Any], state: dict[str, Any]
 ) -> dict[str, Any]:
-    """Accept only the exact before or exact additive schema after a failed command."""
-    item_meta = payload.get("schema", {}).get("savedimages_item_meta", {})
-    ledger = payload.get("migration_ledger", {})
-    if item_meta.get("exists") is False and ledger.get("target_entry_count") == 0:
-        observed = "absent"
-        verification = validate_runtime_snapshot(payload, require_target_absent=True)
-    elif item_meta.get("exists") is True and ledger.get("target_entry_count") == 1:
-        observed = "installed"
-        verification = validate_runtime_snapshot(payload, require_target_absent=False)
-    else:
-        raise DeploymentError("Rollback observed a partial or drifted migration state.")
-    if state.get("migration_executed") is True and observed != "installed":
-        raise DeploymentError("A completed migration was not preserved during rollback.")
-    if not state.get("migration_execution_started") and observed != "absent":
-        raise DeploymentError("Schema changed before the migration execution boundary.")
+    """Require the exact installed schema before and after source rollback."""
+    if any(
+        state.get(name) is True
+        for name in (
+            "migration_command_invoked",
+            "migration_pretend_invoked",
+            "migration_executed_this_attempt",
+        )
+    ):
+        raise DeploymentError("Source-only rollback state records a prohibited migration action.")
+    verification = validate_runtime_snapshot(payload)
     return {
         "status": "pass",
-        "observed_schema_state": observed,
-        "migration_execution_started": bool(state.get("migration_execution_started")),
-        "migration_executed": bool(state.get("migration_executed")),
-        "additive_schema_preserved": observed == "installed",
+        "observed_schema_state": SCHEMA_STATE,
+        "migration_command_invoked": False,
+        "migration_pretend_invoked": False,
+        "migration_executed_this_attempt": False,
+        "additive_schema_preserved": True,
         "verification": verification,
     }
 
@@ -891,7 +937,7 @@ def production_preflight(
     manifest_rows: list[dict[str, Any]],
     evidence_directory: Path,
     prefix: str,
-    require_target_absent: bool = True,
+    require_target_source: bool = False,
 ) -> dict[str, Any]:
     if os.geteuid() == 0:
         raise DeploymentError("Refusing to run an application deployment artifact as root.")
@@ -903,7 +949,6 @@ def production_preflight(
         "/usr/bin/cgi-fcgi",
         "/usr/bin/ss",
         "/usr/bin/mysql",
-        "/usr/bin/mysqldump",
     ):
         if not Path(executable).is_file() or not os.access(executable, os.X_OK):
             raise DeploymentError(f"Required executable is unavailable: {executable}")
@@ -931,10 +976,10 @@ def production_preflight(
     conflicts = scoped_processes()
     if conflicts:
         raise DeploymentError("A scoped production process is active.")
-    live_source = live_manifest_snapshot(manifest_rows, target=not require_target_absent)
+    live_source = live_manifest_snapshot(manifest_rows, target=require_target_source)
     dependencies = dependency_identity()
     runtime, runtime_command = runtime_probe(helper, evidence_directory, f"{prefix}-runtime-probe")
-    validate_runtime_snapshot(runtime, require_target_absent=require_target_absent)
+    validate_runtime_snapshot(runtime)
     health = health_snapshot()
     disk = shutil.disk_usage(APP_ROOT)
     if disk.free < 2 * 1024 * 1024 * 1024:
@@ -995,7 +1040,7 @@ def preflight_guard(helper: Path, rows: list[dict[str, Any]]) -> dict[str, Any]:
     source = live_manifest_snapshot(rows, target=False)
     dependencies = dependency_identity()
     runtime = runtime_probe_memory(helper)
-    validate_runtime_snapshot(runtime, require_target_absent=True)
+    validate_runtime_snapshot(runtime)
     health = health_snapshot()
     return {
         "status": "pass",
@@ -1223,75 +1268,6 @@ def lint_candidate(
     }
 
 
-ANSI_ESCAPE = re.compile(r"\x1b\[[0-?]*[ -/]*[@-~]")
-
-
-def normalize_pretend_output(stdout: str, stderr: str) -> tuple[str, list[str]]:
-    normalized = ANSI_ESCAPE.sub("", stdout + ("\n" if stdout and stderr else "") + stderr)
-    normalized = normalized.replace("\r\n", "\n").replace("\r", "\n")
-    lines = [line.rstrip() for line in normalized.split("\n")]
-    normalized = "\n".join(lines).strip() + "\n"
-    statements = [line.strip() for line in lines if re.search(r"\b(create|alter)\s+table\b", line, re.I)]
-    return normalized, statements
-
-
-def validate_pretend_statements(normalized: str, statements: list[str]) -> None:
-    lowered = normalized.lower()
-    if TARGET_TABLE not in lowered or TARGET_COLUMN not in lowered:
-        raise DeploymentError("Pretend output does not cover savedimages.item_meta.")
-    prohibited = re.compile(r"\b(drop|truncate|delete|insert|update|replace|rename)\b", re.I)
-    if prohibited.search(normalized):
-        raise DeploymentError("Pretend output contains prohibited DDL or DML.")
-    if len(statements) != 1:
-        raise DeploymentError("Pretend output must contain exactly one DDL statement.")
-    for statement in statements:
-        statement_lower = re.sub(r"\s+", " ", statement.lower()).strip().rstrip(";")
-        position = statement_lower.find("alter table")
-        if position < 0 or statement_lower[position:] != EXPECTED_PRETEND_STATEMENT:
-            raise DeploymentError("Pretend output differs from the one reviewed ALTER TABLE statement.")
-
-
-def compare_read_only_snapshots(before: dict[str, Any], after: dict[str, Any]) -> dict[str, Any]:
-    before_schema = before["schema"]
-    after_schema = after["schema"]
-    before_ledger = before["migration_ledger"]
-    after_ledger = after["migration_ledger"]
-    comparisons = {
-        "schema_sha256_equal": before_schema.get("sha256") == after_schema.get("sha256"),
-        "schema_section_counts_equal": before_schema.get("section_row_counts")
-        == after_schema.get("section_row_counts"),
-        "ledger_sha256_equal": before_ledger.get("rows_sha256")
-        == after_ledger.get("rows_sha256"),
-        "ledger_row_count_equal": before_ledger.get("row_count")
-        == after_ledger.get("row_count"),
-        "item_meta_absent_before": before_schema.get("savedimages_item_meta", {}).get("exists")
-        is False,
-        "item_meta_absent_after": after_schema.get("savedimages_item_meta", {}).get("exists")
-        is False,
-        "savedimages_rows_equal": before_schema.get("savedimages_item_meta", {}).get(
-            "savedimages_rows"
-        )
-        == after_schema.get("savedimages_item_meta", {}).get("savedimages_rows"),
-        "savedimages_data_columns_equal": before_schema.get(
-            "savedimages_item_meta", {}
-        ).get("data_columns_without_item_meta")
-        == after_schema.get("savedimages_item_meta", {}).get(
-            "data_columns_without_item_meta"
-        ),
-        "savedimages_data_sha256_equal": before_schema.get(
-            "savedimages_item_meta", {}
-        ).get("data_sha256_without_item_meta")
-        == after_schema.get("savedimages_item_meta", {}).get(
-            "data_sha256_without_item_meta"
-        ),
-        "target_migration_absent_before": before_ledger.get("target_entry_count") == 0,
-        "target_migration_absent_after": after_ledger.get("target_entry_count") == 0,
-    }
-    if not all(comparisons.values()):
-        raise DeploymentError("Schema or migration ledger changed during read-only pretend.")
-    return comparisons
-
-
 def artifact_inventory(root: Path, *, exclude: set[Path] | None = None) -> list[dict[str, Any]]:
     exclusions = {path.resolve(strict=False) for path in (exclude or set())}
     records: list[dict[str, Any]] = []
@@ -1318,6 +1294,7 @@ def stage_release(
     archive: Path,
     manifest: Path,
     helper: Path,
+    log_guard: Path,
     approval_token: str,
 ) -> Path:
     if approval_token != STAGE_APPROVAL_TOKEN:
@@ -1325,7 +1302,10 @@ def stage_release(
     archive = require_regular_file(archive, EXPECTED_ARCHIVE_SHA256)
     manifest = require_regular_file(manifest, EXPECTED_MANIFEST_SHA256)
     helper = require_regular_file(helper, EXPECTED_HELPER_SHA256)
+    log_guard = require_regular_file(log_guard, EXPECTED_LOG_GUARD_SHA256)
     runner = require_regular_file(Path(__file__).resolve())
+    if sha256_file(runner) in RETIRED_RUNNER_SHA256S:
+        raise DeploymentError("The executing runner is permanently retired.")
     rows = parse_manifest(manifest)
 
     # This guard is intentionally before RELEASE_ROOT creation or any copy. A
@@ -1346,10 +1326,12 @@ def stage_release(
         copied_archive = inputs / f"production-alpha-transparency-{TARGET_SHORT}.tar"
         copied_manifest = inputs / manifest.name
         copied_helper = inputs / helper.name
+        copied_log_guard = inputs / log_guard.name
         copied_runner = inputs / runner.name
         atomic_copy(archive, copied_archive)
         atomic_copy(manifest, copied_manifest)
         atomic_copy(helper, copied_helper)
+        atomic_copy(log_guard, copied_log_guard)
         atomic_copy(runner, copied_runner)
 
         preflight = production_preflight(
@@ -1357,7 +1339,7 @@ def stage_release(
             manifest_rows=rows,
             evidence_directory=evidence,
             prefix="phase0",
-            require_target_absent=True,
+            require_target_source=False,
         )
         preflight_path = evidence / "phase0-preflight-receipt.json"
         atomic_json(preflight_path, preflight)
@@ -1368,74 +1350,39 @@ def stage_release(
         metadata_plan = planned_install_metadata(rows, evidence)
         lint = lint_candidate(candidate, rows, evidence)
 
-        migration = require_regular_file(candidate / MIGRATION_RELATIVE_PATH, EXPECTED_MIGRATION_SHA256)
-        before, before_command = runtime_probe(
-            copied_helper, evidence, "migration-probe-before-pretend"
+        migration = require_regular_file(
+            candidate / MIGRATION_RELATIVE_PATH, EXPECTED_MIGRATION_SHA256
         )
-        validate_runtime_snapshot(before, require_target_absent=True)
-
-        pretend_command = [
-            "/usr/bin/php",
-            "artisan",
-            "migrate",
-            "--database=fuelmysql",
-            f"--path={migration}",
-            "--realpath",
-            "--pretend",
-            "--force",
-            "--no-interaction",
-        ]
-        pretend = capture_command(
-            pretend_command,
-            cwd=APP_ROOT,
-            evidence_directory=evidence,
-            name="migration-pretend",
-            timeout=180,
-        )
-        require_command_success(pretend, "migration pretend")
-        stdout = Path(str(pretend["stdout"]["path"])).read_text("utf-8")
-        stderr = Path(str(pretend["stderr"]["path"])).read_text("utf-8")
-        normalized, statements = normalize_pretend_output(stdout, stderr)
-        validate_pretend_statements(normalized, statements)
-        normalized_path = evidence / "migration-pretend.normalized.txt"
-        statements_path = evidence / "migration-pretend.statements.json"
-        atomic_write(normalized_path, normalized.encode("utf-8"), 0o600)
-        atomic_json(statements_path, statements)
-
+        load_laravel_log_guard(copied_log_guard)
+        before = preflight["runtime"]
+        before_command = preflight["runtime_command"]
+        before_verification = validate_runtime_snapshot(before)
         after, after_command = runtime_probe(
-            copied_helper, evidence, "migration-probe-after-pretend"
+            copied_helper, evidence, "installed-schema-after-staging"
         )
-        validate_runtime_snapshot(after, require_target_absent=True)
-        comparisons = compare_read_only_snapshots(before, after)
+        after_verification = validate_runtime_snapshot(after)
+        comparisons = compare_installed_schema_snapshots(before, after)
 
-        pretend_receipt = {
+        installed_schema_receipt = {
             "status": "pass",
+            "state": SCHEMA_STATE,
             "generated_at_utc": utc_now(),
-            "connection_proof": before["connections"],
-            "ledger_before": before["migration_ledger"],
-            "ledger_after": after["migration_ledger"],
-            "schema_before": before["schema"],
-            "schema_after": after["schema"],
+            "before": before,
+            "after": after,
+            "before_verification": before_verification,
+            "after_verification": after_verification,
             "comparisons": comparisons,
             "migration_path": str(migration),
             "migration_sha256": sha256_file(migration),
-            "pretend_command": pretend,
-            "normalized_output": {
-                "path": str(normalized_path),
-                "sha256": sha256_file(normalized_path),
-                "bytes": normalized_path.stat().st_size,
-            },
-            "statement_set": {
-                "path": str(statements_path),
-                "sha256": sha256_file(statements_path),
-                "canonical_sha256": sha256_bytes(canonical_bytes(statements)),
-                "count": len(statements),
-            },
+            "migration_source_live_state": "absent",
+            "migration_command_invoked": False,
+            "migration_pretend_invoked": False,
+            "migration_executed_this_attempt": False,
             "before_probe_command": before_command,
             "after_probe_command": after_command,
         }
-        pretend_receipt_path = evidence / "migration-pretend-receipt.json"
-        atomic_json(pretend_receipt_path, pretend_receipt)
+        installed_schema_receipt_path = evidence / "installed-schema-state-receipt.json"
+        atomic_json(installed_schema_receipt_path, installed_schema_receipt)
 
         post_source = live_manifest_snapshot(rows, target=False)
         post_dependencies = dependency_identity()
@@ -1447,7 +1394,7 @@ def stage_release(
 
         stage_receipt = {
             "status": "pass",
-            "scope": "alpha-repair-phase0-read-only-and-phase1-restricted-staging-only",
+            "scope": "alpha-repair-schema-present-source-only-staging",
             "generated_at_utc": utc_now(),
             "target_commit": TARGET_COMMIT,
             "release_directory": str(release),
@@ -1455,6 +1402,10 @@ def stage_release(
                 "archive": {"path": str(copied_archive), "sha256": sha256_file(copied_archive)},
                 "manifest": {"path": str(copied_manifest), "sha256": sha256_file(copied_manifest)},
                 "helper": {"path": str(copied_helper), "sha256": sha256_file(copied_helper)},
+                "log_guard": {
+                    "path": str(copied_log_guard),
+                    "sha256": sha256_file(copied_log_guard),
+                },
                 "runner": {"path": str(copied_runner), "sha256": sha256_file(copied_runner)},
             },
             "manifest_counts": {
@@ -1470,12 +1421,9 @@ def stage_release(
             "candidate_verification": verification,
             "planned_install_metadata": metadata_plan,
             "php_lint": lint,
-            "pretend_receipt": {
-                "path": str(pretend_receipt_path),
-                "sha256": sha256_file(pretend_receipt_path),
-                "normalized_statement_set_sha256": pretend_receipt["statement_set"][
-                    "canonical_sha256"
-                ],
+            "installed_schema_receipt": {
+                "path": str(installed_schema_receipt_path),
+                "sha256": sha256_file(installed_schema_receipt_path),
             },
             "post_phase1": {
                 "live_source": post_source,
@@ -1490,7 +1438,9 @@ def stage_release(
                 "phase2_backup_created": False,
                 "maintenance_entered": False,
                 "static_gate_installed": False,
-                "real_migration_executed": False,
+                "migration_command_invoked": False,
+                "migration_pretend_invoked": False,
+                "migration_executed_this_attempt": False,
                 "live_source_changed": False,
                 "live_cache_changed": False,
                 "configuration_changed": False,
@@ -1536,6 +1486,10 @@ def load_json(path: Path) -> Any:
 def validate_release_receipt(
     path: Path, expected_sha256: str
 ) -> tuple[dict[str, Any], Path, list[dict[str, Any]]]:
+    if expected_sha256 in RETIRED_RELEASE_RECEIPT_SHA256S:
+        raise DeploymentError("The release receipt belongs to a permanently retired runner.")
+    if path.as_posix() in RETIRED_RELEASE_RECEIPT_PATHS:
+        raise DeploymentError("The release receipt path is permanently retired.")
     if not re.fullmatch(r"[0-9a-f]{64}", expected_sha256):
         raise DeploymentError("The release-receipt SHA-256 is invalid.")
     path = require_regular_file(path, expected_sha256)
@@ -1543,7 +1497,11 @@ def validate_release_receipt(
     if not is_relative_to(release, RELEASE_ROOT.resolve(strict=True)):
         raise DeploymentError("Release receipt is outside the approved release root.")
     receipt = load_json(path)
-    if not isinstance(receipt, dict) or receipt.get("status") != "pass":
+    if (
+        not isinstance(receipt, dict)
+        or receipt.get("status") != "pass"
+        or receipt.get("scope") != "alpha-repair-schema-present-source-only-staging"
+    ):
         raise DeploymentError("Release receipt is not a successful Phase 1 receipt.")
     if receipt.get("target_commit") != TARGET_COMMIT or receipt.get("release_directory") != str(release):
         raise DeploymentError("Release receipt identity differs from the reviewed alpha repair.")
@@ -1552,6 +1510,7 @@ def validate_release_receipt(
         "archive": EXPECTED_ARCHIVE_SHA256,
         "manifest": EXPECTED_MANIFEST_SHA256,
         "helper": EXPECTED_HELPER_SHA256,
+        "log_guard": EXPECTED_LOG_GUARD_SHA256,
     }
     for name, expected in identities.items():
         item = inputs.get(name, {})
@@ -1564,9 +1523,14 @@ def validate_release_receipt(
     staged_runner = inputs.get("runner", {})
     staged_runner_path = require_regular_file(Path(str(staged_runner.get("path", ""))))
     staged_runner_sha256 = sha256_file(staged_runner_path)
+    if staged_runner_sha256 in RETIRED_RUNNER_SHA256S:
+        raise DeploymentError("The staged runner is permanently retired.")
     if staged_runner.get("sha256") != staged_runner_sha256:
         raise DeploymentError("Staged runner differs from its Phase 1 receipt.")
-    if sha256_file(Path(__file__).resolve()) != staged_runner_sha256:
+    executing_runner_sha256 = sha256_file(Path(__file__).resolve())
+    if executing_runner_sha256 in RETIRED_RUNNER_SHA256S:
+        raise DeploymentError("The executing runner is permanently retired.")
+    if executing_runner_sha256 != staged_runner_sha256:
         raise DeploymentError("Executing runner differs from the runner frozen at Phase 1.")
     manifest = Path(str(inputs["manifest"]["path"]))
     rows = parse_manifest(manifest)
@@ -1577,10 +1541,38 @@ def validate_release_receipt(
     recorded = receipt.get("candidate_verification", {})
     if verification.get("records_sha256") != recorded.get("records_sha256"):
         raise DeploymentError("Staged candidate identity differs from its Phase 1 receipt.")
-    pretend_receipt = Path(str(receipt.get("pretend_receipt", {}).get("path", "")))
-    require_regular_file(pretend_receipt, str(receipt["pretend_receipt"]["sha256"]))
-    if not is_relative_to(pretend_receipt.resolve(strict=True), release):
-        raise DeploymentError("Pretend receipt escapes the release directory.")
+    migration = require_regular_file(
+        candidate / MIGRATION_RELATIVE_PATH, EXPECTED_MIGRATION_SHA256
+    )
+    if migration.stat().st_size < 1:
+        raise DeploymentError("Staged migration source is empty.")
+    load_laravel_log_guard(Path(str(inputs["log_guard"]["path"])))
+    schema_item = receipt.get("installed_schema_receipt", {})
+    schema_receipt = Path(str(schema_item.get("path", "")))
+    require_regular_file(schema_receipt, str(schema_item.get("sha256", "")))
+    if not is_relative_to(schema_receipt.resolve(strict=True), release):
+        raise DeploymentError("Installed-schema receipt escapes the release directory.")
+    schema_payload = load_json(schema_receipt)
+    if (
+        not isinstance(schema_payload, dict)
+        or schema_payload.get("status") != "pass"
+        or schema_payload.get("state") != SCHEMA_STATE
+        or schema_payload.get("migration_command_invoked") is not False
+        or schema_payload.get("migration_pretend_invoked") is not False
+        or schema_payload.get("migration_executed_this_attempt") is not False
+    ):
+        raise DeploymentError("Installed-schema receipt does not prove source-only staging.")
+    for name in ("before_verification", "after_verification"):
+        verified = schema_payload.get(name, {})
+        if (
+            verified.get("schema_state") != SCHEMA_STATE
+            or verified.get("schema_sha256") != EXPECTED_SCHEMA_SHA256
+            or verified.get("ledger_row_count") != EXPECTED_LEDGER_ROW_COUNT
+            or verified.get("ledger_sha256") != EXPECTED_LEDGER_SHA256
+            or verified.get("target_migration_entries")
+            != EXPECTED_TARGET_MIGRATION_ENTRIES
+        ):
+            raise DeploymentError("Installed-schema receipt differs from baseline.")
     return receipt, release, rows
 
 
@@ -1688,166 +1680,6 @@ def source_backup(
         "path": str(path),
         "receipt_sha256": sha256_file(path),
     }, additions
-
-
-def verify_gzip(path: Path) -> None:
-    import gzip
-
-    with gzip.open(path, "rb") as handle:
-        while handle.read(1024 * 1024):
-            pass
-
-
-def database_backups(
-    helper: Path,
-    before_snapshot: dict[str, Any],
-    state_directory: Path,
-) -> dict[str, Any]:
-    import gzip
-
-    backup_directory = state_directory / "database-before"
-    backup_directory.mkdir(mode=0o700)
-    client_file = backup_directory / ".mysql-client.cnf"
-    helper_result = run_command(
-        [
-            "/usr/bin/php",
-            str(helper),
-            str(APP_ROOT),
-            "--write-mysql-client",
-            str(client_file),
-        ],
-        cwd=APP_ROOT,
-        timeout=60,
-    )
-    if helper_result.returncode != 0:
-        raise DeploymentError("Runtime helper could not create the temporary MySQL client file.")
-    try:
-        helper_payload = json.loads(helper_result.stdout)
-    except json.JSONDecodeError as exception:
-        client_file.unlink(missing_ok=True)
-        raise DeploymentError("MySQL client helper returned invalid JSON.") from exception
-    database_name = helper_payload.get("database_name")
-    if not isinstance(database_name, str) or not database_name:
-        client_file.unlink(missing_ok=True)
-        raise DeploymentError("MySQL client helper did not identify the database.")
-    if (
-        hashlib.sha256(database_name.encode()).hexdigest()
-        != before_snapshot["connections"]["fuel_database_name_sha256"]
-    ):
-        client_file.unlink(missing_ok=True)
-        raise DeploymentError("MySQL backup database identity differs from the audited connection.")
-    require_regular_file(client_file)
-    os.chmod(client_file, 0o600)
-
-    dumps: dict[str, Any] = {}
-    specifications = {
-        "schema": [
-            "--single-transaction",
-            "--skip-lock-tables",
-            "--no-tablespaces",
-            "--routines",
-            "--triggers",
-            "--events",
-            "--no-data",
-            database_name,
-        ],
-        "migration-ledger": [
-            "--single-transaction",
-            "--skip-lock-tables",
-            "--no-tablespaces",
-            database_name,
-            str(before_snapshot["migration_ledger"]["table"]),
-        ],
-        "savedimages-full": [
-            "--single-transaction",
-            "--skip-lock-tables",
-            "--no-tablespaces",
-            "--hex-blob",
-            database_name,
-            TARGET_TABLE,
-        ],
-    }
-    try:
-        for name, arguments in specifications.items():
-            output = backup_directory / f"{name}.sql.gz"
-            stderr_path = backup_directory / f"{name}.stderr.txt"
-            command = [
-                "/usr/bin/mysqldump",
-                f"--defaults-extra-file={client_file}",
-                "--set-gtid-purged=OFF",
-                *arguments,
-            ]
-            started = time.monotonic()
-            process = subprocess.Popen(
-                command,
-                cwd=APP_ROOT,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-            )
-            assert process.stdout is not None
-            with gzip.open(output, "wb", compresslevel=9) as compressed:
-                shutil.copyfileobj(process.stdout, compressed, length=1024 * 1024)
-            _, stderr = process.communicate(timeout=600)
-            atomic_write(stderr_path, stderr, 0o600)
-            os.chmod(output, 0o600)
-            if process.returncode != 0:
-                raise DeploymentError(f"{name} database backup failed.")
-            verify_gzip(output)
-            dumps[name] = {
-                "path": str(output),
-                "sha256": sha256_file(output),
-                "bytes": output.stat().st_size,
-                "stderr_sha256": sha256_file(stderr_path),
-                "exit_status": process.returncode,
-                "duration_seconds": round(time.monotonic() - started, 6),
-                "database_name_sha256": hashlib.sha256(database_name.encode()).hexdigest(),
-            }
-        show_create_path = backup_directory / "savedimages-show-create.txt"
-        show_create_stderr = backup_directory / "savedimages-show-create.stderr.txt"
-        show_create = run_command(
-            [
-                "/usr/bin/mysql",
-                f"--defaults-extra-file={client_file}",
-                "--batch",
-                "--raw",
-                "--skip-column-names",
-                database_name,
-                "--execute=SHOW CREATE TABLE `savedimages`",
-            ],
-            cwd=APP_ROOT,
-            timeout=120,
-        )
-        atomic_write(show_create_path, show_create.stdout.encode("utf-8"), 0o600)
-        atomic_write(show_create_stderr, show_create.stderr.encode("utf-8"), 0o600)
-        if show_create.returncode != 0 or "CREATE TABLE `savedimages`" not in show_create.stdout:
-            raise DeploymentError("SHOW CREATE TABLE savedimages backup failed.")
-        dumps["savedimages-show-create"] = {
-            "path": str(show_create_path),
-            "sha256": sha256_file(show_create_path),
-            "bytes": show_create_path.stat().st_size,
-            "stderr_sha256": sha256_file(show_create_stderr),
-            "exit_status": show_create.returncode,
-            "database_name_sha256": hashlib.sha256(database_name.encode()).hexdigest(),
-        }
-    finally:
-        client_file.unlink(missing_ok=True)
-        fsync_directory(backup_directory)
-    if client_file.exists():
-        raise DeploymentError("Temporary MySQL client file was not removed.")
-    receipt = {
-        "status": "pass",
-        "generated_at_utc": utc_now(),
-        "schema_before": before_snapshot["schema"],
-        "migration_ledger_before": before_snapshot["migration_ledger"],
-        "savedimages_rows_before": before_snapshot["schema"]["savedimages_item_meta"][
-            "savedimages_rows"
-        ],
-        "dumps": dumps,
-        "temporary_client_removed": True,
-    }
-    path = state_directory / "database-backup-receipt.json"
-    atomic_json(path, receipt)
-    return {**receipt, "path": str(path), "receipt_sha256": sha256_file(path)}
 
 
 def atomic_front_controller_replace(
@@ -2008,9 +1840,7 @@ def restore_front_controller_exact(
 
 def mutation_has_started(state: dict[str, Any]) -> bool:
     """Return the durable point after which reopening is never a safe fallback."""
-    return bool(
-        state.get("migration_execution_started") or state.get("source_install_started")
-    )
+    return bool(state.get("source_install_started"))
 
 
 def gate_probe_passed(result: dict[str, Any], expected_route: str) -> bool:
@@ -2555,121 +2385,6 @@ def drain_runtime(state_directory: Path) -> dict[str, Any]:
     return {"samples": samples, "path": str(path), "sha256": sha256_file(path)}
 
 
-def staged_pretend(
-    *,
-    migration: Path,
-    state_directory: Path,
-    name: str,
-    expected_statement_sha256: str,
-) -> dict[str, Any]:
-    require_regular_file(migration, EXPECTED_MIGRATION_SHA256)
-    command = [
-        "/usr/bin/php",
-        "artisan",
-        "migrate",
-        "--database=fuelmysql",
-        f"--path={migration}",
-        "--realpath",
-        "--pretend",
-        "--force",
-        "--no-interaction",
-    ]
-    result = capture_command(
-        command,
-        cwd=APP_ROOT,
-        evidence_directory=state_directory,
-        name=name,
-        timeout=180,
-    )
-    require_command_success(result, name)
-    stdout = Path(str(result["stdout"]["path"])).read_text("utf-8")
-    stderr = Path(str(result["stderr"]["path"])).read_text("utf-8")
-    normalized, statements = normalize_pretend_output(stdout, stderr)
-    validate_pretend_statements(normalized, statements)
-    statement_sha256 = sha256_bytes(canonical_bytes(statements))
-    if statement_sha256 != expected_statement_sha256:
-        raise DeploymentError("Cutover pretend statements differ from the reviewed Phase 1 set.")
-    normalized_path = state_directory / f"{name}.normalized.txt"
-    statements_path = state_directory / f"{name}.statements.json"
-    atomic_write(normalized_path, normalized.encode("utf-8"), 0o600)
-    atomic_json(statements_path, statements)
-    return {
-        "command": result,
-        "normalized_path": str(normalized_path),
-        "normalized_sha256": sha256_file(normalized_path),
-        "statements_path": str(statements_path),
-        "statement_set_sha256": statement_sha256,
-        "statement_count": len(statements),
-    }
-
-
-def execute_single_migration(
-    migration: Path, state_directory: Path
-) -> dict[str, Any]:
-    require_regular_file(migration, EXPECTED_MIGRATION_SHA256)
-    result = capture_command(
-        [
-            "/usr/bin/php",
-            "artisan",
-            "migrate",
-            "--database=fuelmysql",
-            f"--path={migration}",
-            "--realpath",
-            "--force",
-            "--no-interaction",
-        ],
-        cwd=APP_ROOT,
-        evidence_directory=state_directory,
-        name="single-migration-execution",
-        timeout=300,
-    )
-    require_command_success(result, "single migration execution")
-    return result
-
-
-def verify_post_migration(
-    before: dict[str, Any], after: dict[str, Any]
-) -> dict[str, Any]:
-    before_verification = validate_runtime_snapshot(before, require_target_absent=True)
-    after_verification = validate_runtime_snapshot(
-        after,
-        require_target_absent=False,
-        require_all_item_meta_null=True,
-    )
-    before_schema = before["schema"]
-    after_schema = after["schema"]
-    if before_schema["savedimages_item_meta"]["savedimages_rows"] != after_schema[
-        "savedimages_item_meta"
-    ]["savedimages_rows"]:
-        raise DeploymentError("The savedimages row count changed during the additive migration.")
-    if (
-        before_schema["savedimages_item_meta"]["data_columns_without_item_meta"]
-        != after_schema["savedimages_item_meta"]["data_columns_without_item_meta"]
-        or before_schema["savedimages_item_meta"]["data_sha256_without_item_meta"]
-        != after_schema["savedimages_item_meta"]["data_sha256_without_item_meta"]
-    ):
-        raise DeploymentError("Existing savedimages row data changed during the additive migration.")
-    if before_schema.get("required_table_row_counts") != after_schema.get(
-        "required_table_row_counts"
-    ):
-        raise DeploymentError("A required Fuel table row count changed during the additive migration.")
-    if before_schema.get("target_definitions", {}).get("tables") != after_schema.get(
-        "target_definitions", {}
-    ).get("tables"):
-        raise DeploymentError("The savedimages table identity changed beyond the new column.")
-    return {
-        "status": "pass",
-        "before": before_verification,
-        "after": after_verification,
-        "required_table_row_counts_unchanged": True,
-        "savedimages_row_count_unchanged": True,
-        "savedimages_existing_row_data_unchanged": True,
-        "all_preexisting_item_meta_null": True,
-        "only_schema_delta_is_item_meta": True,
-        "only_ledger_delta_is_target_migration": True,
-    }
-
-
 def candidate_fpm_probe_source() -> bytes:
     return f'''<?php
 declare(strict_types=1);
@@ -2854,11 +2569,7 @@ def candidate_cli_checks(
     if "admin/orders" not in route_text:
         raise DeploymentError("The reviewed admin order routes were not discovered.")
     runtime, runtime_command = runtime_probe(helper, state_directory, "candidate-runtime-probe")
-    runtime_verification = validate_runtime_snapshot(
-        runtime,
-        require_target_absent=False,
-        require_all_item_meta_null=True,
-    )
+    runtime_verification = validate_runtime_snapshot(runtime)
     fpm_first = candidate_fpm_probe(state_directory, "candidate-fpm-probe-1")
     time.sleep(OPCACHE_WAIT_SECONDS)
     fpm_second = candidate_fpm_probe(state_directory, "candidate-fpm-probe-2")
@@ -2960,7 +2671,7 @@ def post_open_health(
     health_second = health_snapshot()
     capability_second = capability_probe(state_directory, f"{name}-capability-2")
     runtime, runtime_command = runtime_probe(helper, state_directory, f"{name}-runtime")
-    runtime_verification = validate_runtime_snapshot(runtime, require_target_absent=False)
+    runtime_verification = validate_runtime_snapshot(runtime)
     return {
         "health_first": health_first,
         "health_second": health_second,
@@ -2978,12 +2689,14 @@ def monitor_production(
     helper: Path,
     rows: list[dict[str, Any]],
     state_directory: Path,
+    log_checkpoint: dict[str, Any],
 ) -> dict[str, Any]:
     samples: list[dict[str, Any]] = []
     sample_count = MONITOR_SECONDS // MONITOR_INTERVAL_SECONDS
     for index in range(sample_count):
+        log_checkpoint = verify_log_continuity(log_checkpoint)
         runtime, _ = runtime_probe(helper, state_directory, f"monitor-runtime-{index + 1:02d}")
-        verification = validate_runtime_snapshot(runtime, require_target_absent=False)
+        verification = validate_runtime_snapshot(runtime)
         sample = {
             "number": index + 1,
             "at_utc": utc_now(),
@@ -2996,72 +2709,178 @@ def monitor_production(
             "source_sha256": live_manifest_snapshot(rows, target=True)["sha256"],
             "dependencies": dependency_identity(),
             "deployment_lock_held_by_runner": True,
+            "laravel_log_continuity": {
+                "inode": log_checkpoint["inode"],
+                "bytes": log_checkpoint["bytes"],
+                "anchor_sha256": log_checkpoint["anchor"]["sha256"],
+            },
         }
         samples.append(sample)
         atomic_json(state_directory / "monitoring-samples.json", samples)
-        if index + 1 < sample_count:
-            time.sleep(MONITOR_INTERVAL_SECONDS)
+        time.sleep(MONITOR_INTERVAL_SECONDS)
+    log_checkpoint = verify_log_continuity(log_checkpoint)
     path = state_directory / "monitoring-samples.json"
     return {
         "status": "pass",
         "samples": len(samples),
+        "completed_intervals": sample_count,
+        "minimum_elapsed_seconds": MONITOR_SECONDS,
         "path": str(path),
         "sha256": sha256_file(path),
+        "final_log_checkpoint": log_checkpoint,
     }
 
 
-def log_baseline() -> dict[str, Any]:
-    path = APP_ROOT / "storage/logs/laravel.log"
-    if not path.exists():
-        return {"path": str(path), "exists": False, "inode": None, "bytes": 0}
-    require_regular_file(path)
-    metadata = path.stat()
+def load_laravel_log_guard(path: Path) -> Any:
+    path = require_regular_file(path, EXPECTED_LOG_GUARD_SHA256)
+    specification = importlib.util.spec_from_file_location(
+        "buy_dtf_production_laravel_log_guard", path
+    )
+    if specification is None or specification.loader is None:
+        raise DeploymentError("The reviewed Laravel log guard cannot be imported.")
+    module = importlib.util.module_from_spec(specification)
+    specification.loader.exec_module(module)
+    if not callable(getattr(module, "inspect_log_bytes", None)):
+        raise DeploymentError("The reviewed Laravel log guard has no inspect_log_bytes API.")
+    return module
+
+
+def _log_checkpoint(path: Path, handle: Any, metadata: os.stat_result) -> dict[str, Any]:
+    end = metadata.st_size
+    anchor_bytes = min(end, LOG_CONTINUITY_ANCHOR_BYTES)
+    anchor_start = end - anchor_bytes
+    handle.seek(anchor_start)
+    anchor = handle.read(anchor_bytes)
+    if len(anchor) != anchor_bytes:
+        raise DeploymentError("Laravel log changed while its continuity anchor was read.")
     return {
         "path": str(path),
         "exists": True,
         "inode": metadata.st_ino,
-        "bytes": metadata.st_size,
+        "bytes": end,
+        "anchor": {
+            "start": anchor_start,
+            "bytes": anchor_bytes,
+            "sha256": sha256_bytes(anchor),
+        },
     }
 
 
-def log_delta(baseline: dict[str, Any], state_directory: Path) -> dict[str, Any]:
-    path = Path(str(baseline["path"]))
-    if not path.exists():
-        return {"bytes": 0, "sha256": sha256_bytes(b""), "error_markers": []}
-    require_regular_file(path)
-    metadata = path.stat()
-    offset = int(baseline.get("bytes", 0)) if metadata.st_ino == baseline.get("inode") else 0
-    if metadata.st_size < offset:
-        offset = 0
-    if metadata.st_size - offset > 20 * 1024 * 1024:
-        raise DeploymentError("Laravel log delta exceeds the reviewed 20 MiB evidence bound.")
+def _validate_log_checkpoint(checkpoint: dict[str, Any]) -> tuple[Path, int, dict[str, Any]]:
+    if checkpoint.get("exists") is not True:
+        raise DeploymentError("Laravel log continuity baseline is not an existing file.")
+    path = Path(str(checkpoint.get("path", "")))
+    inode = checkpoint.get("inode")
+    offset = checkpoint.get("bytes")
+    anchor = checkpoint.get("anchor")
+    anchor_start = anchor.get("start") if isinstance(anchor, dict) else None
+    anchor_bytes = anchor.get("bytes") if isinstance(anchor, dict) else None
+    if (
+        not isinstance(inode, int)
+        or not isinstance(offset, int)
+        or offset < 0
+        or not isinstance(anchor, dict)
+        or not isinstance(anchor_start, int)
+        or not isinstance(anchor_bytes, int)
+        or not 0 <= anchor_bytes <= LOG_CONTINUITY_ANCHOR_BYTES
+        or anchor_start != offset - anchor_bytes
+        or not re.fullmatch(r"[0-9a-f]{64}", str(anchor.get("sha256", "")))
+    ):
+        raise DeploymentError("Laravel log continuity baseline is invalid.")
+    return path, offset, anchor
+
+
+@contextmanager
+def verified_log_handle(
+    checkpoint: dict[str, Any],
+) -> Iterator[tuple[Path, Any, os.stat_result]]:
+    path, offset, anchor = _validate_log_checkpoint(checkpoint)
+    if path.is_symlink() or not path.is_file():
+        raise DeploymentError("Laravel log disappeared or became invalid during monitoring.")
     with path.open("rb") as handle:
+        metadata = os.fstat(handle.fileno())
+        if not stat.S_ISREG(metadata.st_mode):
+            raise DeploymentError("Laravel log is not a regular file.")
+        if metadata.st_ino != checkpoint["inode"]:
+            raise DeploymentError("Laravel log rotated during monitoring.")
+        if metadata.st_size < offset:
+            raise DeploymentError("Laravel log was truncated during monitoring.")
+        handle.seek(anchor["start"])
+        observed_anchor = handle.read(anchor["bytes"])
+        if (
+            len(observed_anchor) != anchor["bytes"]
+            or sha256_bytes(observed_anchor) != anchor["sha256"]
+        ):
+            raise DeploymentError(
+                "Laravel log continuity anchor changed during monitoring."
+            )
+        yield path, handle, metadata
+
+
+def log_baseline() -> dict[str, Any]:
+    path = APP_ROOT / "storage/logs/laravel.log"
+    if path.is_symlink() or not path.is_file():
+        raise DeploymentError(
+            "Laravel log must exist as a regular file before source cutover."
+        )
+    with path.open("rb") as handle:
+        metadata = os.fstat(handle.fileno())
+        if not stat.S_ISREG(metadata.st_mode):
+            raise DeploymentError("Laravel log is not a regular file.")
+        if metadata.st_size == 0:
+            raise DeploymentError(
+                "Laravel log must be nonempty before source cutover so continuity can be anchored."
+            )
+        return _log_checkpoint(path, handle, metadata)
+
+
+def verify_log_continuity(checkpoint: dict[str, Any]) -> dict[str, Any]:
+    with verified_log_handle(checkpoint) as (path, handle, _):
+        metadata = os.fstat(handle.fileno())
+        return _log_checkpoint(path, handle, metadata)
+
+
+def log_delta(
+    baseline: dict[str, Any],
+    state_directory: Path,
+    log_guard_path: Path,
+    *,
+    evidence_label: str,
+) -> dict[str, Any]:
+    if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", evidence_label):
+        raise DeploymentError("Laravel log evidence label is invalid.")
+    _, offset, _ = _validate_log_checkpoint(baseline)
+    with verified_log_handle(baseline) as (path, handle, metadata):
+        if metadata.st_size - offset > 20 * 1024 * 1024:
+            raise DeploymentError("Laravel log delta exceeds the reviewed 20 MiB evidence bound.")
         handle.seek(offset)
         content = handle.read()
-    evidence = state_directory / "laravel-log-delta.txt"
+        continuity = _log_checkpoint(path, handle, os.fstat(handle.fileno()))
+    evidence = state_directory / f"laravel-log-{evidence_label}-delta.txt"
     atomic_write(evidence, content, 0o600)
-    text = content.decode("utf-8", errors="replace")
-    markers = sorted(
-        {
-            marker
-            for marker in (
-                ".ERROR",
-                "Fatal error",
-                "Uncaught ",
-                "SQLSTATE[",
-                "Class \"",
-                "View [",
-            )
-            if marker.lower() in text.lower()
-        }
-    )
-    if markers:
-        raise DeploymentError(f"Laravel log delta contains error markers: {markers}")
+    guard = load_laravel_log_guard(log_guard_path)
+    report_path = state_directory / f"laravel-log-{evidence_label}-analysis.json"
+    try:
+        report = guard.inspect_log_bytes(content)
+    except Exception as exception:
+        report = getattr(exception, "report", None)
+        if not isinstance(report, dict):
+            raise DeploymentError("The reviewed Laravel log guard failed unexpectedly.") from exception
+        atomic_json(report_path, report)
+        signals = sorted(str(name) for name in report.get("signal_counts", {}))
+        raise DeploymentError(
+            "Laravel log delta contains rollback-worthy entries "
+            f"(signals: {signals})."
+        ) from exception
+    atomic_json(report_path, report)
     return {
         "bytes": len(content),
         "sha256": sha256_file(evidence),
         "path": str(evidence),
-        "error_markers": markers,
+        "analysis": report,
+        "analysis_path": str(report_path),
+        "analysis_sha256": sha256_file(report_path),
+        "continuity": continuity,
     }
 
 
@@ -3279,6 +3098,12 @@ def rollback_operation(
 
         runtime, runtime_command = runtime_probe(helper, state_directory, "rollback-runtime-probe")
         rollback_schema = verify_rollback_schema_state(runtime, state)
+        schema_baseline = state.get("installed_schema_baseline")
+        if not isinstance(schema_baseline, dict):
+            raise DeploymentError("Rollback state is missing the installed-schema baseline.")
+        rollback_schema["comparisons"] = compare_installed_schema_snapshots(
+            schema_baseline, runtime
+        )
         rollback_schema_path = state_directory / "rollback-schema-preservation-receipt.json"
         atomic_json(rollback_schema_path, rollback_schema)
 
@@ -3312,6 +3137,9 @@ def rollback_operation(
                 "sha256": sha256_file(rollback_schema_path),
                 **rollback_schema,
             },
+            "migration_command_invoked": False,
+            "migration_pretend_invoked": False,
+            "migration_executed_this_attempt": False,
             "front_controller_restore": front_restore,
             "health": health,
         }
@@ -3382,10 +3210,13 @@ def deploy_release(
     helper = require_regular_file(
         Path(str(receipt["inputs"]["helper"]["path"])), EXPECTED_HELPER_SHA256
     )
+    log_guard_path = require_regular_file(
+        Path(str(receipt["inputs"]["log_guard"]["path"])),
+        EXPECTED_LOG_GUARD_SHA256,
+    )
+    load_laravel_log_guard(log_guard_path)
     candidate = require_real_directory(release / "candidate", within=release)
-    migration = require_regular_file(candidate / MIGRATION_RELATIVE_PATH, EXPECTED_MIGRATION_SHA256)
-    pretend_receipt = load_json(Path(str(receipt["pretend_receipt"]["path"])))
-    reviewed_statement_sha256 = str(pretend_receipt["statement_set"]["canonical_sha256"])
+    require_regular_file(candidate / MIGRATION_RELATIVE_PATH, EXPECTED_MIGRATION_SHA256)
 
     ROLLBACK_ROOT.mkdir(mode=0o700, parents=True, exist_ok=True)
     os.chmod(ROLLBACK_ROOT, 0o700)
@@ -3404,8 +3235,11 @@ def deploy_release(
             "static_gate_active": False,
             "containment_active": False,
             "laravel_maintenance_active": False,
-            "migration_execution_started": False,
-            "migration_executed": False,
+            "schema_state": SCHEMA_STATE,
+            "schema_present_before_attempt": True,
+            "migration_command_invoked": False,
+            "migration_pretend_invoked": False,
+            "migration_executed_this_attempt": False,
             "source_install_started": False,
             "source_install_complete": False,
             "rollback_started": False,
@@ -3423,7 +3257,7 @@ def deploy_release(
                 manifest_rows=rows,
                 evidence_directory=state_directory,
                 prefix="cutover-preflight",
-                require_target_absent=True,
+                require_target_source=False,
             )
             preflight_path = state_directory / "cutover-preflight-receipt.json"
             atomic_json(preflight_path, preflight)
@@ -3447,11 +3281,10 @@ def deploy_release(
             )
 
             before_snapshot = preflight["runtime"]
-            database = database_backups(helper, before_snapshot, state_directory)
-            state["database_backup_receipt"] = database["path"]
-            state["status"] = "phase2_backups_complete"
+            state["installed_schema_baseline"] = before_snapshot
+            state["status"] = "source_backups_complete"
             write_state(state_path, state)
-            append_event(state_directory, "phase2_backups_complete")
+            append_event(state_directory, "source_backups_complete")
 
             gate = install_static_gate(
                 state_directory=state_directory,
@@ -3470,63 +3303,32 @@ def deploy_release(
             write_state(state_path, state)
             drain = drain_runtime(state_directory)
 
-            # Repeat every relevant identity under the gate before schema/source mutation.
+            # Repeat every relevant identity under the gate before source mutation.
+            # The installed schema is immutable input: no migration command is allowed.
             live_manifest_snapshot(rows, target=False)
             dependency_identity()
             before_repeat, before_repeat_command = runtime_probe(
-                helper, state_directory, "cutover-schema-before-pretend"
+                helper, state_directory, "cutover-installed-schema-probe"
             )
-            validate_runtime_snapshot(before_repeat, require_target_absent=True)
-            if (
-                before_repeat["schema"]["sha256"] != before_snapshot["schema"]["sha256"]
-                or before_repeat["migration_ledger"]["rows_sha256"]
-                != before_snapshot["migration_ledger"]["rows_sha256"]
-            ):
-                raise DeploymentError("Schema or ledger drifted after the Phase 2 backup.")
-            repeat_pretend = staged_pretend(
-                migration=migration,
-                state_directory=state_directory,
-                name="cutover-migration-pretend",
-                expected_statement_sha256=reviewed_statement_sha256,
+            installed_verification = validate_runtime_snapshot(before_repeat)
+            installed_comparisons = compare_installed_schema_snapshots(
+                before_snapshot, before_repeat
             )
-            after_repeat, after_repeat_command = runtime_probe(
-                helper, state_directory, "cutover-schema-after-pretend"
-            )
-            validate_runtime_snapshot(after_repeat, require_target_absent=True)
-            repeat_comparisons = compare_read_only_snapshots(before_repeat, after_repeat)
-            repeat_receipt = {
-                "before": before_repeat,
-                "after": after_repeat,
-                "before_command": before_repeat_command,
-                "after_command": after_repeat_command,
-                "pretend": repeat_pretend,
-                "comparisons": repeat_comparisons,
+            installed_receipt = {
+                "status": "pass",
+                "state": SCHEMA_STATE,
+                "generated_at_utc": utc_now(),
+                "preflight": before_snapshot,
+                "under_gate": before_repeat,
+                "under_gate_probe_command": before_repeat_command,
+                "verification": installed_verification,
+                "comparisons": installed_comparisons,
+                "migration_command_invoked": False,
+                "migration_pretend_invoked": False,
+                "migration_executed_this_attempt": False,
             }
-            repeat_path = state_directory / "cutover-pretend-receipt.json"
-            atomic_json(repeat_path, repeat_receipt)
-
-            state["migration_execution_started"] = True
-            state["status"] = "migration_execution_started"
-            write_state(state_path, state)
-            append_event(state_directory, "single_migration_execution_started")
-            migration_result = execute_single_migration(migration, state_directory)
-            state["migration_executed"] = True
-            state["status"] = "migration_executed"
-            write_state(state_path, state)
-            append_event(state_directory, "single_migration_executed")
-            post_migration, post_migration_command = runtime_probe(
-                helper, state_directory, "post-migration-runtime-probe"
-            )
-            post_migration_verification = verify_post_migration(before_repeat, post_migration)
-            post_migration_path = state_directory / "post-migration-verification.json"
-            atomic_json(
-                post_migration_path,
-                {
-                    "migration_command": migration_result,
-                    "probe_command": post_migration_command,
-                    "verification": post_migration_verification,
-                },
-            )
+            installed_path = state_directory / "cutover-installed-schema-receipt.json"
+            atomic_json(installed_path, installed_receipt)
 
             absent_directories = sorted(
                 {
@@ -3579,11 +3381,26 @@ def deploy_release(
             write_state(state_path, state)
 
             health = post_open_health(helper, state_directory, "post-open")
-            logs = log_delta(log_start, state_directory)
+            logs = log_delta(
+                log_start,
+                state_directory,
+                log_guard_path,
+                evidence_label="post-open",
+            )
             state["status"] = "monitoring"
             write_state(state_path, state)
-            monitoring = monitor_production(helper, rows, state_directory)
-            final_logs = log_delta(log_start, state_directory)
+            monitoring = monitor_production(
+                helper,
+                rows,
+                state_directory,
+                logs["continuity"],
+            )
+            final_logs = log_delta(
+                log_start,
+                state_directory,
+                log_guard_path,
+                evidence_label="final",
+            )
             final = {
                 "status": "success",
                 "generated_at_utc": utc_now(),
@@ -3591,10 +3408,11 @@ def deploy_release(
                 "release_receipt_sha256": release_receipt_sha256,
                 "preflight_receipt_sha256": sha256_file(preflight_path),
                 "source_backup_receipt_sha256": source["receipt_sha256"],
-                "database_backup_receipt_sha256": database["receipt_sha256"],
                 "drain": drain,
-                "cutover_pretend_receipt_sha256": sha256_file(repeat_path),
-                "post_migration_verification_sha256": sha256_file(post_migration_path),
+                "installed_schema_receipt_sha256": sha256_file(installed_path),
+                "migration_command_invoked": False,
+                "migration_pretend_invoked": False,
+                "migration_executed_this_attempt": False,
                 "source_install_receipt_sha256": source_install["receipt_sha256"],
                 "candidate_checks_sha256": sha256_file(candidate_path),
                 "front_controller_restore_receipt_sha256": front_restore[
@@ -3609,11 +3427,7 @@ def deploy_release(
                 "maintenance_active": LARAVEL_MAINTENANCE_FILE.exists(),
                 "static_gate_active": False,
                 "rollback_started": False,
-                "migration_execution_started": True,
-                "migration_executed": True,
-                "schema": validate_runtime_snapshot(
-                    health["runtime"], require_target_absent=False
-                ),
+                "schema": validate_runtime_snapshot(health["runtime"]),
                 "source": live_manifest_snapshot(rows, target=True),
             }
             final_path = state_directory / "final-receipt.json"
@@ -3678,7 +3492,7 @@ def recover_state(
 
 def describe() -> dict[str, Any]:
     return {
-        "artifact": "BuyDTF production-alpha transparency repair deployment runner v1",
+        "artifact": "BuyDTF production-alpha transparency source-only deployment runner v2",
         "target_application_commit": TARGET_COMMIT,
         "artifact_base_commit": ARTIFACT_BASE_COMMIT,
         "application_root": str(APP_ROOT),
@@ -3687,20 +3501,27 @@ def describe() -> dict[str, Any]:
         "archive_sha256": EXPECTED_ARCHIVE_SHA256,
         "manifest_sha256": EXPECTED_MANIFEST_SHA256,
         "helper_sha256": EXPECTED_HELPER_SHA256,
+        "log_guard_sha256": EXPECTED_LOG_GUARD_SHA256,
         "migration": {
             "path": MIGRATION_RELATIVE_PATH.as_posix(),
             "sha256": EXPECTED_MIGRATION_SHA256,
             "connection": "fuelmysql",
-            "pretend_statement": EXPECTED_PRETEND_STATEMENT,
-            "general_migrate_allowed": False,
-            "rollback_command_allowed": False,
+            "source_predeployment_state": "absent_reviewed_addition",
+            "schema_state": SCHEMA_STATE,
+            "command_invoked": False,
+            "pretend_invoked": False,
+            "executed_this_attempt": False,
         },
-        "pre_migration_identity": {
-            "schema_sha256": EXPECTED_PRE_SCHEMA_SHA256,
-            "ledger_rows": EXPECTED_PRE_LEDGER_ROW_COUNT,
-            "ledger_sha256": EXPECTED_PRE_LEDGER_SHA256,
-            "target_migration_entries": 0,
-            "item_meta": "absent",
+        "installed_schema_identity": {
+            "state": SCHEMA_STATE,
+            "schema_sha256": EXPECTED_SCHEMA_SHA256,
+            "schema_without_item_meta_sha256": EXPECTED_SCHEMA_WITHOUT_ITEM_META_SHA256,
+            "ledger_rows": EXPECTED_LEDGER_ROW_COUNT,
+            "ledger_sha256": EXPECTED_LEDGER_SHA256,
+            "ledger_without_target_rows": EXPECTED_LEDGER_WITHOUT_TARGET_ROW_COUNT,
+            "ledger_without_target_sha256": EXPECTED_LEDGER_WITHOUT_TARGET_SHA256,
+            "target_migration_entries": EXPECTED_TARGET_MIGRATION_ENTRIES,
+            "item_meta": "nullable_text_installed",
             "source_cas_sha256": EXPECTED_PRE_SOURCE_CAS_SHA256,
             "target_source_cas_sha256": EXPECTED_TARGET_SOURCE_CAS_SHA256,
         },
@@ -3729,7 +3550,7 @@ def describe() -> dict[str, Any]:
             "pre_mutation_verification_failure": (
                 "restore_exact_original_front_controller_with_receipt_and_health_check"
             ),
-            "post_migration_or_source_mutation_verification_failure": (
+            "post_source_mutation_verification_failure": (
                 "retain_exact_0644_gate_with_durable_rollback_containment"
             ),
             "recovery_uses_live_identity_and_durable_state": True,
@@ -3739,19 +3560,25 @@ def describe() -> dict[str, Any]:
             "deploy": DEPLOY_APPROVAL_TOKEN,
             "recover": RECOVERY_APPROVAL_TOKEN,
         },
+        "retired_artifacts": {
+            "runner_sha256": sorted(RETIRED_RUNNER_SHA256S),
+            "release_receipt_sha256": sorted(RETIRED_RELEASE_RECEIPT_SHA256S),
+            "release_receipt_paths": sorted(RETIRED_RELEASE_RECEIPT_PATHS),
+        },
         "safety": {
             "git_operations": False,
             "composer_operations": False,
             "general_migration": False,
-            "migration_rollback": False,
+            "migration_command_invoked": False,
+            "migration_pretend_invoked": False,
+            "migration_executed_this_attempt": False,
             "service_restart": False,
             "environment_change": False,
             "cache_change": False,
             "capability_enablement": False,
             "retention_execution": False,
             "source_rollback_drops_additive_schema": False,
-            "migration_failure_accepts_only_exact_absent_or_exact_installed_state": True,
-            "schema_preserved_after_successful_migration": True,
+            "schema_preserved_during_source_deploy_and_rollback": True,
             "pre_mutation_gate_failure_restores_original_with_receipt": True,
             "post_mutation_gate_failure_retains_exact_0644_gate": True,
         },
@@ -3768,6 +3595,7 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument("--archive", type=Path)
     parser.add_argument("--manifest", type=Path)
     parser.add_argument("--helper", type=Path)
+    parser.add_argument("--log-guard", type=Path)
     parser.add_argument("--release-receipt", type=Path)
     parser.add_argument("--release-receipt-sha256")
     parser.add_argument("--state", type=Path)
@@ -3783,12 +3611,20 @@ def main() -> int:
             print(json.dumps(describe(), indent=2, sort_keys=True))
             return 0
         if arguments.stage:
-            if arguments.archive is None or arguments.manifest is None or arguments.helper is None:
-                raise DeploymentError("Stage mode requires --archive, --manifest, and --helper.")
+            if (
+                arguments.archive is None
+                or arguments.manifest is None
+                or arguments.helper is None
+                or arguments.log_guard is None
+            ):
+                raise DeploymentError(
+                    "Stage mode requires --archive, --manifest, --helper, and --log-guard."
+                )
             receipt = stage_release(
                 archive=arguments.archive,
                 manifest=arguments.manifest,
                 helper=arguments.helper,
+                log_guard=arguments.log_guard,
                 approval_token=arguments.approval_token or "",
             )
             print(

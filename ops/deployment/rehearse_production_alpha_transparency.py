@@ -3,7 +3,7 @@
 
 The rehearsal imports the frozen runner, replaces every external production
 operation with a deterministic local double, and leaves the real source swap,
-raw-byte backup/restore, durable state, static-gate, and rollback code active.
+raw-byte source backup/restore, durable state, static-gate, and rollback code active.
 It never opens a network connection or invokes Artisan, MySQL, or production.
 """
 
@@ -27,14 +27,16 @@ from typing import Any, Iterator
 ROOT = Path(__file__).resolve().parents[2]
 RUNNER_PATH = ROOT / "ops/deployment/production_alpha_transparency_deploy.py"
 PROBE_PATH = ROOT / "ops/deployment/production_alpha_transparency_runtime_probe.php"
+LOG_GUARD_PATH = ROOT / "ops/deployment/laravel_log_guard.py"
+LOG_FIXTURES = ROOT / "tests/Fixtures/Deployment/LaravelLogs"
 MANIFEST_PATH = (
     ROOT
-    / "ops/evidence/production-alpha-transparency-20261001/APPLICATION_MANIFEST.json"
+    / "ops/evidence/production-alpha-transparency-source-only-20261002/APPLICATION_MANIFEST.json"
 )
 DEFAULT_ARCHIVE_PATH = (
     ROOT
-    / "storage/app/private/operations/production-alpha-transparency-local-package-20261001"
-    / "production-alpha-transparency-5b2d06cd.tar"
+    / "storage/app/private/operations/production-alpha-transparency-source-only-package-20261002"
+    / "production-alpha-transparency-b02fce32.tar"
 )
 DEFAULT_BASELINE_ROOTS = (
     ROOT.parent / "buy-dtf-receiver-validation-20261001",
@@ -50,11 +52,11 @@ SPEC.loader.exec_module(deploy)
 
 SCENARIOS = (
     "success",
-    "pre-migration-failure",
-    "migration-failure",
+    "pre-source-failure",
     "source-swap-failure",
     "candidate-check-failure",
     "post-reopen-failure",
+    "genuine-log-failure",
     "schema-preserving-rollback",
 )
 
@@ -128,7 +130,7 @@ def resolve_baseline_sources(
     return resolved, evidence
 
 
-def runtime_snapshot(installed: bool) -> dict[str, Any]:
+def runtime_snapshot() -> dict[str, Any]:
     table_definition = [
         {
             "TABLE_NAME": "savedimages",
@@ -138,54 +140,20 @@ def runtime_snapshot(installed: bool) -> dict[str, Any]:
             "CREATE_OPTIONS": "",
         }
     ]
-    item_definition = (
-        [
-            {
-                "TABLE_NAME": "savedimages",
-                "ORDINAL_POSITION": 11,
-                "COLUMN_NAME": "item_meta",
-                "COLUMN_TYPE": "text",
-                "IS_NULLABLE": "YES",
-                "COLUMN_DEFAULT": None,
-                "EXTRA": "",
-                "CHARACTER_SET_NAME": "utf8mb4",
-                "COLLATION_NAME": "utf8mb4_unicode_ci",
-                "GENERATION_EXPRESSION": "",
-            }
-        ]
-        if installed
-        else []
-    )
-    ledger_rows = (
-        [
-            {
-                "migration": deploy.TARGET_MIGRATION,
-                "batch": 9,
-            }
-        ]
-        if installed
-        else []
-    )
-    ledger_sha = (
-        canonical_hash(
-            {
-                "baseline": deploy.EXPECTED_PRE_LEDGER_SHA256,
-                "target": ledger_rows,
-            }
-        )
-        if installed
-        else deploy.EXPECTED_PRE_LEDGER_SHA256
-    )
-    schema_sha = (
-        canonical_hash(
-            {
-                "baseline": deploy.EXPECTED_PRE_SCHEMA_SHA256,
-                "item_meta": item_definition,
-            }
-        )
-        if installed
-        else deploy.EXPECTED_PRE_SCHEMA_SHA256
-    )
+    item_definition = [
+        {
+            "TABLE_NAME": "savedimages",
+            "ORDINAL_POSITION": 11,
+            "COLUMN_NAME": "item_meta",
+            "COLUMN_TYPE": "text",
+            "IS_NULLABLE": "YES",
+            "COLUMN_DEFAULT": None,
+            "EXTRA": "",
+            "CHARACTER_SET_NAME": "utf8mb4",
+            "COLLATION_NAME": "utf8mb4_unicode_ci",
+            "GENERATION_EXPRESSION": "",
+        }
+    ]
     required_counts = {
         "businesses": 41,
         "dtforders": 73,
@@ -215,17 +183,17 @@ def runtime_snapshot(installed: bool) -> dict[str, Any]:
         "migration_ledger": {
             "table": "migrations",
             "exists": True,
-            "row_count": deploy.EXPECTED_PRE_LEDGER_ROW_COUNT + (1 if installed else 0),
-            "rows_sha256": ledger_sha,
+            "row_count": deploy.EXPECTED_LEDGER_ROW_COUNT,
+            "rows_sha256": deploy.EXPECTED_LEDGER_SHA256,
             "target_migration": deploy.TARGET_MIGRATION,
-            "target_entry_count": 1 if installed else 0,
-            "without_target_row_count": deploy.EXPECTED_PRE_LEDGER_ROW_COUNT,
-            "without_target_rows_sha256": deploy.EXPECTED_PRE_LEDGER_SHA256,
+            "target_entry_count": deploy.EXPECTED_TARGET_MIGRATION_ENTRIES,
+            "without_target_row_count": deploy.EXPECTED_LEDGER_WITHOUT_TARGET_ROW_COUNT,
+            "without_target_rows_sha256": deploy.EXPECTED_LEDGER_WITHOUT_TARGET_SHA256,
         },
         "schema": {
-            "sha256": schema_sha,
-            "without_item_meta_sha256": deploy.EXPECTED_PRE_SCHEMA_SHA256,
-            "section_row_counts": {"tables": 36, "columns": 410 + (1 if installed else 0)},
+            "sha256": deploy.EXPECTED_SCHEMA_SHA256,
+            "without_item_meta_sha256": deploy.EXPECTED_SCHEMA_WITHOUT_ITEM_META_SHA256,
+            "section_row_counts": {"tables": 36, "columns": 411},
             "target_definitions": {
                 "tables": table_definition,
                 "columns": item_definition,
@@ -237,9 +205,9 @@ def runtime_snapshot(installed: bool) -> dict[str, Any]:
             "required_tables": {name: True for name in required_counts},
             "required_table_row_counts": required_counts,
             "savedimages_item_meta": {
-                "exists": installed,
+                "exists": True,
                 "definition": item_definition,
-                "nonnull_rows": 0 if installed else None,
+                "nonnull_rows": 0,
                 "savedimages_rows": required_counts["savedimages"],
                 "data_columns_without_item_meta": [
                     "id",
@@ -312,31 +280,23 @@ def build_fixture(
     helper = release / PROBE_PATH.name
     shutil.copyfile(PROBE_PATH, helper)
     os.chmod(helper, 0o600)
-
-    pretend_path = release / "migration-pretend-receipt.json"
-    deploy.atomic_json(
-        pretend_path,
-        {
-            "status": "pass",
-            "statement_set": {
-                "canonical_sha256": deploy.sha256_bytes(
-                    deploy.canonical_bytes([deploy.EXPECTED_PRETEND_STATEMENT])
-                )
-            },
-        },
-    )
+    log_guard = release / LOG_GUARD_PATH.name
+    shutil.copyfile(LOG_GUARD_PATH, log_guard)
+    os.chmod(log_guard, 0o600)
     receipt_path = release / "release-receipt.json"
     receipt_path.write_text("{}\n", encoding="utf-8")
     os.chmod(receipt_path, 0o600)
     receipt = {
         "status": "pass",
-        "scope": "local-rehearsal-only",
+        "scope": "alpha-repair-schema-present-source-only-staging",
         "target_commit": deploy.TARGET_COMMIT,
         "release_directory": str(release),
-        "inputs": {"helper": {"path": str(helper), "sha256": deploy.EXPECTED_HELPER_SHA256}},
-        "pretend_receipt": {
-            "path": str(pretend_path),
-            "sha256": deploy.sha256_file(pretend_path),
+        "inputs": {
+            "helper": {"path": str(helper), "sha256": deploy.EXPECTED_HELPER_SHA256},
+            "log_guard": {
+                "path": str(log_guard),
+                "sha256": deploy.EXPECTED_LOG_GUARD_SHA256,
+            },
         },
     }
     return {
@@ -347,15 +307,10 @@ def build_fixture(
         "rollback": rollback,
         "front": front,
         "helper": helper,
+        "log_guard": log_guard,
         "receipt": receipt,
         "receipt_path": receipt_path,
     }
-
-
-def write_mock_receipt(directory: Path, name: str, payload: dict[str, Any]) -> dict[str, Any]:
-    path = directory / f"{name}.json"
-    deploy.atomic_json(path, payload)
-    return {**payload, "path": str(path), "receipt_sha256": deploy.sha256_file(path)}
 
 
 def run_scenario(
@@ -372,7 +327,6 @@ def run_scenario(
     assert isinstance(rollback, Path)
     assert isinstance(front, Path)
 
-    runtime_state = "absent"
     command_log: list[list[str]] = []
     web_probe_log: list[dict[str, Any]] = []
     original_install = deploy.install_runtime_files
@@ -380,13 +334,15 @@ def run_scenario(
     original_containment = deploy.establish_rollback_containment
     original_restore_exact = deploy.restore_front_controller_exact
     original_recovery_required = deploy.front_controller_recovery_required
+    original_log_baseline = deploy.log_baseline
+    original_log_delta = deploy.log_delta
 
     def snapshot() -> dict[str, Any]:
-        return runtime_snapshot(runtime_state == "installed")
+        return runtime_snapshot()
 
     def preflight(**_: Any) -> dict[str, Any]:
         current = snapshot()
-        verification = deploy.validate_runtime_snapshot(current, require_target_absent=True)
+        verification = deploy.validate_runtime_snapshot(current)
         return {
             "status": "pass",
             "runtime": current,
@@ -401,31 +357,13 @@ def run_scenario(
     def fake_runtime_probe(_helper: Path, _directory: Path, name: str):
         nonlocal runtime_sequence
         runtime_sequence += 1
-        if scenario == "pre-migration-failure" and name == "cutover-schema-before-pretend":
-            raise deploy.DeploymentError("rehearsed pre-migration failure")
+        if scenario == "pre-source-failure" and name == "cutover-installed-schema-probe":
+            raise deploy.DeploymentError("rehearsed pre-source failure")
         return copy.deepcopy(snapshot()), {
             "rehearsal": True,
             "name": name,
             "sequence": runtime_sequence,
         }
-
-    def fake_database_backups(
-        _helper: Path, before: dict[str, Any], directory: Path
-    ) -> dict[str, Any]:
-        return write_mock_receipt(
-            directory,
-            "database-backup-rehearsal",
-            {
-                "status": "pass",
-                "schema_sha256": before["schema"]["sha256"],
-                "ledger_sha256": before["migration_ledger"]["rows_sha256"],
-                "savedimages_rows": before["schema"]["savedimages_item_meta"][
-                    "savedimages_rows"
-                ],
-                "full_savedimages_dump_rehearsed": True,
-                "show_create_rehearsed": True,
-            },
-        )
 
     def web_identity_probe(route: str) -> dict[str, Any]:
         completed = subprocess.run(
@@ -521,46 +459,6 @@ def run_scenario(
         marker.unlink(missing_ok=True)
         return {"status": "pass", "rehearsal": True}
 
-    def fake_pretend(**_: Any) -> dict[str, Any]:
-        command_log.append(
-            [
-                "artisan",
-                "migrate",
-                "--database=fuelmysql",
-                f"--path={item['candidate'] / deploy.MIGRATION_RELATIVE_PATH}",
-                "--realpath",
-                "--pretend",
-                "--force",
-            ]
-        )
-        return {
-            "status": "pass",
-            "statement_set_sha256": deploy.sha256_bytes(
-                deploy.canonical_bytes([deploy.EXPECTED_PRETEND_STATEMENT])
-            ),
-            "statement_count": 1,
-        }
-
-    def fake_execute(_migration: Path, _directory: Path) -> dict[str, Any]:
-        nonlocal runtime_state
-        command_log.append(
-            [
-                "artisan",
-                "migrate",
-                "--database=fuelmysql",
-                "--path=<absolute-staged-migration>",
-                "--realpath",
-                "--force",
-            ]
-        )
-        if scenario == "migration-failure":
-            raise deploy.DeploymentError("rehearsed migration failure before DDL")
-        if scenario == "schema-preserving-rollback":
-            runtime_state = "installed"
-            raise deploy.DeploymentError("rehearsed lost acknowledgement after committed DDL")
-        runtime_state = "installed"
-        return {"status": "pass", "exact_single_migration": True}
-
     def local_install(
         candidate: Path,
         install_rows: list[dict[str, Any]],
@@ -588,9 +486,7 @@ def run_scenario(
     def candidate_checks(_helper: Path, install_rows: list[dict[str, Any]], _directory: Path):
         if scenario == "candidate-check-failure":
             raise deploy.DeploymentError("rehearsed candidate-check failure")
-        verification = deploy.validate_runtime_snapshot(
-            snapshot(), require_target_absent=False, require_all_item_meta_null=True
-        )
+        verification = deploy.validate_runtime_snapshot(snapshot())
         return {
             "status": "pass",
             "source": deploy.live_manifest_snapshot(install_rows, target=True),
@@ -603,23 +499,67 @@ def run_scenario(
         return {
             "status": "pass",
             "runtime": copy.deepcopy(snapshot()),
-            "runtime_verification": deploy.validate_runtime_snapshot(
-                snapshot(), require_target_absent=False
-            ),
+            "runtime_verification": deploy.validate_runtime_snapshot(snapshot()),
         }
 
-    def monitor(_helper: Path, install_rows: list[dict[str, Any]], directory: Path):
+    def monitor(
+        _helper: Path,
+        install_rows: list[dict[str, Any]],
+        directory: Path,
+        log_checkpoint: dict[str, Any],
+    ):
+        final_log_checkpoint = deploy.verify_log_continuity(log_checkpoint)
         receipt = {
             "status": "pass",
             "samples": 30,
-            "schema_state": "installed",
+            "schema_state": deploy.SCHEMA_STATE,
             "source_sha256": deploy.live_manifest_snapshot(
                 install_rows, target=True
             )["sha256"],
+            "final_log_checkpoint": final_log_checkpoint,
         }
         path = directory / "monitoring-samples.json"
         deploy.atomic_json(path, receipt)
+        if scenario == "schema-preserving-rollback":
+            raise deploy.DeploymentError("rehearsed monitor failure requiring source rollback")
         return {**receipt, "path": str(path), "sha256": deploy.sha256_file(path)}
+
+    log_path = application / "storage/logs/laravel.log"
+
+    def baseline_logs() -> dict[str, Any]:
+        log_path.parent.mkdir(mode=0o775, parents=True, exist_ok=True)
+        if not log_path.exists():
+            deploy.atomic_write(
+                log_path,
+                b"[2026-10-02 00:00:00] local.INFO: rehearsal baseline\n",
+                0o664,
+            )
+        return original_log_baseline()
+
+    def inspect_logs(
+        baseline: dict[str, Any],
+        directory: Path,
+        guard_path: Path,
+        *,
+        evidence_label: str,
+    ) -> dict[str, Any]:
+        fixture_name = (
+            "genuine-exception.txt"
+            if scenario == "genuine-log-failure"
+            else "reviewed-56-error-delta.redacted.txt"
+        )
+        content = (LOG_FIXTURES / fixture_name).read_bytes()
+        log_path.parent.mkdir(mode=0o775, parents=True, exist_ok=True)
+        with log_path.open("ab") as handle:
+            handle.write(content)
+            handle.flush()
+            os.fsync(handle.fileno())
+        return original_log_delta(
+            baseline,
+            directory,
+            guard_path,
+            evidence_label=evidence_label,
+        )
 
     expected_failure = scenario != "success"
     failure: dict[str, Any] | None = None
@@ -639,7 +579,6 @@ def run_scenario(
             rows,
         ),
         "production_preflight": preflight,
-        "database_backups": fake_database_backups,
         "install_static_gate": local_gate,
         "establish_rollback_containment": local_containment,
         "front_controller_recovery_required": lambda state: original_recovery_required(
@@ -651,19 +590,13 @@ def run_scenario(
         "drain_runtime": lambda *_: {"status": "pass", "samples": 1},
         "dependency_identity": lambda: {"identity": "reviewed-production-baseline"},
         "runtime_probe": fake_runtime_probe,
-        "staged_pretend": fake_pretend,
-        "execute_single_migration": fake_execute,
         "install_runtime_files": local_install,
         "candidate_cli_checks": candidate_checks,
         "post_open_health": post_open,
         "monitor_production": monitor,
         "health_snapshot": lambda: {"status": "pass", "rehearsal": True},
-        "log_baseline": lambda: {"path": "rehearsal", "exists": False, "bytes": 0},
-        "log_delta": lambda *_: {
-            "bytes": 0,
-            "sha256": deploy.sha256_bytes(b""),
-            "error_markers": [],
-        },
+        "log_baseline": baseline_logs,
+        "log_delta": inspect_logs,
     }
 
     with patched(patches):
@@ -693,6 +626,19 @@ def run_scenario(
         state_directory = state_directories[0]
         state_path = state_directory / "state.json"
         state = json.loads(state_path.read_text("utf-8"))
+        require(
+            "database_backup_receipt" not in state,
+            "Source-only state recorded a database backup receipt.",
+        )
+        require(
+            not (state_directory / "database-before").exists(),
+            "Source-only rehearsal created a database backup directory.",
+        )
+        if final_receipt is not None:
+            require(
+                "database_backup_receipt_sha256" not in final_receipt,
+                "Source-only final receipt recorded a database backup.",
+            )
         front_identity = deploy.file_identity(front)
         require(
             front_identity["sha256"] == deploy.EXPECTED_FRONT_CONTROLLER_SHA256,
@@ -700,14 +646,11 @@ def run_scenario(
         )
         require(front_identity["metadata"]["mode"] == 0o644, "Front mode changed.")
 
-        expected_schema = "installed" if scenario in {
-            "success",
-            "source-swap-failure",
-            "candidate-check-failure",
-            "post-reopen-failure",
-            "schema-preserving-rollback",
-        } else "absent"
-        require(runtime_state == expected_schema, "Scenario ended in the wrong schema state.")
+        final_schema = deploy.validate_runtime_snapshot(snapshot())
+        require(
+            final_schema["schema_state"] == deploy.SCHEMA_STATE,
+            "Scenario changed the installed schema state.",
+        )
         if expected_failure:
             require(state.get("rollback_complete") is True, "Automatic rollback did not complete.")
             source = deploy.live_manifest_snapshot(rows, target=False)
@@ -717,19 +660,18 @@ def run_scenario(
                 )
             )
             require(
-                schema_receipt["observed_schema_state"] == expected_schema,
+                schema_receipt["observed_schema_state"] == deploy.SCHEMA_STATE,
                 "Rollback receipt recorded the wrong schema state.",
             )
             require(
-                schema_receipt["additive_schema_preserved"]
-                is (expected_schema == "installed"),
-                "Rollback schema-preservation assertion differs from expectation.",
+                schema_receipt["additive_schema_preserved"] is True,
+                "Rollback did not preserve the installed schema.",
             )
         else:
             require(state.get("status") == "success", "Success was not durable.")
             source = deploy.live_manifest_snapshot(rows, target=True)
             schema_receipt = {
-                "observed_schema_state": "installed",
+                "observed_schema_state": deploy.SCHEMA_STATE,
                 "additive_schema_preserved": True,
             }
 
@@ -742,16 +684,17 @@ def run_scenario(
             )
         ]
         require(not forbidden, "A prohibited command entered the rehearsal.")
-        migration_commands = [
-            command for command in command_log if "migrate" in command
-        ]
-        if scenario == "pre-migration-failure":
-            require(len(migration_commands) == 0, "Pre-migration failure crossed the boundary.")
-        else:
-            require(
-                len(migration_commands) == 2,
-                "Scenario did not exercise one pretend plus one exact migration.",
-            )
+        migration_commands = [command for command in command_log if "migrate" in command]
+        require(
+            not migration_commands,
+            "A migration command entered the schema-present source-only rehearsal.",
+        )
+        require(state.get("migration_command_invoked") is False, "Migration flag changed.")
+        require(state.get("migration_pretend_invoked") is False, "Pretend flag changed.")
+        require(
+            state.get("migration_executed_this_attempt") is False,
+            "Migration execution flag changed.",
+        )
 
         raw_inventory = deploy.artifact_inventory(state_directory)
         raw_manifest_sha256 = deploy.sha256_bytes(deploy.canonical_bytes(raw_inventory))
@@ -764,9 +707,12 @@ def run_scenario(
         "observed_failure": failure,
         "final_state_status": state.get("status"),
         "rollback_complete": bool(state.get("rollback_complete")),
-        "migration_execution_started": bool(state.get("migration_execution_started")),
-        "migration_executed": bool(state.get("migration_executed")),
-        "schema_state": runtime_state,
+        "migration_command_invoked": bool(state.get("migration_command_invoked")),
+        "migration_pretend_invoked": bool(state.get("migration_pretend_invoked")),
+        "migration_executed_this_attempt": bool(
+            state.get("migration_executed_this_attempt")
+        ),
+        "schema_state": deploy.SCHEMA_STATE,
         "additive_schema_preserved": schema_receipt["additive_schema_preserved"],
         "source_expectation": source["expectation"],
         "source_cas_sha256": source["sha256"],
@@ -872,12 +818,13 @@ def run(
     portable_output.mkdir(mode=0o755, parents=True, exist_ok=True)
     aggregate = {
         "status": "pass",
-        "artifact": "buy-dtf-production-alpha-transparency-local-rehearsal-v1",
+        "artifact": "buy-dtf-production-alpha-transparency-source-only-local-rehearsal-v2",
         "scope": "disposable-local-filesystem-only-no-production-access",
         "scenario_count": len(scenarios),
         "scenarios_required": list(SCENARIOS),
         "runner_sha256": deploy.sha256_file(RUNNER_PATH),
         "runtime_probe_sha256": deploy.sha256_file(PROBE_PATH),
+        "laravel_log_guard_sha256": deploy.sha256_file(LOG_GUARD_PATH),
         "rehearsal_script_sha256": deploy.sha256_file(Path(__file__).resolve()),
         "application_manifest_sha256": deploy.sha256_file(MANIFEST_PATH),
         "candidate_archive_sha256": deploy.EXPECTED_ARCHIVE_SHA256,
@@ -910,7 +857,9 @@ def run(
         "umask": "0o077",
         "production_accessed": False,
         "production_staged": False,
-        "migration_invoked_outside_simulation": False,
+        "migration_command_invoked": False,
+        "migration_pretend_invoked": False,
+        "migration_executed_this_attempt": False,
         "external_command_allowlist": ["setpriv", "php <disposable static gate>"],
         "scenarios": scenarios,
     }

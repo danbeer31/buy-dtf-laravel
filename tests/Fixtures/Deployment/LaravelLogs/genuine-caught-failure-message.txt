@@ -1,0 +1,2 @@
+[2026-10-02 01:15:00] production.ERROR: QBO Invoice Error for order [redacted]: synthetic downstream rejection
+[2026-10-02 01:15:01] production.ERROR: DEBUG: Stripe PaymentIntent retrieval failed for order [redacted]

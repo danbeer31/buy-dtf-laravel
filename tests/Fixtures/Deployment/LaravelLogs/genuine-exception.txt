@@ -1,0 +1,2 @@
+[2026-10-02 01:00:00] production.ERROR: RuntimeException: Synthetic worker exploded at /var/www/buy-dtf/app/SyntheticWorker.php:42
+{"exception":"[object] (RuntimeException(code: 0): Synthetic worker exploded at /var/www/buy-dtf/app/SyntheticWorker.php:42)"}

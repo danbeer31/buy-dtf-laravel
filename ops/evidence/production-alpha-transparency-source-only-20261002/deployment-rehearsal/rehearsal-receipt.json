@@ -1,0 +1,328 @@
+{
+  "application_manifest_sha256": "93bc5ff1427693539faabda97d7fc1b9b8a5bca8075dea7bec5cb17d75a7faf2",
+  "artifact": "buy-dtf-production-alpha-transparency-source-only-local-rehearsal-v2",
+  "artifact_base_commit": "307b99e9429ca4623c72cc121e12997bdb4dfcad",
+  "baseline_source_records": [
+    {
+      "baseline_root_index": 1,
+      "bytes": 28229,
+      "path": "app/Helpers/ImageHelper.php",
+      "sha256": "b840aa320764dca8896512422456b39162a079d7428aab78b7ad1c7ec1beb637"
+    },
+    {
+      "baseline_root_index": 1,
+      "bytes": 17594,
+      "path": "app/Helpers/ProductionHelper.php",
+      "sha256": "fc14a5ff52714f311cc3f2bdcdf3410ade6927505bcc626eccbbc11f129d8f12"
+    },
+    {
+      "baseline_root_index": 2,
+      "bytes": 14948,
+      "path": "app/Http/Controllers/Admin/OrderImageController.php",
+      "sha256": "49c2925ad3dfb0aeea32f5baf98926a2cc5112ba543d9178c6297273ff6442f1"
+    },
+    {
+      "baseline_root_index": 1,
+      "bytes": 32079,
+      "path": "app/Http/Controllers/CartController.php",
+      "sha256": "713ae74db4410bb4ca22e5f4f3c77ddef17403004796a9e4418fe14ea7d6696a"
+    },
+    {
+      "baseline_root_index": 1,
+      "bytes": 9957,
+      "path": "app/Http/Controllers/TeamCustomizationController.php",
+      "sha256": "46c5f4079915e25f3466e0e98305918812376039546f91ed8a9f220737f56fc3"
+    },
+    {
+      "baseline_root_index": 1,
+      "bytes": 8990,
+      "path": "app/Models/DtfImage.php",
+      "sha256": "14d6245a1ac65babfa6d06152bd9fc6692c9d33c5fe3ba5e2b8efabce728d0c2"
+    },
+    {
+      "baseline_root_index": 2,
+      "bytes": 1043,
+      "path": "app/Models/SavedImage.php",
+      "sha256": "0282da64284bdddc2ad11ccc48c3f32c8ef0443823bbb4dcbe1d05b7973d12f7"
+    },
+    {
+      "baseline_root_index": 2,
+      "bytes": 44433,
+      "path": "app/Http/Controllers/Checkout/CheckoutController.php",
+      "sha256": "4b39e9381f728b8b4a0f8a828494827b0e2520ce80d0d36910b44185e6d5c2dd"
+    },
+    {
+      "baseline_root_index": 2,
+      "bytes": 8299,
+      "path": "app/Services/ShippoService.php",
+      "sha256": "617673b6921ddf209c67534b6c42b13f23771a1d3fdea907f7583f7459e193c7"
+    },
+    {
+      "baseline_root_index": 2,
+      "bytes": 3385,
+      "path": "app/Http/Controllers/Webhooks/ShippoWebhookController.php",
+      "sha256": "d8d91199bc0ca810204a04b4452cbf460bb939020a8e21b46537736a1bd5acbd"
+    }
+  ],
+  "candidate_archive_sha256": "3067bca578201a39254d8544b633a04ff6a9e43fc0de2a2783a95ccde9a1bfcd",
+  "candidate_archive_verification": {
+    "extraction": {
+      "files": 11,
+      "log_bytes": 2112,
+      "log_sha256": "1da01774ce214a27c126ecdd000fd28eeb796d0f1b5c2b7e3688e7cf7d2c36eb",
+      "rows_sha256": "1da01774ce214a27c126ecdd000fd28eeb796d0f1b5c2b7e3688e7cf7d2c36eb",
+      "tree": {
+        "bytes": 191455,
+        "directories": 11,
+        "files": 11,
+        "sha256": "8fabbc6add25577e20c566d8530165abd0ace6cf1867a260167a4200d80ff82b"
+      }
+    },
+    "verification": {
+      "evidence_bytes": 2035,
+      "evidence_sha256": "3efc6019400adc32d6dc09e19798694f4edbfb442b56acbe06fd58293354332c",
+      "files": 11,
+      "records_sha256": "3efc6019400adc32d6dc09e19798694f4edbfb442b56acbe06fd58293354332c",
+      "tree": {
+        "bytes": 191455,
+        "directories": 11,
+        "files": 11,
+        "sha256": "8fabbc6add25577e20c566d8530165abd0ace6cf1867a260167a4200d80ff82b"
+      }
+    }
+  },
+  "external_command_allowlist": [
+    "setpriv",
+    "php <disposable static gate>"
+  ],
+  "laravel_log_guard_sha256": "219698ba8196d206b0d2512df5a078370a82f69be8ec92fd57f949f808da655a",
+  "migration_command_invoked": false,
+  "migration_executed_this_attempt": false,
+  "migration_pretend_invoked": false,
+  "private_evidence_manifest": {
+    "entries": 363,
+    "entries_sha256": "2c286d92e1526188bc259ca086cf3caf39f9650b5cfc03d86dd1ad006ab7ffd8",
+    "manifest_sha256": "244e7be520ae5a7d36f69a2e0b2bb8fcf125e6b11da01b3bc7e72979bf782ef4"
+  },
+  "production_accessed": false,
+  "production_staged": false,
+  "rehearsal_script_sha256": "ab3acb8f804b3a1ea736bac73aabcbb1c443a40d2840a89e90be66d81ae4081c",
+  "runner_sha256": "59bbd90cafa8d1b5efd56a6c40667924193e37539f4340e4b6163c6274425cab",
+  "runtime_probe_sha256": "df1f627ccd2844c888373e9aa135d8e4971ac2900ccce105d3081a04e7b3ad61",
+  "scenario_count": 7,
+  "scenarios": {
+    "candidate-check-failure": {
+      "additive_schema_preserved": true,
+      "expected_failure": true,
+      "final_receipt_sha256": null,
+      "final_state_status": "rolled_back",
+      "front_controller_mode": "0o644",
+      "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
+      "migration_command_count": 0,
+      "migration_command_invoked": false,
+      "migration_executed_this_attempt": false,
+      "migration_pretend_invoked": false,
+      "observed_failure": {
+        "message_sha256": "dd4bd08ecf73d317bcb63acd5d6e856a5c5c37758f8b319fbaf81bf0f450666a",
+        "type": "DeploymentError"
+      },
+      "prohibited_command_count": 0,
+      "raw_evidence_entries": 20,
+      "raw_evidence_manifest_sha256": "a0c7e048c1c6400977c32c0d6d8680d87a0c38ece4579a53ccd30086c22979f1",
+      "raw_state_directory_name": "b02fce32-20261002T214650Z",
+      "rollback_complete": true,
+      "scenario": "candidate-check-failure",
+      "schema_state": "installed_schema_source_only_v1",
+      "separate_web_identity_all_passed": true,
+      "separate_web_identity_probe_count": 4,
+      "source_cas_sha256": "0ceca182384a8e68560ec542c0c2c0c695971b8488321ca0899ea7a880d6fd17",
+      "source_expectation": "expected-live",
+      "state_sha256": "691552c20002c723b0c049cecfc2f6ca28c663f5bf2a79b9cb358f25f5aa968e",
+      "status": "pass"
+    },
+    "genuine-log-failure": {
+      "additive_schema_preserved": true,
+      "expected_failure": true,
+      "final_receipt_sha256": null,
+      "final_state_status": "rolled_back",
+      "front_controller_mode": "0o644",
+      "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
+      "migration_command_count": 0,
+      "migration_command_invoked": false,
+      "migration_executed_this_attempt": false,
+      "migration_pretend_invoked": false,
+      "observed_failure": {
+        "message_sha256": "27a0cb73c731a7ed4cbc97ada24eda533f64b7dcd0b0c8db5b927e2c3b1834c7",
+        "type": "DeploymentError"
+      },
+      "prohibited_command_count": 0,
+      "raw_evidence_entries": 24,
+      "raw_evidence_manifest_sha256": "42042312f266b1406149780b3b3151749d6f322ef05001ac288e0ef877eb5ef4",
+      "raw_state_directory_name": "b02fce32-20261002T214652Z",
+      "rollback_complete": true,
+      "scenario": "genuine-log-failure",
+      "schema_state": "installed_schema_source_only_v1",
+      "separate_web_identity_all_passed": true,
+      "separate_web_identity_probe_count": 4,
+      "source_cas_sha256": "0ceca182384a8e68560ec542c0c2c0c695971b8488321ca0899ea7a880d6fd17",
+      "source_expectation": "expected-live",
+      "state_sha256": "f2f738acb85bb94a93ac7b1cb5c3f7da397bfccc83c51e3007dadddeda86a137",
+      "status": "pass"
+    },
+    "post-reopen-failure": {
+      "additive_schema_preserved": true,
+      "expected_failure": true,
+      "final_receipt_sha256": null,
+      "final_state_status": "rolled_back",
+      "front_controller_mode": "0o644",
+      "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
+      "migration_command_count": 0,
+      "migration_command_invoked": false,
+      "migration_executed_this_attempt": false,
+      "migration_pretend_invoked": false,
+      "observed_failure": {
+        "message_sha256": "a0f04cdcf850ba4c93dba20482614651b2fb99a36161a0431d43f1e994a3d05c",
+        "type": "DeploymentError"
+      },
+      "prohibited_command_count": 0,
+      "raw_evidence_entries": 22,
+      "raw_evidence_manifest_sha256": "7a5792d778fefbe19af0c93ba967833dbed49c6ff551cadf0bea9ad0d2f6c01c",
+      "raw_state_directory_name": "b02fce32-20261002T214650Z",
+      "rollback_complete": true,
+      "scenario": "post-reopen-failure",
+      "schema_state": "installed_schema_source_only_v1",
+      "separate_web_identity_all_passed": true,
+      "separate_web_identity_probe_count": 4,
+      "source_cas_sha256": "0ceca182384a8e68560ec542c0c2c0c695971b8488321ca0899ea7a880d6fd17",
+      "source_expectation": "expected-live",
+      "state_sha256": "441157d61b06821ce9977fd584ff9d0f30ac7dec592a13077d49d0b5d4c088a6",
+      "status": "pass"
+    },
+    "pre-source-failure": {
+      "additive_schema_preserved": true,
+      "expected_failure": true,
+      "final_receipt_sha256": null,
+      "final_state_status": "rolled_back",
+      "front_controller_mode": "0o644",
+      "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
+      "migration_command_count": 0,
+      "migration_command_invoked": false,
+      "migration_executed_this_attempt": false,
+      "migration_pretend_invoked": false,
+      "observed_failure": {
+        "message_sha256": "29b57d89fce62de6e1309e7b494da837f4d3cb49fdecb58b4775c1986cff2539",
+        "type": "DeploymentError"
+      },
+      "prohibited_command_count": 0,
+      "raw_evidence_entries": 18,
+      "raw_evidence_manifest_sha256": "df5f727b3bcbe5a9f64ec32366702948ac9b213d963443388e9d8fa070184c7b",
+      "raw_state_directory_name": "b02fce32-20261002T214648Z",
+      "rollback_complete": true,
+      "scenario": "pre-source-failure",
+      "schema_state": "installed_schema_source_only_v1",
+      "separate_web_identity_all_passed": true,
+      "separate_web_identity_probe_count": 4,
+      "source_cas_sha256": "0ceca182384a8e68560ec542c0c2c0c695971b8488321ca0899ea7a880d6fd17",
+      "source_expectation": "expected-live",
+      "state_sha256": "c54865ff4f91d9d93e384a3a50fac0956cec3c9678bc6ed2305ded05e7908979",
+      "status": "pass"
+    },
+    "schema-preserving-rollback": {
+      "additive_schema_preserved": true,
+      "expected_failure": true,
+      "final_receipt_sha256": null,
+      "final_state_status": "rolled_back",
+      "front_controller_mode": "0o644",
+      "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
+      "migration_command_count": 0,
+      "migration_command_invoked": false,
+      "migration_executed_this_attempt": false,
+      "migration_pretend_invoked": false,
+      "observed_failure": {
+        "message_sha256": "2e23d73725f0e3315dd2c72720379892dc64bdf1a2e5aeecbe35b3cda95c6eaf",
+        "type": "DeploymentError"
+      },
+      "prohibited_command_count": 0,
+      "raw_evidence_entries": 25,
+      "raw_evidence_manifest_sha256": "0382affcd600b8f56e8ce49f7262145bf26ac1307b1aa97b6cfcab301110d664",
+      "raw_state_directory_name": "b02fce32-20261002T214655Z",
+      "rollback_complete": true,
+      "scenario": "schema-preserving-rollback",
+      "schema_state": "installed_schema_source_only_v1",
+      "separate_web_identity_all_passed": true,
+      "separate_web_identity_probe_count": 4,
+      "source_cas_sha256": "0ceca182384a8e68560ec542c0c2c0c695971b8488321ca0899ea7a880d6fd17",
+      "source_expectation": "expected-live",
+      "state_sha256": "17f4a1d0943ce5c030d19ae7602de3d5ca876996b275b93fd63f0b9eaf176441",
+      "status": "pass"
+    },
+    "source-swap-failure": {
+      "additive_schema_preserved": true,
+      "expected_failure": true,
+      "final_receipt_sha256": null,
+      "final_state_status": "rolled_back",
+      "front_controller_mode": "0o644",
+      "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
+      "migration_command_count": 0,
+      "migration_command_invoked": false,
+      "migration_executed_this_attempt": false,
+      "migration_pretend_invoked": false,
+      "observed_failure": {
+        "message_sha256": "77da5c61761540b302becec52b81e7cc0d4ab692713717929a68ddf441405422",
+        "type": "DeploymentError"
+      },
+      "prohibited_command_count": 0,
+      "raw_evidence_entries": 19,
+      "raw_evidence_manifest_sha256": "364f7f4fe0b03c4915c0618040812386e2783d95b612767e7a948c7575304bb8",
+      "raw_state_directory_name": "b02fce32-20261002T214649Z",
+      "rollback_complete": true,
+      "scenario": "source-swap-failure",
+      "schema_state": "installed_schema_source_only_v1",
+      "separate_web_identity_all_passed": true,
+      "separate_web_identity_probe_count": 4,
+      "source_cas_sha256": "0ceca182384a8e68560ec542c0c2c0c695971b8488321ca0899ea7a880d6fd17",
+      "source_expectation": "expected-live",
+      "state_sha256": "844908c8cdc71b1832c8a2ce1da9d7e517a17bdcdfec4bd253341014d20ebf1b",
+      "status": "pass"
+    },
+    "success": {
+      "additive_schema_preserved": true,
+      "expected_failure": false,
+      "final_receipt_sha256": "505bb9abaad77b8e89ec834af69710d2e4969c098afa3f53d708735ab81e0733",
+      "final_state_status": "success",
+      "front_controller_mode": "0o644",
+      "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
+      "migration_command_count": 0,
+      "migration_command_invoked": false,
+      "migration_executed_this_attempt": false,
+      "migration_pretend_invoked": false,
+      "observed_failure": null,
+      "prohibited_command_count": 0,
+      "raw_evidence_entries": 25,
+      "raw_evidence_manifest_sha256": "dd892c8f1b6e26f7ddf82bd71f6fed9cc56623e382ac38e740509dc6d0160641",
+      "raw_state_directory_name": "b02fce32-20261002T214647Z",
+      "rollback_complete": false,
+      "scenario": "success",
+      "schema_state": "installed_schema_source_only_v1",
+      "separate_web_identity_all_passed": true,
+      "separate_web_identity_probe_count": 2,
+      "source_cas_sha256": "b3379cd90676d8b3214371e17ffd3278cd43ba1885a6223b12998a8b40e5ea27",
+      "source_expectation": "target",
+      "state_sha256": "015b93105a8a7c6bccfb832ac8ca6bbac1671e23b9225fbcf6ca9edf4eb50aec",
+      "status": "pass"
+    }
+  },
+  "scenarios_required": [
+    "success",
+    "pre-source-failure",
+    "source-swap-failure",
+    "candidate-check-failure",
+    "post-reopen-failure",
+    "genuine-log-failure",
+    "schema-preserving-rollback"
+  ],
+  "scope": "disposable-local-filesystem-only-no-production-access",
+  "status": "pass",
+  "target_application_commit": "b02fce3213fc632891036f1b5c98b9cddb94e499",
+  "umask": "0o077"
+}

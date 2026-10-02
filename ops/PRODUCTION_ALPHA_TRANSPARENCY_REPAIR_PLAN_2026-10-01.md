@@ -1,7 +1,15 @@
 # Production alpha transparency repair deployment plan
 
-Status: local runner and rehearsal package frozen for independent review; do
-not access production, stage, migrate, or deploy.
+> **PERMANENT NO-GO:** This migration-running plan and its runner with SHA-256
+> 76cfff204e86ee1119251b1d79931b1219cd19704b099f75d4e3db202ffe5b17
+> are retired and must never be staged, resumed, or deployed. The installed
+> schema now requires the separately reviewed source-only replacement plan in
+> PRODUCTION_ALPHA_TRANSPARENCY_SOURCE_ONLY_PLAN_2026-10-02.md.
+
+Status: **RETIRED — HISTORICAL EVIDENCE ONLY.** The remaining migration-flow
+details document the rejected artifact and are not executable instructions.
+Do not access production, stage, pretend, migrate, reverse, or deploy from this
+file.
 
 ## Scope and invariant
 

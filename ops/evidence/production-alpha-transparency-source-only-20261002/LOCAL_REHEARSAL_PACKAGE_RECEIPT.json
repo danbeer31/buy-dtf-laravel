@@ -1,0 +1,56 @@
+{
+  "application_target_commit": "b02fce3213fc632891036f1b5c98b9cddb94e499",
+  "artifact_base_commit": "307b99e9429ca4623c72cc121e12997bdb4dfcad",
+  "artifact_status": "review_only_not_staged_or_deployed",
+  "branch": "fix/production-alpha-transparency-source-only-20261002",
+  "candidate_archive": {
+    "bytes": 215040,
+    "private_path": "storage/app/private/operations/production-alpha-transparency-source-only-package-20261002/production-alpha-transparency-b02fce32.tar",
+    "sha256": "3067bca578201a39254d8544b633a04ff6a9e43fc0de2a2783a95ccde9a1bfcd"
+  },
+  "independent_review": {
+    "label": "rollback review",
+    "sha256": "bbfd8079f73f5196ee4e519fbdee523058e0d843f375cb369fafe90c327fa760"
+  },
+  "installed_schema": {
+    "ledger_row_count": 21,
+    "ledger_sha256": "f1140209ad897fbdba506d87329f9e4481ccfa5aff7fb6a423e6ec7a0dbe5f53",
+    "migration_command_invoked": false,
+    "migration_executed_this_attempt": false,
+    "migration_pretend_invoked": false,
+    "schema_sha256": "5485779bdcf0ea3a4372410ef76cd0bc418d1f6400128868606e901b8e9e85da",
+    "state": "installed_schema_source_only_v1",
+    "target_migration_entries": 1
+  },
+  "package_identities": {
+    "application_manifest_sha256": "93bc5ff1427693539faabda97d7fc1b9b8a5bca8075dea7bec5cb17d75a7faf2",
+    "laravel_log_guard_sha256": "219698ba8196d206b0d2512df5a078370a82f69be8ec92fd57f949f808da655a",
+    "laravel_log_guard_test_sha256": "d4e82a1984a5577e040edfa1e967f6c3e007d2dc3dbb39357c454d90162646bd",
+    "rehearsal_script_sha256": "ab3acb8f804b3a1ea736bac73aabcbb1c443a40d2840a89e90be66d81ae4081c",
+    "runner_describe_sha256": "cf03284bc90b12184f205159250ff357f6191511aa8b08c24b051685856ae6df",
+    "runner_sha256": "59bbd90cafa8d1b5efd56a6c40667924193e37539f4340e4b6163c6274425cab",
+    "runner_test_sha256": "6be4b29764e6e9e46afbd8ceb084f399acfa25d90ee6cceba6d7a5c94a6359ff",
+    "runtime_probe_sha256": "df1f627ccd2844c888373e9aa135d8e4971ac2900ccce105d3081a04e7b3ad61"
+  },
+  "rehearsal": {
+    "portable_manifest_sha256": "3de3ec6df09df29014a2db2ca149f54968866c5ea737eb47db24aae3cee72b82",
+    "portable_receipt_sha256": "eaae0f811642b2dba8a0639a0f4cfa5239ee5522395e7a76c999edcbcd0e8e47",
+    "scenario_count": 7,
+    "status": "pass"
+  },
+  "retired_runner_sha256": "76cfff204e86ee1119251b1d79931b1219cd19704b099f75d4e3db202ffe5b17",
+  "reviewed_log_fixture": {
+    "private_source_sha256": "81e429a215856b401d74a361c86a37453e65047af6faf3802127b04f61100a08",
+    "redacted_fixture_sha256": "d8bf0641949f96ac39240e92f0b5545c4ac5fb6a8fbfa4af2fe2f6029dd27f53",
+    "reviewed_error_entries": 56
+  },
+  "source_cas": {
+    "expected_live_sha256": "0ceca182384a8e68560ec542c0c2c0c695971b8488321ca0899ea7a880d6fd17",
+    "target_sha256": "b3379cd90676d8b3214371e17ffd3278cd43ba1885a6223b12998a8b40e5ea27"
+  },
+  "validation": {
+    "phpunit_assertions": 1959,
+    "phpunit_tests": 191,
+    "python_tests": 32
+  }
+}

@@ -1,0 +1,3 @@
+[stacktrace]
+#0 /var/www/buy-dtf/app/SyntheticWorker.php(42): SyntheticWorker->run()
+#1 {main}

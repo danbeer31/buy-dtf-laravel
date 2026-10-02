@@ -1,0 +1,56 @@
+[2026-10-01 22:02:51] local.ERROR: DEBUG: Entering CheckoutController::index
+[2026-10-01 22:02:51] local.ERROR: DEBUG: Checkout index for order [redacted]: Weight=[redacted], Address=Set
+[2026-10-01 22:02:51] local.ERROR: DEBUG: Quoting rates for order [redacted] with weight [redacted] to [postal code redacted]
+[2026-10-01 22:02:51] local.ERROR: DEBUG: Requesting Shippo rates for weight [redacted] to [customer address redacted]
+[2026-10-01 22:02:52] local.ERROR: DEBUG: Shippo raw shipment response rates count: 10
+[2026-10-01 22:02:52] local.ERROR: DEBUG: Shippo shipment messages: [carrier diagnostics redacted]
+[2026-10-01 22:02:52] local.ERROR: DEBUG: Checking rate: [carrier rate redacted 01]
+[2026-10-01 22:02:52] local.ERROR: DEBUG: Filtering out UPS rate: [service redacted 01]
+[2026-10-01 22:02:52] local.ERROR: DEBUG: Checking rate: [carrier rate redacted 02]
+[2026-10-01 22:02:52] local.ERROR: DEBUG: Checking rate: [carrier rate redacted 03]
+[2026-10-01 22:02:52] local.ERROR: DEBUG: Filtering out non-UPS rate: [provider redacted 01]
+[2026-10-01 22:02:52] local.ERROR: DEBUG: Checking rate: [carrier rate redacted 04]
+[2026-10-01 22:02:52] local.ERROR: DEBUG: Filtering out UPS rate: [service redacted 02]
+[2026-10-01 22:02:52] local.ERROR: DEBUG: Checking rate: [carrier rate redacted 05]
+[2026-10-01 22:02:52] local.ERROR: DEBUG: Filtering out non-UPS rate: [provider redacted 02]
+[2026-10-01 22:02:52] local.ERROR: DEBUG: Checking rate: [carrier rate redacted 06]
+[2026-10-01 22:02:52] local.ERROR: DEBUG: Checking rate: [carrier rate redacted 07]
+[2026-10-01 22:02:52] local.ERROR: DEBUG: Filtering out UPS rate: [service redacted 03]
+[2026-10-01 22:02:52] local.ERROR: DEBUG: Checking rate: [carrier rate redacted 08]
+[2026-10-01 22:02:52] local.ERROR: DEBUG: Filtering out non-UPS rate: [provider redacted 03]
+[2026-10-01 22:02:52] local.ERROR: DEBUG: Checking rate: [carrier rate redacted 09]
+[2026-10-01 22:02:52] local.ERROR: DEBUG: Filtering out UPS rate: [service redacted 04]
+[2026-10-01 22:02:52] local.ERROR: DEBUG: Checking rate: [carrier rate redacted 10]
+[2026-10-01 22:02:52] local.ERROR: DEBUG: Filtering out UPS rate: [service redacted 05]
+[2026-10-01 22:02:52] local.ERROR: DEBUG: Found 2 UPS rates
+[2026-10-01 22:02:52] local.ERROR: DEBUG: Checkout pickup setting raw: '1'
+[2026-10-01 22:02:52] local.ERROR: DEBUG: Adding pickup option to rates
+[2026-10-01 22:02:52] local.ERROR: DEBUG: Final rates count: 3
+[2026-10-01 22:07:23] local.ERROR: DEBUG: Entering CheckoutController::index
+[2026-10-01 22:07:23] local.ERROR: DEBUG: Checkout index for order [redacted]: Weight=[redacted], Address=Set
+[2026-10-01 22:07:23] local.ERROR: DEBUG: Quoting rates for order [redacted] with weight [redacted] to [postal code redacted]
+[2026-10-01 22:07:23] local.ERROR: DEBUG: Requesting Shippo rates for weight [redacted] to [customer address redacted]
+[2026-10-01 22:07:24] local.ERROR: DEBUG: Shippo raw shipment response rates count: 10
+[2026-10-01 22:07:24] local.ERROR: DEBUG: Shippo shipment messages: [carrier diagnostics redacted]
+[2026-10-01 22:07:24] local.ERROR: DEBUG: Checking rate: [carrier rate redacted 01]
+[2026-10-01 22:07:24] local.ERROR: DEBUG: Filtering out UPS rate: [service redacted 01]
+[2026-10-01 22:07:24] local.ERROR: DEBUG: Checking rate: [carrier rate redacted 02]
+[2026-10-01 22:07:24] local.ERROR: DEBUG: Checking rate: [carrier rate redacted 03]
+[2026-10-01 22:07:24] local.ERROR: DEBUG: Filtering out non-UPS rate: [provider redacted 01]
+[2026-10-01 22:07:24] local.ERROR: DEBUG: Checking rate: [carrier rate redacted 04]
+[2026-10-01 22:07:24] local.ERROR: DEBUG: Filtering out UPS rate: [service redacted 02]
+[2026-10-01 22:07:24] local.ERROR: DEBUG: Checking rate: [carrier rate redacted 05]
+[2026-10-01 22:07:24] local.ERROR: DEBUG: Filtering out non-UPS rate: [provider redacted 02]
+[2026-10-01 22:07:24] local.ERROR: DEBUG: Checking rate: [carrier rate redacted 06]
+[2026-10-01 22:07:24] local.ERROR: DEBUG: Checking rate: [carrier rate redacted 07]
+[2026-10-01 22:07:24] local.ERROR: DEBUG: Filtering out UPS rate: [service redacted 03]
+[2026-10-01 22:07:24] local.ERROR: DEBUG: Checking rate: [carrier rate redacted 08]
+[2026-10-01 22:07:24] local.ERROR: DEBUG: Filtering out non-UPS rate: [provider redacted 03]
+[2026-10-01 22:07:24] local.ERROR: DEBUG: Checking rate: [carrier rate redacted 09]
+[2026-10-01 22:07:24] local.ERROR: DEBUG: Filtering out UPS rate: [service redacted 04]
+[2026-10-01 22:07:24] local.ERROR: DEBUG: Checking rate: [carrier rate redacted 10]
+[2026-10-01 22:07:24] local.ERROR: DEBUG: Filtering out UPS rate: [service redacted 05]
+[2026-10-01 22:07:24] local.ERROR: DEBUG: Found 2 UPS rates
+[2026-10-01 22:07:24] local.ERROR: DEBUG: Checkout pickup setting raw: '1'
+[2026-10-01 22:07:24] local.ERROR: DEBUG: Adding pickup option to rates
+[2026-10-01 22:07:24] local.ERROR: DEBUG: Final rates count: 3

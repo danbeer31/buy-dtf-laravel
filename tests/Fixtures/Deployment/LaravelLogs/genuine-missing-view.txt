@@ -1,0 +1,1 @@
+[2026-10-02 01:05:00] production.ERROR: View [synthetic.missing] not found.

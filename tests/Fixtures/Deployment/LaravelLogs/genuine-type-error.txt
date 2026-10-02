@@ -1,0 +1,1 @@
+[2026-10-02 01:07:00] production.ERROR: TypeError: Synthetic argument must be a string.
