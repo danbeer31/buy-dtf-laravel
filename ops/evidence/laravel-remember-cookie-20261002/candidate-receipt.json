@@ -1,0 +1,196 @@
+{
+  "receipt_version": 1,
+  "artifact": "buy-dtf-laravel-remember-cookie-dependency-candidate-v1",
+  "status": "ready_for_independent_review_no_go_for_staging_or_deployment",
+  "generated_at_utc": "2026-10-02T23:12:22Z",
+  "branch": "fix/laravel-12.69.1-remember-cookie-20261002",
+  "handoff": {
+    "filename": "buy-dtf-codie-handoff-2026-10-02.md",
+    "sha256": "ba9fd4dcf5fa5854b2e23418e0cd6ed8799874494a0341c726302b92a5acc127"
+  },
+  "git_baseline": {
+    "completed_dependency_cutover_commit": "967691e7b003ba54cc42bfc5d18afc1d0a6e4d12",
+    "exact_live_composer_parent_commit": "631db9fbd8d126ab6e98a17b49d391118c9e2152",
+    "composer_json_sha256": "7098f3a19cb65f88bcc945f019dda0aa7f515737eb5d4918c30705f25c6ad872",
+    "composer_lock_sha256": "22af12c7e58fcfe809735dbf9955b2d22a264e9e7345cefd74398e36bf2773b9",
+    "composer_content_hash": "a72b3c22fc3bec98130fd5133da242a1",
+    "package_count": 116
+  },
+  "candidate": {
+    "composer_json_sha256": "7098f3a19cb65f88bcc945f019dda0aa7f515737eb5d4918c30705f25c6ad872",
+    "composer_lock_path": "composer.lock",
+    "composer_lock_sha256": "77055fc8acf891496b0b356bb034d7935c04989a3751f52b788ecd1b7999206d",
+    "composer_content_hash": "a72b3c22fc3bec98130fd5133da242a1",
+    "package_count": 116,
+    "package_changes": 1,
+    "package_additions": 0,
+    "package_removals": 0,
+    "unrelated_package_changes": 0,
+    "portable_lock_artifact": {
+      "path": "ops/evidence/laravel-remember-cookie-20261002/buy-dtf-laravel-12.69.1-lock-77055fc8.tar.gz",
+      "sha256": "e87f4bc7a7d1dc5f79df99b0cb2873b7a749e5c8000e5014aef4495c48e6ed3e",
+      "member": "buy-dtf-laravel-12.69.1-lock-77055fc8/composer.lock",
+      "extracted_composer_lock_sha256": "77055fc8acf891496b0b356bb034d7935c04989a3751f52b788ecd1b7999206d",
+      "deterministic_tar_metadata": true,
+      "gzip_timestamp_suppressed": true
+    }
+  },
+  "resolution": {
+    "command": "composer update laravel/framework:12.69.1 --with-dependencies --minimal-changes --no-install --no-scripts --no-interaction",
+    "exact_live_composer_files": true,
+    "minimal_changes": true,
+    "fresh_replay_count": 2,
+    "fresh_replays_match_candidate_bytes": true
+  },
+  "packages": [
+    {
+      "name": "laravel/framework",
+      "before": "v12.69.0",
+      "before_reference": "335429f28612e3a7810db0c8508b2cddbcc0fda0",
+      "after": "v12.69.1",
+      "after_reference": "0c07b0b1f88af44d8558ffadf66900a860f93c23"
+    }
+  ],
+  "regression": {
+    "fixture": "tests/Feature/Auth/AuthenticationTest.php",
+    "fixture_sha256": "e2453f30d6d72a32e606a83acaf158bd0f267b3002e275fa575442643be048e3",
+    "recaller_format": "id|remember_token|password_hmac",
+    "baseline_12_69_0": {
+      "status": "expected_failure_reproduced",
+      "tests": 2,
+      "assertions": 7,
+      "failures": 1,
+      "stale_result": "HTTP 500 TypeError at SessionGuard.php:235 because hash_equals received null",
+      "valid_result": "pass",
+      "transcript_sha256": "d094ec81bdd77ef0b2f4645aa70f5edd71422cff96de14c455a2428d42404959"
+    },
+    "candidate_12_69_1": {
+      "status": "pass",
+      "tests": 2,
+      "assertions": 10,
+      "stale_result": "HTTP 200 guest and viaRemember false",
+      "valid_result": "HTTP 200 matching user authenticated and viaRemember true",
+      "transcript_sha256": "e8c79ee52e118eaad16ba4085849457d8d50309000d770949dc25d0b1f5b144d"
+    },
+    "vendor_files_edited": false
+  },
+  "deterministic_build": {
+    "composer_version": "2.9.3",
+    "independent_empty_builds": 2,
+    "build_receipts_byte_identical": true,
+    "build_receipt_sha256": "c54374d21a8b5c981b5c3b396fc743ea5a8cd0c4f31e43ff208f383f2ab3bdd2",
+    "install_mode": "no-dev prefer-dist optimize-autoloader no-scripts no-plugins",
+    "vendor": {
+      "files": 6465,
+      "directories": 925,
+      "bytes": 26482354,
+      "sha256": "b8e0e3afa65171a66ad3d1875404fe209d7598c9b3f690e494d40c4fde4408f8"
+    },
+    "bootstrap_cache": {
+      "files": 2,
+      "directories": 0,
+      "bytes": 21768,
+      "sha256": "468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9"
+    },
+    "laravel_pail_present": false
+  },
+  "production_read_only_baseline": {
+    "captured_at_utc": "2026-10-02T23:04:38Z",
+    "php_version": "8.2.30",
+    "composer_version": "2.9.3",
+    "laravel_version": "12.69.0",
+    "source_manifest_files": 326,
+    "source_manifest_sha256": "3909bdc2303b5c578135859c847f311cd84b827e62ac4e5dbce3d2297f6da71f",
+    "vendor_manifest_sha256": "7399949f857da190c5ff07b89c85e8fba8a6f681695e20a462862be591b698ed",
+    "bootstrap_cache_sha256": "468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9",
+    "incoming_order_receiver_enabled": false,
+    "incoming_order_job_label_enabled": false,
+    "incoming_order_retention_enabled": false,
+    "incoming_order_allowed_host_count": 0
+  },
+  "deployment_runner": {
+    "path": "ops/deployment/laravel_remember_cookie_dependency_deploy.py",
+    "sha256": "2cae23d816e358c91ce512da4b3db3ee4e7fdff268c51afddafb0995b2feef9e",
+    "runtime_probe_sha256": "74ae751d18f0396e86c066e908a006b1a170e223b1ad56c59168c94491925362",
+    "runner_test_sha256": "830fe61ec25df5e82ab55a4b7c3e17dcb761a8b35d97544d06ea5b59b3e4ed23",
+    "unit_tests": 6,
+    "unit_test_status": "pass",
+    "rehearsal_scenarios": 23,
+    "rehearsal_status": "pass",
+    "source_copy_operations": false,
+    "migration_operations": false,
+    "git_operations": false,
+    "service_restart_operations": false,
+    "dependency_update_operations": false
+  },
+  "validation": {
+    "composer_validate_strict": "pass",
+    "composer_audit_locked_full_advisories": 0,
+    "composer_audit_locked_no_dev_advisories": 0,
+    "composer_platform_check_php_8_3_6": "pass",
+    "php_8_2_30_locked_prohibition": "none",
+    "exact_php_8_2_30_platform_check": "required_during_future_authorized_staging",
+    "phpunit": {
+      "status": "pass",
+      "php": "8.3.6",
+      "tests": 110,
+      "assertions": 718
+    },
+    "npm_audit_omit_dev_vulnerabilities": 0,
+    "frontend_build": {
+      "status": "pass",
+      "modules_transformed": 112,
+      "known_sass_deprecation_warnings": true
+    },
+    "node_development_advisories": {
+      "status": "out_of_scope_unchanged_package_lock",
+      "reported_by_npm_ci": 14,
+      "low": 1,
+      "moderate": 2,
+      "high": 9,
+      "critical": 2
+    },
+    "syntax": "pass"
+  },
+  "future_cutover_acceptance": {
+    "health_and_runtime_monitor_minutes": 30,
+    "independent_read_only_laravel_log_delta_review_required": true,
+    "runner_parses_laravel_logs": false,
+    "log_review_targets": [
+      "SessionGuard hash_equals stale-cookie signature",
+      "exceptions and stack traces",
+      "fatal errors",
+      "SQLSTATE",
+      "missing classes",
+      "missing views"
+    ]
+  },
+  "raw_evidence": {
+    "composer_lock_diff_sha256": "d630de54e8e38de38d96c3c1fc9d596eb8bb66f6a499a1e98eef4ca41a31f3d1",
+    "composer_resolution_sha256": "60860b635e6b732893b208d6162060d5469c796f6af874ed219e3293e5a8b380",
+    "composer_resolution_replay_sha256": "60860b635e6b732893b208d6162060d5469c796f6af874ed219e3293e5a8b380",
+    "composer_validation_audit_sha256": "b044cd4a65c94e526085c8e25780247fcdd5e2d9444decf80c58c815ef15bd55",
+    "phpunit_full_sha256": "a9897bf89cb1f0dffbf5c78c3555c1c058269cba529915934a008215a88d10ab",
+    "runner_unit_tests_sha256": "b45b8abea3c825d7f43266cf42b6378cd9d4ed8f2ea6529f0dce9a60ad7ea82c",
+    "rehearsal_receipt_sha256": "5c061f350e258d4977013f29841c473c6b2cf0280dc77f90d5a3e7759da7f11d",
+    "production_read_only_identity_sha256": "6134adaa1ea2d23a56f22b94905bd861198fa36c662f5d6276cf8f18fb5001ea",
+    "frontend_validation_sha256": "542a14da3f985d344709f808fb5113e6c500a3fc39676d5a270aa604426606a3",
+    "npm_ci_sha256": "87cc00037081f2c7dde2349f6e819ca77efb726756f18a065ec213dcbf9f3efd",
+    "php_8_2_30_prohibits_sha256": "e21e11355be4089c7084115d1caaf772f6ecc0f11ee291c576ed388dde5b4895",
+    "syntax_validation_sha256": "e000448355c35e591b99bcfa5ddd9c22ad50cbad2fa9319d0bf2e3c8681cd72b"
+  },
+  "production_actions": {
+    "read_only_identity_access": true,
+    "remote_file_created_or_changed": false,
+    "production_staged": false,
+    "dependency_cutover_run": false,
+    "migration_run": false,
+    "maintenance_entered": false,
+    "live_files_changed": false,
+    "service_restarted": false,
+    "capability_enabled": false,
+    "shopnltees_changed": false,
+    "retention_or_customer_deletion_run": false,
+    "customer_artwork_changed": false
+  }
+}

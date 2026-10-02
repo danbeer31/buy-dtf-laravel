@@ -1,0 +1,122 @@
+{
+  "application_root": "/var/www/buy-dtf",
+  "artifact": "buy-dtf-laravel-remember-cookie-dependency-review-v1",
+  "artifact_review_status": "review-only; not staged or deployed",
+  "atomic_cache_operation": "renameat2(RENAME_EXCHANGE)",
+  "atomic_vendor_operation": "renameat2(RENAME_EXCHANGE)",
+  "candidate_cache_identity": {
+    "entries": {
+      "packages.php": {
+        "bytes": 415,
+        "gid": 33,
+        "kind": "file",
+        "mode": 436,
+        "sha256": "21da8f9ed19687e708cc7bc5cc59394c6fcdf9b9deadf617ae70526f815a1db0",
+        "uid": 1000
+      },
+      "services.php": {
+        "bytes": 21353,
+        "gid": 33,
+        "kind": "file",
+        "mode": 436,
+        "sha256": "1f7623b2b4ffd2c4099fb34ad86fc96c1479e27bf81b1b0ba328c988cc4ffcb5",
+        "uid": 1000
+      }
+    },
+    "manifest": {
+      "bytes": 21768,
+      "directories": 0,
+      "files": 2,
+      "sha256": "468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9"
+    },
+    "root_metadata": {
+      "gid": 33,
+      "kind": "directory",
+      "mode": 1533,
+      "uid": 1000
+    }
+  },
+  "candidate_install_no_dev": true,
+  "candidate_lock_sha256": "77055fc8acf891496b0b356bb034d7935c04989a3751f52b788ecd1b7999206d",
+  "candidate_package_versions": {
+    "guzzlehttp/guzzle": "7.15.2",
+    "laravel/framework": "12.69.1",
+    "league/commonmark": "2.10.2",
+    "league/flysystem": "3.35.3",
+    "league/flysystem-local": "3.35.3"
+  },
+  "candidate_vendor_manifest": {
+    "bytes": 26482354,
+    "directories": 925,
+    "files": 6465,
+    "sha256": "b8e0e3afa65171a66ad3d1875404fe209d7598c9b3f690e494d40c4fde4408f8"
+  },
+  "database_config_sha256": "d25ab83243dc255e43ddbaa856991dae93016dd8ff77fa11be20d222693bb8f9",
+  "dependency_update_operations": false,
+  "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
+  "git_operations": false,
+  "handoff": {
+    "filename": "buy-dtf-codie-handoff-2026-10-02.md",
+    "sha256": "ba9fd4dcf5fa5854b2e23418e0cd6ed8799874494a0341c726302b92a5acc127"
+  },
+  "live_composer_json_sha256": "7098f3a19cb65f88bcc945f019dda0aa7f515737eb5d4918c30705f25c6ad872",
+  "migration_operations": false,
+  "old_cache_identity": {
+    "entries": {
+      "packages.php": {
+        "bytes": 415,
+        "gid": 33,
+        "kind": "file",
+        "mode": 436,
+        "sha256": "21da8f9ed19687e708cc7bc5cc59394c6fcdf9b9deadf617ae70526f815a1db0",
+        "uid": 1000
+      },
+      "services.php": {
+        "bytes": 21353,
+        "gid": 33,
+        "kind": "file",
+        "mode": 436,
+        "sha256": "1f7623b2b4ffd2c4099fb34ad86fc96c1479e27bf81b1b0ba328c988cc4ffcb5",
+        "uid": 1000
+      }
+    },
+    "manifest": {
+      "bytes": 21768,
+      "directories": 0,
+      "files": 2,
+      "sha256": "468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9"
+    },
+    "root_metadata": {
+      "gid": 33,
+      "kind": "directory",
+      "mode": 1533,
+      "uid": 1000
+    }
+  },
+  "old_lock_sha256": "22af12c7e58fcfe809735dbf9955b2d22a264e9e7345cefd74398e36bf2773b9",
+  "old_package_versions": {
+    "guzzlehttp/guzzle": "7.15.2",
+    "laravel/framework": "12.69.0",
+    "league/commonmark": "2.10.2",
+    "league/flysystem": "3.35.3",
+    "league/flysystem-local": "3.35.3"
+  },
+  "old_vendor_manifest": {
+    "bytes": 26453056,
+    "directories": 925,
+    "files": 6460,
+    "sha256": "7399949f857da190c5ff07b89c85e8fba8a6f681695e20a462862be591b698ed"
+  },
+  "old_vendor_manifest_sha256": "7399949f857da190c5ff07b89c85e8fba8a6f681695e20a462862be591b698ed",
+  "read_only_preflight_available": true,
+  "reported_app_debug": false,
+  "reported_app_environment": "local",
+  "runtime_helper_sha256": "74ae751d18f0396e86c066e908a006b1a170e223b1ad56c59168c94491925362",
+  "service_restart_operations": false,
+  "source_manifest": {
+    "files": 326,
+    "sha256": "3909bdc2303b5c578135859c847f311cd84b827e62ac4e5dbce3d2297f6da71f"
+  },
+  "source_manifest_sha256": "3909bdc2303b5c578135859c847f311cd84b827e62ac4e5dbce3d2297f6da71f",
+  "static_maintenance_gate_sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+}

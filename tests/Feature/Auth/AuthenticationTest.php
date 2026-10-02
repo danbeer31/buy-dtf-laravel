@@ -3,6 +3,7 @@
 namespace Tests\Feature\Auth;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Tests\TestCase;
 
 class AuthenticationTest extends TestCase
@@ -47,5 +48,53 @@ class AuthenticationTest extends TestCase
 
         $this->assertGuest();
         $response->assertRedirect('/');
+    }
+
+    public function test_stale_remember_cookie_for_a_missing_user_falls_through_as_a_guest(): void
+    {
+        $user = User::factory()->create([
+            'remember_token' => 'remember-token-that-will-become-stale',
+        ]);
+        $guard = Auth::guard('web');
+
+        $recaller = implode('|', [
+            $user->getAuthIdentifier(),
+            $user->getRememberToken(),
+            $guard->hashPasswordForCookie($user->getAuthPassword()),
+        ]);
+
+        $user->delete();
+
+        $response = $this
+            ->withCookie($guard->getRecallerName(), $recaller)
+            ->get('/');
+
+        $response->assertOk();
+        $response->assertViewIs('home');
+        $this->assertGuest('web');
+        $this->assertFalse($guard->viaRemember());
+    }
+
+    public function test_valid_remember_cookie_authenticates_the_matching_user(): void
+    {
+        $user = User::factory()->create([
+            'remember_token' => 'valid-remember-token',
+        ]);
+        $guard = Auth::guard('web');
+
+        $recaller = implode('|', [
+            $user->getAuthIdentifier(),
+            $user->getRememberToken(),
+            $guard->hashPasswordForCookie($user->getAuthPassword()),
+        ]);
+
+        $response = $this
+            ->withCookie($guard->getRecallerName(), $recaller)
+            ->get('/');
+
+        $response->assertOk();
+        $response->assertViewIs('home');
+        $this->assertAuthenticatedAs($user, 'web');
+        $this->assertTrue($guard->viaRemember());
     }
 }

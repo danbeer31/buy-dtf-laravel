@@ -1,0 +1,63 @@
+{
+  "artifact": "buy-dtf-laravel-remember-cookie-production-read-only-identity-v1",
+  "status": "observed_read_only_no_staging_no_deployment",
+  "captured_at_utc": "2026-10-02T23:04:38Z",
+  "composer": {
+    "json_sha256": "7098f3a19cb65f88bcc945f019dda0aa7f515737eb5d4918c30705f25c6ad872",
+    "lock_sha256": "22af12c7e58fcfe809735dbf9955b2d22a264e9e7345cefd74398e36bf2773b9",
+    "version": "2.9.3"
+  },
+  "runtime": {
+    "php_version": "8.2.30",
+    "laravel_version": "12.69.0",
+    "laravel_source_reference": "335429f28612e3a7810db0c8508b2cddbcc0fda0",
+    "app_environment": "local",
+    "app_debug": false,
+    "queue_connection": "sync",
+    "queue_jobs": 0,
+    "failed_jobs": 0
+  },
+  "disabled_capabilities": {
+    "incoming_order_receiver_enabled": false,
+    "incoming_order_job_label_enabled": false,
+    "incoming_order_retention_enabled": false,
+    "incoming_order_allowed_host_count": 0
+  },
+  "source_manifest": {
+    "files": 326,
+    "sha256": "3909bdc2303b5c578135859c847f311cd84b827e62ac4e5dbce3d2297f6da71f"
+  },
+  "vendor_manifest": {
+    "bytes": 26453056,
+    "directories": 925,
+    "files": 6460,
+    "sha256": "7399949f857da190c5ff07b89c85e8fba8a6f681695e20a462862be591b698ed"
+  },
+  "bootstrap_cache": {
+    "manifest_sha256": "468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9",
+    "packages_php_sha256": "21da8f9ed19687e708cc7bc5cc59394c6fcdf9b9deadf617ae70526f815a1db0",
+    "services_php_sha256": "1f7623b2b4ffd2c4099fb34ad86fc96c1479e27bf81b1b0ba328c988cc4ffcb5"
+  },
+  "fixed_files": {
+    "database_config_sha256": "d25ab83243dc255e43ddbaa856991dae93016dd8ff77fa11be20d222693bb8f9",
+    "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
+  },
+  "provenance": {
+    "identity_method": "read-only SSH invocation of the previously reviewed manifest helpers",
+    "runtime_method": "new runtime helper streamed to php stdin; no remote file was created",
+    "prior_source_manifest_sha256": "46f6a1ffa03364b550395c89111a0d69a844d1379f3c5aba6ed5c1e17616abca",
+    "prior_source_manifest_files": 302,
+    "source_drift_policy": "the dependency runner freezes the current live source identity and never copies source into production"
+  },
+  "production_actions": {
+    "remote_file_created_or_changed": false,
+    "staging_run": false,
+    "cutover_run": false,
+    "migration_run": false,
+    "maintenance_entered": false,
+    "service_restarted": false,
+    "capability_changed": false,
+    "shopnltees_changed": false,
+    "retention_or_customer_deletion_run": false
+  }
+}

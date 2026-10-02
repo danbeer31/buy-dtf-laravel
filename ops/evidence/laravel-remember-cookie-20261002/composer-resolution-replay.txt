@@ -1,0 +1,6 @@
+Loading composer repositories with package information
+Updating dependencies
+Lock file operations: 0 installs, 1 update, 0 removals
+  - Upgrading laravel/framework (v12.69.0 => v12.69.1)
+Writing lock file
+No security vulnerability advisories found.

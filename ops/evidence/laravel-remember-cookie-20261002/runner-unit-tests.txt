@@ -1,0 +1,11 @@
+test_atomic_rehearsal_exercises_cutover_rollback_and_recovery_failures (ops.deployment.test_laravel_remember_cookie_dependency_runner.LaravelRememberCookieDependencyRunnerTest.test_atomic_rehearsal_exercises_cutover_rollback_and_recovery_failures) ... ok
+test_describe_is_review_only_and_preserves_scope_boundaries (ops.deployment.test_laravel_remember_cookie_dependency_runner.LaravelRememberCookieDependencyRunnerTest.test_describe_is_review_only_and_preserves_scope_boundaries) ... ok
+test_deterministic_candidate_vendor_and_cache_are_pinned (ops.deployment.test_laravel_remember_cookie_dependency_runner.LaravelRememberCookieDependencyRunnerTest.test_deterministic_candidate_vendor_and_cache_are_pinned) ... ok
+test_review_handoff_and_live_production_baseline_are_pinned (ops.deployment.test_laravel_remember_cookie_dependency_runner.LaravelRememberCookieDependencyRunnerTest.test_review_handoff_and_live_production_baseline_are_pinned) ... ok
+test_reviewed_lock_and_package_versions_are_exact (ops.deployment.test_laravel_remember_cookie_dependency_runner.LaravelRememberCookieDependencyRunnerTest.test_reviewed_lock_and_package_versions_are_exact) ... ok
+test_runtime_validation_requires_all_incoming_order_capabilities_disabled (ops.deployment.test_laravel_remember_cookie_dependency_runner.LaravelRememberCookieDependencyRunnerTest.test_runtime_validation_requires_all_incoming_order_capabilities_disabled) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 1.273s
+
+OK

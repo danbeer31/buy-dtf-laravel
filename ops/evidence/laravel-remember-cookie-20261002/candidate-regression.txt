@@ -1,0 +1,14 @@
+PHPUnit 11.5.50 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.3.6
+Configuration: /mnt/c/Users/danie/projects/buy-dtf-laravel-remember-cookie-20261002/phpunit.xml
+
+..                                                                  2 / 2 (100%)
+
+Time: 00:08.075, Memory: 36.50 MB
+
+Authentication (Tests\Feature\Auth\Authentication)
+ ✔ Stale remember cookie for a missing user falls through as a guest
+ ✔ Valid remember cookie authenticates the matching user
+
+OK (2 tests, 10 assertions)
