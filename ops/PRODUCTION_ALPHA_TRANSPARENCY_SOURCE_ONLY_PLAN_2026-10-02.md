@@ -1,24 +1,31 @@
 # Production alpha transparency source-only replacement plan
 
-Status: review-only package prepared locally. Do not stage or deploy.
+Status: artifact commit c43f39f556d057c99bb01e95ee7ca68658c05232 is
+permanently NO-GO. Do not stage or deploy it. Corrected v2 mechanics are under
+pre-freeze review on branch
+fix/production-alpha-transparency-source-only-v2-20261002. Final packaging is
+blocked until the separately deployed Laravel 12.69.1 dependency envelope can
+be frozen from production.
 
 Independent review label: rollback review
 
 Independent review SHA-256:
 bbfd8079f73f5196ee4e519fbdee523058e0d843f375cb369fafe90c327fa760
 
-## Replacement authority
+## Historical replacement authority (revoked)
 
 The migration-running runner with SHA-256
 76cfff204e86ee1119251b1d79931b1219cd19704b099f75d4e3db202ffe5b17
 is permanently retired. No receipt, approval, or prior rehearsal may make that
 runner eligible again.
 
-This replacement is a schema-present, source-only flow. Its application target
-is commit b02fce3213fc632891036f1b5c98b9cddb94e499. The candidate archive has
+The following values describe the rejected c43f39f artifact only. They have no
+staging or deployment authority, and every approval token previously emitted
+for that artifact is revoked. Its application target was commit
+b02fce3213fc632891036f1b5c98b9cddb94e499. The historical candidate archive has
 SHA-256
 3067bca578201a39254d8544b633a04ff6a9e43fc0de2a2783a95ccde9a1bfcd.
-The application manifest has SHA-256
+The historical application manifest has SHA-256
 93bc5ff1427693539faabda97d7fc1b9b8a5bca8075dea7bec5cb17d75a7faf2.
 
 The archive contains exactly eleven source paths: ten replacements and the

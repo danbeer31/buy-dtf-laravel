@@ -22,6 +22,9 @@ ENTRY_HEADER = re.compile(
     r"(?P<level>DEBUG|INFO|NOTICE|WARNING|ERROR|CRITICAL|ALERT|EMERGENCY):"
     r"(?:\s?(?P<message>.*))?$"
 )
+HEADER_LIKE = re.compile(
+    r"^\[[^\]\r\n]+\]\s+[A-Za-z0-9_.-]+\.[A-Za-z]+:"
+)
 
 FAILURE_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     (
@@ -109,6 +112,7 @@ CANDIDATE_FAILURE_WORDS = re.compile(
 )
 
 FAILURE_LEVELS = frozenset({"ERROR", "CRITICAL", "ALERT", "EMERGENCY"})
+ALWAYS_FATAL_LEVELS = frozenset({"CRITICAL", "ALERT", "EMERGENCY"})
 FAILURE_MESSAGE_WORDS = re.compile(
     r"\b(?:error|fail(?:ed|ure)?)\b",
     re.IGNORECASE,
@@ -140,8 +144,8 @@ class LaravelLogGuardError(RuntimeError):
         signals = ", ".join(sorted(report["signal_counts"]))
         super().__init__(
             "Laravel log guard found "
-            f"{report['fatal_entry_count']} rollback-worthy entr"
-            f"{'y' if report['fatal_entry_count'] == 1 else 'ies'}"
+            f"{report['fatal_finding_count']} rollback-worthy finding"
+            f"{'s' if report['fatal_finding_count'] != 1 else ''}"
             f" (signals: {signals})."
         )
 
@@ -205,6 +209,13 @@ def parse_laravel_entries(text: str) -> list[LaravelLogEntry]:
             current = [line]
             current_is_orphan = False
             continue
+        if HEADER_LIKE.match(line):
+            # A timestamp/channel/level-shaped line with an unknown or malformed
+            # level is format drift, not a continuation of the prior entry.
+            flush()
+            current = [line]
+            current_is_orphan = True
+            continue
         if not current:
             if not line.strip():
                 continue
@@ -230,6 +241,10 @@ def classify_entry(
     """Return the reviewed rollback signals present in an entry."""
 
     signals = [name for name, pattern in FAILURE_PATTERNS if pattern.search(entry.raw)]
+    if entry.orphan:
+        signals.append("unparsed_data")
+    if entry.level in ALWAYS_FATAL_LEVELS:
+        signals.append("severe_level")
     if _candidate_related(entry, candidate_markers):
         signals.append("candidate_error")
     if (
@@ -248,12 +263,33 @@ def analyze_log_bytes(
 ) -> dict[str, Any]:
     """Return a JSON-safe, message-free classification report."""
 
-    text = content.decode("utf-8", errors="replace")
+    invalid_utf8 = False
+    try:
+        text = content.decode("utf-8")
+    except UnicodeDecodeError:
+        # Decode only to finish a message-free report. Any replacement means
+        # the monitor cannot reliably classify the original bytes, so the
+        # global invalid_utf8 finding below fails closed.
+        invalid_utf8 = True
+        text = content.decode("utf-8", errors="replace")
     entries = parse_laravel_entries(text)
     candidate_markers = tuple(candidate_markers)
     level_counts = Counter(entry.level or "UNPARSED" for entry in entries)
     findings: list[dict[str, Any]] = []
     signal_counts: Counter[str] = Counter()
+
+    if invalid_utf8:
+        signal_counts.update(["invalid_utf8"])
+        findings.append(
+            {
+                "entry_number": 0,
+                "timestamp": None,
+                "channel": None,
+                "level": None,
+                "signals": ["invalid_utf8"],
+                "entry_sha256": hashlib.sha256(content).hexdigest(),
+            }
+        )
 
     for entry in entries:
         signals = classify_entry(entry, candidate_markers=candidate_markers)
@@ -271,7 +307,11 @@ def analyze_log_bytes(
             }
         )
 
-    fatal_numbers = {finding["entry_number"] for finding in findings}
+    fatal_numbers = {
+        finding["entry_number"]
+        for finding in findings
+        if finding["entry_number"] > 0
+    }
     nonfatal_error_entries = sum(
         entry.level in FAILURE_LEVELS and entry.number not in fatal_numbers
         for entry in entries
@@ -282,10 +322,16 @@ def analyze_log_bytes(
         "sha256": hashlib.sha256(content).hexdigest(),
         "entry_count": len(entries),
         "orphan_entry_count": sum(entry.orphan for entry in entries),
-        "decode_replacement_count": text.count("\ufffd"),
+        "invalid_utf8": invalid_utf8,
+        "decode_replacement_count": text.count("\ufffd") if invalid_utf8 else 0,
         "level_counts": dict(sorted(level_counts.items())),
         "nonfatal_error_entry_count": nonfatal_error_entries,
-        "fatal_entry_count": len(findings),
+        "fatal_entry_count": len(fatal_numbers),
+        "global_failure_count": sum(
+            finding["entry_number"] == 0 for finding in findings
+        ),
+        "fatal_finding_count": len(findings),
+        "rollback_finding_count": len(findings),
         "signal_counts": dict(sorted(signal_counts.items())),
         "fatal_findings": findings,
     }
@@ -300,7 +346,7 @@ def inspect_log_bytes(
     """Return a safe report, or raise when a rollback signal is present."""
 
     report = analyze_log_bytes(content, candidate_markers=candidate_markers)
-    if report["fatal_entry_count"]:
+    if report["fatal_finding_count"]:
         raise LaravelLogGuardError(report)
     return report
 

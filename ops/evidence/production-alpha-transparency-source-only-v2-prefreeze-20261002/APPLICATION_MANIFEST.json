@@ -1,11 +1,5 @@
 {
-  "artifact_status": "permanently_retired_no_go_audit_history_only",
-  "authority": "none_all_recorded_tokens_and_receipts_revoked",
-  "retired_artifact_commit": "c43f39f556d057c99bb01e95ee7ca68658c05232",
-  "retired_runner_sha256s": [
-    "59bbd90cafa8d1b5efd56a6c40667924193e37539f4340e4b6163c6274425cab",
-    "76cfff204e86ee1119251b1d79931b1219cd19704b099f75d4e3db202ffe5b17"
-  ],
+  "artifact_status": "prefreeze_review_only_non_stageable",
   "application_target_commit": "b02fce3213fc632891036f1b5c98b9cddb94e499",
   "artifact_base_commit": "307b99e9429ca4623c72cc121e12997bdb4dfcad",
   "transparency_application_commit": "5b2d06cd66bd599d8a7ab1f5518790d414ee9874",
@@ -13,6 +7,20 @@
     "label": "rollback review",
     "sha256": "bbfd8079f73f5196ee4e519fbdee523058e0d843f375cb369fafe90c327fa760"
   },
+  "current_handoff": {
+    "name": "buy-dtf-codie-handoff-2026-10-02.md",
+    "sha256": "ba9fd4dcf5fa5854b2e23418e0cd6ed8799874494a0341c726302b92a5acc127"
+  },
+  "dependency_envelope": {
+    "status": "pending_post_laravel_12_69_1_production_freeze",
+    "stageable": false,
+    "deployable": false
+  },
+  "retired_artifact_commit": "c43f39f556d057c99bb01e95ee7ca68658c05232",
+  "retired_runner_sha256s": [
+    "59bbd90cafa8d1b5efd56a6c40667924193e37539f4340e4b6163c6274425cab",
+    "76cfff204e86ee1119251b1d79931b1219cd19704b099f75d4e3db202ffe5b17"
+  ],
   "hash_algorithm": "sha256 over exact raw file bytes",
   "expected_live_identity_authority": "expected_live_sha256 and expected_live_bytes are the sole preflight CAS, backup, and rollback authority",
   "expected_schema_sha256": "5485779bdcf0ea3a4372410ef76cd0bc418d1f6400128868606e901b8e9e85da",
@@ -107,7 +115,7 @@
       "expected_live_bytes": 44433,
       "expected_live_line_endings": {
         "crlf_count": 795,
-        "remaining_lf_count": 0
+        "remaining_lf_count": 102
       },
       "normalized_evidence_only": {
         "algorithm": "replace each CRLF byte pair with one LF byte; make no other byte changes",

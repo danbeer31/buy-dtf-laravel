@@ -1,0 +1,337 @@
+{
+  "application_manifest_sha256": "01731f42b8b241ebb55a310f55e6bd20d67729c60a37ea126f5c2ce0804ed32d",
+  "artifact": "buy-dtf-production-alpha-transparency-source-only-local-rehearsal-v2",
+  "artifact_base_commit": "307b99e9429ca4623c72cc121e12997bdb4dfcad",
+  "baseline_source_records": [
+    {
+      "baseline_root_index": 2,
+      "bytes": 28229,
+      "path": "app/Helpers/ImageHelper.php",
+      "sha256": "b840aa320764dca8896512422456b39162a079d7428aab78b7ad1c7ec1beb637"
+    },
+    {
+      "baseline_root_index": 2,
+      "bytes": 17594,
+      "path": "app/Helpers/ProductionHelper.php",
+      "sha256": "fc14a5ff52714f311cc3f2bdcdf3410ade6927505bcc626eccbbc11f129d8f12"
+    },
+    {
+      "baseline_root_index": 1,
+      "bytes": 14948,
+      "path": "app/Http/Controllers/Admin/OrderImageController.php",
+      "sha256": "49c2925ad3dfb0aeea32f5baf98926a2cc5112ba543d9178c6297273ff6442f1"
+    },
+    {
+      "baseline_root_index": 2,
+      "bytes": 32079,
+      "path": "app/Http/Controllers/CartController.php",
+      "sha256": "713ae74db4410bb4ca22e5f4f3c77ddef17403004796a9e4418fe14ea7d6696a"
+    },
+    {
+      "baseline_root_index": 1,
+      "bytes": 9957,
+      "path": "app/Http/Controllers/TeamCustomizationController.php",
+      "sha256": "46c5f4079915e25f3466e0e98305918812376039546f91ed8a9f220737f56fc3"
+    },
+    {
+      "baseline_root_index": 2,
+      "bytes": 8990,
+      "path": "app/Models/DtfImage.php",
+      "sha256": "14d6245a1ac65babfa6d06152bd9fc6692c9d33c5fe3ba5e2b8efabce728d0c2"
+    },
+    {
+      "baseline_root_index": 1,
+      "bytes": 1043,
+      "path": "app/Models/SavedImage.php",
+      "sha256": "0282da64284bdddc2ad11ccc48c3f32c8ef0443823bbb4dcbe1d05b7973d12f7"
+    },
+    {
+      "baseline_root_index": 1,
+      "bytes": 44433,
+      "path": "app/Http/Controllers/Checkout/CheckoutController.php",
+      "sha256": "4b39e9381f728b8b4a0f8a828494827b0e2520ce80d0d36910b44185e6d5c2dd"
+    },
+    {
+      "baseline_root_index": 1,
+      "bytes": 8299,
+      "path": "app/Services/ShippoService.php",
+      "sha256": "617673b6921ddf209c67534b6c42b13f23771a1d3fdea907f7583f7459e193c7"
+    },
+    {
+      "baseline_root_index": 1,
+      "bytes": 3385,
+      "path": "app/Http/Controllers/Webhooks/ShippoWebhookController.php",
+      "sha256": "d8d91199bc0ca810204a04b4452cbf460bb939020a8e21b46537736a1bd5acbd"
+    }
+  ],
+  "candidate_archive_sha256": "3067bca578201a39254d8544b633a04ff6a9e43fc0de2a2783a95ccde9a1bfcd",
+  "candidate_archive_verification": {
+    "extraction": {
+      "files": 11,
+      "log_bytes": 2112,
+      "log_sha256": "1da01774ce214a27c126ecdd000fd28eeb796d0f1b5c2b7e3688e7cf7d2c36eb",
+      "rows_sha256": "1da01774ce214a27c126ecdd000fd28eeb796d0f1b5c2b7e3688e7cf7d2c36eb",
+      "tree": {
+        "bytes": 191455,
+        "directories": 11,
+        "files": 11,
+        "sha256": "8fabbc6add25577e20c566d8530165abd0ace6cf1867a260167a4200d80ff82b"
+      }
+    },
+    "verification": {
+      "evidence_bytes": 2035,
+      "evidence_sha256": "3efc6019400adc32d6dc09e19798694f4edbfb442b56acbe06fd58293354332c",
+      "files": 11,
+      "records_sha256": "3efc6019400adc32d6dc09e19798694f4edbfb442b56acbe06fd58293354332c",
+      "tree": {
+        "bytes": 191455,
+        "directories": 11,
+        "files": 11,
+        "sha256": "8fabbc6add25577e20c566d8530165abd0ace6cf1867a260167a4200d80ff82b"
+      }
+    }
+  },
+  "dependency_envelope_simulated": true,
+  "external_command_allowlist": [
+    "setpriv",
+    "php <disposable static gate>"
+  ],
+  "laravel_log_guard_sha256": "4bdec766469e71568631dbcf7408e94696f2fd99c46c18dd58b8374f31a488c8",
+  "migration_command_invoked": false,
+  "migration_executed_this_attempt": false,
+  "migration_pretend_invoked": false,
+  "post_laravel_12_69_1_live_freeze_pending": true,
+  "private_evidence_manifest": {
+    "entries": 363,
+    "entries_sha256": "c778f079cfc32fcdc293ddae6ba359acecd70a02860be93df63e6ef6186e78ad",
+    "manifest_sha256": "834750b41eab72f0fe716c28c518e14bdfcf50086dadbf08391a2814d4cd3b78"
+  },
+  "production_accessed": false,
+  "production_staged": false,
+  "rehearsal_script_sha256": "1b9a676ac652e2fea6c30fae96b21e072cf77ac51217a3f48d9da2078107c2cd",
+  "runner_sha256": "c42f076e9810df8722773806ceac051e9b6e63b1e7ae9139f480bc34f8144841",
+  "runtime_probe_sha256": "df1f627ccd2844c888373e9aa135d8e4971ac2900ccce105d3081a04e7b3ad61",
+  "scenario_count": 7,
+  "scenarios": {
+    "candidate-check-failure": {
+      "additive_schema_preserved": true,
+      "expected_failure": true,
+      "final_receipt_sha256": null,
+      "final_state_status": "rolled_back",
+      "front_controller_mode": "0o644",
+      "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
+      "migration_command_count": 0,
+      "migration_command_invoked": false,
+      "migration_executed_this_attempt": false,
+      "migration_pretend_invoked": false,
+      "observed_failure": {
+        "message_sha256": "dd4bd08ecf73d317bcb63acd5d6e856a5c5c37758f8b319fbaf81bf0f450666a",
+        "type": "DeploymentError"
+      },
+      "prohibited_command_count": 0,
+      "raw_evidence_entries": 20,
+      "raw_evidence_manifest_sha256": "6078bfef07a06d4044d83054c603a54a5cdc8b7d2f35b303a2c02ce6cdea1d9b",
+      "raw_state_directory_name": "b02fce32-20261002T230417Z",
+      "rollback_complete": true,
+      "scenario": "candidate-check-failure",
+      "schema_state": "installed_schema_source_only_v1",
+      "separate_web_identity_all_passed": true,
+      "separate_web_identity_probe_count": 4,
+      "source_cas_sha256": "0ceca182384a8e68560ec542c0c2c0c695971b8488321ca0899ea7a880d6fd17",
+      "source_expectation": "expected-live",
+      "source_install_started": true,
+      "state_sha256": "78b964387f1efb0c3ed15683101e6d20f722e76bcc4417295d984388958b792b",
+      "status": "pass"
+    },
+    "genuine-log-failure": {
+      "additive_schema_preserved": true,
+      "expected_failure": true,
+      "final_receipt_sha256": null,
+      "final_state_status": "rolled_back",
+      "front_controller_mode": "0o644",
+      "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
+      "migration_command_count": 0,
+      "migration_command_invoked": false,
+      "migration_executed_this_attempt": false,
+      "migration_pretend_invoked": false,
+      "observed_failure": {
+        "message_sha256": "27a0cb73c731a7ed4cbc97ada24eda533f64b7dcd0b0c8db5b927e2c3b1834c7",
+        "type": "DeploymentError"
+      },
+      "prohibited_command_count": 0,
+      "raw_evidence_entries": 24,
+      "raw_evidence_manifest_sha256": "f6300731533b36a1ce3b421a22ab0e91d300696ebdb4ee34696da35bdacdc439",
+      "raw_state_directory_name": "b02fce32-20261002T230420Z",
+      "rollback_complete": true,
+      "scenario": "genuine-log-failure",
+      "schema_state": "installed_schema_source_only_v1",
+      "separate_web_identity_all_passed": true,
+      "separate_web_identity_probe_count": 4,
+      "source_cas_sha256": "0ceca182384a8e68560ec542c0c2c0c695971b8488321ca0899ea7a880d6fd17",
+      "source_expectation": "expected-live",
+      "source_install_started": true,
+      "state_sha256": "95c87263e6c1a9d0859620fcd08143138c4464e6daf7fa64db9c5c305c234616",
+      "status": "pass"
+    },
+    "post-reopen-failure": {
+      "additive_schema_preserved": true,
+      "expected_failure": true,
+      "final_receipt_sha256": null,
+      "final_state_status": "rolled_back",
+      "front_controller_mode": "0o644",
+      "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
+      "migration_command_count": 0,
+      "migration_command_invoked": false,
+      "migration_executed_this_attempt": false,
+      "migration_pretend_invoked": false,
+      "observed_failure": {
+        "message_sha256": "a0f04cdcf850ba4c93dba20482614651b2fb99a36161a0431d43f1e994a3d05c",
+        "type": "DeploymentError"
+      },
+      "prohibited_command_count": 0,
+      "raw_evidence_entries": 22,
+      "raw_evidence_manifest_sha256": "307ed6230ca90785ea25fec5fd1e86fb9796cde3c37a210aa9f2e597a41ab3ea",
+      "raw_state_directory_name": "b02fce32-20261002T230419Z",
+      "rollback_complete": true,
+      "scenario": "post-reopen-failure",
+      "schema_state": "installed_schema_source_only_v1",
+      "separate_web_identity_all_passed": true,
+      "separate_web_identity_probe_count": 4,
+      "source_cas_sha256": "0ceca182384a8e68560ec542c0c2c0c695971b8488321ca0899ea7a880d6fd17",
+      "source_expectation": "expected-live",
+      "source_install_started": true,
+      "state_sha256": "a384583cf26e39686eb7e2bb21f5e4c98b7188130d269d9d4319c107c5864147",
+      "status": "pass"
+    },
+    "pre-source-failure": {
+      "additive_schema_preserved": true,
+      "expected_failure": true,
+      "final_receipt_sha256": null,
+      "final_state_status": "rolled_back",
+      "front_controller_mode": "0o644",
+      "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
+      "migration_command_count": 0,
+      "migration_command_invoked": false,
+      "migration_executed_this_attempt": false,
+      "migration_pretend_invoked": false,
+      "observed_failure": {
+        "message_sha256": "e9eaa71ab24c874df524468bd3131b02d495b45052dee903171caad8ae442dd6",
+        "type": "DeploymentError"
+      },
+      "prohibited_command_count": 0,
+      "raw_evidence_entries": 18,
+      "raw_evidence_manifest_sha256": "5dd2b4439d5e4fcbb641652f14c568582a8275282444db378472b29a121366c2",
+      "raw_state_directory_name": "b02fce32-20261002T230416Z",
+      "rollback_complete": true,
+      "scenario": "pre-source-failure",
+      "schema_state": "installed_schema_source_only_v1",
+      "separate_web_identity_all_passed": true,
+      "separate_web_identity_probe_count": 4,
+      "source_cas_sha256": "0ceca182384a8e68560ec542c0c2c0c695971b8488321ca0899ea7a880d6fd17",
+      "source_expectation": "expected-live",
+      "source_install_started": false,
+      "state_sha256": "047c29035ac0f5feb13e45a77c78e2a3f04135b27accc8ff2a3f051b93dff82f",
+      "status": "pass"
+    },
+    "schema-preserving-rollback": {
+      "additive_schema_preserved": true,
+      "expected_failure": true,
+      "final_receipt_sha256": null,
+      "final_state_status": "rolled_back",
+      "front_controller_mode": "0o644",
+      "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
+      "migration_command_count": 0,
+      "migration_command_invoked": false,
+      "migration_executed_this_attempt": false,
+      "migration_pretend_invoked": false,
+      "observed_failure": {
+        "message_sha256": "2e23d73725f0e3315dd2c72720379892dc64bdf1a2e5aeecbe35b3cda95c6eaf",
+        "type": "DeploymentError"
+      },
+      "prohibited_command_count": 0,
+      "raw_evidence_entries": 25,
+      "raw_evidence_manifest_sha256": "a61ef46de9ada8bd0aa5dfdb4b83958810ae50341a42005e6d31b6796926d901",
+      "raw_state_directory_name": "b02fce32-20261002T230421Z",
+      "rollback_complete": true,
+      "scenario": "schema-preserving-rollback",
+      "schema_state": "installed_schema_source_only_v1",
+      "separate_web_identity_all_passed": true,
+      "separate_web_identity_probe_count": 4,
+      "source_cas_sha256": "0ceca182384a8e68560ec542c0c2c0c695971b8488321ca0899ea7a880d6fd17",
+      "source_expectation": "expected-live",
+      "source_install_started": true,
+      "state_sha256": "9aed04d522d24c22ef8441599cab2ef90cac4a35a0d1dd64e064c36e63d16053",
+      "status": "pass"
+    },
+    "source-swap-failure": {
+      "additive_schema_preserved": true,
+      "expected_failure": true,
+      "final_receipt_sha256": null,
+      "final_state_status": "rolled_back",
+      "front_controller_mode": "0o644",
+      "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
+      "migration_command_count": 0,
+      "migration_command_invoked": false,
+      "migration_executed_this_attempt": false,
+      "migration_pretend_invoked": false,
+      "observed_failure": {
+        "message_sha256": "77da5c61761540b302becec52b81e7cc0d4ab692713717929a68ddf441405422",
+        "type": "DeploymentError"
+      },
+      "prohibited_command_count": 0,
+      "raw_evidence_entries": 19,
+      "raw_evidence_manifest_sha256": "48858b8f6297c168ec52893ea3bcb650f8500e3f2d4b1978102e30f8e732e520",
+      "raw_state_directory_name": "b02fce32-20261002T230417Z",
+      "rollback_complete": true,
+      "scenario": "source-swap-failure",
+      "schema_state": "installed_schema_source_only_v1",
+      "separate_web_identity_all_passed": true,
+      "separate_web_identity_probe_count": 4,
+      "source_cas_sha256": "0ceca182384a8e68560ec542c0c2c0c695971b8488321ca0899ea7a880d6fd17",
+      "source_expectation": "expected-live",
+      "source_install_started": true,
+      "state_sha256": "ae9ad7565ee6df3847a2e4f9045d1745ad6ac2eb68e25aa5e2c37884c4b37a71",
+      "status": "pass"
+    },
+    "success": {
+      "additive_schema_preserved": true,
+      "expected_failure": false,
+      "final_receipt_sha256": "8d9a2db76ee971f914d2321cc13faf9a7b6c2049a226ab07c8d2811ff5e11fd6",
+      "final_state_status": "success",
+      "front_controller_mode": "0o644",
+      "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
+      "migration_command_count": 0,
+      "migration_command_invoked": false,
+      "migration_executed_this_attempt": false,
+      "migration_pretend_invoked": false,
+      "observed_failure": null,
+      "prohibited_command_count": 0,
+      "raw_evidence_entries": 25,
+      "raw_evidence_manifest_sha256": "cb76dbc52afdb7d809026c9c1538137b990f85ccf58363e4d020817e9dc02831",
+      "raw_state_directory_name": "b02fce32-20261002T230415Z",
+      "rollback_complete": false,
+      "scenario": "success",
+      "schema_state": "installed_schema_source_only_v1",
+      "separate_web_identity_all_passed": true,
+      "separate_web_identity_probe_count": 2,
+      "source_cas_sha256": "b3379cd90676d8b3214371e17ffd3278cd43ba1885a6223b12998a8b40e5ea27",
+      "source_expectation": "target",
+      "source_install_started": true,
+      "state_sha256": "ff731603aee91bd0b9dfeabb0a3a7ab30eef8e62734db004537058e1a357f26b",
+      "status": "pass"
+    }
+  },
+  "scenarios_required": [
+    "success",
+    "pre-source-failure",
+    "source-swap-failure",
+    "candidate-check-failure",
+    "post-reopen-failure",
+    "genuine-log-failure",
+    "schema-preserving-rollback"
+  ],
+  "scope": "disposable-local-filesystem-only-no-production-access",
+  "status": "pass",
+  "target_application_commit": "b02fce3213fc632891036f1b5c98b9cddb94e499",
+  "umask": "0o077"
+}

@@ -1,0 +1,13 @@
+01731f42b8b241ebb55a310f55e6bd20d67729c60a37ea126f5c2ce0804ed32d  ./APPLICATION_MANIFEST.json
+98c5aa6fca9a8df90b66ca704cb258e8e32d1991753a9bcb5511260db16441b2  ./README.md
+13ec71f689e1276a8004b5305ed1216c8c4399d0cc08ab523cf96d2f163c0e85  ./RUNNER_DESCRIBE.json
+57be077c11beaef37324ef07b536eac5d4e03ad87998ef231dbf4c96b751efcf  ./VALIDATION.md
+fe86545f4d90197a2b988537c5153a277a53aeaca86faf29fc2df2100590ef16  ./pre-freeze-rehearsal/PORTABLE_MANIFEST.json
+6f9da039dc5606cfc9d2cb159e20cb2632af13ee1a1590e581ebf88c91d6bb7e  ./pre-freeze-rehearsal/candidate-check-failure-receipt.json
+452bc3e624931ad67aca6d6d99176a215195cf881ae1c3789b81712e150d915e  ./pre-freeze-rehearsal/genuine-log-failure-receipt.json
+0fd3b4b0c3b99e90c28c7fd9552c138f6efa95da0065834fa6a870ce06c51a97  ./pre-freeze-rehearsal/post-reopen-failure-receipt.json
+69ff086b5bbfe2432d906f080c95379468c05fab5cc17e3069128e1d1ca0a617  ./pre-freeze-rehearsal/pre-source-failure-receipt.json
+7bbe25bbabb64f37db3798e81961b290adb3477d900534bb4656f10e5ade8a31  ./pre-freeze-rehearsal/rehearsal-receipt.json
+61f1a7c85217fc8667ed86799c55f2b8f7afe557a274edd0a6d6db18276b04fd  ./pre-freeze-rehearsal/schema-preserving-rollback-receipt.json
+8060ea3bb916502e70dc3f8369da2c57cfd13bf66075f081d5816e0277f8678c  ./pre-freeze-rehearsal/source-swap-failure-receipt.json
+496faa9e00eb9b41ae83705d4b38d775757c81a8616be64b7e65e949923fbdfb  ./pre-freeze-rehearsal/success-receipt.json

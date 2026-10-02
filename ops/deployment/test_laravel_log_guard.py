@@ -129,7 +129,76 @@ class LaravelLogGuardTest(unittest.TestCase):
         self.assertEqual(len(entries), 1)
         self.assertTrue(entries[0].orphan)
         self.assertEqual(report["orphan_entry_count"], 1)
-        self.assertEqual(report["signal_counts"], {"trace": 1})
+        self.assertEqual(report["signal_counts"], {"trace": 1, "unparsed_data": 1})
+
+    def test_critical_alert_and_emergency_always_fail_closed(self) -> None:
+        for level, message in (
+            ("CRITICAL", "service unavailable"),
+            ("ALERT", "operator attention required"),
+            ("EMERGENCY", "disk unavailable"),
+        ):
+            with self.subTest(level=level):
+                content = (
+                    f"[2026-10-02 01:07:00] production.{level}: {message}\n"
+                ).encode("utf-8")
+                report = guard.analyze_log_bytes(content)
+                self.assertEqual(report["status"], "fail")
+                self.assertIn("severe_level", report["signal_counts"])
+                with self.assertRaises(guard.LaravelLogGuardError):
+                    guard.inspect_log_bytes(content)
+
+    def test_invalid_utf8_fails_closed_without_copying_log_bytes(self) -> None:
+        secret = b"customer-secret-\xff-value"
+        content = (
+            b"[2026-10-02 01:07:01] production.ERROR: " + secret + b"\n"
+        )
+        report = guard.analyze_log_bytes(content)
+        serialized = json.dumps(report, sort_keys=True)
+        self.assertEqual(report["status"], "fail")
+        self.assertTrue(report["invalid_utf8"])
+        self.assertGreater(report["decode_replacement_count"], 0)
+        self.assertEqual(report["signal_counts"], {"invalid_utf8": 1})
+        self.assertEqual(report["fatal_entry_count"], 0)
+        self.assertEqual(report["global_failure_count"], 1)
+        self.assertEqual(report["fatal_finding_count"], 1)
+        self.assertEqual(report["rollback_finding_count"], 1)
+        self.assertNotIn("customer-secret", serialized)
+        with self.assertRaises(guard.LaravelLogGuardError):
+            guard.inspect_log_bytes(content)
+
+    def test_invalid_utf8_does_not_double_count_its_parsed_entry(self) -> None:
+        content = (
+            b"[2026-10-02 01:07:01] production.CRITICAL: invalid byte \xff\n"
+        )
+        report = guard.analyze_log_bytes(content)
+        self.assertEqual(report["entry_count"], 1)
+        self.assertEqual(report["fatal_entry_count"], 1)
+        self.assertEqual(report["global_failure_count"], 1)
+        self.assertEqual(report["fatal_finding_count"], 2)
+        self.assertEqual(report["rollback_finding_count"], 2)
+
+    def test_valid_replacement_character_is_not_mislabeled_invalid_utf8(self) -> None:
+        content = (
+            "[2026-10-02 01:07:02] production.INFO: valid replacement \ufffd\n"
+        ).encode("utf-8")
+        report = guard.inspect_log_bytes(content)
+        self.assertFalse(report["invalid_utf8"])
+        self.assertEqual(report["decode_replacement_count"], 0)
+
+    def test_nonempty_unparsed_data_fails_closed(self) -> None:
+        for index, content in enumerate((
+            b"format drift without a Laravel header\n",
+            (
+                b"[2026-10-02 01:07:03] production.INFO: parsed entry\n"
+                b"[2026-10-02 01:07:04] production.UNKNOWN: format drift\n"
+            ),
+        ), start=1):
+            with self.subTest(case=index):
+                report = guard.analyze_log_bytes(content)
+                self.assertGreater(report["orphan_entry_count"], 0)
+                self.assertIn("unparsed_data", report["signal_counts"])
+                with self.assertRaises(guard.LaravelLogGuardError):
+                    guard.inspect_log_bytes(content)
 
     def test_each_actual_candidate_failure_phrase_is_fatal(self) -> None:
         content = self.fixture("genuine-candidate-error.txt")

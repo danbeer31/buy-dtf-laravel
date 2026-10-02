@@ -50,8 +50,10 @@ EXPECTED_FRONT_CONTROLLER_MODE = 0o644
 TARGET_COMMIT = "b02fce3213fc632891036f1b5c98b9cddb94e499"
 ARTIFACT_BASE_COMMIT = "307b99e9429ca4623c72cc121e12997bdb4dfcad"
 TARGET_SHORT = TARGET_COMMIT[:8]
+HANDOFF_SHA256 = "ba9fd4dcf5fa5854b2e23418e0cd6ed8799874494a0341c726302b92a5acc127"
+RETIRED_ARTIFACT_COMMIT = "c43f39f556d057c99bb01e95ee7ca68658c05232"
 EXPECTED_ARCHIVE_SHA256 = "3067bca578201a39254d8544b633a04ff6a9e43fc0de2a2783a95ccde9a1bfcd"
-EXPECTED_MANIFEST_SHA256 = "93bc5ff1427693539faabda97d7fc1b9b8a5bca8075dea7bec5cb17d75a7faf2"
+EXPECTED_MANIFEST_SHA256 = "01731f42b8b241ebb55a310f55e6bd20d67729c60a37ea126f5c2ce0804ed32d"
 EXPECTED_HELPER_SHA256 = "df1f627ccd2844c888373e9aa135d8e4971ac2900ccce105d3081a04e7b3ad61"
 EXPECTED_MIGRATION_SHA256 = "992fbfe8086732e9bde10be89c3f52ddb4fef49edfdec12b744377c2e4181bbf"
 MIGRATION_RELATIVE_PATH = Path(
@@ -79,10 +81,13 @@ EXPECTED_LEDGER_WITHOUT_TARGET_SHA256 = (
 EXPECTED_PRE_SOURCE_CAS_SHA256 = "0ceca182384a8e68560ec542c0c2c0c695971b8488321ca0899ea7a880d6fd17"
 EXPECTED_TARGET_SOURCE_CAS_SHA256 = "b3379cd90676d8b3214371e17ffd3278cd43ba1885a6223b12998a8b40e5ea27"
 
-EXPECTED_LOG_GUARD_SHA256 = "219698ba8196d206b0d2512df5a078370a82f69be8ec92fd57f949f808da655a"
+EXPECTED_LOG_GUARD_SHA256 = "4bdec766469e71568631dbcf7408e94696f2fd99c46c18dd58b8374f31a488c8"
 
 RETIRED_RUNNER_SHA256S = frozenset(
-    {"76cfff204e86ee1119251b1d79931b1219cd19704b099f75d4e3db202ffe5b17"}
+    {
+        "59bbd90cafa8d1b5efd56a6c40667924193e37539f4340e4b6163c6274425cab",
+        "76cfff204e86ee1119251b1d79931b1219cd19704b099f75d4e3db202ffe5b17",
+    }
 )
 RETIRED_RELEASE_RECEIPT_SHA256S = frozenset(
     {"15271bdf4a33a85f247bbcaba45cb115b1beed429dd6bc48349fbe4a84bc7eee"}
@@ -102,6 +107,12 @@ EXPECTED_PACKAGES_SHA256 = "21da8f9ed19687e708cc7bc5cc59394c6fcdf9b9deadf617ae70
 EXPECTED_SERVICES_SHA256 = "1f7623b2b4ffd2c4099fb34ad86fc96c1479e27bf81b1b0ba328c988cc4ffcb5"
 EXPECTED_FRONT_CONTROLLER_SHA256 = "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
 
+# The framework repair must be deployed and monitored independently before
+# these historical dependency values are replaced with a fresh production
+# freeze. Until then, stage and deploy modes are deliberately unavailable.
+DEPENDENCY_ENVELOPE_FROZEN = False
+DEPENDENCY_ENVELOPE_STATUS = "pending_post_laravel_12_69_1_production_freeze"
+
 STAGE_APPROVAL_TOKEN = f"STAGE-BUYDTF-ALPHA-{TARGET_COMMIT[:16]}"
 DEPLOY_APPROVAL_TOKEN = f"DEPLOY-BUYDTF-ALPHA-{TARGET_COMMIT[:16]}"
 RECOVERY_APPROVAL_TOKEN = f"RECOVER-BUYDTF-ALPHA-{TARGET_COMMIT[:16]}"
@@ -111,6 +122,14 @@ OPCACHE_WAIT_SECONDS = 5
 MONITOR_SECONDS = 30 * 60
 MONITOR_INTERVAL_SECONDS = 60
 LOG_CONTINUITY_ANCHOR_BYTES = 64 * 1024
+LOG_ENTRY_CONTEXT_BYTES = 1024 * 1024
+LOG_ENTRY_HEADER_BYTES = re.compile(
+    br"(?m)^\[[^\]\r\n]+\]\s+[A-Za-z0-9_.-]+\."
+    br"(?:DEBUG|INFO|NOTICE|WARNING|ERROR|CRITICAL|ALERT|EMERGENCY):"
+)
+LOG_HEADER_LIKE_BYTES = re.compile(
+    br"^\[[^\]\r\n]+\]\s+[A-Za-z0-9_.-]+\.[A-Za-z]+:"
+)
 
 NORMAL_HEALTH_CHECKS: tuple[tuple[str, frozenset[int]], ...] = (
     ("https://buy-dtf.com/", frozenset({200})),
@@ -434,6 +453,24 @@ def parse_manifest(path: Path) -> list[dict[str, Any]]:
         raise DeploymentError("The reviewed application manifest has an invalid shape.")
     if document.get("application_target_commit") != TARGET_COMMIT:
         raise DeploymentError("The manifest application target differs from the runner.")
+    if document.get("artifact_status") != "prefreeze_review_only_non_stageable":
+        raise DeploymentError("The manifest pre-freeze status differs from the runner.")
+    handoff = document.get("current_handoff", {})
+    if (
+        handoff.get("name") != "buy-dtf-codie-handoff-2026-10-02.md"
+        or handoff.get("sha256") != HANDOFF_SHA256
+    ):
+        raise DeploymentError("The manifest handoff identity differs from the runner.")
+    envelope = document.get("dependency_envelope", {})
+    if (
+        envelope.get("status") != DEPENDENCY_ENVELOPE_STATUS
+        or envelope.get("stageable") is not False
+        or envelope.get("deployable") is not False
+        or document.get("retired_artifact_commit") != RETIRED_ARTIFACT_COMMIT
+        or document.get("retired_runner_sha256s")
+        != sorted(RETIRED_RUNNER_SHA256S)
+    ):
+        raise DeploymentError("The manifest pre-freeze gate differs from the runner.")
     if document.get("hash_algorithm") != "sha256 over exact raw file bytes":
         raise DeploymentError("The manifest does not declare raw-byte hashing.")
     if document.get("expected_schema_sha256") != EXPECTED_SCHEMA_SHA256:
@@ -852,6 +889,23 @@ def validate_runtime_snapshot(payload: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def validate_pre_source_runtime_snapshot(payload: dict[str, Any]) -> dict[str, Any]:
+    """Require the installed schema plus an unused item_meta column.
+
+    This stricter check is limited to staging and the final under-gate check
+    immediately before source installation. Post-cutover monitoring and source
+    rollback use ``validate_runtime_snapshot`` so legitimate new uploads may
+    populate the column after the candidate becomes active.
+    """
+
+    verification = validate_runtime_snapshot(payload)
+    if verification["item_meta_nonnull_rows"] != 0:
+        raise DeploymentError(
+            "savedimages.item_meta must be null for every existing row before source installation."
+        )
+    return {**verification, "pre_source_item_meta_empty": True}
+
+
 def compare_installed_schema_snapshots(
     before: dict[str, Any], after: dict[str, Any]
 ) -> dict[str, Any]:
@@ -979,7 +1033,7 @@ def production_preflight(
     live_source = live_manifest_snapshot(manifest_rows, target=require_target_source)
     dependencies = dependency_identity()
     runtime, runtime_command = runtime_probe(helper, evidence_directory, f"{prefix}-runtime-probe")
-    validate_runtime_snapshot(runtime)
+    validate_pre_source_runtime_snapshot(runtime)
     health = health_snapshot()
     disk = shutil.disk_usage(APP_ROOT)
     if disk.free < 2 * 1024 * 1024 * 1024:
@@ -1040,7 +1094,7 @@ def preflight_guard(helper: Path, rows: list[dict[str, Any]]) -> dict[str, Any]:
     source = live_manifest_snapshot(rows, target=False)
     dependencies = dependency_identity()
     runtime = runtime_probe_memory(helper)
-    validate_runtime_snapshot(runtime)
+    validate_pre_source_runtime_snapshot(runtime)
     health = health_snapshot()
     return {
         "status": "pass",
@@ -1297,6 +1351,11 @@ def stage_release(
     log_guard: Path,
     approval_token: str,
 ) -> Path:
+    if not DEPENDENCY_ENVELOPE_FROZEN:
+        raise DeploymentError(
+            "Transparency staging is disabled until the post-Laravel-12.69.1 "
+            "production dependency envelope is frozen and reviewed."
+        )
     if approval_token != STAGE_APPROVAL_TOKEN:
         raise DeploymentError("The exact reviewed Phase 1 staging token was not supplied.")
     archive = require_regular_file(archive, EXPECTED_ARCHIVE_SHA256)
@@ -1356,11 +1415,11 @@ def stage_release(
         load_laravel_log_guard(copied_log_guard)
         before = preflight["runtime"]
         before_command = preflight["runtime_command"]
-        before_verification = validate_runtime_snapshot(before)
+        before_verification = validate_pre_source_runtime_snapshot(before)
         after, after_command = runtime_probe(
             copied_helper, evidence, "installed-schema-after-staging"
         )
-        after_verification = validate_runtime_snapshot(after)
+        after_verification = validate_pre_source_runtime_snapshot(after)
         comparisons = compare_installed_schema_snapshots(before, after)
 
         installed_schema_receipt = {
@@ -2745,8 +2804,51 @@ def load_laravel_log_guard(path: Path) -> Any:
     return module
 
 
+def _log_entry_start(handle: Any, end: int) -> int:
+    """Retain the latest Laravel entry as context for a later delta.
+
+    A trailing LF proves only a line boundary. Laravel exceptions and context
+    payloads are multiline, so another line may still continue the latest
+    entry. Retaining its header lets the later delta distinguish a new header
+    from continuation data without treating a partial entry as an orphan.
+    """
+
+    read_start = max(0, end - LOG_ENTRY_CONTEXT_BYTES - 1)
+    handle.seek(read_start)
+    window = handle.read(end - read_start)
+    if len(window) != end - read_start:
+        raise DeploymentError("Laravel log changed while entry context was read.")
+    search_start = 0
+    if read_start:
+        first_newline = window.find(b"\n")
+        if first_newline < 0:
+            raise DeploymentError(
+                "Laravel log partial entry exceeds the reviewed context bound."
+            )
+        search_start = first_newline + 1
+    matches = list(LOG_ENTRY_HEADER_BYTES.finditer(window, search_start))
+    if not matches:
+        raise DeploymentError(
+            "Laravel log does not have a parseable boundary for its partial entry."
+        )
+    entry_start = read_start + matches[-1].start()
+    if end - entry_start > LOG_ENTRY_CONTEXT_BYTES:
+        raise DeploymentError(
+            "Laravel log partial entry exceeds the reviewed context bound."
+        )
+    return entry_start
+
+
 def _log_checkpoint(path: Path, handle: Any, metadata: os.stat_result) -> dict[str, Any]:
     end = metadata.st_size
+    entry_start = _log_entry_start(handle, end)
+    handle.seek(end - 1)
+    ends_at_line_boundary = handle.read(1) == b"\n"
+    context_bytes = end - entry_start
+    handle.seek(entry_start)
+    entry_context = handle.read(context_bytes)
+    if len(entry_context) != context_bytes:
+        raise DeploymentError("Laravel log changed while entry context was hashed.")
     anchor_bytes = min(end, LOG_CONTINUITY_ANCHOR_BYTES)
     anchor_start = end - anchor_bytes
     handle.seek(anchor_start)
@@ -2758,6 +2860,14 @@ def _log_checkpoint(path: Path, handle: Any, metadata: os.stat_result) -> dict[s
         "exists": True,
         "inode": metadata.st_ino,
         "bytes": end,
+        "entry_start": entry_start,
+        "boundary_context_bytes": context_bytes,
+        "ends_at_line_boundary": ends_at_line_boundary,
+        "entry_context": {
+            "start": entry_start,
+            "bytes": context_bytes,
+            "sha256": sha256_bytes(entry_context),
+        },
         "anchor": {
             "start": anchor_start,
             "bytes": anchor_bytes,
@@ -2766,12 +2876,17 @@ def _log_checkpoint(path: Path, handle: Any, metadata: os.stat_result) -> dict[s
     }
 
 
-def _validate_log_checkpoint(checkpoint: dict[str, Any]) -> tuple[Path, int, dict[str, Any]]:
+def _validate_log_checkpoint(
+    checkpoint: dict[str, Any],
+) -> tuple[Path, int, dict[str, Any], int]:
     if checkpoint.get("exists") is not True:
         raise DeploymentError("Laravel log continuity baseline is not an existing file.")
     path = Path(str(checkpoint.get("path", "")))
     inode = checkpoint.get("inode")
     offset = checkpoint.get("bytes")
+    entry_start = checkpoint.get("entry_start")
+    context_bytes = checkpoint.get("boundary_context_bytes")
+    entry_context = checkpoint.get("entry_context")
     anchor = checkpoint.get("anchor")
     anchor_start = anchor.get("start") if isinstance(anchor, dict) else None
     anchor_bytes = anchor.get("bytes") if isinstance(anchor, dict) else None
@@ -2779,6 +2894,16 @@ def _validate_log_checkpoint(checkpoint: dict[str, Any]) -> tuple[Path, int, dic
         not isinstance(inode, int)
         or not isinstance(offset, int)
         or offset < 0
+        or not isinstance(entry_start, int)
+        or not 0 <= entry_start <= offset
+        or not isinstance(context_bytes, int)
+        or context_bytes != offset - entry_start
+        or context_bytes > LOG_ENTRY_CONTEXT_BYTES
+        or not isinstance(checkpoint.get("ends_at_line_boundary"), bool)
+        or not isinstance(entry_context, dict)
+        or entry_context.get("start") != entry_start
+        or entry_context.get("bytes") != context_bytes
+        or not re.fullmatch(r"[0-9a-f]{64}", str(entry_context.get("sha256", "")))
         or not isinstance(anchor, dict)
         or not isinstance(anchor_start, int)
         or not isinstance(anchor_bytes, int)
@@ -2787,14 +2912,14 @@ def _validate_log_checkpoint(checkpoint: dict[str, Any]) -> tuple[Path, int, dic
         or not re.fullmatch(r"[0-9a-f]{64}", str(anchor.get("sha256", "")))
     ):
         raise DeploymentError("Laravel log continuity baseline is invalid.")
-    return path, offset, anchor
+    return path, offset, anchor, entry_start
 
 
 @contextmanager
 def verified_log_handle(
     checkpoint: dict[str, Any],
 ) -> Iterator[tuple[Path, Any, os.stat_result]]:
-    path, offset, anchor = _validate_log_checkpoint(checkpoint)
+    path, offset, anchor, _ = _validate_log_checkpoint(checkpoint)
     if path.is_symlink() or not path.is_file():
         raise DeploymentError("Laravel log disappeared or became invalid during monitoring.")
     with path.open("rb") as handle:
@@ -2805,6 +2930,16 @@ def verified_log_handle(
             raise DeploymentError("Laravel log rotated during monitoring.")
         if metadata.st_size < offset:
             raise DeploymentError("Laravel log was truncated during monitoring.")
+        entry_context = checkpoint["entry_context"]
+        handle.seek(entry_context["start"])
+        observed_context = handle.read(entry_context["bytes"])
+        if (
+            len(observed_context) != entry_context["bytes"]
+            or sha256_bytes(observed_context) != entry_context["sha256"]
+        ):
+            raise DeploymentError(
+                "Laravel log retained entry context changed during monitoring."
+            )
         handle.seek(anchor["start"])
         observed_anchor = handle.read(anchor["bytes"])
         if (
@@ -2840,6 +2975,19 @@ def verify_log_continuity(checkpoint: dict[str, Any]) -> dict[str, Any]:
         return _log_checkpoint(path, handle, metadata)
 
 
+def _first_fresh_log_header(content: bytes) -> int | None:
+    """Return the first nonblank line offset when it is header-shaped."""
+
+    offset = 0
+    for line in content.splitlines(keepends=True):
+        body = line.rstrip(b"\r\n")
+        if not body.strip():
+            offset += len(line)
+            continue
+        return offset if LOG_HEADER_LIKE_BYTES.match(body) else None
+    return len(content)
+
+
 def log_delta(
     baseline: dict[str, Any],
     state_directory: Path,
@@ -2849,19 +2997,33 @@ def log_delta(
 ) -> dict[str, Any]:
     if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", evidence_label):
         raise DeploymentError("Laravel log evidence label is invalid.")
-    _, offset, _ = _validate_log_checkpoint(baseline)
+    _, offset, _, entry_start = _validate_log_checkpoint(baseline)
     with verified_log_handle(baseline) as (path, handle, metadata):
         if metadata.st_size - offset > 20 * 1024 * 1024:
             raise DeploymentError("Laravel log delta exceeds the reviewed 20 MiB evidence bound.")
-        handle.seek(offset)
+        handle.seek(entry_start)
         content = handle.read()
         continuity = _log_checkpoint(path, handle, os.fstat(handle.fileno()))
     evidence = state_directory / f"laravel-log-{evidence_label}-delta.txt"
     atomic_write(evidence, content, 0o600)
     guard = load_laravel_log_guard(log_guard_path)
+    context_bytes = offset - entry_start
+    new_content = content[context_bytes:]
+    if not new_content:
+        inspection_content = b""
+    elif baseline["ends_at_line_boundary"] and (
+        fresh_header := _first_fresh_log_header(new_content)
+    ) is not None:
+        # A fresh valid header after a complete line cannot continue the
+        # retained pre-baseline entry, so classify only newly appended bytes.
+        inspection_content = new_content[fresh_header:]
+    else:
+        # Reparse the retained entry with appended bytes so multiline
+        # continuations cannot become an orphan or evade classification.
+        inspection_content = content
     report_path = state_directory / f"laravel-log-{evidence_label}-analysis.json"
     try:
-        report = guard.inspect_log_bytes(content)
+        report = guard.inspect_log_bytes(inspection_content)
     except Exception as exception:
         report = getattr(exception, "report", None)
         if not isinstance(report, dict):
@@ -2875,6 +3037,9 @@ def log_delta(
     atomic_json(report_path, report)
     return {
         "bytes": len(content),
+        "new_bytes": len(new_content),
+        "baseline_context_bytes": context_bytes,
+        "analysis_bytes": len(inspection_content),
         "sha256": sha256_file(evidence),
         "path": str(evidence),
         "analysis": report,
@@ -3202,6 +3367,11 @@ def deploy_release(
     release_receipt_sha256: str,
     approval_token: str,
 ) -> Path:
+    if not DEPENDENCY_ENVELOPE_FROZEN:
+        raise DeploymentError(
+            "Transparency deployment is disabled until the post-Laravel-12.69.1 "
+            "production dependency envelope is frozen and reviewed."
+        )
     if approval_token != DEPLOY_APPROVAL_TOKEN:
         raise DeploymentError("The exact reviewed deployment approval token was not supplied.")
     receipt, release, rows = validate_release_receipt(
@@ -3310,7 +3480,7 @@ def deploy_release(
             before_repeat, before_repeat_command = runtime_probe(
                 helper, state_directory, "cutover-installed-schema-probe"
             )
-            installed_verification = validate_runtime_snapshot(before_repeat)
+            installed_verification = validate_pre_source_runtime_snapshot(before_repeat)
             installed_comparisons = compare_installed_schema_snapshots(
                 before_snapshot, before_repeat
             )
@@ -3495,6 +3665,11 @@ def describe() -> dict[str, Any]:
         "artifact": "BuyDTF production-alpha transparency source-only deployment runner v2",
         "target_application_commit": TARGET_COMMIT,
         "artifact_base_commit": ARTIFACT_BASE_COMMIT,
+        "review_provenance": {
+            "handoff": "buy-dtf-codie-handoff-2026-10-02.md",
+            "handoff_sha256": HANDOFF_SHA256,
+            "status": "prefreeze_review_only_non_stageable",
+        },
         "application_root": str(APP_ROOT),
         "release_root": str(RELEASE_ROOT),
         "rollback_root": str(ROLLBACK_ROOT),
@@ -3531,11 +3706,15 @@ def describe() -> dict[str, Any]:
             "replacements": EXPECTED_REPLACEMENTS,
         },
         "dependency_identity": {
-            "composer_lock_sha256": EXPECTED_COMPOSER_LOCK_SHA256,
-            "vendor_manifest_sha256": EXPECTED_VENDOR_MANIFEST_SHA256,
-            "cache_manifest_sha256": EXPECTED_CACHE_MANIFEST_SHA256,
-            "packages_sha256": EXPECTED_PACKAGES_SHA256,
-            "services_sha256": EXPECTED_SERVICES_SHA256,
+            "freeze_status": DEPENDENCY_ENVELOPE_STATUS,
+            "frozen_for_stage_or_deploy": DEPENDENCY_ENVELOPE_FROZEN,
+            "historical_pre_upgrade_values": {
+                "composer_lock_sha256": EXPECTED_COMPOSER_LOCK_SHA256,
+                "vendor_manifest_sha256": EXPECTED_VENDOR_MANIFEST_SHA256,
+                "cache_manifest_sha256": EXPECTED_CACHE_MANIFEST_SHA256,
+                "packages_sha256": EXPECTED_PACKAGES_SHA256,
+                "services_sha256": EXPECTED_SERVICES_SHA256,
+            },
         },
         "front_controller_sha256": EXPECTED_FRONT_CONTROLLER_SHA256,
         "static_gate_sha256": EXPECTED_GATE_SHA256,
@@ -3556,11 +3735,17 @@ def describe() -> dict[str, Any]:
             "recovery_uses_live_identity_and_durable_state": True,
         },
         "approval_tokens": {
-            "stage": STAGE_APPROVAL_TOKEN,
-            "deploy": DEPLOY_APPROVAL_TOKEN,
-            "recover": RECOVERY_APPROVAL_TOKEN,
+            "status": (
+                "enabled_for_frozen_envelope"
+                if DEPENDENCY_ENVELOPE_FROZEN
+                else "withheld_pending_post_laravel_12_69_1_freeze"
+            ),
+            "stage": STAGE_APPROVAL_TOKEN if DEPENDENCY_ENVELOPE_FROZEN else None,
+            "deploy": DEPLOY_APPROVAL_TOKEN if DEPENDENCY_ENVELOPE_FROZEN else None,
+            "recover": RECOVERY_APPROVAL_TOKEN if DEPENDENCY_ENVELOPE_FROZEN else None,
         },
         "retired_artifacts": {
+            "artifact_commit": [RETIRED_ARTIFACT_COMMIT],
             "runner_sha256": sorted(RETIRED_RUNNER_SHA256S),
             "release_receipt_sha256": sorted(RETIRED_RELEASE_RECEIPT_SHA256S),
             "release_receipt_paths": sorted(RETIRED_RELEASE_RECEIPT_PATHS),

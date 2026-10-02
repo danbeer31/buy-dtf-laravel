@@ -22,11 +22,11 @@ LOG_GUARD_PATH = ROOT / "ops/deployment/laravel_log_guard.py"
 FIXTURES = ROOT / "tests/Fixtures/Deployment/LaravelLogs"
 MANIFEST_PATH = (
     ROOT
-    / "ops/evidence/production-alpha-transparency-source-only-20261002"
+    / "ops/evidence/production-alpha-transparency-source-only-v2-prefreeze-20261002"
     / "APPLICATION_MANIFEST.json"
 )
 REHEARSAL_RECEIPT_PATH = (
-    MANIFEST_PATH.parent / "deployment-rehearsal/rehearsal-receipt.json"
+    MANIFEST_PATH.parent / "pre-freeze-rehearsal/rehearsal-receipt.json"
 )
 
 
@@ -90,7 +90,23 @@ class ProductionAlphaRunnerTest(unittest.TestCase):
         self.assertEqual(additions[0]["expected"], "ABSENT")
 
         document = json.loads(MANIFEST_PATH.read_text("utf-8"))
+        self.assertEqual(document["artifact_status"], "prefreeze_review_only_non_stageable")
         self.assertEqual(document["application_target_commit"], deploy.TARGET_COMMIT)
+        self.assertEqual(
+            document["current_handoff"],
+            {
+                "name": "buy-dtf-codie-handoff-2026-10-02.md",
+                "sha256": deploy.HANDOFF_SHA256,
+            },
+        )
+        self.assertEqual(
+            document["dependency_envelope"],
+            {
+                "status": deploy.DEPENDENCY_ENVELOPE_STATUS,
+                "stageable": False,
+                "deployable": False,
+            },
+        )
         self.assertEqual(document["expected_schema_sha256"], deploy.EXPECTED_SCHEMA_SHA256)
         self.assertEqual(
             document["expected_ledger"],
@@ -113,6 +129,15 @@ class ProductionAlphaRunnerTest(unittest.TestCase):
                 "target_sha256": deploy.EXPECTED_MIGRATION_SHA256,
             },
         )
+        checkout = next(
+            row
+            for row in document["paths"]
+            if row["path"] == "app/Http/Controllers/Checkout/CheckoutController.php"
+        )
+        self.assertEqual(
+            checkout["expected_live_line_endings"],
+            {"crlf_count": 795, "remaining_lf_count": 102},
+        )
 
     def test_manifest_requires_target_commit_and_source_only_declaration(self) -> None:
         original = json.loads(MANIFEST_PATH.read_text("utf-8"))
@@ -124,6 +149,16 @@ class ProductionAlphaRunnerTest(unittest.TestCase):
         changed = copy.deepcopy(original)
         changed["migration"]["migration_command_allowed"] = True
         with self.assertRaisesRegex(deploy.DeploymentError, "migration identity"):
+            self.parse_modified_manifest(changed)
+
+        changed = copy.deepcopy(original)
+        changed["current_handoff"]["sha256"] = "0" * 64
+        with self.assertRaisesRegex(deploy.DeploymentError, "handoff identity"):
+            self.parse_modified_manifest(changed)
+
+        changed = copy.deepcopy(original)
+        changed["dependency_envelope"]["stageable"] = True
+        with self.assertRaisesRegex(deploy.DeploymentError, "pre-freeze gate"):
             self.parse_modified_manifest(changed)
 
     def test_manifest_source_cas_constants_match_all_eleven_rows(self) -> None:
@@ -206,6 +241,39 @@ class ProductionAlphaRunnerTest(unittest.TestCase):
         self.assertTrue(comparison["schema_and_ledger_unchanged"])
         self.assertFalse(comparison["customer_row_counts_compared"])
         self.assertFalse(comparison["customer_row_data_compared"])
+
+    def test_item_meta_must_be_empty_pre_source_but_may_grow_after_cutover(self) -> None:
+        before = self.snapshot()
+        preexisting = self.snapshot()
+        preexisting["schema"]["savedimages_item_meta"]["nonnull_rows"] = 1
+
+        verified = deploy.validate_pre_source_runtime_snapshot(before)
+        self.assertTrue(verified["pre_source_item_meta_empty"])
+        with self.assertRaisesRegex(deploy.DeploymentError, "null for every existing row"):
+            deploy.validate_pre_source_runtime_snapshot(preexisting)
+
+        # The ordinary post-cutover and rollback validators intentionally allow
+        # new uploads to populate item_meta once source installation completes.
+        post = deploy.validate_runtime_snapshot(preexisting)
+        self.assertEqual(post["item_meta_nonnull_rows"], 1)
+        rollback = deploy.verify_rollback_schema_state(
+            preexisting,
+            {
+                "migration_command_invoked": False,
+                "migration_pretend_invoked": False,
+                "migration_executed_this_attempt": False,
+            },
+        )
+        self.assertEqual(
+            rollback["verification"]["item_meta_nonnull_rows"],
+            1,
+        )
+
+        source = RUNNER_PATH.read_text("utf-8")
+        self.assertIn(
+            "installed_verification = validate_pre_source_runtime_snapshot(before_repeat)",
+            source,
+        )
 
     def test_disabled_capabilities_and_idle_jobs_are_required(self) -> None:
         cases = (
@@ -295,6 +363,10 @@ class ProductionAlphaRunnerTest(unittest.TestCase):
 
     def test_retired_runner_and_receipt_artifacts_are_permanent_no_go(self) -> None:
         self.assertIn(
+            "59bbd90cafa8d1b5efd56a6c40667924193e37539f4340e4b6163c6274425cab",
+            deploy.RETIRED_RUNNER_SHA256S,
+        )
+        self.assertIn(
             "76cfff204e86ee1119251b1d79931b1219cd19704b099f75d4e3db202ffe5b17",
             deploy.RETIRED_RUNNER_SHA256S,
         )
@@ -305,6 +377,27 @@ class ProductionAlphaRunnerTest(unittest.TestCase):
         retired_path = Path(next(iter(deploy.RETIRED_RELEASE_RECEIPT_PATHS)))
         with self.assertRaisesRegex(deploy.DeploymentError, "path is permanently retired"):
             deploy.validate_release_receipt(retired_path, "a" * 64)
+
+    def test_stage_and_deploy_are_disabled_until_post_upgrade_live_freeze(self) -> None:
+        self.assertFalse(deploy.DEPENDENCY_ENVELOPE_FROZEN)
+        self.assertEqual(
+            deploy.DEPENDENCY_ENVELOPE_STATUS,
+            "pending_post_laravel_12_69_1_production_freeze",
+        )
+        with self.assertRaisesRegex(deploy.DeploymentError, "staging is disabled"):
+            deploy.stage_release(
+                archive=Path("missing.tar"),
+                manifest=Path("missing.json"),
+                helper=Path("missing.php"),
+                log_guard=Path("missing.py"),
+                approval_token=deploy.STAGE_APPROVAL_TOKEN,
+            )
+        with self.assertRaisesRegex(deploy.DeploymentError, "deployment is disabled"):
+            deploy.deploy_release(
+                release_receipt_path=Path("missing-receipt.json"),
+                release_receipt_sha256="0" * 64,
+                approval_token=deploy.DEPLOY_APPROVAL_TOKEN,
+            )
 
     def test_log_delta_uses_guard_and_keeps_distinct_evidence(self) -> None:
         guard = deploy.load_laravel_log_guard(LOG_GUARD_PATH)
@@ -368,7 +461,11 @@ class ProductionAlphaRunnerTest(unittest.TestCase):
                 application = Path(temporary) / "application"
                 log_path = application / "storage/logs/laravel.log"
                 log_path.parent.mkdir(parents=True)
-                log_path.write_bytes(b"A" * 70000)
+                log_path.write_bytes(
+                    b"[2026-10-02 00:00:00] production.INFO: "
+                    + b"A" * 70000
+                    + b"\n"
+                )
                 with mock.patch.object(deploy, "APP_ROOT", application):
                     checkpoint = deploy.log_baseline()
                     with log_path.open("ab") as handle:
@@ -406,6 +503,160 @@ class ProductionAlphaRunnerTest(unittest.TestCase):
                 log_path.write_bytes(b"")
                 with self.assertRaisesRegex(deploy.DeploymentError, "nonempty"):
                     deploy.log_baseline()
+
+    def test_log_baseline_retains_context_for_a_partial_entry(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            application = root / "application"
+            log_path = application / "storage/logs/laravel.log"
+            log_path.parent.mkdir(parents=True)
+            partial = (
+                b"[2026-10-02 00:00:00] production.INFO: "
+                b"entry captured in the middle"
+            )
+            log_path.write_bytes(partial)
+            state = root / "evidence"
+            state.mkdir()
+
+            with mock.patch.object(deploy, "APP_ROOT", application):
+                baseline = deploy.log_baseline()
+                self.assertFalse(baseline["ends_at_line_boundary"])
+                self.assertEqual(baseline["entry_start"], 0)
+                self.assertEqual(baseline["boundary_context_bytes"], len(partial))
+                self.assertEqual(baseline["entry_context"]["bytes"], len(partial))
+                self.assertEqual(
+                    baseline["entry_context"]["sha256"],
+                    deploy.sha256_bytes(partial),
+                )
+                with log_path.open("ab") as handle:
+                    handle.write(
+                        b" and completed after baseline\n"
+                        b"[2026-10-02 00:00:01] production.INFO: next entry\n"
+                    )
+                result = deploy.log_delta(
+                    baseline,
+                    state,
+                    LOG_GUARD_PATH,
+                    evidence_label="partial-boundary",
+                )
+
+            self.assertEqual(result["analysis"]["status"], "pass")
+            self.assertEqual(result["analysis"]["entry_count"], 2)
+            self.assertEqual(result["baseline_context_bytes"], len(partial))
+            self.assertGreater(result["new_bytes"], 0)
+
+    def test_log_baseline_rejects_partial_unparseable_context(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            application = Path(temporary) / "application"
+            log_path = application / "storage/logs/laravel.log"
+            log_path.parent.mkdir(parents=True)
+            log_path.write_bytes(b"partial bytes without a Laravel header")
+            with mock.patch.object(deploy, "APP_ROOT", application):
+                with self.assertRaisesRegex(deploy.DeploymentError, "parseable boundary"):
+                    deploy.log_baseline()
+
+    def test_log_baseline_reparses_continuation_after_trailing_lf(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            application = root / "application"
+            log_path = application / "storage/logs/laravel.log"
+            log_path.parent.mkdir(parents=True)
+            first_line = (
+                b"[2026-10-02 00:00:00] production.INFO: request still writing\n"
+            )
+            log_path.write_bytes(first_line)
+            state = root / "evidence"
+            state.mkdir()
+
+            with mock.patch.object(deploy, "APP_ROOT", application):
+                baseline = deploy.log_baseline()
+                self.assertTrue(baseline["ends_at_line_boundary"])
+                self.assertEqual(baseline["entry_start"], 0)
+                self.assertEqual(baseline["boundary_context_bytes"], len(first_line))
+                with log_path.open("ab") as handle:
+                    handle.write(
+                        b"[stacktrace]\n#0 /synthetic.php(1): call()\n"
+                        b"[2026-10-02 00:00:01] production.INFO: next request\n"
+                    )
+                with self.assertRaisesRegex(deploy.DeploymentError, "rollback-worthy"):
+                    deploy.log_delta(
+                        baseline,
+                        state,
+                        LOG_GUARD_PATH,
+                        evidence_label="lf-continuation",
+                    )
+
+            report = json.loads(
+                (state / "laravel-log-lf-continuation-analysis.json").read_text(
+                    "utf-8"
+                )
+            )
+            self.assertEqual(report["entry_count"], 2)
+            self.assertEqual(report["signal_counts"], {"trace": 1})
+
+    def test_fresh_header_after_baseline_excludes_retained_old_entry(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            application = root / "application"
+            log_path = application / "storage/logs/laravel.log"
+            log_path.parent.mkdir(parents=True)
+            historical = (
+                b"[2026-10-02 00:00:00] production.CRITICAL: historical failure\n"
+            )
+            prefix = b"\n\r\n"
+            fresh = b"[2026-10-02 00:00:01] production.INFO: new request healthy\n"
+            log_path.write_bytes(historical)
+            state = root / "evidence"
+            state.mkdir()
+
+            with mock.patch.object(deploy, "APP_ROOT", application):
+                baseline = deploy.log_baseline()
+                with log_path.open("ab") as handle:
+                    handle.write(prefix + fresh)
+                result = deploy.log_delta(
+                    baseline,
+                    state,
+                    LOG_GUARD_PATH,
+                    evidence_label="fresh-header",
+                )
+
+            self.assertEqual(result["analysis"]["status"], "pass")
+            self.assertEqual(result["analysis"]["entry_count"], 1)
+            self.assertEqual(result["baseline_context_bytes"], len(historical))
+            self.assertEqual(result["new_bytes"], len(prefix + fresh))
+            self.assertEqual(result["analysis_bytes"], len(fresh))
+
+    def test_header_like_format_drift_does_not_replay_retained_failure(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            application = root / "application"
+            log_path = application / "storage/logs/laravel.log"
+            log_path.parent.mkdir(parents=True)
+            log_path.write_bytes(
+                b"[2026-10-02 00:00:00] production.CRITICAL: historical failure\n"
+            )
+            state = root / "evidence"
+            state.mkdir()
+
+            with mock.patch.object(deploy, "APP_ROOT", application):
+                baseline = deploy.log_baseline()
+                with log_path.open("ab") as handle:
+                    handle.write(
+                        b"\n[2026-10-02 00:00:01] production.UNKNOWN: format drift\n"
+                    )
+                with self.assertRaisesRegex(deploy.DeploymentError, "rollback-worthy"):
+                    deploy.log_delta(
+                        baseline,
+                        state,
+                        LOG_GUARD_PATH,
+                        evidence_label="header-drift",
+                    )
+
+            report = json.loads(
+                (state / "laravel-log-header-drift-analysis.json").read_text("utf-8")
+            )
+            self.assertEqual(report["entry_count"], 1)
+            self.assertEqual(report["signal_counts"], {"unparsed_data": 1})
 
     def test_monitor_completes_thirty_minutes_and_checks_log_continuity(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
@@ -501,6 +752,24 @@ class ProductionAlphaRunnerTest(unittest.TestCase):
         )
         self.assertFalse(description["safety"]["capability_enablement"])
         self.assertFalse(description["safety"]["retention_execution"])
+        self.assertFalse(
+            description["dependency_identity"]["frozen_for_stage_or_deploy"]
+        )
+        self.assertEqual(
+            description["dependency_identity"]["freeze_status"],
+            deploy.DEPENDENCY_ENVELOPE_STATUS,
+        )
+        self.assertEqual(
+            description["approval_tokens"]["status"],
+            "withheld_pending_post_laravel_12_69_1_freeze",
+        )
+        self.assertIsNone(description["approval_tokens"]["stage"])
+        self.assertIsNone(description["approval_tokens"]["deploy"])
+        self.assertIsNone(description["approval_tokens"]["recover"])
+        self.assertIn(
+            "c43f39f556d057c99bb01e95ee7ca68658c05232",
+            description["retired_artifacts"]["artifact_commit"],
+        )
         serialized = json.dumps(description, sort_keys=True)
         self.assertNotIn("database_backup", serialized)
         self.assertNotIn("mysqldump", serialized)
@@ -526,6 +795,10 @@ class ProductionAlphaRunnerTest(unittest.TestCase):
 
         receipt = json.loads(REHEARSAL_RECEIPT_PATH.read_text("utf-8"))
         self.assertEqual(receipt["status"], "pass")
+        self.assertTrue(receipt["dependency_envelope_simulated"])
+        self.assertTrue(receipt["post_laravel_12_69_1_live_freeze_pending"])
+        self.assertFalse(receipt["production_accessed"])
+        self.assertFalse(receipt["production_staged"])
         self.assertEqual(set(receipt["scenarios"]), set(rehearsal.SCENARIOS))
         for name, result in receipt["scenarios"].items():
             with self.subTest(scenario=name):
@@ -541,6 +814,8 @@ class ProductionAlphaRunnerTest(unittest.TestCase):
                 else:
                     self.assertEqual(result["source_expectation"], "expected-live")
                     self.assertTrue(result["rollback_complete"])
+                if name == "pre-source-failure":
+                    self.assertFalse(result["source_install_started"])
 
 
 if __name__ == "__main__":

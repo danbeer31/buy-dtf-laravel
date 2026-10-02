@@ -31,7 +31,7 @@ LOG_GUARD_PATH = ROOT / "ops/deployment/laravel_log_guard.py"
 LOG_FIXTURES = ROOT / "tests/Fixtures/Deployment/LaravelLogs"
 MANIFEST_PATH = (
     ROOT
-    / "ops/evidence/production-alpha-transparency-source-only-20261002/APPLICATION_MANIFEST.json"
+    / "ops/evidence/production-alpha-transparency-source-only-v2-prefreeze-20261002/APPLICATION_MANIFEST.json"
 )
 DEFAULT_ARCHIVE_PATH = (
     ROOT
@@ -342,7 +342,7 @@ def run_scenario(
 
     def preflight(**_: Any) -> dict[str, Any]:
         current = snapshot()
-        verification = deploy.validate_runtime_snapshot(current)
+        verification = deploy.validate_pre_source_runtime_snapshot(current)
         return {
             "status": "pass",
             "runtime": current,
@@ -357,9 +357,10 @@ def run_scenario(
     def fake_runtime_probe(_helper: Path, _directory: Path, name: str):
         nonlocal runtime_sequence
         runtime_sequence += 1
+        current = copy.deepcopy(snapshot())
         if scenario == "pre-source-failure" and name == "cutover-installed-schema-probe":
-            raise deploy.DeploymentError("rehearsed pre-source failure")
-        return copy.deepcopy(snapshot()), {
+            current["schema"]["savedimages_item_meta"]["nonnull_rows"] = 1
+        return current, {
             "rehearsal": True,
             "name": name,
             "sequence": runtime_sequence,
@@ -573,6 +574,9 @@ def run_scenario(
         "LARAVEL_MAINTENANCE_FILE": application / "storage/framework/down",
         "FRONT_CONTROLLER": front,
         "OPCACHE_WAIT_SECONDS": 0,
+        # The local rehearsal exercises the corrected source-only mechanics.
+        # Production remains hard-disabled until a post-12.69.1 live freeze.
+        "DEPENDENCY_ENVELOPE_FROZEN": True,
         "validate_release_receipt": lambda *_args, **_kwargs: (
             item["receipt"],
             item["release"],
@@ -588,7 +592,7 @@ def run_scenario(
         "enter_laravel_maintenance": enter_maintenance,
         "leave_laravel_maintenance": leave_maintenance,
         "drain_runtime": lambda *_: {"status": "pass", "samples": 1},
-        "dependency_identity": lambda: {"identity": "reviewed-production-baseline"},
+        "dependency_identity": lambda: {"identity": "simulated-pre-freeze-envelope"},
         "runtime_probe": fake_runtime_probe,
         "install_runtime_files": local_install,
         "candidate_cli_checks": candidate_checks,
@@ -707,6 +711,7 @@ def run_scenario(
         "observed_failure": failure,
         "final_state_status": state.get("status"),
         "rollback_complete": bool(state.get("rollback_complete")),
+        "source_install_started": bool(state.get("source_install_started")),
         "migration_command_invoked": bool(state.get("migration_command_invoked")),
         "migration_pretend_invoked": bool(state.get("migration_pretend_invoked")),
         "migration_executed_this_attempt": bool(
@@ -857,6 +862,8 @@ def run(
         "umask": "0o077",
         "production_accessed": False,
         "production_staged": False,
+        "dependency_envelope_simulated": True,
+        "post_laravel_12_69_1_live_freeze_pending": True,
         "migration_command_invoked": False,
         "migration_pretend_invoked": False,
         "migration_executed_this_attempt": False,

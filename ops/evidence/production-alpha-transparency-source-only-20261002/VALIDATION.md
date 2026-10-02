@@ -1,5 +1,9 @@
 # Validation receipt
 
+Status: historical results for permanently rejected artifact commit
+c43f39f556d057c99bb01e95ee7ca68658c05232 only. They confer no staging or
+deployment authority and do not validate the v2 correction candidate.
+
 Date: 2026-10-02 (America/Chicago)
 
 ## Results

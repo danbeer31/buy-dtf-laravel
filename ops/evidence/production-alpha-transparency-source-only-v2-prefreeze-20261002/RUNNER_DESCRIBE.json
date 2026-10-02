@@ -1,22 +1,24 @@
 {
-  "artifact_status": "permanently_retired_no_go_audit_history_only",
-  "authority": "none_all_recorded_tokens_and_receipts_revoked",
-  "retired_artifact_commit": "c43f39f556d057c99bb01e95ee7ca68658c05232",
   "application_root": "/var/www/buy-dtf",
-  "historical_revoked_approval_tokens": {
-    "deploy": "DEPLOY-BUYDTF-ALPHA-b02fce3213fc6328",
-    "recover": "RECOVER-BUYDTF-ALPHA-b02fce3213fc6328",
-    "stage": "STAGE-BUYDTF-ALPHA-b02fce3213fc6328"
+  "approval_tokens": {
+    "deploy": null,
+    "recover": null,
+    "stage": null,
+    "status": "withheld_pending_post_laravel_12_69_1_freeze"
   },
   "archive_sha256": "3067bca578201a39254d8544b633a04ff6a9e43fc0de2a2783a95ccde9a1bfcd",
   "artifact": "BuyDTF production-alpha transparency source-only deployment runner v2",
   "artifact_base_commit": "307b99e9429ca4623c72cc121e12997bdb4dfcad",
   "dependency_identity": {
-    "cache_manifest_sha256": "468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9",
-    "composer_lock_sha256": "22af12c7e58fcfe809735dbf9955b2d22a264e9e7345cefd74398e36bf2773b9",
-    "packages_sha256": "21da8f9ed19687e708cc7bc5cc59394c6fcdf9b9deadf617ae70526f815a1db0",
-    "services_sha256": "1f7623b2b4ffd2c4099fb34ad86fc96c1479e27bf81b1b0ba328c988cc4ffcb5",
-    "vendor_manifest_sha256": "7399949f857da190c5ff07b89c85e8fba8a6f681695e20a462862be591b698ed"
+    "freeze_status": "pending_post_laravel_12_69_1_production_freeze",
+    "frozen_for_stage_or_deploy": false,
+    "historical_pre_upgrade_values": {
+      "cache_manifest_sha256": "468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9",
+      "composer_lock_sha256": "22af12c7e58fcfe809735dbf9955b2d22a264e9e7345cefd74398e36bf2773b9",
+      "packages_sha256": "21da8f9ed19687e708cc7bc5cc59394c6fcdf9b9deadf617ae70526f815a1db0",
+      "services_sha256": "1f7623b2b4ffd2c4099fb34ad86fc96c1479e27bf81b1b0ba328c988cc4ffcb5",
+      "vendor_manifest_sha256": "7399949f857da190c5ff07b89c85e8fba8a6f681695e20a462862be591b698ed"
+    }
   },
   "front_controller_gate": {
     "gid": 1000,
@@ -45,8 +47,8 @@
     "target_migration_entries": 1,
     "target_source_cas_sha256": "b3379cd90676d8b3214371e17ffd3278cd43ba1885a6223b12998a8b40e5ea27"
   },
-  "log_guard_sha256": "219698ba8196d206b0d2512df5a078370a82f69be8ec92fd57f949f808da655a",
-  "manifest_sha256": "93bc5ff1427693539faabda97d7fc1b9b8a5bca8075dea7bec5cb17d75a7faf2",
+  "log_guard_sha256": "4bdec766469e71568631dbcf7408e94696f2fd99c46c18dd58b8374f31a488c8",
+  "manifest_sha256": "01731f42b8b241ebb55a310f55e6bd20d67729c60a37ea126f5c2ce0804ed32d",
   "migration": {
     "command_invoked": false,
     "connection": "fuelmysql",
@@ -59,6 +61,9 @@
   },
   "release_root": "/var/www/buy-dtf/storage/app/private/operations/production-alpha-transparency-releases",
   "retired_artifacts": {
+    "artifact_commit": [
+      "c43f39f556d057c99bb01e95ee7ca68658c05232"
+    ],
     "release_receipt_paths": [
       "/var/www/buy-dtf/storage/app/private/operations/production-alpha-transparency-releases/5b2d06cd-20261002T021532Z/release-receipt.json"
     ],
@@ -69,6 +74,11 @@
       "59bbd90cafa8d1b5efd56a6c40667924193e37539f4340e4b6163c6274425cab",
       "76cfff204e86ee1119251b1d79931b1219cd19704b099f75d4e3db202ffe5b17"
     ]
+  },
+  "review_provenance": {
+    "handoff": "buy-dtf-codie-handoff-2026-10-02.md",
+    "handoff_sha256": "ba9fd4dcf5fa5854b2e23418e0cd6ed8799874494a0341c726302b92a5acc127",
+    "status": "prefreeze_review_only_non_stageable"
   },
   "rollback_root": "/var/www/buy-dtf/storage/app/private/operations/production-alpha-transparency-rollbacks",
   "runtime_paths": {

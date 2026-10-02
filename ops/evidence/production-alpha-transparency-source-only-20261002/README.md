@@ -1,7 +1,10 @@
 # Production alpha source-only replacement evidence
 
-Status: prepared for independent review. Nothing in this package authorizes
-staging or deployment.
+Status: PERMANENTLY RETIRED / NO-GO. Artifact commit
+c43f39f556d057c99bb01e95ee7ca68658c05232 and runner SHA-256
+59bbd90cafa8d1b5efd56a6c40667924193e37539f4340e4b6163c6274425cab
+must never be staged or deployed. This directory is retained only as rejected
+audit history. No hash, token, receipt, or command recorded here has authority.
 
 The application target is
 b02fce3213fc632891036f1b5c98b9cddb94e499. It combines the reviewed
@@ -14,7 +17,7 @@ bbfd8079f73f5196ee4e519fbdee523058e0d843f375cb369fafe90c327fa760.
 Runner 76cfff204e86ee1119251b1d79931b1219cd19704b099f75d4e3db202ffe5b17
 and its prior release receipt are permanently rejected.
 
-## Reviewed behavior
+## Historical rejected behavior
 
 The new runner requires the already-installed schema with SHA-256
 5485779bdcf0ea3a4372410ef76cd0bc418d1f6400128868606e901b8e9e85da
@@ -50,14 +53,16 @@ fails closed.
 
 - APPLICATION_MANIFEST.json contains authoritative raw expected-live and target
   identities for all eleven paths.
-- RUNNER_DESCRIBE.json is the byte-for-byte output of the frozen runner describe
-  mode.
-- LOCAL_REHEARSAL_PACKAGE_RECEIPT.json indexes the frozen private archive,
-  runner, parser, schema, ledger, test, and rehearsal identities.
+- RUNNER_DESCRIBE.json preserves rejected historical describe data and is
+  explicitly marked permanently retired.
+- LOCAL_REHEARSAL_PACKAGE_RECEIPT.json preserves rejected historical package
+  identities and carries no staging or deployment authority.
 - deployment-rehearsal contains the redacted aggregate and seven scenario
   receipts. Raw backups, logs, and disposable filesystem state remain outside
   Git.
-- SHA256SUMS covers every committed file in this evidence directory other than
+- ORIGINAL_C43_SHA256SUMS preserves the checksum list issued with the rejected
+  c43f39f artifact for audit history only. SHA256SUMS covers the current
+  retirement-marked directory, including that original list, and excludes only
   SHA256SUMS itself.
 
 The private reviewed log delta remains outside Git. Its SHA-256 is
@@ -66,7 +71,6 @@ The committed fixture represents its 56 reviewed error entries as two
 reconstructed and redacted 28-entry diagnostic sequences. It contains no
 customer address, order identifier, postal code, or full carrier payload.
 
-The proposed staging and cutover sequence is in
+The rejected historical staging and cutover sequence is retained in
 ops/PRODUCTION_ALPHA_TRANSPARENCY_SOURCE_ONLY_PLAN_2026-10-02.md. Phase 1
-creates a private source-only release and stops for independent receipt review.
-Phase 2 remains separately authorized and was not run.
+and Phase 2 are both revoked and must not be run.
