@@ -22,7 +22,9 @@ class ShippoWebhookController extends Controller
         $event = $request->input('event');
         $data = $request->input('data');
 
-        Log::info('Shippo Webhook received: ' . $event, ['payload' => $request->all()]);
+        Log::info('Shippo webhook received', [
+            'event' => $event,
+        ]);
 
         if ($event === 'track_updated') {
             return $this->handleTrackUpdated($data);
@@ -40,13 +42,18 @@ class ShippoWebhookController extends Controller
 
         $order = DtfOrder::where('tracking_number', $trackingNumber)->first();
         if (!$order) {
-            Log::warning('Shippo Webhook: No order found for tracking number ' . $trackingNumber);
+            Log::warning('Shippo webhook did not match an order', [
+                'event' => 'track_updated',
+            ]);
             return response()->json(['error' => 'Order not found'], 404);
         }
 
         $trackingStatus = $data['tracking_status']['status'] ?? null;
 
-        Log::info('Shippo Webhook: Updating tracking for order #' . $order->id . ' to ' . $trackingStatus);
+        Log::info('Shippo webhook updating order tracking status', [
+            'order_id' => $order->id,
+            'tracking_status' => $trackingStatus,
+        ]);
 
         switch ($trackingStatus) {
             case 'TRANSIT':
@@ -85,10 +92,17 @@ class ShippoWebhookController extends Controller
         try {
             if ($order->business && $order->business->email) {
                 Mail::to($order->business->email)->send(new $mailableClass($order));
-                Log::info('Shippo Webhook: Email sent to ' . $order->business->email . ' using ' . $mailableClass);
+                Log::info('Shippo tracking email sent', [
+                    'order_id' => $order->id,
+                    'mailable' => $mailableClass,
+                ]);
             }
         } catch (\Exception $e) {
-            Log::error('Shippo Webhook: Failed to send email for order #' . $order->id . ': ' . $e->getMessage());
+            Log::error('Shippo tracking email failed', [
+                'order_id' => $order->id,
+                'exception_type' => $e::class,
+                'exception_code' => $e->getCode(),
+            ]);
         }
     }
 }

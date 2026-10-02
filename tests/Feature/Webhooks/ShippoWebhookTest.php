@@ -8,6 +8,7 @@ use App\Mail\OrderShipped;
 use App\Models\Business;
 use App\Models\DtfOrder;
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
@@ -37,6 +38,7 @@ class ShippoWebhookTest extends TestCase
         string $mailableClass
     ): void {
         $order = $this->createOrder(status: 4);
+        Log::spy();
 
         $this->postJson('/webhooks/shippo', $this->trackUpdatedPayload(
             $order->tracking_number,
@@ -51,6 +53,26 @@ class ShippoWebhookTest extends TestCase
                 && $mail->order->is($order);
         });
         Mail::assertSentCount(1);
+        Log::shouldHaveReceived('info', [
+            'Shippo webhook received',
+            ['event' => 'track_updated'],
+        ])->once();
+        Log::shouldHaveReceived('info', [
+            'Shippo webhook updating order tracking status',
+            [
+                'order_id' => $order->id,
+                'tracking_status' => $shippoStatus,
+            ],
+        ])->once();
+        Log::shouldHaveReceived('info', [
+            'Shippo tracking email sent',
+            [
+                'order_id' => $order->id,
+                'mailable' => $mailableClass,
+            ],
+        ])->once();
+        $this->assertValueWasNotLogged($order->tracking_number);
+        $this->assertValueWasNotLogged('shippo-step1@example.test');
     }
 
     public function test_repeated_same_status_does_not_send_duplicate_email(): void
@@ -141,6 +163,19 @@ class ShippoWebhookTest extends TestCase
             'status' => $status,
             'tracking_number' => 'track-step1-'.uniqid(),
         ]);
+    }
+
+    private function assertValueWasNotLogged(string $privateValue): void
+    {
+        foreach (['debug', 'info', 'notice', 'warning', 'error', 'critical', 'alert', 'emergency'] as $level) {
+            Log::shouldNotHaveReceived(
+                $level,
+                static fn (...$arguments): bool => str_contains(
+                    json_encode($arguments, JSON_THROW_ON_ERROR),
+                    $privateValue
+                )
+            );
+        }
     }
 
     private function trackUpdatedPayload(string $trackingNumber, string $status): array

@@ -31,23 +31,30 @@ class CheckoutController extends Controller
 
     public function index()
     {
-        Log::error('DEBUG: Entering CheckoutController::index');
+        Log::debug('Checkout index requested');
         try {
             $user = Auth::user();
             $business = $user->business;
 
             if (!$business) {
-                Log::error('DEBUG: Checkout: No business found for user ' . ($user->id ?? 'unknown'));
+                Log::warning('Checkout unavailable: no business found for authenticated user', [
+                    'user_id' => $user->id ?? null,
+                ]);
                 return redirect()->route('home')->with('error', 'No business found or not logged in.');
             }
 
             $order = $business->dtfOrders()->where('status', 1)->first();
             if (!$order) {
-                Log::error('DEBUG: Checkout: No open order found for business ' . $business->id);
+                Log::warning('Checkout unavailable: no open order found', [
+                    'business_id' => $business->id,
+                ]);
                 return redirect()->route('home')->with('error', 'No open order found.');
             }
         } catch (\Exception $e) {
-            Log::error('DEBUG: Checkout: Database error during initial load: ' . $e->getMessage());
+            Log::error('Checkout database load failed', [
+                'exception_type' => $e::class,
+                'exception_code' => $e->getCode(),
+            ]);
             return redirect()->route('home')->with('error', 'Database connection error. Please try again later.');
         }
 
@@ -103,10 +110,17 @@ class CheckoutController extends Controller
             // Fallback to a minimum weight if calculation returns 0 or false, but images exist
             if (($weight === false || $weight <= 0) && $order->dtfImages->isNotEmpty()) {
                 $weight = 1.8; // Default minimum weight in lbs (core weight)
-                Log::error('DEBUG: Order ' . $order->id . ' weight calculation failed or was 0, falling back to ' . $weight . ' lbs');
+                Log::warning('Checkout order weight was unavailable; using fallback weight', [
+                    'order_id' => $order->id,
+                    'fallback_weight_lbs' => $weight,
+                ]);
             }
 
-            Log::error('DEBUG: Checkout index for order ' . $order->id . ': Weight=' . ($weight === false ? 'false' : $weight) . ', Address=' . ($shippingAddress ? 'Set' : 'Missing'));
+            Log::debug('Checkout shipping inputs evaluated', [
+                'order_id' => $order->id,
+                'weight_lbs' => $weight === false ? null : $weight,
+                'shipping_address_present' => $shippingAddress !== null,
+            ]);
 
             if ($shippingAddress && $weight !== false && $weight > 0) {
                 try {
@@ -119,10 +133,16 @@ class CheckoutController extends Controller
                         'zip' => $shippingAddress->zip,
                     ];
                     $weightOz = $weight * 16; // lbs to oz
-                    Log::error('DEBUG: Quoting rates for order ' . $order->id . ' with weight ' . $weightOz . 'oz to ' . $shippingAddress->zip);
+                    Log::debug('Checkout requesting shipping rates', [
+                        'order_id' => $order->id,
+                        'weight_oz' => $weightOz,
+                    ]);
                     $quote = $this->shippo->quoteUpsRates($toAddr, $weightOz);
                     $rates = $quote['rates'];
-                    Log::error('DEBUG: Found ' . count($rates) . ' UPS rates');
+                    Log::debug('Checkout shipping rates received', [
+                        'order_id' => $order->id,
+                        'rate_count' => count($rates),
+                    ]);
 
                     // Free shipping logic
                     $freeShippingServices = json_decode(Setting::get('free_shipping_services', '["ups_ground", "ups_ground_saver"]'), true);
@@ -136,21 +156,28 @@ class CheckoutController extends Controller
                         }
                     }
                 } catch (\Exception $e) {
-                    Log::error('DEBUG: Shippo error: ' . $e->getMessage());
+                    Log::warning('Checkout shipping quote unavailable', [
+                        'order_id' => $order->id,
+                        'exception_type' => $e::class,
+                        'exception_code' => $e->getCode(),
+                    ]);
                 }
             } else {
-                Log::error('DEBUG: Skipping Shippo rates for order ' . $order->id . ': ' .
-                    (!$shippingAddress ? 'Missing Address. ' : '') .
-                    ($weight === false ? 'Weight is false. ' : '') .
-                    ($weight <= 0 ? 'Weight is <= 0. ' : ''));
+                Log::debug('Checkout shipping quote skipped', [
+                    'order_id' => $order->id,
+                    'shipping_address_present' => $shippingAddress !== null,
+                    'weight_valid' => $weight !== false && $weight > 0,
+                ]);
             }
 
             $pickupEnabled = Setting::get('shipping_pickup_enabled', '0');
-            Log::error('DEBUG: Checkout pickup setting raw: ' . var_export($pickupEnabled, true));
+            Log::debug('Checkout pickup setting evaluated', [
+                'pickup_enabled' => $pickupEnabled == '1' || $pickupEnabled === true || $pickupEnabled == 'true',
+            ]);
             // Add Pickup option if enabled as the first option
             // Even if Shippo fails, we want to show this if it is enabled.
             if ($pickupEnabled == '1' || $pickupEnabled === true || $pickupEnabled == 'true') {
-                Log::error('DEBUG: Adding pickup option to rates');
+                Log::debug('Checkout pickup option added');
                 array_unshift($rates, [
                     'object_id' => 'pickup',
                     'provider' => 'Local',
@@ -160,7 +187,9 @@ class CheckoutController extends Controller
                     'duration_terms' => 'Available for local pickup',
                 ]);
             }
-            Log::error('DEBUG: Final rates count: ' . count($rates));
+            Log::debug('Checkout shipping options finalized', [
+                'rate_count' => count($rates),
+            ]);
 
             $estimatedSalesTaxRate = (bool)($business->tax_exempt ?? false)
                 ? 0.0
@@ -201,9 +230,10 @@ class CheckoutController extends Controller
 
     public function startPayment(Request $request)
     {
-        Log::info('DEBUG: startPayment initiated', [
+        Log::debug('Checkout payment initialization requested', [
             'user_id' => Auth::id(),
-            'payload' => $request->all()
+            'payment_method_id' => $request->input('payment_method_id'),
+            'shipping_rate_selected' => $request->filled('shipping_rate_id'),
         ]);
 
         try {

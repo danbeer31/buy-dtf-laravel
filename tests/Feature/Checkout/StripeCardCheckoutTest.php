@@ -9,6 +9,7 @@ use App\Models\DtfOrder;
 use App\Models\PaymentInfo;
 use App\Models\User;
 use App\Services\QboService;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Mockery;
 use Stripe\ApiRequestor;
@@ -48,6 +49,7 @@ class StripeCardCheckoutTest extends TestCase
         $qbo->shouldNotReceive('recordPayment');
         $qbo->shouldNotReceive('recordStripeFee');
         $this->app->instance(QboService::class, $qbo);
+        Log::spy();
 
         $this->actingAs($user)
             ->postJson(route('checkout.payment'), [
@@ -55,6 +57,7 @@ class StripeCardCheckoutTest extends TestCase
                 'shipping_cost' => 3.25,
                 'shipping_service_name' => 'UPS Ground',
                 'payment_method_id' => 2,
+                'customer_address' => 'payment-address-secret',
             ])
             ->assertOk()
             ->assertExactJson([
@@ -80,6 +83,16 @@ class StripeCardCheckoutTest extends TestCase
         $this->assertSame($order->id, $stripe->requests[0]['params']['metadata']['order_id']);
         $this->assertSame($business->id, $stripe->requests[0]['params']['metadata']['business_id']);
         $this->assertDatabaseCount('paymentinfos', 0);
+        Log::shouldHaveReceived('debug', [
+            'Checkout payment initialization requested',
+            [
+                'user_id' => $user->id,
+                'payment_method_id' => 2,
+                'shipping_rate_selected' => true,
+            ],
+        ])->once();
+        $this->assertValueWasNotLogged('payment-address-secret');
+        $this->assertValueWasNotLogged('shippo_rate_step1');
     }
 
     public function test_non_succeeded_card_payment_does_not_mark_the_order_paid(): void
@@ -345,6 +358,19 @@ class StripeCardCheckoutTest extends TestCase
             });
 
         $this->app->instance(QboService::class, $qbo);
+    }
+
+    private function assertValueWasNotLogged(string $privateValue): void
+    {
+        foreach (['debug', 'info', 'notice', 'warning', 'error', 'critical', 'alert', 'emergency'] as $level) {
+            Log::shouldNotHaveReceived(
+                $level,
+                static fn (...$arguments): bool => str_contains(
+                    json_encode($arguments, JSON_THROW_ON_ERROR),
+                    $privateValue
+                )
+            );
+        }
     }
 }
 

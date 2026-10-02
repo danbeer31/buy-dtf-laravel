@@ -115,8 +115,15 @@ class ShippoService
         }
 
         if ($response->failed()) {
-            Log::error("Shippo request failed: " . $response->body());
-            throw new \RuntimeException('Shippo HTTP ' . $response->status() . ': ' . ($response->json()['detail'] ?? $response->body()));
+            Log::error('Shippo request failed', [
+                'method' => $method,
+                'path' => $path,
+                'status' => $response->status(),
+            ]);
+
+            throw new \RuntimeException(
+                sprintf('Shippo HTTP %d request failed for %s.', $response->status(), $path)
+            );
         }
 
         return $response->json();
@@ -126,25 +133,40 @@ class ShippoService
     {
         $parcel = array_merge($this->defaultParcel, $parcelIn, ['weight' => $weightOz, 'mass_unit' => 'oz']);
 
-        Log::error("DEBUG: Requesting Shippo rates for weight: $weightOz oz to " . json_encode($toAddr));
+        Log::debug('Requesting Shippo rates', [
+            'weight_oz' => $weightOz,
+        ]);
         try {
             $shipment = $this->createShipment($toAddr, [$parcel]);
-            Log::error("DEBUG: Shippo raw shipment response rates count: " . (isset($shipment['rates']) ? count($shipment['rates']) : '0'));
+            Log::debug('Shippo shipment rates received', [
+                'rate_count' => isset($shipment['rates']) && is_countable($shipment['rates'])
+                    ? count($shipment['rates'])
+                    : 0,
+            ]);
             if (isset($shipment['messages']) && !empty($shipment['messages'])) {
-                Log::error("DEBUG: Shippo shipment messages: " . json_encode($shipment['messages']));
+                Log::debug('Shippo shipment returned carrier messages', [
+                    'message_count' => is_countable($shipment['messages'])
+                        ? count($shipment['messages'])
+                        : 1,
+                ]);
             }
         } catch (\Exception $e) {
-            Log::error("DEBUG: Shippo createShipment Exception: " . $e->getMessage());
+            Log::error('Shippo shipment request raised an exception', [
+                'exception_type' => $e::class,
+                'exception_code' => $e->getCode(),
+            ]);
             throw $e;
         }
 
         $rates = [];
         foreach (($shipment['rates'] ?? []) as $rate) {
-            Log::error("DEBUG: Checking rate: " . json_encode([
-                'provider' => $rate['provider'],
-                'servicelevel' => $rate['servicelevel'],
-                'amount' => $rate['amount']
-            ]));
+            Log::debug('Evaluating Shippo rate', [
+                'provider' => (string) ($rate['provider'] ?? ''),
+                'service_name' => (string) ($rate['servicelevel']['name'] ?? $rate['service_name'] ?? ''),
+                'service_token' => (string) ($rate['servicelevel']['token'] ?? $rate['service_token'] ?? ''),
+                'amount' => (string) ($rate['amount'] ?? ''),
+                'currency' => (string) ($rate['currency'] ?? ''),
+            ]);
             if (!$this->isAllowedUpsRate($rate)) continue;
             $rates[] = $rate;
         }
@@ -161,7 +183,9 @@ class ShippoService
     {
         $provider = strtoupper((string)($rate['provider'] ?? ''));
         if ($provider !== 'UPS') {
-            Log::error("DEBUG: Filtering out non-UPS rate: Provider='$provider'");
+            Log::debug('Filtered non-UPS Shippo rate', [
+                'provider' => $provider,
+            ]);
             return false;
         }
 
@@ -169,7 +193,9 @@ class ShippoService
         $token = strtolower((string)($rate['servicelevel']['token'] ?? $rate['service_token'] ?? ''));
 
         if (strpos($name, 'surepost') !== false) {
-            Log::error("DEBUG: Filtering out UPS SurePost rate: Name='$name'");
+            Log::debug('Filtered UPS SurePost rate', [
+                'service_name' => $name,
+            ]);
             return false;
         }
 
@@ -194,20 +220,29 @@ class ShippoService
         // Only use fallback name matching if no explicit allowed services are set or if it matches ground/express
         if (empty(json_decode(Setting::get('ups_allowed_services', '[]'), true))) {
             if (strpos($name, 'ground') !== false) {
-                Log::error("DEBUG: Allowing UPS rate by NAME match: Name='$name'");
+                Log::debug('Allowed UPS rate by service-name fallback', [
+                    'service_name' => $name,
+                ]);
                 return true;
             }
             if (strpos($name, '2nd day') !== false || strpos($name, '2 day') !== false) {
-                Log::error("DEBUG: Allowing UPS rate by NAME match: Name='$name'");
+                Log::debug('Allowed UPS rate by service-name fallback', [
+                    'service_name' => $name,
+                ]);
                 return true;
             }
             if (strpos($name, 'next day') !== false) {
-                Log::error("DEBUG: Allowing UPS rate by NAME match: Name='$name'");
+                Log::debug('Allowed UPS rate by service-name fallback', [
+                    'service_name' => $name,
+                ]);
                 return true;
             }
         }
 
-        Log::error("DEBUG: Filtering out UPS rate: Name='$name', Token='$token'");
+        Log::debug('Filtered disallowed UPS rate', [
+            'service_name' => $name,
+            'service_token' => $token,
+        ]);
 
         return false;
     }
