@@ -1,0 +1,15 @@
+resolved=/var/www/buy-dtf
+path=/var/www/buy-dtf type=directory mode=755 uid=1000 gid=1000 owner=dan:dan device=64513
+resolved=/var/www/buy-dtf/storage
+path=/var/www/buy-dtf/storage type=directory mode=2775 uid=33 gid=33 owner=www-data:www-data device=64513
+resolved=/var/www/buy-dtf/storage/app
+path=/var/www/buy-dtf/storage/app type=directory mode=2775 uid=33 gid=33 owner=www-data:www-data device=64513
+resolved=/var/www/buy-dtf/storage/app/private
+path=/var/www/buy-dtf/storage/app/private type=directory mode=2775 uid=33 gid=33 owner=www-data:www-data device=64513
+resolved=/var/www/buy-dtf/storage/app/private/operations
+path=/var/www/buy-dtf/storage/app/private/operations type=directory mode=2700 uid=1000 gid=33 owner=dan:www-data device=64513
+resolved=/var/www/buy-dtf/storage/framework
+path=/var/www/buy-dtf/storage/framework type=directory mode=2775 uid=33 gid=33 owner=www-data:www-data device=64513
+absent_path=/var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-releases
+absent_path=/var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-artifact-2cae23d816e358c9
+maintenance=inactive

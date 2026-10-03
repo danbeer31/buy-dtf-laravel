@@ -1,0 +1,10 @@
+observation=production-host-after-failed-stage
+5.15.0-171-generic
+PHP 8.2.30 (cli) (built: Dec 18 2025 23:36:49) (NTS)
+Composer version 2.9.3 2025-12-30 13:40:17
+PHP version 8.2.30 (/usr/bin/php8.2)
+Run the "diagnose" command to get more detailed diagnostics output.
+unzip=absent
+7z=absent
+stage_extraction_note=see-failed-stage-logs/composer-install.txt
+ssh_exit=0

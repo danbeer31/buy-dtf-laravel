@@ -1,0 +1,156 @@
+{
+  "artifact": "buy-dtf-laravel-remember-cookie-vendor-mismatch-analysis-v1",
+  "autoload_source_context_proof": {
+    "composer/autoload_classmap.php": {
+      "actual_shadow": {
+        "bytes": 608594,
+        "kind": "file",
+        "mode": "600",
+        "sha256": "d3e0efdc9bd0aa30982d3abb2ddcc06edf82511dc6c06d566c236c5f7c73140f"
+      },
+      "app_lines_removed": 126,
+      "expected_reviewed": {
+        "bytes": 621995,
+        "kind": "file",
+        "mode": "644",
+        "sha256": "5236a6ef5a0803719a2cb9b24d525946342063421aac9c6bec3914f1a9d9d893"
+      },
+      "filtered_bytes": 608594,
+      "filtered_matches_actual": true,
+      "filtered_sha256": "d3e0efdc9bd0aa30982d3abb2ddcc06edf82511dc6c06d566c236c5f7c73140f",
+      "removed_bytes": 13401
+    },
+    "composer/autoload_static.php": {
+      "actual_shadow": {
+        "bytes": 669858,
+        "kind": "file",
+        "mode": "600",
+        "sha256": "2de7f5f3c4c46351589c5031f3867902fefe4fe57b77e7b131c39119d908634c"
+      },
+      "app_lines_removed": 126,
+      "expected_reviewed": {
+        "bytes": 685023,
+        "kind": "file",
+        "mode": "644",
+        "sha256": "1e82d08d78ebc0936284cf10cd7aca90b1753e0b7868627b2dda13bb67e54dc5"
+      },
+      "filtered_bytes": 669858,
+      "filtered_matches_actual": true,
+      "filtered_sha256": "2de7f5f3c4c46351589c5031f3867902fefe4fe57b77e7b131c39119d908634c",
+      "removed_bytes": 15165
+    }
+  },
+  "byte_accounting": {
+    "accounted_delta_bytes": 29259,
+    "actual_shadow_bytes": 26453095,
+    "app_classmap_bytes_absent": 28566,
+    "expected_reviewed_bytes": 26482354,
+    "fully_accounted": true,
+    "missing_proxy_bytes": 693,
+    "total_delta_bytes": 29259
+  },
+  "content_changes": [
+    {
+      "actual": {
+        "bytes": 608594,
+        "kind": "file",
+        "mode": "600",
+        "sha256": "d3e0efdc9bd0aa30982d3abb2ddcc06edf82511dc6c06d566c236c5f7c73140f"
+      },
+      "expected": {
+        "bytes": 621995,
+        "kind": "file",
+        "mode": "644",
+        "sha256": "5236a6ef5a0803719a2cb9b24d525946342063421aac9c6bec3914f1a9d9d893"
+      },
+      "path": "composer/autoload_classmap.php"
+    },
+    {
+      "actual": {
+        "bytes": 669858,
+        "kind": "file",
+        "mode": "600",
+        "sha256": "2de7f5f3c4c46351589c5031f3867902fefe4fe57b77e7b131c39119d908634c"
+      },
+      "expected": {
+        "bytes": 685023,
+        "kind": "file",
+        "mode": "644",
+        "sha256": "1e82d08d78ebc0936284cf10cd7aca90b1753e0b7868627b2dda13bb67e54dc5"
+      },
+      "path": "composer/autoload_static.php"
+    }
+  ],
+  "extra_in_shadow": [],
+  "missing_from_shadow": [
+    {
+      "bytes": 133,
+      "kind": "file",
+      "mode": "755",
+      "path": "bin/carbon.bat",
+      "sha256": "b37993b07d6d69d00748228c6d40a48f1dcc10df50e11c33dbd37227dbdcc8d7"
+    },
+    {
+      "bytes": 150,
+      "kind": "file",
+      "mode": "755",
+      "path": "bin/patch-type-declarations.bat",
+      "sha256": "65bebe04937f7249f074652f9098157e6cff1ba5a8b37418b1a29dac42cb0d9a"
+    },
+    {
+      "bytes": 136,
+      "kind": "file",
+      "mode": "755",
+      "path": "bin/php-parse.bat",
+      "sha256": "02ae1d682c88dc8aa657c039ca9896c7e268fa76f1eb5eae9c13011adb15f01a"
+    },
+    {
+      "bytes": 132,
+      "kind": "file",
+      "mode": "755",
+      "path": "bin/psysh.bat",
+      "sha256": "29c5b1546d4e625ffebf57094ce0c66b1d26cca2271759c77525889df076efae"
+    },
+    {
+      "bytes": 142,
+      "kind": "file",
+      "mode": "755",
+      "path": "bin/var-dump-server.bat",
+      "sha256": "cb581fe99b1b6c5d8e5c5fe9e224b7f4f241c098f25bb6ac5b9463d52f3939fc"
+    }
+  ],
+  "mode_counts": {
+    "actual_shadow": {
+      "directory:700": 925,
+      "file:600": 6450,
+      "file:700": 10
+    },
+    "expected_reviewed": {
+      "directory:755": 925,
+      "file:644": 6217,
+      "file:755": 248
+    }
+  },
+  "mode_transitions": {
+    "directory:755->700": 925,
+    "file:644->600": 6217,
+    "file:755->600": 233,
+    "file:755->700": 10
+  },
+  "record_counts": {
+    "actual_shadow": 7385,
+    "content_differences": 2,
+    "expected_reviewed": 7390,
+    "extra_in_shadow": 0,
+    "missing_from_shadow": 5,
+    "mode_differences": 7385,
+    "shared": 7385
+  },
+  "result": {
+    "all_other_shared_content_identical": true,
+    "existing_reviewed_runner_can_reproduce_expected_identity": false,
+    "failed_closed": true,
+    "reason": "The reviewed runner optimizes Composer autoload files before app/ is copied; the production build also differs in Composer proxy generation and modes.",
+    "retry_requires_revised_runner_identity_and_independent_review": true
+  }
+}

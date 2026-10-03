@@ -1,0 +1,31 @@
+artifact_resolved=/var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-artifact-2cae23d816e358c9
+artifact_type=directory mode=2700 uid=1000 gid=33 owner=dan:www-data device=64513
+artifact_symlink_count=0
+artifact_file_count=13
+artifact_directory_count=3
+file=__pycache__/laravel_remember_cookie_dependency_deploy.cpython-310.pyc mode=600 uid=1000 gid=33 bytes=68067
+file=buy-dtf-laravel-12.69.1-lock-77055fc8.tar.gz mode=600 uid=1000 gid=33 bytes=32798
+file=buy-dtf-laravel-12.69.1-lock-77055fc8/composer.lock mode=600 uid=1000 gid=33 bytes=320685
+file=failed-stage-vendor-inventory.json mode=600 uid=1000 gid=33 bytes=1490052
+file=laravel_remember_cookie_dependency_deploy.py mode=700 uid=1000 gid=33 bytes=101680
+file=laravel_remember_cookie_runtime_probe.php mode=600 uid=1000 gid=33 bytes=4651
+file=preflight-after-failed-stage.json mode=600 uid=1000 gid=33 bytes=5660
+file=preflight-after-failed-stage.stderr mode=600 uid=1000 gid=33 bytes=0
+file=preflight-before.json mode=600 uid=1000 gid=33 bytes=5660
+file=preflight-before.stderr mode=600 uid=1000 gid=33 bytes=0
+file=stage-command-metadata.txt mode=600 uid=1000 gid=33 bytes=98
+file=stage-command.stderr mode=600 uid=1000 gid=33 bytes=71
+file=stage-command.stdout mode=600 uid=1000 gid=33 bytes=0
+c7619c0e234e7e4ff912713fb54f4ea780887f80f9da1f6f31ed0430f2e3e5ba  /var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-artifact-2cae23d816e358c9/__pycache__/laravel_remember_cookie_dependency_deploy.cpython-310.pyc
+e87f4bc7a7d1dc5f79df99b0cb2873b7a749e5c8000e5014aef4495c48e6ed3e  /var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-artifact-2cae23d816e358c9/buy-dtf-laravel-12.69.1-lock-77055fc8.tar.gz
+77055fc8acf891496b0b356bb034d7935c04989a3751f52b788ecd1b7999206d  /var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-artifact-2cae23d816e358c9/buy-dtf-laravel-12.69.1-lock-77055fc8/composer.lock
+cf94baed81f336b2210ec26fde0c6131fb2c0725c38372310a0e7349e4e655ec  /var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-artifact-2cae23d816e358c9/failed-stage-vendor-inventory.json
+2cae23d816e358c91ce512da4b3db3ee4e7fdff268c51afddafb0995b2feef9e  /var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-artifact-2cae23d816e358c9/laravel_remember_cookie_dependency_deploy.py
+74ae751d18f0396e86c066e908a006b1a170e223b1ad56c59168c94491925362  /var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-artifact-2cae23d816e358c9/laravel_remember_cookie_runtime_probe.php
+03a1b2642a8a82cb97521be4a924098bad8548a274288a5b0ebaadd7d486e0cf  /var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-artifact-2cae23d816e358c9/preflight-after-failed-stage.json
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  /var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-artifact-2cae23d816e358c9/preflight-after-failed-stage.stderr
+2c5cb81479e3d127dbc5baeb850755ef6906c4e186959a9751c0bf2478a7abb9  /var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-artifact-2cae23d816e358c9/preflight-before.json
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  /var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-artifact-2cae23d816e358c9/preflight-before.stderr
+97b398bfb55d8eef0632c68eeb21d1da813e64239b6041176b2258ee04ac0bbe  /var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-artifact-2cae23d816e358c9/stage-command-metadata.txt
+85da9ddd97029413558dabe44ec1fb56fa1942b4b386c44b10b920b4bcc163ee  /var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-artifact-2cae23d816e358c9/stage-command.stderr
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  /var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-artifact-2cae23d816e358c9/stage-command.stdout

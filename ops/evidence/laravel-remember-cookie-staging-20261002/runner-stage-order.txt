@@ -1,0 +1,103 @@
+runner_sha256=2cae23d816e358c91ce512da4b3db3ee4e7fdff268c51afddafb0995b2feef9e
+excerpt=stage_release shadow setup through runtime shadow copy
+0919:     candidate_lock = require_regular_file(candidate_lock, CANDIDATE_LOCK_SHA256)
+0920:
+0921:     RELEASE_ROOT.mkdir(mode=0o700, parents=True, exist_ok=True)
+0922:     os.chmod(RELEASE_ROOT, 0o700)
+0923:     timestamp = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
+0924:     release = RELEASE_ROOT / f"{CANDIDATE_LOCK_SHA256[:12]}-{timestamp}"
+0925:     release.mkdir(mode=0o700)
+0926:     shadow = release / "shadow"
+0927:     shadow.mkdir(mode=0o700)
+0928:     logs = release / "logs"
+0929:     logs.mkdir(mode=0o700)
+0930:     composer_home = release / ".composer-home"
+0931:     composer_home.mkdir(mode=0o700)
+0932:     (release / ".home").mkdir(mode=0o700)
+0933:     environment = safe_environment(composer_home)
+0934:
+0935:     atomic_copy(APP_ROOT / "composer.json", shadow / "composer.json", 0o600)
+0936:     atomic_copy(candidate_lock, shadow / "composer.lock", 0o600)
+0937:     command_receipts: dict[str, str] = {}
+0938:     composer = "/usr/local/bin/composer"
+0939:
+0940:     validate = run(
+0941:         [
+0942:             composer,
+0943:             "--no-plugins",
+0944:             "validate",
+0945:             "--strict",
+0946:             "--no-check-publish",
+0947:             "--no-interaction",
+0948:             "--no-ansi",
+0949:         ],
+0950:         cwd=shadow,
+0951:         timeout=120,
+0952:         env=environment,
+0953:     )
+0954:     command_receipts["composer_validate"] = write_command_result(logs / "composer-validate.txt", validate)
+0955:     audit = run(
+0956:         [
+0957:             composer,
+0958:             "--no-plugins",
+0959:             "audit",
+0960:             "--locked",
+0961:             "--no-dev",
+0962:             "--no-interaction",
+0963:             "--no-ansi",
+0964:         ],
+0965:         cwd=shadow,
+0966:         timeout=120,
+0967:         env=environment,
+0968:     )
+0969:     command_receipts["composer_audit"] = write_command_result(logs / "composer-audit.txt", audit)
+0970:     install = run(
+0971:         [
+0972:             composer,
+0973:             "--no-plugins",
+0974:             "install",
+0975:             "--no-dev",
+0976:             "--prefer-dist",
+0977:             "--optimize-autoloader",
+0978:             "--no-interaction",
+0979:             "--no-scripts",
+0980:             "--no-ansi",
+0981:         ],
+0982:         cwd=shadow,
+0983:         timeout=900,
+0984:         env=environment,
+0985:     )
+0986:     command_receipts["composer_install"] = write_command_result(logs / "composer-install.txt", install)
+0987:     platform = run(
+0988:         [
+0989:             composer,
+0990:             "--no-plugins",
+0991:             "check-platform-reqs",
+0992:             "--no-dev",
+0993:             "--no-interaction",
+0994:             "--no-ansi",
+0995:         ],
+0996:         cwd=shadow,
+0997:         timeout=120,
+0998:         env=environment,
+0999:     )
+1000:     command_receipts["platform"] = write_command_result(logs / "platform.txt", platform)
+1001:
+1002:     copy_runtime_shadow(shadow)
+1003:     package_discovery = run(
+1004:         ["/usr/bin/php", "artisan", "package:discover", "--no-interaction", "--no-ansi"],
+1005:         cwd=shadow,
+1006:         timeout=120,
+1007:         env=environment,
+1008:     )
+1009:     command_receipts["shadow_package_discovery"] = write_command_result(
+1010:         logs / "shadow-package-discovery.txt", package_discovery
+1011:     )
+1012:     routes = run(
+1013:         ["/usr/bin/php", "artisan", "route:list", "--no-ansi"],
+1014:         cwd=shadow,
+1015:         timeout=120,
+1016:         env=environment,
+1017:     )
+1018:     command_receipts["shadow_routes"] = write_command_result(logs / "shadow-routes.txt", routes)
+1019:

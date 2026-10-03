@@ -1,0 +1,30 @@
+resolved=/var/www/buy-dtf
+path=/var/www/buy-dtf type=directory mode=755 uid=1000 gid=1000 owner=dan:dan device=64513
+resolved=/var/www/buy-dtf/storage
+path=/var/www/buy-dtf/storage type=directory mode=2775 uid=33 gid=33 owner=www-data:www-data device=64513
+resolved=/var/www/buy-dtf/storage/app
+path=/var/www/buy-dtf/storage/app type=directory mode=2775 uid=33 gid=33 owner=www-data:www-data device=64513
+resolved=/var/www/buy-dtf/storage/app/private
+path=/var/www/buy-dtf/storage/app/private type=directory mode=2775 uid=33 gid=33 owner=www-data:www-data device=64513
+resolved=/var/www/buy-dtf/storage/app/private/operations
+path=/var/www/buy-dtf/storage/app/private/operations type=directory mode=2700 uid=1000 gid=33 owner=dan:www-data device=64513
+resolved=/var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-artifact-2cae23d816e358c9
+path=/var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-artifact-2cae23d816e358c9 type=directory mode=2700 uid=1000 gid=33 owner=dan:www-data device=64513
+resolved=/var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-releases
+path=/var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-releases type=directory mode=700 uid=1000 gid=33 owner=dan:www-data device=64513
+resolved=/var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-releases/77055fc8acf8-20261003T000251Z
+path=/var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-releases/77055fc8acf8-20261003T000251Z type=directory mode=700 uid=1000 gid=1000 owner=dan:dan device=64513
+resolved=/var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-releases/77055fc8acf8-20261003T000251Z/shadow
+path=/var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-releases/77055fc8acf8-20261003T000251Z/shadow type=directory mode=700 uid=1000 gid=1000 owner=dan:dan device=64513
+resolved=/var/www/buy-dtf/storage/framework
+path=/var/www/buy-dtf/storage/framework type=directory mode=2775 uid=33 gid=33 owner=www-data:www-data device=64513
+release_symlink_count=0
+release_file_count=6883
+release_directory_count=1124
+release_receipt=absent
+rollback_root=absent
+maintenance=inactive
+2cae23d816e358c91ce512da4b3db3ee4e7fdff268c51afddafb0995b2feef9e  /var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-artifact-2cae23d816e358c9/laravel_remember_cookie_dependency_deploy.py
+74ae751d18f0396e86c066e908a006b1a170e223b1ad56c59168c94491925362  /var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-artifact-2cae23d816e358c9/laravel_remember_cookie_runtime_probe.php
+e87f4bc7a7d1dc5f79df99b0cb2873b7a749e5c8000e5014aef4495c48e6ed3e  /var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-artifact-2cae23d816e358c9/buy-dtf-laravel-12.69.1-lock-77055fc8.tar.gz
+77055fc8acf891496b0b356bb034d7935c04989a3751f52b788ecd1b7999206d  /var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-artifact-2cae23d816e358c9/buy-dtf-laravel-12.69.1-lock-77055fc8/composer.lock

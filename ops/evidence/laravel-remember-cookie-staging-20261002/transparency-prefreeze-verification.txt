@@ -1,0 +1,7 @@
+worktree=C:\Users\danie\projects\buy-dtf-transparency-repair-20261001
+branch=fix/production-alpha-transparency-source-only-v2-20261002
+head=3db18d1fff3f599299eecd2aae21b9102fc45540
+worktree_clean=true
+freeze_assignment=DEPENDENCY_ENVELOPE_FROZEN = False
+runner_sha256=c42f076e9810df8722773806ceac051e9b6e63b1e7ae9139f480bc34f8144841
+staged_or_deployed=false

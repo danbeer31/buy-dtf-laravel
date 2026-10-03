@@ -1,0 +1,18 @@
+path=/var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-releases/77055fc8acf8-20261003T000251Z type=directory mode=700 uid=1000 gid=1000 owner=dan:dan device=64513
+path=/var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-releases/77055fc8acf8-20261003T000251Z/shadow type=directory mode=700 uid=1000 gid=1000 owner=dan:dan device=64513
+path=/var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-releases/77055fc8acf8-20261003T000251Z/logs type=directory mode=700 uid=1000 gid=1000 owner=dan:dan device=64513
+path=/var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-releases/77055fc8acf8-20261003T000251Z/shadow/vendor type=directory mode=700 uid=1000 gid=1000 owner=dan:dan device=64513
+path=/var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-releases/77055fc8acf8-20261003T000251Z/shadow/bootstrap/cache type=directory mode=2775 uid=1000 gid=33 owner=dan:www-data device=64513
+release_symlink_count=0
+release_receipt=absent
+dac04dda7966b04d2eb83ba22b729e4025f820bba102192effa983b1fa377af8  /var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-releases/77055fc8acf8-20261003T000251Z/logs/composer-audit.txt
+54e0d11a1cfe9faf58412592de7e7a3d8a1abd612ff60c27805077e978188b9f  /var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-releases/77055fc8acf8-20261003T000251Z/logs/composer-install.txt
+43add299dc97ecbd90ec2dc456ef5a0bd824bb9abdae2a3d7cdb520e21f8e86d  /var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-releases/77055fc8acf8-20261003T000251Z/logs/composer-validate.txt
+485cb824d1abe5e4c9efa4248e41295c4de48429d7fc0e50d41220ca22d5d0d1  /var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-releases/77055fc8acf8-20261003T000251Z/logs/platform.txt
+1306c598a02c1f6569bca56d18f0b5710b08dbab9e8d5636f9655701c917188f  /var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-releases/77055fc8acf8-20261003T000251Z/logs/shadow-package-discovery.txt
+966a1b7b1dfb1db69ca1d1008db7745fa1d3c842a20984f785c0b0f35cf9846d  /var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-releases/77055fc8acf8-20261003T000251Z/logs/shadow-routes.txt
+7098f3a19cb65f88bcc945f019dda0aa7f515737eb5d4918c30705f25c6ad872  /var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-releases/77055fc8acf8-20261003T000251Z/shadow/composer.json
+77055fc8acf891496b0b356bb034d7935c04989a3751f52b788ecd1b7999206d  /var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-releases/77055fc8acf8-20261003T000251Z/shadow/composer.lock
+21da8f9ed19687e708cc7bc5cc59394c6fcdf9b9deadf617ae70526f815a1db0  /var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-releases/77055fc8acf8-20261003T000251Z/shadow/bootstrap/cache/packages.php
+1f7623b2b4ffd2c4099fb34ad86fc96c1479e27bf81b1b0ba328c988cc4ffcb5  /var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-releases/77055fc8acf8-20261003T000251Z/shadow/bootstrap/cache/services.php
+57b5816cb43268c7cb302dac235b87d406950ba09614b5e357ba5f69aebf9681  /var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-releases/77055fc8acf8-20261003T000251Z/shadow/vendor/composer/installed.json

@@ -1,0 +1,13 @@
+{
+  "artifact": "buy-dtf-laravel-remember-cookie-partial-shadow-package-identity-v1",
+  "installed_json_sha256": "57b5816cb43268c7cb302dac235b87d406950ba09614b5e357ba5f69aebf9681",
+  "laravel_pail_present": false,
+  "package_count": 80,
+  "versions": {
+    "guzzlehttp/guzzle": "7.15.2",
+    "laravel/framework": "v12.69.1",
+    "league/commonmark": "2.10.2",
+    "league/flysystem": "3.35.3",
+    "league/flysystem-local": "3.35.3"
+  }
+}

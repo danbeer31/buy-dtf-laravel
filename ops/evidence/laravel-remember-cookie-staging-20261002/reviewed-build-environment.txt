@@ -1,0 +1,24 @@
+observation=retained reviewed WSL build
+kernel=6.6.87.2-microsoft-standard-WSL2
+PHP 8.3.6 (cli) (built: Sep  2 2026 12:56:02) (NTS)
+Composer version 2.9.3 2025-12-30 13:40:17
+unzip=/usr/bin/unzip
+current_shell_umask=0022
+composer_bin_compat=auto
+umask_note=current observation only; retained file modes are independently inventoried
+  File: /tmp/buy-dtf-remember-a-Hd2HJfyc
+  Size: 4096      	Blocks: 8          IO Block: 4096   directory
+Device: 8,48	Inode: 170724      Links: 13
+Access: (0700/drwx------)  Uid: (    0/    root)   Gid: (    0/    root)
+Access: 2026-10-02 19:11:09.099765819 -0500
+Modify: 2026-10-02 17:43:56.998446618 -0500
+Change: 2026-10-02 17:43:56.998446618 -0500
+ Birth: 2026-10-02 17:43:56.004846607 -0500
+  File: /tmp/buy-dtf-remember-a-Hd2HJfyc/vendor
+  Size: 4096      	Blocks: 8          IO Block: 4096   directory
+Device: 8,48	Inode: 171138      Links: 32
+Access: (0755/drwxr-xr-x)  Uid: (    0/    root)   Gid: (    0/    root)
+Access: 2026-10-02 17:44:04.364046693 -0500
+Modify: 2026-10-02 17:44:03.298446682 -0500
+Change: 2026-10-02 17:44:03.298446682 -0500
+ Birth: 2026-10-02 17:43:56.994846618 -0500
