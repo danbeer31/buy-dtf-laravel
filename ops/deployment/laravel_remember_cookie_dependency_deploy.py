@@ -28,14 +28,24 @@ import time
 from typing import Any, Callable
 
 
+DEPLOYMENT_MODULE_DIRECTORY = Path(__file__).resolve().parent
+if str(DEPLOYMENT_MODULE_DIRECTORY) not in sys.path:
+    sys.path.insert(0, str(DEPLOYMENT_MODULE_DIRECTORY))
+
+import laravel_dependency_database_envelope as database_envelope
+import laravel_dependency_gate as dependency_gate
+import laravel_log_delta as laravel_log_delta
+
+
 APP_ROOT = Path("/var/www/buy-dtf")
 PRIVATE_OPERATIONS_ROOT = APP_ROOT / "storage/app/private/operations"
-RELEASE_ROOT = PRIVATE_OPERATIONS_ROOT / "laravel-remember-cookie-v2-releases"
-ROLLBACK_ROOT = PRIVATE_OPERATIONS_ROOT / "laravel-remember-cookie-v2-rollbacks"
+RELEASE_ROOT = PRIVATE_OPERATIONS_ROOT / "laravel-remember-cookie-v3-releases"
+ROLLBACK_ROOT = PRIVATE_OPERATIONS_ROOT / "laravel-remember-cookie-v3-rollbacks"
 DEPLOYMENT_LOCK = APP_ROOT / "storage/framework/dependency-deployment.lock"
 FPM_SOCKET = Path("/run/php/php8.2-fpm.sock")
 LARAVEL_MAINTENANCE_FILE = APP_ROOT / "storage/framework/down"
 FRONT_CONTROLLER = APP_ROOT / "public/index.php"
+LARAVEL_LOG_PATH = APP_ROOT / "storage/logs/laravel.log"
 MAINTENANCE_PROBE_URL = "https://buy-dtf.com/"
 
 EXPECTED_APP_UID = 1000
@@ -51,9 +61,12 @@ EXPECTED_FRONT_CONTROLLER_SHA256 = "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26
 EXPECTED_APP_ENVIRONMENT = "local"
 EXPECTED_APP_DEBUG = False
 EXPECTED_PHP_VERSION = "8.2.30"
-RUNTIME_HELPER_SHA256 = "74ae751d18f0396e86c066e908a006b1a170e223b1ad56c59168c94491925362"
+RUNTIME_HELPER_SHA256 = "7cd804545f9e09d096d348924021047e0a7b1b6ecf3a1b783fd015aef24c48d2"
+DATABASE_ENVELOPE_VALIDATOR_SHA256 = "e3aa9109fcc6a6c8725f07665f27fc28a242447861b5b6c2a8d614a5a0a805b3"
+GATE_HELPER_SHA256 = "1269a277e931dee346293bed4ea0f6d029cf9ded7810127a0ef547289ce51f80"
+LOG_PARSER_SHA256 = "b91ac879b9559e229e18b7613fa4c570cee54016fbadc2e306925c0a71bcf179"
 HANDOFF_FILENAME = "HANDOFF.md"
-HANDOFF_SHA256 = "f198e8658848f64ac003528e45d925a606ef6788769e81b5d7269ec8be345dcb"
+HANDOFF_SHA256 = "305127ee8dc6c578ea8a8a1901a455b2e18378c481c8c726b3b120917e62a984"
 ARTIFACT_REVIEW_STATUS = "review-only; not staged or deployed"
 
 EXPECTED_SOURCE_MANIFEST = {
@@ -148,9 +161,12 @@ NEW_PACKAGE_VERSIONS = {
     "league/flysystem": "3.35.3",
     "league/flysystem-local": "3.35.3",
 }
-STAGE_APPROVAL_TOKEN = f"STAGE-BUYDTF-LARAVEL-REMEMBER-V2-{CANDIDATE_LOCK_SHA256[:16]}"
-CUTOVER_APPROVAL_TOKEN = f"DEPLOY-BUYDTF-LARAVEL-REMEMBER-V2-{CANDIDATE_LOCK_SHA256[:16]}"
-RECOVERY_APPROVAL_TOKEN = f"RECOVER-BUYDTF-LARAVEL-REMEMBER-V2-{EXPECTED_LIVE_LOCK_SHA256[:16]}"
+STAGE_APPROVAL_TOKEN = f"STAGE-BUYDTF-LARAVEL-REMEMBER-V3-{CANDIDATE_LOCK_SHA256[:16]}"
+CUTOVER_APPROVAL_TOKEN = f"DEPLOY-BUYDTF-LARAVEL-REMEMBER-V3-{CANDIDATE_LOCK_SHA256[:16]}"
+RECOVERY_APPROVAL_TOKEN = f"RECOVER-BUYDTF-LARAVEL-REMEMBER-V3-{EXPECTED_LIVE_LOCK_SHA256[:16]}"
+FINALIZE_MONITOR_APPROVAL_TOKEN = (
+    f"FINALIZE-BUYDTF-LARAVEL-REMEMBER-V3-{CANDIDATE_LOCK_SHA256[:16]}"
+)
 
 DRAIN_SECONDS = 65
 OPCACHE_WAIT_SECONDS = 5
@@ -201,20 +217,13 @@ ROLLBACK_TRANSITIONS = (
     "after_rollback_gate_open",
     "after_rollback_health",
 )
-MAINTENANCE_GATE_HEADER = "X-BuyDTF-Dependency-Maintenance: static-v2"
-MAINTENANCE_GATE_SENTINEL = "BUYDTF_DEPENDENCY_MAINTENANCE_STATIC_V2"
-MAINTENANCE_GATE_BYTES = f"""<?php
-declare(strict_types=1);
-
-http_response_code(503);
-header('Content-Type: text/plain; charset=UTF-8');
-header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
-header('Pragma: no-cache');
-header('Retry-After: 120');
-header('{MAINTENANCE_GATE_HEADER}');
-echo '{MAINTENANCE_GATE_SENTINEL}';
-""".encode("utf-8")
-MAINTENANCE_GATE_SHA256 = hashlib.sha256(MAINTENANCE_GATE_BYTES).hexdigest()
+MAINTENANCE_GATE_HEADER = (
+    f"{dependency_gate.MAINTENANCE_GATE_HEADER_NAME}: "
+    f"{dependency_gate.MAINTENANCE_GATE_HEADER_VALUE}"
+)
+MAINTENANCE_GATE_SENTINEL = dependency_gate.MAINTENANCE_GATE_SENTINEL
+MAINTENANCE_GATE_BYTES = dependency_gate.MAINTENANCE_GATE_BYTES
+MAINTENANCE_GATE_SHA256 = dependency_gate.EXPECTED_GATE_SHA256
 
 
 class DeploymentError(RuntimeError):
@@ -1012,6 +1021,43 @@ def runtime_probe(helper: Path) -> dict[str, Any]:
     return payload
 
 
+def validate_database_envelope(
+    payload: dict[str, Any],
+    *,
+    pre_source: bool,
+) -> dict[str, Any]:
+    """Apply the reviewed schema/ledger contract to one runtime snapshot."""
+
+    try:
+        if pre_source:
+            return database_envelope.validate_pre_source_database_envelope(payload)
+        return database_envelope.validate_post_cutover_database_envelope(payload)
+    except database_envelope.DatabaseEnvelopeError as exception:
+        raise DeploymentError(f"Production database envelope rejected: {exception}") from exception
+
+
+def require_database_envelope_validator() -> Path:
+    module_path = Path(str(database_envelope.__file__)).resolve(strict=True)
+    return require_regular_file(module_path, DATABASE_ENVELOPE_VALIDATOR_SHA256)
+
+
+def database_envelope_stable_identity(summary: dict[str, Any]) -> dict[str, Any]:
+    """Remove only the post-cutover item_meta population counter from comparison."""
+
+    stable = json.loads(json.dumps(summary))
+    item_meta = stable.get("savedimages_item_meta")
+    if not isinstance(item_meta, dict):
+        raise DeploymentError("Database-envelope summary has no savedimages.item_meta proof.")
+    item_meta.pop("nonnull_rows", None)
+    stable.pop("item_meta_row_policy", None)
+    return stable
+
+
+def require_log_parser() -> Path:
+    module_path = Path(str(laravel_log_delta.__file__)).resolve(strict=True)
+    return require_regular_file(module_path, LOG_PARSER_SHA256)
+
+
 def normalize_package_version(value: Any) -> str:
     version = str(value or "")
     return version[1:] if version.startswith("v") else version
@@ -1235,6 +1281,9 @@ def production_preflight(
     if not deployment_lock_owned and lock_state["free"] is not True:
         raise DeploymentError("Another dependency operation holds the application lock.")
 
+    require_database_envelope_validator()
+    require_gate_helper()
+    require_log_parser()
     baseline = assert_production_baseline(helper)
     processes = scoped_processes()
     if processes:
@@ -1242,14 +1291,19 @@ def production_preflight(
     health = health_snapshot()
     runtime = runtime_probe(helper)
     validate_runtime_baseline(runtime, expected_versions=OLD_PACKAGE_VERSIONS)
+    database_summary = validate_database_envelope(runtime, pre_source=True)
     return {
-        "artifact": "buy-dtf-laravel-remember-cookie-production-preflight-v2",
+        "artifact": "buy-dtf-laravel-remember-cookie-production-preflight-v3",
         "handoff": {"filename": HANDOFF_FILENAME, "sha256": HANDOFF_SHA256},
         "cutover_requires_separate_independent_review": True,
         "status": "pass",
         "checked_at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "script_sha256": sha256_file(Path(__file__).resolve()),
         "runtime_helper_sha256": RUNTIME_HELPER_SHA256,
+        "database_envelope_validator_sha256": DATABASE_ENVELOPE_VALIDATOR_SHA256,
+        "gate_helper_sha256": GATE_HELPER_SHA256,
+        "log_parser_sha256": LOG_PARSER_SHA256,
+        "database_envelope": database_summary,
         "live_composer_json_sha256": sha256_file(APP_ROOT / "composer.json"),
         "live_lock_sha256": sha256_file(APP_ROOT / "composer.lock"),
         "candidate_lock_sha256": sha256_file(candidate_lock),
@@ -1484,8 +1538,46 @@ def stage_release(candidate_lock: Path, approval_token: str, helper: Path) -> Pa
     if shadow_source_after != shadow_source:
         raise DeploymentError("Staged source CAS changed during candidate construction.")
 
+    # Re-read the live system after candidate construction. This proves that
+    # source, dependencies, front controller, configuration, schema, queues,
+    # and disabled capability flags remained unchanged throughout staging.
+    post_candidate_baseline = assert_production_baseline(helper)
+    if post_candidate_baseline != baseline:
+        raise DeploymentError("Production CAS baseline changed during candidate construction.")
+    post_candidate_runtime = runtime_probe(helper)
+    validate_runtime_baseline(
+        post_candidate_runtime,
+        expected_versions=OLD_PACKAGE_VERSIONS,
+    )
+    post_candidate_database = validate_database_envelope(
+        post_candidate_runtime,
+        pre_source=True,
+    )
+    if post_candidate_database != preflight["database_envelope"]:
+        raise DeploymentError(
+            "Production schema, ledger, queues, capabilities, or guarded row counts "
+            "changed during candidate construction."
+        )
+    post_candidate_health = health_snapshot()
+    database_receipt = {
+        "artifact": "buy-dtf-laravel-remember-cookie-database-envelope-v3",
+        "status": "pass",
+        "policy": "pre_source_exactly_zero",
+        "checked_at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "runtime_helper_sha256": RUNTIME_HELPER_SHA256,
+        "validator_sha256": DATABASE_ENVELOPE_VALIDATOR_SHA256,
+        "before_candidate_construction": preflight["database_envelope"],
+        "after_candidate_construction": post_candidate_database,
+        "stable_identity": database_envelope_stable_identity(post_candidate_database),
+        "database_read_only": True,
+        "migration_command_invoked": False,
+        "migration_executed": False,
+    }
+    database_receipt_path = release / "database-envelope-receipt.json"
+    atomic_json(database_receipt_path, database_receipt)
+
     receipt = {
-        "artifact": "buy-dtf-laravel-remember-cookie-release-v2",
+        "artifact": "buy-dtf-laravel-remember-cookie-release-v3",
         "status": "staged",
         "handoff": {"filename": HANDOFF_FILENAME, "sha256": HANDOFF_SHA256},
         "cutover_requires_separate_independent_review": True,
@@ -1509,10 +1601,21 @@ def stage_release(candidate_lock: Path, approval_token: str, helper: Path) -> Pa
         "maintenance_gate_sha256": MAINTENANCE_GATE_SHA256,
         "command_receipts": command_receipts,
         "production_preflight": preflight,
+        "database_envelope_receipt": {
+            "path": str(database_receipt_path),
+            "sha256": sha256_file(database_receipt_path),
+        },
+        "database_envelope": post_candidate_database,
+        "post_candidate_baseline": post_candidate_baseline,
         "health_before": before_health,
+        "health_after_candidate_construction": post_candidate_health,
         "runtime_before": before_runtime,
+        "runtime_after_candidate_construction": post_candidate_runtime,
         "script_sha256": sha256_file(Path(__file__).resolve()),
         "runtime_helper_sha256": RUNTIME_HELPER_SHA256,
+        "database_envelope_validator_sha256": DATABASE_ENVELOPE_VALIDATOR_SHA256,
+        "gate_helper_sha256": GATE_HELPER_SHA256,
+        "log_parser_sha256": LOG_PARSER_SHA256,
         "versions": NEW_PACKAGE_VERSIONS,
         "no_dev": True,
     }
@@ -1533,7 +1636,7 @@ def load_approved_release(receipt_path: Path, approved_sha256: str) -> tuple[dic
     except json.JSONDecodeError as exception:
         raise DeploymentError("Release receipt is invalid JSON.") from exception
     if (
-        receipt.get("artifact") != "buy-dtf-laravel-remember-cookie-release-v2"
+        receipt.get("artifact") != "buy-dtf-laravel-remember-cookie-release-v3"
         or receipt.get("status") != "staged"
     ):
         raise DeploymentError("Release receipt is not an approved staged release.")
@@ -1578,8 +1681,58 @@ def load_approved_release(receipt_path: Path, approved_sha256: str) -> tuple[dic
         or preflight.get("status") != "pass"
         or preflight.get("script_sha256") != sha256_file(Path(__file__).resolve())
         or preflight.get("runtime_helper_sha256") != RUNTIME_HELPER_SHA256
+        or preflight.get("database_envelope_validator_sha256")
+        != DATABASE_ENVELOPE_VALIDATOR_SHA256
+        or preflight.get("gate_helper_sha256") != GATE_HELPER_SHA256
+        or preflight.get("log_parser_sha256") != LOG_PARSER_SHA256
+        or receipt.get("database_envelope_validator_sha256")
+        != DATABASE_ENVELOPE_VALIDATOR_SHA256
+        or receipt.get("gate_helper_sha256") != GATE_HELPER_SHA256
+        or receipt.get("log_parser_sha256") != LOG_PARSER_SHA256
     ):
         raise DeploymentError("Release receipt has no matching successful production preflight.")
+    before_database = validate_database_envelope(
+        preflight.get("runtime", {}),
+        pre_source=True,
+    )
+    after_database = validate_database_envelope(
+        receipt.get("runtime_after_candidate_construction", {}),
+        pre_source=True,
+    )
+    if (
+        before_database != preflight.get("database_envelope")
+        or after_database != receipt.get("database_envelope")
+        or before_database != after_database
+    ):
+        raise DeploymentError("Release receipt database-envelope proof is invalid or drifted.")
+    database_item = receipt.get("database_envelope_receipt")
+    if not isinstance(database_item, dict):
+        raise DeploymentError("Release receipt has no database-envelope receipt.")
+    database_receipt_path = require_regular_file(
+        Path(str(database_item.get("path", ""))),
+        str(database_item.get("sha256", "")),
+    )
+    if database_receipt_path != receipt_path.parent / "database-envelope-receipt.json":
+        raise DeploymentError("Database-envelope receipt is outside its release directory.")
+    try:
+        database_receipt = json.loads(database_receipt_path.read_text(encoding="utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as exception:
+        raise DeploymentError("Database-envelope receipt is invalid JSON.") from exception
+    if (
+        not isinstance(database_receipt, dict)
+        or database_receipt.get("artifact")
+        != "buy-dtf-laravel-remember-cookie-database-envelope-v3"
+        or database_receipt.get("status") != "pass"
+        or database_receipt.get("runtime_helper_sha256") != RUNTIME_HELPER_SHA256
+        or database_receipt.get("validator_sha256")
+        != DATABASE_ENVELOPE_VALIDATOR_SHA256
+        or database_receipt.get("before_candidate_construction") != before_database
+        or database_receipt.get("after_candidate_construction") != after_database
+        or database_receipt.get("database_read_only") is not True
+        or database_receipt.get("migration_command_invoked") is not False
+        or database_receipt.get("migration_executed") is not False
+    ):
+        raise DeploymentError("Database-envelope receipt does not prove the reviewed state.")
     shadow = Path(str(receipt.get("shadow_path", "")))
     shadow = require_real_directory(shadow, within=release_root)
     if source_manifest(shadow) != EXPECTED_SOURCE_MANIFEST:
@@ -1627,91 +1780,176 @@ def copy_cache_snapshot(source: Path, destination: Path) -> dict[str, Any]:
     }
 
 
-def probe_static_gate() -> dict[str, Any]:
-    statuses: dict[str, int] = {}
-    for target in (
-        MAINTENANCE_PROBE_URL,
-        f"https://buy-dtf.com/__dependency_gate_{secrets.token_hex(12)}",
-    ):
-        completed = run(
-            [
-                "/usr/bin/curl",
-                "--silent",
-                "--show-error",
-                "--dump-header",
-                "-",
-                "--output",
-                "-",
-                "--header",
-                "Cache-Control: no-cache, no-store",
-                "--header",
-                "Pragma: no-cache",
-                "--connect-timeout",
-                "5",
-                "--max-time",
-                "10",
-                "--max-redirs",
-                "0",
-                target,
-            ],
-            cwd=APP_ROOT,
-            timeout=15,
-        )
-        output = completed.stdout.replace("\r\n", "\n")
-        first_line = output.splitlines()[0] if output.splitlines() else ""
-        if " 503 " not in first_line:
-            raise DeploymentError("Static maintenance gate did not return HTTP 503.")
-        if MAINTENANCE_GATE_HEADER.lower() not in output.lower():
-            raise DeploymentError("Static maintenance gate response header is missing.")
-        if MAINTENANCE_GATE_SENTINEL not in output:
-            raise DeploymentError("Static maintenance gate response body is missing.")
-        statuses[target] = 503
-    return {
-        "verified_at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-        "gate_sha256": sha256_file(FRONT_CONTROLLER),
-        "public_statuses": statuses,
-    }
+def require_gate_helper() -> Path:
+    module_path = Path(str(dependency_gate.__file__)).resolve(strict=True)
+    return require_regular_file(module_path, GATE_HELPER_SHA256)
+
+
+def gate_context(state: dict[str, Any], state_path: Path) -> dependency_gate.GateContext:
+    backup_value = state.get("front_controller_backup")
+    backup_sha256 = state.get("front_controller_backup_sha256")
+    if not isinstance(backup_value, str) or not isinstance(backup_sha256, str):
+        raise DeploymentError("Front-controller rollback backup is unavailable.")
+    state_directory = state_path.resolve(strict=True).parent
+    backup = require_regular_file(Path(backup_value), backup_sha256)
+    if backup != state_directory / "public-index.before.php":
+        raise DeploymentError("Front-controller backup differs from the durable state path.")
+    return dependency_gate.GateContext(
+        application_root=APP_ROOT,
+        front_controller=FRONT_CONTROLLER,
+        state_path=state_path,
+        evidence_directory=state_directory,
+        original_backup=backup,
+        original_sha256=backup_sha256,
+    )
+
+
+def _next_gate_operation(state: dict[str, Any], reason: str) -> str:
+    history = state.get("front_controller_transitions", [])
+    if not isinstance(history, list):
+        raise DeploymentError("Front-controller transition history is invalid.")
+    if not re.fullmatch(r"[a-z0-9]+(?:_[a-z0-9]+)*", reason):
+        raise DeploymentError("Static-gate operation reason is invalid.")
+    return f"{reason}-{len(history) + 1:04d}"
+
+
+def _gate_origin_probe(state_directory: Path, operation: str) -> dict[str, Any]:
+    return dependency_gate.gate_origin_probe(
+        evidence_directory=state_directory,
+        operation=operation,
+        public_url=MAINTENANCE_PROBE_URL,
+        cwd=APP_ROOT,
+    )
+
+
+def _gate_public_probe(state_directory: Path, operation: str) -> dict[str, Any]:
+    return dependency_gate.gate_public_probe(
+        evidence_directory=state_directory,
+        operation=operation,
+        public_url=MAINTENANCE_PROBE_URL,
+        cwd=APP_ROOT,
+    )
 
 
 def install_static_gate(
-    state: dict[str, Any], _state_path: Path, reason: str
+    state: dict[str, Any],
+    state_path: Path,
+    reason: str,
+    *,
+    fault_injector: Callable[[str], None] | None = None,
 ) -> dict[str, Any]:
-    metadata = state.get("front_controller_metadata")
-    if not isinstance(metadata, dict):
-        raise DeploymentError("Front-controller metadata is unavailable for the static gate.")
-    atomic_install_bytes(FRONT_CONTROLLER, MAINTENANCE_GATE_BYTES, metadata)
-    require_regular_file(FRONT_CONTROLLER, MAINTENANCE_GATE_SHA256)
-    time.sleep(OPCACHE_WAIT_SECONDS)
-    evidence = probe_static_gate()
-    evidence["method"] = "atomic_static_front_controller"
+    require_gate_helper()
+    context = gate_context(state, state_path)
+    operation = _next_gate_operation(state, reason)
+    try:
+        evidence = dependency_gate.install_static_gate(
+            context=context,
+            state=state,
+            operation=operation,
+            origin_probe=lambda: _gate_origin_probe(context.evidence_directory, operation),
+            public_probe=lambda: _gate_public_probe(context.evidence_directory, operation),
+            restored_health_probe=health_snapshot,
+            fault_injector=fault_injector,
+        )
+    except dependency_gate.GateError as exception:
+        raise DeploymentError(str(exception)) from exception
+    evidence["method"] = "durable_atomic_static_front_controller"
     evidence["reason"] = reason
+    evidence["operation"] = operation
     return evidence
 
 
-def restore_front_controller(state: dict[str, Any], state_path: Path) -> dict[str, Any]:
-    rollback_root = ensure_private_operations_root(ROLLBACK_ROOT, create=False)
-    backup_value = state.get("front_controller_backup")
-    backup_sha256 = state.get("front_controller_backup_sha256")
-    metadata = state.get("front_controller_metadata")
-    if not isinstance(backup_value, str) or not isinstance(backup_sha256, str):
-        raise DeploymentError("Front-controller rollback backup is unavailable.")
-    if not isinstance(metadata, dict):
-        raise DeploymentError("Front-controller rollback metadata is unavailable.")
-    backup = require_regular_file(Path(backup_value), backup_sha256)
-    state_directory = state_path.resolve(strict=True).parent
-    expected_backup = state_directory / "public-index.before.php"
-    if (
-        not is_relative_to(state_directory, rollback_root)
-        or backup != expected_backup
-    ):
-        raise DeploymentError("Front-controller rollback backup is outside the state directory.")
-    atomic_install_bytes(FRONT_CONTROLLER, backup.read_bytes(), metadata)
-    require_regular_file(FRONT_CONTROLLER, EXPECTED_FRONT_CONTROLLER_SHA256)
+def establish_rollback_gate(
+    state: dict[str, Any],
+    state_path: Path,
+    reason: str,
+) -> dict[str, Any]:
+    require_gate_helper()
+    context = gate_context(state, state_path)
+    operation = _next_gate_operation(state, reason)
+    try:
+        return dependency_gate.establish_rollback_containment(
+            context=context,
+            state=state,
+            operation=operation,
+            origin_probe=lambda: _gate_origin_probe(context.evidence_directory, operation),
+            public_probe=lambda: _gate_public_probe(context.evidence_directory, operation),
+            restored_health_probe=health_snapshot,
+        )
+    except dependency_gate.GateError as exception:
+        raise DeploymentError(str(exception)) from exception
+
+
+def restore_front_controller(
+    state: dict[str, Any],
+    state_path: Path,
+    *,
+    reason: str = "dependency_rollback_reopen",
+) -> dict[str, Any]:
+    require_gate_helper()
+    context = gate_context(state, state_path)
+    operation = _next_gate_operation(state, reason)
+    receipt_name = f"{operation}-exact-original-restoration-receipt.json"
+    try:
+        receipt = dependency_gate.restore_front_controller_exact(
+            context=context,
+            state=state,
+            operation=operation,
+            receipt_name=receipt_name,
+        )
+    except dependency_gate.GateError as exception:
+        raise DeploymentError(str(exception)) from exception
     time.sleep(OPCACHE_WAIT_SECONDS)
-    return {
-        "restored_at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-        "front_controller_sha256": sha256_file(FRONT_CONTROLLER),
+    return receipt
+
+
+def restore_pre_mutation_failure(
+    state: dict[str, Any],
+    state_path: Path,
+    exception: BaseException,
+) -> None:
+    """Restore the exact original and prove normal health without dependency rollback."""
+
+    if dependency_gate.dependency_mutation_has_started(state):
+        raise DeploymentError("Pre-mutation restoration was requested after mutation began.")
+    live = dependency_gate.file_identity(FRONT_CONTROLLER)
+    if live["sha256"] == EXPECTED_FRONT_CONTROLLER_SHA256 and (
+        live["metadata"] == dependency_gate.reviewed_front_controller_metadata()
+    ):
+        restoration: dict[str, Any] = {
+            "status": "already_restored",
+            "restored": live,
+        }
+    else:
+        restoration = restore_front_controller(
+            state,
+            state_path,
+            reason="pre_mutation_failure_restore",
+        )
+    health = health_snapshot()
+    receipt = {
+        "artifact": "buy-dtf-laravel-remember-cookie-pre-mutation-restoration-v3",
+        "status": "pass",
+        "at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "failure_class": type(exception).__name__,
+        "failure_message_sha256": sha256_bytes(str(exception).encode("utf-8")),
+        "dependency_mutation_started": False,
+        "restoration": restoration,
+        "health": health,
+        "front_controller": dependency_gate.file_identity(FRONT_CONTROLLER),
     }
+    receipt_path = state_path.parent / "pre-mutation-failure-restoration-receipt.json"
+    if receipt_path.exists() or receipt_path.is_symlink():
+        raise DeploymentError("Pre-mutation restoration receipt already exists.")
+    dependency_gate.write_new_json(receipt_path, receipt)
+    state["pre_mutation_failure_restoration_receipt"] = str(receipt_path)
+    state["pre_mutation_failure_restoration_receipt_sha256"] = sha256_file(receipt_path)
+    state["status"] = "failed_before_dependency_mutation_original_restored"
+    state["static_gate_active"] = False
+    state["containment_active"] = False
+    state["gate_active"] = False
+    state["gate_verified"] = False
+    write_state(state_path, state)
 
 
 def reassert_and_record_gate(
@@ -1722,8 +1960,8 @@ def reassert_and_record_gate(
     status: str | None = None,
     operation: Callable[[dict[str, Any], Path, str], dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
-    # Never trust persisted gate state. Reinstall and verify the boot-independent
-    # front controller before every rollback or recovery mutation.
+    # Compatibility wrapper used by focused runner tests. Production rollback
+    # uses establish_rollback_gate so post-mutation HTTP failure cannot reopen.
     reassertion = operation or install_static_gate
     evidence = reassertion(state, state_path, reason)
     history = state.setdefault("gate_reassertions", [])
@@ -1731,80 +1969,79 @@ def reassert_and_record_gate(
         raise DeploymentError("Static-gate reassertion history is invalid.")
     history.append(evidence)
     state["gate_active"] = True
-    state["gate_verified"] = True
+    state["gate_verified"] = bool(evidence.get("http_verified", True))
     if status is not None:
         state["status"] = status
     write_state(state_path, state)
     return evidence
 
-
 def contain_cutover_failure(
     state: dict[str, Any],
     state_path: Path,
     exception: BaseException,
-    *,
-    operation: Callable[[dict[str, Any], Path, str], dict[str, Any]] | None = None,
-) -> None:
-    try:
-        reassert_and_record_gate(
-            state,
-            state_path,
-            "cutover_failure",
-            status="failure_contained_by_static_gate",
-            operation=operation,
-        )
-    except BaseException as gate_exception:
-        state["gate_active"] = None
-        state["gate_verified"] = False
-        state["failure_class"] = type(exception).__name__
-        state["failure_message"] = str(exception)
-        state["gate_failure_class"] = type(gate_exception).__name__
-        state["gate_failure_message"] = str(gate_exception)
-        state["status"] = "failed_static_gate_unverified"
-        write_state(state_path, state)
-        raise DeploymentError(
-            "Cutover failed and the boot-independent 503 gate could not be re-verified; "
-            "automatic rollback was not started."
-        ) from gate_exception
+) -> bool:
+    """Contain a cutover failure and return whether dependency rollback is armed."""
+
+    mutation_started = dependency_gate.dependency_mutation_has_started(state)
     state["failure_class"] = type(exception).__name__
-    state["failure_message"] = str(exception)
-    state["status"] = "failed_rolling_back"
+    state["failure_message_sha256"] = sha256_bytes(str(exception).encode("utf-8"))
+    if not mutation_started:
+        restore_pre_mutation_failure(state, state_path, exception)
+        return False
+
+    containment = establish_rollback_gate(
+        state,
+        state_path,
+        "cutover_failure",
+    )
+    state["cutover_failure_containment"] = containment
+    state["status"] = "failed_dependency_rollback_required"
+    state["gate_active"] = True
+    state["gate_verified"] = bool(containment.get("http_verified"))
     write_state(state_path, state)
+    return True
 
 
 def contain_rollback_failure(
     state: dict[str, Any],
     state_path: Path,
     exception: BaseException,
-    *,
-    operation: Callable[[dict[str, Any], Path, str], dict[str, Any]] | None = None,
 ) -> None:
+    """Retain the exact gate locally even when HTTP paths or Laravel are broken."""
+
+    context = gate_context(state, state_path)
+    operation = _next_gate_operation(state, "rollback_failure")
     try:
-        reassert_and_record_gate(
-            state,
-            state_path,
-            "rollback_failure",
-            status="rollback_failure_contained_by_static_gate",
+        containment = dependency_gate.retain_static_gate_exact(
+            context=context,
+            state=state,
             operation=operation,
         )
-    except BaseException as gate_exception:
+    except dependency_gate.GateError as gate_exception:
         state["gate_active"] = None
         state["gate_verified"] = False
         state["rollback_failure_class"] = type(exception).__name__
-        state["rollback_failure_message"] = str(exception)
+        state["rollback_failure_message_sha256"] = sha256_bytes(
+            str(exception).encode("utf-8")
+        )
         state["gate_failure_class"] = type(gate_exception).__name__
-        state["gate_failure_message"] = str(gate_exception)
-        state["status"] = "rollback_failed_static_gate_unverified"
+        state["gate_failure_message_sha256"] = sha256_bytes(
+            str(gate_exception).encode("utf-8")
+        )
+        state["status"] = "rollback_failed_static_gate_identity_unavailable"
         write_state(state_path, state)
         raise DeploymentError(
-            "Rollback failed and the boot-independent 503 gate could not be re-verified; "
-            "no subsequent rollback step will run."
+            "Rollback failed and exact local static-gate containment could not be established."
         ) from gate_exception
     state["rollback_failure_class"] = type(exception).__name__
-    state["rollback_failure_message"] = str(exception)
-    state["status"] = "rollback_failed_static_gate_verified"
+    state["rollback_failure_message_sha256"] = sha256_bytes(
+        str(exception).encode("utf-8")
+    )
+    state["rollback_failure_containment"] = containment
+    state["status"] = "rollback_failed_static_gate_retained"
+    state["gate_active"] = True
+    state["gate_verified"] = False
     write_state(state_path, state)
-
 
 def fpm_probe(expected_versions: dict[str, str]) -> dict[str, Any]:
     if not FPM_SOCKET.is_socket():
@@ -1937,10 +2174,10 @@ def validate_rollback_state_paths(state: dict[str, Any], state_path: Path) -> No
         receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
     except json.JSONDecodeError as exception:
         raise DeploymentError("Rollback release receipt is invalid JSON.") from exception
-    if receipt.get("artifact") != "buy-dtf-laravel-remember-cookie-release-v2":
+    if receipt.get("artifact") != "buy-dtf-laravel-remember-cookie-release-v3":
         raise DeploymentError("Rollback release receipt has an unexpected artifact identity.")
     if receipt.get("status") != "staged":
-        raise DeploymentError("Rollback release receipt is not a staged v2 release.")
+        raise DeploymentError("Rollback release receipt is not a staged v3 release.")
     if receipt.get("handoff") != {"filename": HANDOFF_FILENAME, "sha256": HANDOFF_SHA256}:
         raise DeploymentError("Rollback release receipt references a different review handoff.")
     shadow = require_real_directory(Path(str(receipt.get("shadow_path", ""))), within=release_root)
@@ -1952,6 +2189,20 @@ def validate_rollback_state_paths(state: dict[str, Any], state_path: Path) -> No
         raise DeploymentError("Rollback state was created by a different deployment script.")
     if state.get("runtime_helper_sha256") != RUNTIME_HELPER_SHA256:
         raise DeploymentError("Rollback state references a different runtime helper.")
+    if (
+        state.get("database_envelope_validator_sha256")
+        != DATABASE_ENVELOPE_VALIDATOR_SHA256
+        or state.get("gate_helper_sha256") != GATE_HELPER_SHA256
+        or state.get("log_parser_sha256") != LOG_PARSER_SHA256
+    ):
+        raise DeploymentError("Rollback state references different reviewed control helpers.")
+    if (
+        receipt.get("database_envelope_validator_sha256")
+        != DATABASE_ENVELOPE_VALIDATOR_SHA256
+        or receipt.get("gate_helper_sha256") != GATE_HELPER_SHA256
+        or receipt.get("log_parser_sha256") != LOG_PARSER_SHA256
+    ):
+        raise DeploymentError("Rollback receipt references different reviewed control helpers.")
     if receipt.get("candidate_lock_sha256") != CANDIDATE_LOCK_SHA256:
         raise DeploymentError("Rollback receipt references a different candidate lock.")
     if receipt.get("approved_source_manifest") != EXPECTED_SOURCE_MANIFEST:
@@ -1989,6 +2240,33 @@ def validate_rollback_state_paths(state: dict[str, Any], state_path: Path) -> No
         },
     }:
         raise DeploymentError("Rollback receipt references a different front controller.")
+    receipt_preflight = receipt.get("production_preflight")
+    if not isinstance(receipt_preflight, dict):
+        raise DeploymentError("Rollback receipt has no production preflight.")
+    receipt_database = validate_database_envelope(
+        receipt_preflight.get("runtime", {}),
+        pre_source=True,
+    )
+    if receipt.get("database_envelope") != receipt_database:
+        raise DeploymentError("Rollback receipt database envelope is inconsistent.")
+    database_receipt_item = receipt.get("database_envelope_receipt")
+    if not isinstance(database_receipt_item, dict):
+        raise DeploymentError("Rollback receipt has no database-envelope evidence.")
+    database_receipt_path = require_regular_file(
+        Path(str(database_receipt_item.get("path", ""))),
+        str(database_receipt_item.get("sha256", "")),
+    )
+    if database_receipt_path != receipt_path.parent / "database-envelope-receipt.json":
+        raise DeploymentError("Rollback database-envelope receipt path differs.")
+    if state.get("database_envelope_receipt") != database_receipt_item:
+        raise DeploymentError("Rollback state references different database evidence.")
+    if (
+        state.get("database_envelope_staged") != receipt_database
+        or state.get("database_envelope_before_cutover") != receipt_database
+        or state.get("database_envelope_stable_identity")
+        != database_envelope_stable_identity(receipt_database)
+    ):
+        raise DeploymentError("Rollback state database envelope differs from its release receipt.")
     if state.get("candidate_vendor_identity") != receipt.get("candidate_vendor_identity"):
         raise DeploymentError("Rollback state references a different candidate vendor identity.")
     if state.get("application_autoload_identity") != receipt.get("application_autoload_identity"):
@@ -2014,18 +2292,24 @@ def rollback_from_state(
 ) -> None:
     validate_rollback_state_paths(state, state_path)
     state["rollback_started"] = True
+    state["status"] = "rollback_starting"
+    write_state(state_path, state)
 
     def inject(stage: str) -> None:
         if failure_injector is not None:
             failure_injector(stage)
 
     try:
-        reassert_and_record_gate(
+        containment = establish_rollback_gate(
             state,
             state_path,
             "rollback_start",
-            status="rollback_contained_by_static_gate",
         )
+        state["rollback_containment"] = containment
+        state["status"] = "rollback_contained_by_static_gate"
+        state["gate_active"] = True
+        state["gate_verified"] = bool(containment.get("http_verified"))
+        write_state(state_path, state)
         inject("after_rollback_gate_install")
         require_regular_file(Path(state["old_lock_backup"]), EXPECTED_LIVE_LOCK_SHA256)
         cache_backup = state["cache_backup_evidence"]
@@ -2103,19 +2387,50 @@ def rollback_from_state(
             rollback_runtime,
             expected_versions=OLD_PACKAGE_VERSIONS,
         )
+        rollback_database = validate_database_envelope(
+            rollback_runtime,
+            pre_source=True,
+        )
+        if rollback_database != state.get("database_envelope_before_cutover"):
+            raise DeploymentError(
+                "Database schema, ledger, incoming tables, queues, or capabilities "
+                "drifted before rollback gate reopen."
+            )
+        state["database_envelope_after_rollback_dependencies"] = rollback_database
+        write_state(state_path, state)
         inject("after_rollback_runtime")
         time.sleep(OPCACHE_WAIT_SECONDS)
         first = fpm_probe(OLD_PACKAGE_VERSIONS)
         time.sleep(OPCACHE_SECOND_PROBE_DELAY_SECONDS)
         second = fpm_probe(OLD_PACKAGE_VERSIONS)
         inject("after_rollback_fpm_probes")
-        front_controller = restore_front_controller(state, state_path)
+        front_controller = restore_front_controller(
+            state,
+            state_path,
+            reason="dependency_rollback_reopen",
+        )
         inject("after_rollback_gate_open")
         state["rollback_fpm_probes"] = [first, second]
         state["rollback_runtime"] = rollback_runtime
         state["front_controller_restored"] = front_controller
         state["rollback_health"] = health_snapshot()
+        rollback_final_runtime = runtime_probe(helper)
+        validate_runtime_baseline(
+            rollback_final_runtime,
+            expected_versions=OLD_PACKAGE_VERSIONS,
+        )
+        rollback_final_database = validate_database_envelope(
+            rollback_final_runtime,
+            pre_source=True,
+        )
+        if rollback_final_database != state.get("database_envelope_before_cutover"):
+            raise DeploymentError(
+                "Database envelope drifted during rollback health verification."
+            )
+        state["database_envelope_after_rollback_health"] = rollback_final_database
         inject("after_rollback_health")
+        state["static_gate_active"] = False
+        state["containment_active"] = False
         state["gate_active"] = False
         state["gate_verified"] = False
         state["rollback_complete"] = True
@@ -2136,6 +2451,9 @@ def cutover(
 ) -> Path:
     if approval_token != CUTOVER_APPROVAL_TOKEN:
         raise DeploymentError("The exact reviewed cutover approval token was not supplied.")
+    require_database_envelope_validator()
+    require_gate_helper()
+    require_log_parser()
     baseline = assert_production_baseline(helper)
     receipt, shadow = load_approved_release(receipt_path, receipt_sha256)
     if receipt.get("script_sha256") != sha256_file(Path(__file__).resolve()):
@@ -2153,6 +2471,11 @@ def cutover(
     before_health = health_snapshot()
     before_runtime = runtime_probe(helper)
     validate_runtime_baseline(before_runtime, expected_versions=OLD_PACKAGE_VERSIONS)
+    before_database = validate_database_envelope(before_runtime, pre_source=True)
+    if before_database != receipt.get("database_envelope"):
+        raise DeploymentError(
+            "Cutover database envelope differs from the independently reviewed staged receipt."
+        )
     old_fpm_preflight = fpm_probe(OLD_PACKAGE_VERSIONS)
 
     rollback_root = ensure_private_operations_root(ROLLBACK_ROOT, create=True)
@@ -2171,7 +2494,7 @@ def cutover(
     require_regular_file(front_controller_backup, EXPECTED_FRONT_CONTROLLER_SHA256)
 
     state: dict[str, Any] = {
-        "artifact": "buy-dtf-laravel-remember-cookie-cutover-v2",
+        "artifact": "buy-dtf-laravel-remember-cookie-cutover-v3",
         "handoff": {"filename": HANDOFF_FILENAME, "sha256": HANDOFF_SHA256},
         "status": "preparing",
         "started_at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
@@ -2179,6 +2502,15 @@ def cutover(
         "release_receipt_sha256": receipt_sha256,
         "script_sha256": sha256_file(Path(__file__).resolve()),
         "runtime_helper_sha256": RUNTIME_HELPER_SHA256,
+        "database_envelope_validator_sha256": DATABASE_ENVELOPE_VALIDATOR_SHA256,
+        "gate_helper_sha256": GATE_HELPER_SHA256,
+        "log_parser_sha256": LOG_PARSER_SHA256,
+        "database_envelope_receipt": receipt["database_envelope_receipt"],
+        "database_envelope_staged": receipt["database_envelope"],
+        "database_envelope_before_cutover": before_database,
+        "database_envelope_stable_identity": database_envelope_stable_identity(
+            before_database
+        ),
         "staged_vendor": str(shadow / "vendor"),
         "staged_cache": str(shadow / "bootstrap/cache"),
         "candidate_vendor_sha256": receipt["candidate_vendor_manifest"]["sha256"],
@@ -2196,9 +2528,10 @@ def cutover(
         "health_before": before_health,
         "runtime_before": before_runtime,
         "old_fpm_preflight": old_fpm_preflight,
+        **dependency_gate.initial_gate_state(),
         "gate_active": False,
-        "gate_verified": False,
         "gate_reassertions": [],
+        "dependency_mutation_started": False,
         "vendor_exchange_intent": False,
         "vendor_exchange_complete": False,
         "cache_exchange_intent": False,
@@ -2211,10 +2544,30 @@ def cutover(
         "rollback_complete": False,
     }
     write_state(state_path, state)
+    log_collector: laravel_log_delta.RotationSafeLaravelLogCollector | None = None
 
     def inject(stage: str) -> None:
         if failure_injector is not None:
             failure_injector(stage)
+
+    def capture_laravel_log(phase: str) -> dict[str, Any]:
+        if log_collector is None:
+            raise DeploymentError("Laravel log collector is not initialized.")
+        try:
+            capture = log_collector.capture()
+        except (
+            laravel_log_delta.LogContinuityError,
+            laravel_log_delta.LaravelLogDeltaError,
+            ValueError,
+        ) as exception:
+            raise DeploymentError(f"Laravel log delta failed closed: {exception}") from exception
+        safe_capture = {"phase": phase, **capture}
+        history = state.setdefault("laravel_log_capture_samples", [])
+        if not isinstance(history, list):
+            raise DeploymentError("Laravel log capture history is invalid.")
+        history.append(safe_capture)
+        write_state(state_path, state)
+        return safe_capture
 
     try:
         reassert_and_record_gate(
@@ -2226,6 +2579,15 @@ def cutover(
         inject("after_gate_install")
         time.sleep(DRAIN_SECONDS)
         after_drain = runtime_probe(helper)
+        validate_runtime_baseline(after_drain, expected_versions=OLD_PACKAGE_VERSIONS)
+        pre_mutation_database = validate_database_envelope(
+            after_drain,
+            pre_source=True,
+        )
+        if pre_mutation_database != before_database:
+            raise DeploymentError(
+                "Production database envelope drifted under the static gate before mutation."
+            )
         if after_drain.get("business_activity") != before_runtime.get("business_activity"):
             raise DeploymentError("Business activity changed during the maintenance drain window.")
         if scoped_processes():
@@ -2262,7 +2624,79 @@ def cutover(
         }
         if len(devices) != 1:
             raise DeploymentError("Live and staged vendor/cache paths are not on one filesystem.")
+        # Repeat the read-only helper at the last possible point before the
+        # durable mutation boundary. No filesystem or dependency mutation has
+        # occurred while this exact database receipt is created.
+        final_pre_mutation_runtime = runtime_probe(helper)
+        validate_runtime_baseline(
+            final_pre_mutation_runtime,
+            expected_versions=OLD_PACKAGE_VERSIONS,
+        )
+        final_pre_mutation_database = validate_database_envelope(
+            final_pre_mutation_runtime,
+            pre_source=True,
+        )
+        if final_pre_mutation_database != before_database:
+            raise DeploymentError(
+                "Production database envelope drifted immediately before dependency mutation."
+            )
+        database_gate_receipt = {
+            "artifact": "buy-dtf-laravel-remember-cookie-gated-database-envelope-v3",
+            "status": "pass",
+            "phase": "immediately_before_dependency_mutation",
+            "checked_at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "runtime_helper_sha256": RUNTIME_HELPER_SHA256,
+            "validator_sha256": DATABASE_ENVELOPE_VALIDATOR_SHA256,
+            "database_envelope": final_pre_mutation_database,
+            "dependency_mutation_started": False,
+            "migration_command_invoked": False,
+            "migration_executed": False,
+        }
+        database_gate_receipt_path = (
+            rollback_directory / "database-envelope-before-mutation-receipt.json"
+        )
+        database_gate_receipt_sha256 = dependency_gate.write_new_json(
+            database_gate_receipt_path,
+            database_gate_receipt,
+        )
+        state["database_envelope_after_drain"] = pre_mutation_database
+        state["database_envelope_before_mutation"] = final_pre_mutation_database
+        state["database_envelope_before_mutation_receipt"] = {
+            "path": str(database_gate_receipt_path),
+            "sha256": database_gate_receipt_sha256,
+        }
+        write_state(state_path, state)
+
+        log_private_directory = rollback_directory / "laravel-log-private"
+        try:
+            log_collector = laravel_log_delta.RotationSafeLaravelLogCollector(
+                LARAVEL_LOG_PATH,
+                log_private_directory,
+            )
+        except (
+            laravel_log_delta.LogContinuityError,
+            ValueError,
+        ) as exception:
+            raise DeploymentError(
+                f"Laravel log baseline failed closed before dependency mutation: {exception}"
+            ) from exception
+        state["laravel_log_monitor"] = {
+            "status": "capturing",
+            "classification": "private-do-not-commit",
+            "private_directory": str(log_private_directory),
+            "capture_state_path": str(log_collector.state_path),
+            "capture_state_sha256": sha256_file(log_collector.state_path),
+            "parser_sha256": LOG_PARSER_SHA256,
+            "baseline_before_dependency_mutation": True,
+        }
+        write_state(state_path, state)
+
+        # This durable boundary is written before the first dependency mutation.
+        # Every subsequent failure retains/reasserts the reviewed gate and runs
+        # boot-independent rollback instead of reopening a partial dependency set.
+        state["dependency_mutation_started"] = True
         state["vendor_exchange_intent"] = True
+        state["status"] = "dependency_mutation_armed"
         write_state(state_path, state)
         rename_exchange(live_vendor, staged_vendor)
         state["vendor_exchange_complete"] = True
@@ -2305,6 +2739,16 @@ def cutover(
         # Laravel boot. No candidate command is needed to construct the cache.
         live_runtime = runtime_probe(helper)
         validate_runtime_baseline(live_runtime, expected_versions=NEW_PACKAGE_VERSIONS)
+        candidate_database = validate_database_envelope(
+            live_runtime,
+            pre_source=True,
+        )
+        if candidate_database != state.get("database_envelope_before_cutover"):
+            raise DeploymentError(
+                "Database envelope drifted after the candidate dependency exchange."
+            )
+        state["database_envelope_after_candidate_exchange"] = candidate_database
+        write_state(state_path, state)
         inject("after_candidate_runtime")
         if sha256_file(APP_ROOT / "composer.lock") != CANDIDATE_LOCK_SHA256:
             raise DeploymentError("Live composer.lock differs from the approved candidate.")
@@ -2325,6 +2769,7 @@ def cutover(
         state["gate_verified"] = False
         state["status"] = "monitoring"
         write_state(state_path, state)
+        capture_laravel_log("candidate_health")
         inject("after_candidate_health")
 
         monitor_deadline = time.monotonic() + MONITOR_SECONDS
@@ -2338,6 +2783,17 @@ def cutover(
             validate_runtime_baseline(
                 sample["runtime"], expected_versions=NEW_PACKAGE_VERSIONS
             )
+            sample["database_envelope"] = validate_database_envelope(
+                sample["runtime"],
+                pre_source=True,
+            )
+            if sample["database_envelope"] != state.get(
+                "database_envelope_before_cutover"
+            ):
+                raise DeploymentError(
+                    "Database envelope drifted during candidate monitoring."
+                )
+            sample["laravel_log_delta"] = capture_laravel_log("monitor_sample")
             monitor_samples.append(sample)
             state["monitor_samples"] = monitor_samples
             write_state(state_path, state)
@@ -2345,8 +2801,103 @@ def cutover(
             if remaining > 0:
                 time.sleep(min(MONITOR_INTERVAL_SECONDS, remaining))
 
-        state["status"] = "success"
-        state["completed_at_utc"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+        final_monitor_health = health_snapshot()
+        final_monitor_runtime = runtime_probe(helper)
+        validate_runtime_baseline(
+            final_monitor_runtime,
+            expected_versions=NEW_PACKAGE_VERSIONS,
+        )
+        final_monitor_database = validate_database_envelope(
+            final_monitor_runtime,
+            pre_source=True,
+        )
+        if final_monitor_database != state.get("database_envelope_before_cutover"):
+            raise DeploymentError("Database envelope drifted at monitor completion.")
+        final_sample = {
+            "at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "phase": "monitor_completion",
+            "health": final_monitor_health,
+            "runtime": final_monitor_runtime,
+            "database_envelope": final_monitor_database,
+        }
+        monitor_samples.append(final_sample)
+        state["monitor_samples"] = monitor_samples
+        write_state(state_path, state)
+
+        if log_collector is None:
+            raise DeploymentError("Laravel log collector disappeared during monitoring.")
+        finishing_collector = log_collector
+        try:
+            log_result = finishing_collector.finish()
+        except (
+            laravel_log_delta.LogContinuityError,
+            laravel_log_delta.LaravelLogDeltaError,
+            ValueError,
+        ) as exception:
+            raise DeploymentError(
+                f"Laravel monitoring delta failed closed: {exception}"
+            ) from exception
+        finally:
+            finishing_collector.close()
+            log_collector = None
+        if log_result.get("status") != "pass":
+            raise DeploymentError("Laravel monitoring delta did not pass classification.")
+        final_sample["laravel_log_delta"] = {
+            "status": log_result["status"],
+            "raw_manifest_sha256": log_result["raw_manifest_sha256"],
+            "analysis_summary_sha256": log_result["analysis_sha256"],
+            "capture_state_sha256": log_result["capture_state_sha256"],
+        }
+
+        monitor_samples_path = rollback_directory / "monitor-samples-private.json"
+        monitor_samples_sha256 = dependency_gate.write_new_json(
+            monitor_samples_path,
+            {
+                "artifact": "buy-dtf-laravel-remember-cookie-monitor-samples-v3",
+                "classification": "private-do-not-commit",
+                "status": "pass",
+                "samples": monitor_samples,
+            },
+        )
+        database_monitor_path = rollback_directory / "database-envelope-monitor-final.json"
+        database_monitor_sha256 = dependency_gate.write_new_json(
+            database_monitor_path,
+            {
+                "artifact": "buy-dtf-laravel-remember-cookie-database-monitor-v3",
+                "status": "pass",
+                "policy": "pre_source_exactly_zero",
+                "runtime_helper_sha256": RUNTIME_HELPER_SHA256,
+                "validator_sha256": DATABASE_ENVELOPE_VALIDATOR_SHA256,
+                "stable_identity": database_envelope_stable_identity(
+                    final_monitor_database
+                ),
+                "database_envelope": final_monitor_database,
+            },
+        )
+
+        state["runtime_at_monitor_completion"] = final_monitor_runtime
+        state["health_at_monitor_completion"] = final_monitor_health
+        state["database_envelope_at_monitor_completion"] = final_monitor_database
+        state["monitor_samples_receipt"] = {
+            "path": str(monitor_samples_path),
+            "sha256": monitor_samples_sha256,
+        }
+        state["database_envelope_monitor_receipt"] = {
+            "path": str(database_monitor_path),
+            "sha256": database_monitor_sha256,
+        }
+        state["laravel_log_monitor"] = {
+            "status": "analysis_pass_pending_independent_review",
+            "classification": "private-do-not-commit",
+            "private_directory": str(log_private_directory),
+            "raw_manifest_path": log_result["raw_manifest_path"],
+            "raw_manifest_sha256": log_result["raw_manifest_sha256"],
+            "analysis_path": log_result["analysis_path"],
+            "analysis_summary_sha256": log_result["analysis_sha256"],
+            "capture_state_path": log_result["capture_state_path"],
+            "capture_state_sha256": log_result["capture_state_sha256"],
+            "parser_sha256": LOG_PARSER_SHA256,
+        }
         state["rollback_retained_vendor_path"] = str(staged_vendor)
         if state.get("cache_exchange_skipped_identical") is True:
             state["rollback_retained_cache_path"] = str(live_cache)
@@ -2354,23 +2905,643 @@ def cutover(
         else:
             state["rollback_retained_cache_path"] = str(staged_cache)
             state["active_candidate_cache_path"] = str(live_cache)
+        state["status"] = "monitor_analysis_pass_pending_independent_review"
+        state["monitor_completed_at_utc"] = time.strftime(
+            "%Y-%m-%dT%H:%M:%SZ", time.gmtime()
+        )
         write_state(state_path, state)
-        print(f"Dependency cutover complete. State/receipt: {state_path}")
+
+        immutable_state_path = rollback_directory / "deployment-state-monitor-complete.json"
+        immutable_state_sha256 = dependency_gate.write_new_json(
+            immutable_state_path,
+            state,
+        )
+        review_binding = laravel_log_delta.build_independent_review_binding(
+            deployment_state_sha256=immutable_state_sha256,
+            release_receipt_sha256=receipt_sha256,
+            runner_sha256=sha256_file(Path(__file__).resolve()),
+            runtime_helper_sha256=RUNTIME_HELPER_SHA256,
+            parser_sha256=LOG_PARSER_SHA256,
+            raw_manifest_sha256=log_result["raw_manifest_sha256"],
+            analysis_summary_sha256=log_result["analysis_sha256"],
+            monitor_samples_sha256=monitor_samples_sha256,
+            database_envelope_sha256=database_monitor_sha256,
+        )
+        review_receipt_path = rollback_directory / "independent-log-review-receipt.json"
+        review_request_path = rollback_directory / "independent-log-review-request.json"
+        review_request_sha256 = dependency_gate.write_new_json(
+            review_request_path,
+            {
+                "artifact": "buy-dtf-laravel-log-independent-review-request-v1",
+                "status": "awaiting_independent_read_only_review",
+                "classification": "private-do-not-commit",
+                "created_at_utc": time.strftime(
+                    "%Y-%m-%dT%H:%M:%SZ", time.gmtime()
+                ),
+                "evidence_binding": review_binding,
+                "required_checks": laravel_log_delta.INDEPENDENT_REVIEW_CHECKS,
+                "private_raw_manifest_path": log_result["raw_manifest_path"],
+                "redacted_analysis_path": log_result["analysis_path"],
+                "monitor_samples_path": str(monitor_samples_path),
+                "database_envelope_path": str(database_monitor_path),
+                "immutable_state_path": str(immutable_state_path),
+                "expected_receipt_path": str(review_receipt_path),
+                "finalization_requires_separate_token": True,
+            },
+        )
+        state["independent_log_review"] = {
+            "status": "awaiting",
+            "binding": review_binding,
+            "immutable_state_path": str(immutable_state_path),
+            "immutable_state_sha256": immutable_state_sha256,
+            "request_path": str(review_request_path),
+            "request_sha256": review_request_sha256,
+            "expected_receipt_path": str(review_receipt_path),
+        }
+        state["status"] = "awaiting_independent_log_review"
+        write_state(state_path, state)
+        print(
+            "Candidate monitor passed automated checks and awaits independent "
+            f"read-only log review. State: {state_path}"
+        )
         return state_path
     except BaseException as exception:
-        contain_cutover_failure(state, state_path, exception)
-        rollback_from_state(
-            state,
-            state_path,
-            helper,
-            failure_injector=failure_injector,
-        )
+        if log_collector is not None:
+            log_collector.close()
+        rollback_required = contain_cutover_failure(state, state_path, exception)
+        if rollback_required:
+            rollback_from_state(
+                state,
+                state_path,
+                helper,
+                failure_injector=failure_injector,
+            )
         raise
+
+
+def validate_private_log_evidence(
+    private_directory: Path,
+    raw_manifest_path: Path,
+    analysis_path: Path,
+    capture_state_path: Path,
+) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
+    """Reassemble and attest the private delta used by the parser."""
+
+    directory_metadata = path_metadata(private_directory)
+    if (
+        directory_metadata.get("kind") != "directory"
+        or directory_metadata.get("mode") != 0o700
+        or directory_metadata.get("uid") != EXPECTED_APP_UID
+    ):
+        raise DeploymentError("Private Laravel log evidence directory metadata drifted.")
+    evidence_gid = directory_metadata["gid"]
+
+    def private_file(path: Path, expected_name: str) -> Path:
+        resolved = require_regular_file(path)
+        if resolved != private_directory / expected_name:
+            raise DeploymentError("Private Laravel log evidence path differs.")
+        if path_metadata(resolved) != {
+            "kind": "file",
+            "mode": 0o600,
+            "uid": EXPECTED_APP_UID,
+            "gid": evidence_gid,
+        }:
+            raise DeploymentError("Private Laravel log evidence metadata drifted.")
+        return resolved
+
+    raw_manifest_path = private_file(raw_manifest_path, "raw-manifest.json")
+    analysis_path = private_file(analysis_path, "redacted-analysis.json")
+    capture_state_path = private_file(capture_state_path, "capture-state.json")
+    try:
+        raw_manifest = json.loads(raw_manifest_path.read_text(encoding="utf-8"))
+        analysis = json.loads(analysis_path.read_text(encoding="utf-8"))
+        capture_state = json.loads(capture_state_path.read_text(encoding="utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as exception:
+        raise DeploymentError("Private Laravel log evidence contains invalid JSON.") from exception
+    if (
+        not isinstance(capture_state, dict)
+        or capture_state.get("artifact") != "buy-dtf-laravel-log-capture-state-v1"
+        or capture_state.get("status") != "analysis_pass"
+    ):
+        raise DeploymentError("Laravel log capture state is not a complete analysis pass.")
+    if (
+        not isinstance(raw_manifest, dict)
+        or raw_manifest.get("artifact") != "buy-dtf-laravel-log-private-raw-manifest-v1"
+        or raw_manifest.get("classification") != "private-do-not-commit"
+        or raw_manifest.get("status") != "captured"
+        or not isinstance(raw_manifest.get("segments"), list)
+    ):
+        raise DeploymentError("Private Laravel log manifest is invalid.")
+    if (
+        not isinstance(analysis, dict)
+        or analysis.get("artifact") != "buy-dtf-laravel-log-redacted-analysis-v1"
+        or analysis.get("classification") != "message-free-redacted-summary"
+        or analysis.get("status") != "pass"
+        or not isinstance(analysis.get("analysis"), dict)
+        or analysis["analysis"].get("status") != "pass"
+        or not isinstance(analysis.get("segments"), list)
+        or analysis.get("raw_manifest_sha256") != sha256_file(raw_manifest_path)
+    ):
+        raise DeploymentError("Redacted Laravel log analysis is not a complete pass.")
+
+    expected_names = {"raw-manifest.json", "redacted-analysis.json", "capture-state.json"}
+    framed = hashlib.sha256()
+    captured_bytes = 0
+    next_chunk_number = 1
+    analysis_segments = analysis["segments"]
+    if len(analysis_segments) != len(raw_manifest["segments"]):
+        raise DeploymentError("Laravel log manifest and analysis segment counts differ.")
+    for number, (segment, report) in enumerate(
+        zip(raw_manifest["segments"], analysis_segments),
+        start=1,
+    ):
+        if not isinstance(segment, dict) or not isinstance(report, dict):
+            raise DeploymentError("Laravel log segment evidence is invalid.")
+        segment_id = f"segment-{number:04d}"
+        if segment.get("segment_id") != segment_id or report.get("segment_id") != segment_id:
+            raise DeploymentError("Laravel log segment identities are not contiguous.")
+        chunks = segment.get("chunks")
+        if not isinstance(chunks, list):
+            raise DeploymentError("Laravel log segment chunk inventory is invalid.")
+        delta_parts: list[bytes] = []
+        expected_start = segment.get("start_offset")
+        if not isinstance(expected_start, int) or expected_start < 0:
+            raise DeploymentError("Laravel log segment start offset is invalid.")
+        for chunk in chunks:
+            if not isinstance(chunk, dict) or set(chunk) != {
+                "name",
+                "bytes",
+                "sha256",
+                "start",
+                "end",
+            }:
+                raise DeploymentError("Laravel log chunk receipt shape differs.")
+            expected_name = f"{segment_id}-chunk-{next_chunk_number:04d}.bin"
+            name = chunk.get("name")
+            if name != expected_name:
+                raise DeploymentError("Laravel log chunk name is invalid.")
+            next_chunk_number += 1
+            if name in expected_names:
+                raise DeploymentError("Laravel log evidence repeats a private filename.")
+            expected_names.add(name)
+            chunk_path = private_file(private_directory / name, name)
+            value = chunk_path.read_bytes()
+            if (
+                not isinstance(chunk.get("bytes"), int)
+                or chunk["bytes"] < 0
+                or len(value) != chunk["bytes"]
+                or sha256_bytes(value) != chunk.get("sha256")
+                or chunk.get("start") != expected_start
+                or not isinstance(chunk.get("end"), int)
+                or chunk["end"] != expected_start + len(value)
+            ):
+                raise DeploymentError("Laravel log chunk content or range differs.")
+            expected_start = chunk["end"]
+            delta_parts.append(value)
+        if expected_start != segment.get("final_offset"):
+            raise DeploymentError("Laravel log segment final offset differs.")
+        delta = b"".join(delta_parts)
+        if (
+            len(delta) != segment.get("delta_bytes")
+            or sha256_bytes(delta) != segment.get("delta_sha256")
+            or report.get("delta_bytes") != len(delta)
+            or report.get("delta_sha256") != sha256_bytes(delta)
+        ):
+            raise DeploymentError("Laravel log segment delta identity differs.")
+        captured_bytes += len(delta)
+
+        analysis_offset = segment.get("analysis_delta_offset")
+        if not isinstance(analysis_offset, int) or not 0 <= analysis_offset <= len(delta):
+            raise DeploymentError("Laravel log analysis offset is invalid.")
+        context_receipt = segment.get("analysis_context")
+        context = b""
+        if context_receipt is not None:
+            if not isinstance(context_receipt, dict) or set(context_receipt) != {
+                "name",
+                "bytes",
+                "sha256",
+            }:
+                raise DeploymentError("Laravel log analysis context receipt is invalid.")
+            context_name = context_receipt.get("name")
+            if context_name != f"{segment_id}-analysis-context.bin":
+                raise DeploymentError("Laravel log analysis context name is invalid.")
+            if context_name in expected_names:
+                raise DeploymentError("Laravel log evidence repeats a context filename.")
+            expected_names.add(context_name)
+            context_path = private_file(private_directory / context_name, context_name)
+            context = context_path.read_bytes()
+            if (
+                len(context) != context_receipt.get("bytes")
+                or sha256_bytes(context) != context_receipt.get("sha256")
+            ):
+                raise DeploymentError("Laravel log analysis context identity differs.")
+        inspection = context + delta[analysis_offset:]
+        if (
+            report.get("analysis_bytes") != len(inspection)
+            or report.get("analysis_sha256") != sha256_bytes(inspection)
+        ):
+            raise DeploymentError("Laravel log complete-entry replay differs from analysis.")
+        replayed_analysis = laravel_log_delta.analyze_log_bytes(inspection)
+        if report.get("analysis") != replayed_analysis or replayed_analysis.get("status") != "pass":
+            raise DeploymentError("Laravel log complete-entry classification replay failed.")
+        identifier = segment_id.encode("utf-8")
+        framed.update(len(identifier).to_bytes(4, "big"))
+        framed.update(identifier)
+        framed.update(len(delta).to_bytes(8, "big"))
+        framed.update(delta)
+
+    actual_names = {item.name for item in private_directory.iterdir()}
+    if actual_names != expected_names:
+        raise DeploymentError("Private Laravel log evidence contains missing or extra files.")
+    if (
+        captured_bytes != raw_manifest.get("captured_bytes")
+        or captured_bytes != analysis.get("captured_bytes")
+        or captured_bytes != capture_state.get("captured_bytes")
+        or framed.hexdigest() != raw_manifest.get("framed_delta_sha256")
+        or framed.hexdigest() != analysis.get("framed_delta_sha256")
+    ):
+        raise DeploymentError("Laravel log aggregate framing identity differs.")
+    replayed_aggregate = laravel_log_delta.aggregate_reports(analysis_segments)
+    if replayed_aggregate != analysis.get("analysis") or replayed_aggregate.get("status") != "pass":
+        raise DeploymentError("Laravel log aggregate classification replay failed.")
+    return raw_manifest, analysis, capture_state
+
+
+def load_pending_monitor_state(state_path: Path) -> tuple[dict[str, Any], Path]:
+    """Load and revalidate every immutable input to independent finalization."""
+
+    rollback_root = ensure_private_operations_root(ROLLBACK_ROOT, create=False)
+    state_path = require_regular_file(state_path)
+    if not is_relative_to(state_path, rollback_root):
+        raise DeploymentError("Monitor state is outside the fixed rollback root.")
+    try:
+        state = json.loads(state_path.read_text(encoding="utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as exception:
+        raise DeploymentError("Monitor state is invalid JSON.") from exception
+    if state.get("artifact") != "buy-dtf-laravel-remember-cookie-cutover-v3":
+        raise DeploymentError("Monitor state has an unexpected artifact identity.")
+    if state.get("handoff") != {"filename": HANDOFF_FILENAME, "sha256": HANDOFF_SHA256}:
+        raise DeploymentError("Monitor state references a different review handoff.")
+    if state.get("status") != "awaiting_independent_log_review":
+        raise DeploymentError("Monitor state is not awaiting independent log review.")
+    if state.get("dependency_mutation_started") is not True:
+        raise DeploymentError("Monitor state does not record the dependency mutation boundary.")
+    if state.get("rollback_complete") is not False:
+        raise DeploymentError("Monitor state is already rolled back or invalid.")
+    if state.get("script_sha256") != sha256_file(Path(__file__).resolve()):
+        raise DeploymentError("Monitor state was created by a different deployment script.")
+    if state.get("runtime_helper_sha256") != RUNTIME_HELPER_SHA256:
+        raise DeploymentError("Monitor state references a different runtime helper.")
+    if (
+        state.get("database_envelope_validator_sha256")
+        != DATABASE_ENVELOPE_VALIDATOR_SHA256
+        or state.get("gate_helper_sha256") != GATE_HELPER_SHA256
+        or state.get("log_parser_sha256") != LOG_PARSER_SHA256
+    ):
+        raise DeploymentError("Monitor state references different reviewed control helpers.")
+    validate_rollback_state_paths(state, state_path)
+
+    state_directory = state_path.parent.resolve(strict=True)
+    review = state.get("independent_log_review")
+    log_monitor = state.get("laravel_log_monitor")
+    monitor_item = state.get("monitor_samples_receipt")
+    database_item = state.get("database_envelope_monitor_receipt")
+    if not all(isinstance(item, dict) for item in (review, log_monitor, monitor_item, database_item)):
+        raise DeploymentError("Monitor state has incomplete log or database evidence bindings.")
+    assert isinstance(review, dict)
+    assert isinstance(log_monitor, dict)
+    assert isinstance(monitor_item, dict)
+    assert isinstance(database_item, dict)
+
+    immutable_state_path = require_regular_file(
+        Path(str(review.get("immutable_state_path", ""))),
+        str(review.get("immutable_state_sha256", "")),
+    )
+    request_path = require_regular_file(
+        Path(str(review.get("request_path", ""))),
+        str(review.get("request_sha256", "")),
+    )
+    monitor_samples_path = require_regular_file(
+        Path(str(monitor_item.get("path", ""))),
+        str(monitor_item.get("sha256", "")),
+    )
+    database_path = require_regular_file(
+        Path(str(database_item.get("path", ""))),
+        str(database_item.get("sha256", "")),
+    )
+    expected_fixed_paths = {
+        immutable_state_path: state_directory / "deployment-state-monitor-complete.json",
+        request_path: state_directory / "independent-log-review-request.json",
+        monitor_samples_path: state_directory / "monitor-samples-private.json",
+        database_path: state_directory / "database-envelope-monitor-final.json",
+    }
+    for actual, expected in expected_fixed_paths.items():
+        if actual != expected:
+            raise DeploymentError("Monitor evidence path is outside its durable state directory.")
+
+    private_directory = require_real_directory(
+        Path(str(log_monitor.get("private_directory", ""))),
+        within=state_directory,
+    )
+    if private_directory != state_directory / "laravel-log-private":
+        raise DeploymentError("Private Laravel log evidence directory is unexpected.")
+    raw_manifest_path = require_regular_file(
+        Path(str(log_monitor.get("raw_manifest_path", ""))),
+        str(log_monitor.get("raw_manifest_sha256", "")),
+    )
+    analysis_path = require_regular_file(
+        Path(str(log_monitor.get("analysis_path", ""))),
+        str(log_monitor.get("analysis_summary_sha256", "")),
+    )
+    capture_state_path = require_regular_file(
+        Path(str(log_monitor.get("capture_state_path", ""))),
+        str(log_monitor.get("capture_state_sha256", "")),
+    )
+    if (
+        raw_manifest_path != private_directory / "raw-manifest.json"
+        or analysis_path != private_directory / "redacted-analysis.json"
+        or capture_state_path != private_directory / "capture-state.json"
+    ):
+        raise DeploymentError("Laravel log evidence files are outside the private evidence set.")
+    if log_monitor.get("status") != "analysis_pass_pending_independent_review":
+        raise DeploymentError("Laravel log analysis is not pending a successful review.")
+    if log_monitor.get("parser_sha256") != LOG_PARSER_SHA256:
+        raise DeploymentError("Laravel log evidence references a different parser.")
+
+    raw_manifest, analysis, capture_state = validate_private_log_evidence(
+        private_directory,
+        raw_manifest_path,
+        analysis_path,
+        capture_state_path,
+    )
+    try:
+        request = json.loads(request_path.read_text(encoding="utf-8"))
+        immutable_state = json.loads(immutable_state_path.read_text(encoding="utf-8"))
+        monitor_receipt = json.loads(monitor_samples_path.read_text(encoding="utf-8"))
+        database_receipt = json.loads(database_path.read_text(encoding="utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as exception:
+        raise DeploymentError("Monitor evidence contains invalid JSON.") from exception
+    if (
+        not isinstance(monitor_receipt, dict)
+        or monitor_receipt.get("artifact")
+        != "buy-dtf-laravel-remember-cookie-monitor-samples-v3"
+        or monitor_receipt.get("classification") != "private-do-not-commit"
+        or monitor_receipt.get("status") != "pass"
+        or monitor_receipt.get("samples") != state.get("monitor_samples")
+    ):
+        raise DeploymentError("Private monitoring sample receipt is invalid.")
+    if (
+        not isinstance(database_receipt, dict)
+        or database_receipt.get("artifact")
+        != "buy-dtf-laravel-remember-cookie-database-monitor-v3"
+        or database_receipt.get("status") != "pass"
+        or database_receipt.get("policy") != "pre_source_exactly_zero"
+        or database_receipt.get("runtime_helper_sha256") != RUNTIME_HELPER_SHA256
+        or database_receipt.get("validator_sha256")
+        != DATABASE_ENVELOPE_VALIDATOR_SHA256
+        or database_receipt.get("database_envelope")
+        != state.get("database_envelope_at_monitor_completion")
+        or database_receipt.get("database_envelope")
+        != state.get("database_envelope_before_cutover")
+        or database_receipt.get("stable_identity")
+        != database_envelope_stable_identity(database_receipt["database_envelope"])
+    ):
+        raise DeploymentError("Final monitoring database-envelope receipt is invalid.")
+    if (
+        not isinstance(immutable_state, dict)
+        or immutable_state.get("status")
+        != "monitor_analysis_pass_pending_independent_review"
+        or immutable_state.get("script_sha256") != state.get("script_sha256")
+        or immutable_state.get("release_receipt_sha256")
+        != state.get("release_receipt_sha256")
+    ):
+        raise DeploymentError("Immutable monitor-completion state is invalid.")
+    expected_live_state = json.loads(json.dumps(immutable_state))
+    expected_live_state["status"] = "awaiting_independent_log_review"
+    expected_live_state["independent_log_review"] = review
+    expected_live_state["updated_at_utc"] = state.get("updated_at_utc")
+    if state != expected_live_state:
+        raise DeploymentError("Mutable monitor state differs from its immutable snapshot.")
+    if (
+        capture_state.get("captured_bytes") != raw_manifest.get("captured_bytes")
+        or analysis.get("captured_bytes") != raw_manifest.get("captured_bytes")
+        or log_monitor.get("capture_state_sha256") != sha256_file(capture_state_path)
+    ):
+        raise DeploymentError("Laravel log capture receipts differ.")
+
+    try:
+        expected_binding = laravel_log_delta.build_independent_review_binding(
+            deployment_state_sha256=sha256_file(immutable_state_path),
+            release_receipt_sha256=str(state.get("release_receipt_sha256", "")),
+            runner_sha256=sha256_file(Path(__file__).resolve()),
+            runtime_helper_sha256=RUNTIME_HELPER_SHA256,
+            parser_sha256=LOG_PARSER_SHA256,
+            raw_manifest_sha256=sha256_file(raw_manifest_path),
+            analysis_summary_sha256=sha256_file(analysis_path),
+            monitor_samples_sha256=sha256_file(monitor_samples_path),
+            database_envelope_sha256=sha256_file(database_path),
+        )
+    except laravel_log_delta.IndependentReviewError as exception:
+        raise DeploymentError(f"Independent review evidence binding is invalid: {exception}") from exception
+    if review.get("binding") != expected_binding:
+        raise DeploymentError("Monitor state independent-review binding differs.")
+    expected_receipt_path = state_directory / "independent-log-review-receipt.json"
+    if Path(str(review.get("expected_receipt_path", ""))) != expected_receipt_path:
+        raise DeploymentError("Independent-review receipt path is unexpected.")
+    if (
+        not isinstance(request, dict)
+        or request.get("artifact")
+        != "buy-dtf-laravel-log-independent-review-request-v1"
+        or request.get("status") != "awaiting_independent_read_only_review"
+        or request.get("evidence_binding") != expected_binding
+        or request.get("required_checks")
+        != laravel_log_delta.INDEPENDENT_REVIEW_CHECKS
+        or request.get("expected_receipt_path") != str(expected_receipt_path)
+    ):
+        raise DeploymentError("Independent Laravel log-review request is invalid.")
+    return state, expected_receipt_path
+
+
+def verify_live_candidate_after_monitor(
+    state: dict[str, Any],
+    state_path: Path,
+    helper: Path,
+) -> dict[str, Any]:
+    """Prove the candidate and exact rollback set before final success."""
+
+    if os.geteuid() == 0:
+        raise DeploymentError("Refusing to finalize application deployment as root.")
+    validate_toolchain()
+    app_root = require_real_directory(APP_ROOT)
+    if (app_root.stat().st_uid, app_root.stat().st_gid) != (
+        EXPECTED_APP_UID,
+        EXPECTED_APP_GID,
+    ):
+        raise DeploymentError("Application owner/group differs during finalization.")
+    require_regular_file(APP_ROOT / "composer.json", EXPECTED_LIVE_COMPOSER_JSON_SHA256)
+    require_regular_file(APP_ROOT / "composer.lock", CANDIDATE_LOCK_SHA256)
+    require_regular_file(APP_ROOT / "config/database.php", EXPECTED_DATABASE_CONFIG_SHA256)
+    require_regular_file(helper, RUNTIME_HELPER_SHA256)
+    require_regular_file(FRONT_CONTROLLER, EXPECTED_FRONT_CONTROLLER_SHA256)
+    front_controller_identity = dependency_gate.file_identity(FRONT_CONTROLLER)
+    if front_controller_identity.get("metadata") != (
+        dependency_gate.reviewed_front_controller_metadata()
+    ):
+        raise DeploymentError("Front-controller metadata differs during finalization.")
+    try:
+        transition_history, latest_transition = dependency_gate.validate_transition_history(
+            gate_context(state, state_path),
+            state,
+        )
+    except dependency_gate.GateError as exception:
+        raise DeploymentError(
+            f"Front-controller transition history is invalid: {exception}"
+        ) from exception
+    if LARAVEL_MAINTENANCE_FILE.exists():
+        raise DeploymentError("Laravel maintenance mode is unexpectedly active.")
+    if source_manifest(APP_ROOT) != EXPECTED_SOURCE_MANIFEST:
+        raise DeploymentError("Runtime source CAS differs during finalization.")
+    candidate_vendor = require_candidate_vendor(APP_ROOT / "vendor")
+    if candidate_vendor != state.get("candidate_vendor_identity"):
+        raise DeploymentError("Live candidate vendor differs during finalization.")
+    autoload = require_application_autoload(APP_ROOT)
+    if autoload != state.get("application_autoload_identity"):
+        raise DeploymentError("Live optimized autoload differs during finalization.")
+    require_cache_identity(
+        APP_ROOT / "bootstrap/cache",
+        state["candidate_cache_identity"],
+    )
+    candidate_cache = cache_identity(APP_ROOT / "bootstrap/cache")
+    runtime = runtime_probe(helper)
+    validate_runtime_baseline(runtime, expected_versions=NEW_PACKAGE_VERSIONS)
+    database = validate_database_envelope(runtime, pre_source=True)
+    if database != state.get("database_envelope_before_cutover"):
+        raise DeploymentError("Database envelope drifted before finalization.")
+
+    retained_vendor = Path(str(state.get("staged_vendor", "")))
+    if tree_manifest(retained_vendor) != EXPECTED_LIVE_VENDOR_MANIFEST:
+        raise DeploymentError("Retained Laravel 12.69.0 vendor is not the exact rollback set.")
+    require_regular_file(Path(str(state.get("old_lock_backup", ""))), EXPECTED_LIVE_LOCK_SHA256)
+    require_regular_file(
+        Path(str(state.get("front_controller_backup", ""))),
+        EXPECTED_FRONT_CONTROLLER_SHA256,
+    )
+    retained_cache = Path(str(state.get("staged_cache", "")))
+    require_cache_identity(retained_cache, EXPECTED_LIVE_CACHE_IDENTITY)
+    health = health_snapshot()
+    first_fpm = fpm_probe(NEW_PACKAGE_VERSIONS)
+    time.sleep(OPCACHE_SECOND_PROBE_DELAY_SECONDS)
+    second_fpm = fpm_probe(NEW_PACKAGE_VERSIONS)
+    return {
+        "status": "pass",
+        "checked_at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "lock_sha256": sha256_file(APP_ROOT / "composer.lock"),
+        "source_manifest": EXPECTED_SOURCE_MANIFEST,
+        "front_controller": front_controller_identity,
+        "front_controller_transition_count": len(transition_history),
+        "front_controller_latest_transition": latest_transition,
+        "candidate_vendor_identity": candidate_vendor,
+        "application_autoload_identity": autoload,
+        "candidate_cache_identity": candidate_cache,
+        "runtime": runtime,
+        "database_envelope": database,
+        "health": health,
+        "fpm_probes": [first_fpm, second_fpm],
+        "retained_old_lock_sha256": EXPECTED_LIVE_LOCK_SHA256,
+        "retained_old_vendor_manifest": EXPECTED_LIVE_VENDOR_MANIFEST,
+        "retained_old_cache_identity": EXPECTED_LIVE_CACHE_IDENTITY,
+    }
+
+
+def finalize_monitor(
+    state_path: Path,
+    independent_receipt_path: Path,
+    independent_receipt_sha256: str,
+    approval_token: str,
+    helper: Path,
+) -> None:
+    """Finalize only after an evidence-bound independent read-only log review."""
+
+    if approval_token != FINALIZE_MONITOR_APPROVAL_TOKEN:
+        raise DeploymentError("The exact reviewed monitor-finalization token was not supplied.")
+    require_database_envelope_validator()
+    require_gate_helper()
+    require_log_parser()
+    state, expected_receipt_path = load_pending_monitor_state(state_path)
+    independent_receipt_path = require_regular_file(
+        independent_receipt_path,
+        independent_receipt_sha256,
+    )
+    if independent_receipt_path != expected_receipt_path:
+        raise DeploymentError("Independent log-review receipt is outside its fixed path.")
+    try:
+        independent_receipt = laravel_log_delta.validate_independent_review_receipt(
+            independent_receipt_path,
+            expected_sha256=independent_receipt_sha256,
+            expected_binding=state["independent_log_review"]["binding"],
+        )
+    except laravel_log_delta.IndependentReviewError as exception:
+        raise DeploymentError(f"Independent Laravel log review rejected: {exception}") from exception
+    if independent_receipt["reviewed_at_utc"] < str(
+        state.get("monitor_completed_at_utc", "")
+    ):
+        raise DeploymentError("Independent Laravel log review predates monitor completion.")
+
+    # Invalid or missing review evidence above never mutates live state. Once the
+    # independent pass is accepted, any candidate drift is a post-mutation
+    # deployment failure and must use the reviewed containment and rollback path.
+    try:
+        final_verification = verify_live_candidate_after_monitor(state, state_path, helper)
+    except BaseException as exception:
+        rollback_required = contain_cutover_failure(state, state_path, exception)
+        if rollback_required:
+            rollback_from_state(state, state_path, helper)
+        raise
+    state["independent_log_review"]["status"] = "accepted"
+    state["independent_log_review"]["receipt_path"] = str(independent_receipt_path)
+    state["independent_log_review"]["receipt_sha256"] = independent_receipt_sha256
+    state["independent_log_review"]["receipt"] = independent_receipt
+    state["final_candidate_verification"] = final_verification
+    state["status"] = "success"
+    state["completed_at_utc"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    write_state(state_path, state)
+    print(f"Dependency deployment finalized after independent log review: {state_path}")
+
+
+def verify_recovered_old_live_state(
+    state: dict[str, Any],
+    helper: Path,
+) -> dict[str, Any]:
+    """Verify the complete old dependency and database envelope after recovery."""
+
+    baseline = assert_production_baseline(helper)
+    runtime = runtime_probe(helper)
+    validate_runtime_baseline(runtime, expected_versions=OLD_PACKAGE_VERSIONS)
+    database = validate_database_envelope(runtime, pre_source=True)
+    if database != state.get("database_envelope_before_cutover"):
+        raise DeploymentError("Database envelope drifted during recovery verification.")
+    if scoped_processes():
+        raise DeploymentError("A scoped Artisan/payout process is active after recovery.")
+    first_fpm = fpm_probe(OLD_PACKAGE_VERSIONS)
+    time.sleep(OPCACHE_SECOND_PROBE_DELAY_SECONDS)
+    second_fpm = fpm_probe(OLD_PACKAGE_VERSIONS)
+    return {
+        "status": "pass",
+        "checked_at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "baseline": baseline,
+        "runtime": runtime,
+        "database_envelope": database,
+        "health": health_snapshot(),
+        "fpm_probes": [first_fpm, second_fpm],
+    }
 
 
 def recover(state_path: Path, approval_token: str, helper: Path) -> None:
     if approval_token != RECOVERY_APPROVAL_TOKEN:
         raise DeploymentError("The exact reviewed recovery approval token was not supplied.")
+    require_database_envelope_validator()
+    require_gate_helper()
+    require_log_parser()
     rollback_root = ensure_private_operations_root(ROLLBACK_ROOT, create=False)
     state_path = require_regular_file(state_path)
     if not is_relative_to(state_path, rollback_root):
@@ -2379,7 +3550,7 @@ def recover(state_path: Path, approval_token: str, helper: Path) -> None:
         state = json.loads(state_path.read_text(encoding="utf-8"))
     except json.JSONDecodeError as exception:
         raise DeploymentError("Recovery state is invalid JSON.") from exception
-    if state.get("artifact") != "buy-dtf-laravel-remember-cookie-cutover-v2":
+    if state.get("artifact") != "buy-dtf-laravel-remember-cookie-cutover-v3":
         raise DeploymentError("Recovery state has an unexpected artifact identity.")
     if state.get("handoff") != {"filename": HANDOFF_FILENAME, "sha256": HANDOFF_SHA256}:
         raise DeploymentError("Recovery state references a different review handoff.")
@@ -2387,6 +3558,13 @@ def recover(state_path: Path, approval_token: str, helper: Path) -> None:
         raise DeploymentError("Recovery state was created by a different deployment script.")
     if state.get("runtime_helper_sha256") != RUNTIME_HELPER_SHA256:
         raise DeploymentError("Recovery state references a different runtime helper.")
+    if (
+        state.get("database_envelope_validator_sha256")
+        != DATABASE_ENVELOPE_VALIDATOR_SHA256
+        or state.get("gate_helper_sha256") != GATE_HELPER_SHA256
+        or state.get("log_parser_sha256") != LOG_PARSER_SHA256
+    ):
+        raise DeploymentError("Recovery state references different reviewed control helpers.")
     if state.get("front_controller_metadata") != {
         "kind": "file",
         "mode": 0o644,
@@ -2394,13 +3572,49 @@ def recover(state_path: Path, approval_token: str, helper: Path) -> None:
         "gid": EXPECTED_APP_GID,
     }:
         raise DeploymentError("Recovery state has invalid front-controller metadata.")
-    reassert_and_record_gate(
+    validate_rollback_state_paths(state, state_path)
+    context = gate_context(state, state_path)
+    try:
+        decision = dependency_gate.recovery_decision(
+            context=context,
+            state=state,
+        )
+    except dependency_gate.GateError as exception:
+        raise DeploymentError(str(exception)) from exception
+    state["front_controller_recovery_decision"] = decision
+    write_state(state_path, state)
+    if decision["action"] == "rollback_dependencies":
+        containment = establish_rollback_gate(
+            state,
+            state_path,
+            "explicit_recovery_entry",
+        )
+        state["explicit_recovery_containment"] = containment
+        write_state(state_path, state)
+        rollback_from_state(state, state_path, helper)
+        return
+    if decision["action"] == "restore_original":
+        restoration = restore_front_controller(
+            state,
+            state_path,
+            reason="explicit_pre_mutation_recovery",
+        )
+        state["explicit_recovery_restoration"] = restoration
+        state["explicit_recovery_verification"] = verify_recovered_old_live_state(
+            state,
+            helper,
+        )
+        state["status"] = "recovered_before_dependency_mutation"
+        state["gate_active"] = False
+        state["gate_verified"] = False
+        write_state(state_path, state)
+        return
+    state["explicit_recovery_verification"] = verify_recovered_old_live_state(
         state,
-        state_path,
-        "explicit_recovery_entry",
-        status="explicit_recovery_contained_by_static_gate",
+        helper,
     )
-    rollback_from_state(state, state_path, helper)
+    state["status"] = "recovery_not_required_original_verified"
+    write_state(state_path, state)
 
 
 def rehearse(parent: Path) -> dict[str, Any]:
@@ -2409,7 +3623,7 @@ def rehearse(parent: Path) -> dict[str, Any]:
         tempfile.mkdtemp(prefix="buy-dtf-laravel-remember-cookie-rehearsal-", dir=parent)
     )
     results: dict[str, Any] = {
-        "artifact": "buy-dtf-laravel-remember-cookie-atomic-exchange-rehearsal-v2",
+        "artifact": "buy-dtf-laravel-remember-cookie-atomic-exchange-rehearsal-v3",
         "artifact_review_status": ARTIFACT_REVIEW_STATUS,
         "handoff": {"filename": HANDOFF_FILENAME, "sha256": HANDOFF_SHA256},
         "script_sha256": sha256_file(Path(__file__).resolve()),
@@ -2836,7 +4050,7 @@ def describe() -> None:
     print(
         json.dumps(
             {
-                "artifact": "buy-dtf-laravel-remember-cookie-dependency-review-v2",
+                "artifact": "buy-dtf-laravel-remember-cookie-dependency-review-v3",
                 "artifact_review_status": ARTIFACT_REVIEW_STATUS,
                 "handoff": {"filename": HANDOFF_FILENAME, "sha256": HANDOFF_SHA256},
                 "application_root": str(APP_ROOT),
@@ -2862,6 +4076,24 @@ def describe() -> None:
                 "database_config_sha256": EXPECTED_DATABASE_CONFIG_SHA256,
                 "front_controller_sha256": EXPECTED_FRONT_CONTROLLER_SHA256,
                 "runtime_helper_sha256": RUNTIME_HELPER_SHA256,
+                "database_envelope_validator_sha256": (
+                    DATABASE_ENVELOPE_VALIDATOR_SHA256
+                ),
+                "gate_helper_sha256": GATE_HELPER_SHA256,
+                "log_parser_sha256": LOG_PARSER_SHA256,
+                "database_envelope": {
+                    "schema_sha256": database_envelope.EXPECTED_SCHEMA_SHA256,
+                    "migration_ledger_rows": database_envelope.EXPECTED_LEDGER_ROW_COUNT,
+                    "migration_ledger_sha256": database_envelope.EXPECTED_LEDGER_SHA256,
+                    "target_migration_entry_count": (
+                        database_envelope.EXPECTED_TARGET_MIGRATION_ENTRY_COUNT
+                    ),
+                    "savedimages_item_meta_policy": (
+                        "nullable_text_and_zero_nonnull_through_dependency_deployment"
+                    ),
+                    "incoming_order_tables_zero_rows": True,
+                    "read_only": True,
+                },
                 "old_package_versions": OLD_PACKAGE_VERSIONS,
                 "candidate_package_versions": NEW_PACKAGE_VERSIONS,
                 "atomic_vendor_operation": "renameat2(RENAME_EXCHANGE)",
@@ -2873,6 +4105,17 @@ def describe() -> None:
                     "skipped for the frozen identical identities"
                 ),
                 "static_maintenance_gate_sha256": MAINTENANCE_GATE_SHA256,
+                "static_gate_verification_routes": ["direct_origin", "public_cloudflare"],
+                "durable_gate_transition_history": True,
+                "laravel_log_delta": {
+                    "rotation_safe": True,
+                    "complete_entry_parser": True,
+                    "raw_evidence": "private-do-not-commit",
+                    "invalid_utf8_or_unparsed_data_fails_closed": True,
+                    "independent_read_only_review_required": True,
+                    "direct_success_before_independent_review": False,
+                },
+                "monitor_finalization_is_separate_action": True,
                 "candidate_install_no_dev": True,
                 "composer_bin_compat": "proxy",
                 "expected_route_count": EXPECTED_ROUTE_COUNT,
@@ -2899,11 +4142,14 @@ def parse_arguments() -> argparse.Namespace:
     action.add_argument("--preflight", action="store_true")
     action.add_argument("--stage", action="store_true")
     action.add_argument("--cutover", action="store_true")
+    action.add_argument("--finalize-monitor", action="store_true")
     action.add_argument("--recover", action="store_true")
     action.add_argument("--rehearse", action="store_true")
     parser.add_argument("--candidate-lock", type=Path)
     parser.add_argument("--release-receipt", type=Path)
     parser.add_argument("--release-receipt-sha256")
+    parser.add_argument("--independent-review-receipt", type=Path)
+    parser.add_argument("--independent-review-receipt-sha256")
     parser.add_argument("--state", type=Path)
     parser.add_argument("--rehearsal-parent", type=Path)
     parser.add_argument("--approval-token")
@@ -2951,6 +4197,26 @@ def main() -> int:
                 cutover(
                     arguments.release_receipt,
                     arguments.release_receipt_sha256,
+                    arguments.approval_token,
+                    helper,
+                )
+        elif arguments.finalize_monitor:
+            if (
+                arguments.state is None
+                or arguments.independent_review_receipt is None
+                or arguments.independent_review_receipt_sha256 is None
+                or arguments.approval_token is None
+            ):
+                raise DeploymentError(
+                    "--finalize-monitor requires --state, --independent-review-receipt, "
+                    "--independent-review-receipt-sha256, and --approval-token."
+                )
+            require_regular_file(helper, RUNTIME_HELPER_SHA256)
+            with deployment_lock():
+                finalize_monitor(
+                    arguments.state,
+                    arguments.independent_review_receipt,
+                    arguments.independent_review_receipt_sha256,
                     arguments.approval_token,
                     helper,
                 )

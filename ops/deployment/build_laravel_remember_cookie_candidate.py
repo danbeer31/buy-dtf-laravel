@@ -18,7 +18,7 @@ from typing import Any
 import laravel_remember_cookie_dependency_deploy as runner
 
 
-EVIDENCE_DIRECTORY_NAME = "laravel-remember-cookie-runner-v2-20261002"
+EVIDENCE_DIRECTORY_NAME = "laravel-remember-cookie-runner-v3-20261002"
 
 
 def sha256_file(path: Path) -> str:
@@ -266,7 +266,7 @@ def main() -> int:
     if evidence_parent != inventory_parent:
         raise runner.DeploymentError("Receipt and inventory must share one reviewed evidence directory.")
     if evidence_parent.name != EVIDENCE_DIRECTORY_NAME:
-        raise runner.DeploymentError("Evidence outputs must use the reviewed v2 evidence directory.")
+        raise runner.DeploymentError("Evidence outputs must use the reviewed v3 evidence directory.")
     if args.receipt.exists() or args.receipt.is_symlink():
         raise runner.DeploymentError("Clean-build receipt already exists.")
     if args.vendor_inventory.exists() or args.vendor_inventory.is_symlink():
@@ -451,7 +451,7 @@ def main() -> int:
         env=environment,
     ).stdout.strip()
     receipt = {
-        "artifact": "buy-dtf-laravel-remember-cookie-clean-build-v2",
+        "artifact": "buy-dtf-laravel-remember-cookie-clean-build-v3",
         "artifact_review_status": runner.ARTIFACT_REVIEW_STATUS,
         "builder_sha256": sha256_file(Path(__file__).resolve(strict=True)),
         "runner_sha256": sha256_file(Path(runner.__file__).resolve(strict=True)),

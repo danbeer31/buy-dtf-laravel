@@ -1,0 +1,2638 @@
+{
+  "all_reopenable_scenarios_restored_exact_original": true,
+  "artifact": "buy-dtf-laravel-dependency-static-gate-rehearsal-v3",
+  "canonical_sha256": "733d0d3a5adc8d87d1059c30475588f053d771c745ffd0ac0948055f4e809ee3",
+  "gate_metadata": {
+    "gid": 1000,
+    "kind": "file",
+    "mode": 420,
+    "uid": 1000
+  },
+  "gate_module_sha256": "1269a277e931dee346293bed4ea0f6d029cf9ded7810127a0ef547289ce51f80",
+  "gate_sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03",
+  "mode_0600_negative_control": {
+    "command": {
+      "argv_sha256": "5a20fb686d34cbad01db5a238c41b23d57273bd7babbe9319c117644867570f2",
+      "executable_chain": [
+        "setpriv",
+        "python3"
+      ],
+      "exit_status": 1,
+      "stderr_sha256": "c45dd6b8d140fd77cf1dc6d2d8a6fc6bc996eac1d8e6c80a66993e0e99211751",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "identity": {
+      "bytes": 339,
+      "metadata": {
+        "gid": 1000,
+        "kind": "file",
+        "mode": 384,
+        "uid": 1000
+      },
+      "path": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/mode-negative-control/negative-control-mode-0600.php",
+      "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+    },
+    "read_denied": true,
+    "reader_gid": 33,
+    "reader_uid": 33,
+    "status": "pass"
+  },
+  "origin_and_public_routes_separately_verified": true,
+  "post_mutation_probe_failure_rollback_permitted_under_exact_gate": true,
+  "rehearsal_script_sha256": "2d52ec99a3d57c8c8534db7283f43bd54debcfca8349370058662631523e0b3e",
+  "runner_identity": {
+    "egid": 0,
+    "euid": 0
+  },
+  "scenario_count": 26,
+  "scenarios": {
+    "failure-after-gate-state-before-origin": {
+      "details": {
+        "expected_failure_sha256": "c09d1f7c77ca7df017ca05c88c07ad9eb3fa3626cc75275baf392fdeab9f18f2",
+        "fault_stage": "after_gate_state_persisted"
+      },
+      "durable_transitions": [
+        {
+          "operation": "failure-after-gate-state-before-origin-gate",
+          "phase": "replacement_pending",
+          "sequence": 1
+        },
+        {
+          "operation": "failure-after-gate-state-before-origin-gate",
+          "phase": "installed",
+          "sequence": 2
+        },
+        {
+          "operation": "failure-after-gate-state-before-origin-gate-automatic-original-restore",
+          "phase": "replacement_pending",
+          "sequence": 3
+        },
+        {
+          "operation": "failure-after-gate-state-before-origin-gate-automatic-original-restore",
+          "phase": "installed",
+          "sequence": 4
+        },
+        {
+          "operation": "failure-after-gate-state-before-origin-gate-automatic-original-restore",
+          "phase": "exact_original_verified",
+          "sequence": 5
+        }
+      ],
+      "evidence_manifest": [
+        {
+          "bytes": 2087,
+          "mode": "0o600",
+          "path": "failure-after-gate-state-before-origin-gate-automatic-original-restore-receipt.json",
+          "sha256": "107d5b9f4104c5b2670d2cbd2c526295945f5b61a34f0af848a4bbf462ec7721"
+        },
+        {
+          "bytes": 2300,
+          "mode": "0o600",
+          "path": "failure-after-gate-state-before-origin-gate-gate-failure-receipt.json",
+          "sha256": "91f2731cc73676070370f6861ad38e51788a26ee3595b305d46edd8b7d43ee51"
+        },
+        {
+          "bytes": 44,
+          "mode": "0o600",
+          "path": "front-controller-before.php",
+          "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+        },
+        {
+          "bytes": 885,
+          "mode": "0o600",
+          "path": "gate-events.jsonl",
+          "sha256": "bff1d737c7d1462880ec9927ffca2380a6f268356b5710cd56fcc140cd1de79f"
+        },
+        {
+          "bytes": 8519,
+          "mode": "0o600",
+          "path": "state.json",
+          "sha256": "4686171b68d239374fabbd0e30543bb25c653640e2c22acc503fcc378b18c9f4"
+        }
+      ],
+      "final_durable_state": {
+        "containment_active": false,
+        "dependency_mutation_started": false,
+        "gate_failure_receipt": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/failure-after-gate-state-before-origin/evidence/failure-after-gate-state-before-origin-gate-gate-failure-receipt.json",
+        "gate_verified": false,
+        "rollback_complete": false,
+        "static_gate_active": false,
+        "status": "failure-after-gate-state-before-origin-gate_failed_original_restored"
+      },
+      "final_front_controller": {
+        "bytes": 44,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "path": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/failure-after-gate-state-before-origin/application/public/index.php",
+        "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+      },
+      "final_is_exact_gate": false,
+      "final_is_original": true,
+      "scenario": "failure-after-gate-state-before-origin",
+      "status": "pass"
+    },
+    "failure-after-installed-before-origin": {
+      "details": {
+        "expected_failure_sha256": "5dd03bcf3f1d3e3b787d9092f054b1e43d1a99e0dea87498b4c4c510f60c7c31",
+        "fault_stage": "after_installed"
+      },
+      "durable_transitions": [
+        {
+          "operation": "failure-after-installed-before-origin-gate",
+          "phase": "replacement_pending",
+          "sequence": 1
+        },
+        {
+          "operation": "failure-after-installed-before-origin-gate",
+          "phase": "installed",
+          "sequence": 2
+        },
+        {
+          "operation": "failure-after-installed-before-origin-gate-automatic-original-restore",
+          "phase": "replacement_pending",
+          "sequence": 3
+        },
+        {
+          "operation": "failure-after-installed-before-origin-gate-automatic-original-restore",
+          "phase": "installed",
+          "sequence": 4
+        },
+        {
+          "operation": "failure-after-installed-before-origin-gate-automatic-original-restore",
+          "phase": "exact_original_verified",
+          "sequence": 5
+        }
+      ],
+      "evidence_manifest": [
+        {
+          "bytes": 2081,
+          "mode": "0o600",
+          "path": "failure-after-installed-before-origin-gate-automatic-original-restore-receipt.json",
+          "sha256": "cac33bd130ddc76b72d39c549d2464b4aaf3e4646cd4681fa2b236338ccc88db"
+        },
+        {
+          "bytes": 2293,
+          "mode": "0o600",
+          "path": "failure-after-installed-before-origin-gate-gate-failure-receipt.json",
+          "sha256": "0485ca65feab30976d34db512f3dddfd4605ccb4f9eb93a3978ce85f18a50ef3"
+        },
+        {
+          "bytes": 44,
+          "mode": "0o600",
+          "path": "front-controller-before.php",
+          "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+        },
+        {
+          "bytes": 880,
+          "mode": "0o600",
+          "path": "gate-events.jsonl",
+          "sha256": "d44e96ba0e7a47cab95afeab35ef427ede258c67e062a01e0c8516eaf4958125"
+        },
+        {
+          "bytes": 8494,
+          "mode": "0o600",
+          "path": "state.json",
+          "sha256": "0338ce23fe8de1747954c2e7f18d70a109df5926b3ed3ba4667f097cade4a5bb"
+        }
+      ],
+      "final_durable_state": {
+        "containment_active": false,
+        "dependency_mutation_started": false,
+        "gate_failure_receipt": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/failure-after-installed-before-origin/evidence/failure-after-installed-before-origin-gate-gate-failure-receipt.json",
+        "gate_verified": false,
+        "rollback_complete": false,
+        "static_gate_active": false,
+        "status": "failure-after-installed-before-origin-gate_failed_original_restored"
+      },
+      "final_front_controller": {
+        "bytes": 44,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "path": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/failure-after-installed-before-origin/application/public/index.php",
+        "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+      },
+      "final_is_exact_gate": false,
+      "final_is_original": true,
+      "scenario": "failure-after-installed-before-origin",
+      "status": "pass"
+    },
+    "failure-after-pending-before-replacement": {
+      "details": {
+        "expected_failure_sha256": "8cbece9203886e98cf46f35a8d3d0d25a97c5effa438c528aabca940fbcbe7db",
+        "fault_stage": "after_replacement_pending"
+      },
+      "durable_transitions": [
+        {
+          "operation": "failure-after-pending-before-replacement-gate",
+          "phase": "replacement_pending",
+          "sequence": 1
+        },
+        {
+          "operation": "failure-after-pending-before-replacement-gate-automatic-original-restore",
+          "phase": "original_already_present",
+          "sequence": 2
+        },
+        {
+          "operation": "failure-after-pending-before-replacement-gate-automatic-original-restore",
+          "phase": "exact_original_verified",
+          "sequence": 3
+        }
+      ],
+      "evidence_manifest": [
+        {
+          "bytes": 928,
+          "mode": "0o600",
+          "path": "failure-after-pending-before-replacement-gate-automatic-original-restore-receipt.json",
+          "sha256": "bf72c8452832401b5f1d3c58ab0596d7cee72c6cd8da7a2fa83bc63d877ff2c5"
+        },
+        {
+          "bytes": 2313,
+          "mode": "0o600",
+          "path": "failure-after-pending-before-replacement-gate-gate-failure-receipt.json",
+          "sha256": "62aa9d8ccc771e090fd759afae1cfc1b46a8fc7f40c7ab6dd0f3fabe82df3b5d"
+        },
+        {
+          "bytes": 44,
+          "mode": "0o600",
+          "path": "front-controller-before.php",
+          "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+        },
+        {
+          "bytes": 561,
+          "mode": "0o600",
+          "path": "gate-events.jsonl",
+          "sha256": "d3d2738f674f8ff86fb97c4397ae8650a58d3157aaa76f5844791f58a307b082"
+        },
+        {
+          "bytes": 5260,
+          "mode": "0o600",
+          "path": "state.json",
+          "sha256": "c3215867e2234d95f63cd17b433a43743b1828f71a6b1782ce9e5dc490ddce7c"
+        }
+      ],
+      "final_durable_state": {
+        "containment_active": false,
+        "dependency_mutation_started": false,
+        "gate_failure_receipt": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/failure-after-pending-before-replacement/evidence/failure-after-pending-before-replacement-gate-gate-failure-receipt.json",
+        "gate_verified": false,
+        "rollback_complete": false,
+        "static_gate_active": false,
+        "status": "failure-after-pending-before-replacement-gate_failed_original_restored"
+      },
+      "final_front_controller": {
+        "bytes": 44,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "path": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/failure-after-pending-before-replacement/application/public/index.php",
+        "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+      },
+      "final_is_exact_gate": false,
+      "final_is_original": true,
+      "scenario": "failure-after-pending-before-replacement",
+      "status": "pass"
+    },
+    "failure-after-prepared-before-pending": {
+      "details": {
+        "expected_failure_sha256": "a05fb473f3dbcef193715ae3b892f087d833b334e072bf7821336db46c888d99",
+        "fault_stage": "after_prepared_verified"
+      },
+      "durable_transitions": [
+        {
+          "operation": "failure-after-prepared-before-pending-gate-automatic-original-restore",
+          "phase": "original_already_present",
+          "sequence": 1
+        },
+        {
+          "operation": "failure-after-prepared-before-pending-gate-automatic-original-restore",
+          "phase": "exact_original_verified",
+          "sequence": 2
+        }
+      ],
+      "evidence_manifest": [
+        {
+          "bytes": 919,
+          "mode": "0o600",
+          "path": "failure-after-prepared-before-pending-gate-automatic-original-restore-receipt.json",
+          "sha256": "e5d31286bb5cdbcd2e742b71c848cf2c774ba7bba35017d5c1e4aa7ac8c34349"
+        },
+        {
+          "bytes": 2292,
+          "mode": "0o600",
+          "path": "failure-after-prepared-before-pending-gate-gate-failure-receipt.json",
+          "sha256": "17ace4fb78a85a1161c129bc5c56aa15428a0ff4748a33ac3ce00f94b06537c6"
+        },
+        {
+          "bytes": 44,
+          "mode": "0o600",
+          "path": "front-controller-before.php",
+          "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+        },
+        {
+          "bytes": 389,
+          "mode": "0o600",
+          "path": "gate-events.jsonl",
+          "sha256": "c65d6705e055d264fc4cdb0eecacd7fbffccdddda14e95e1e3e73e79050fc160"
+        },
+        {
+          "bytes": 3764,
+          "mode": "0o600",
+          "path": "state.json",
+          "sha256": "a2202dd375da7d4f6f79f7e3c93f7627b3b9a8b232b6fcb77c94700743544e2d"
+        }
+      ],
+      "final_durable_state": {
+        "containment_active": false,
+        "dependency_mutation_started": false,
+        "gate_failure_receipt": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/failure-after-prepared-before-pending/evidence/failure-after-prepared-before-pending-gate-gate-failure-receipt.json",
+        "gate_verified": false,
+        "rollback_complete": false,
+        "static_gate_active": false,
+        "status": "failure-after-prepared-before-pending-gate_failed_original_restored"
+      },
+      "final_front_controller": {
+        "bytes": 44,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "path": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/failure-after-prepared-before-pending/application/public/index.php",
+        "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+      },
+      "final_is_exact_gate": false,
+      "final_is_original": true,
+      "scenario": "failure-after-prepared-before-pending",
+      "status": "pass"
+    },
+    "failure-during-origin-verification": {
+      "details": {
+        "expected_failure_sha256": "729ff33a01b47a00419e7f956618fa8d16eca453ad94a7ee79a971e60385903b",
+        "failed_route": "origin_loopback"
+      },
+      "durable_transitions": [
+        {
+          "operation": "origin-failure-gate",
+          "phase": "replacement_pending",
+          "sequence": 1
+        },
+        {
+          "operation": "origin-failure-gate",
+          "phase": "installed",
+          "sequence": 2
+        },
+        {
+          "operation": "origin-failure-gate-automatic-original-restore",
+          "phase": "replacement_pending",
+          "sequence": 3
+        },
+        {
+          "operation": "origin-failure-gate-automatic-original-restore",
+          "phase": "installed",
+          "sequence": 4
+        },
+        {
+          "operation": "origin-failure-gate-automatic-original-restore",
+          "phase": "exact_original_verified",
+          "sequence": 5
+        }
+      ],
+      "evidence_manifest": [
+        {
+          "bytes": 44,
+          "mode": "0o600",
+          "path": "front-controller-before.php",
+          "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+        },
+        {
+          "bytes": 765,
+          "mode": "0o600",
+          "path": "gate-events.jsonl",
+          "sha256": "013f806aa137ac7766226823777e91801a9a333cd631e21bb3103a81d21bf850"
+        },
+        {
+          "bytes": 2043,
+          "mode": "0o600",
+          "path": "origin-failure-gate-automatic-original-restore-receipt.json",
+          "sha256": "778320c5560dcec6343b985b26339fdfb5d61cb05a902ce1be5b93812182364b"
+        },
+        {
+          "bytes": 3679,
+          "mode": "0o600",
+          "path": "origin-failure-gate-gate-failure-receipt.json",
+          "sha256": "89441782031c8d59310d713f9db4dd29b4914eb80df420f54b4575825e8c1ca8"
+        },
+        {
+          "bytes": 8259,
+          "mode": "0o600",
+          "path": "state.json",
+          "sha256": "4c615624e2d6e97f4b484ef93bcd4292aa923be3e4883c78b8032e6fe4e81509"
+        }
+      ],
+      "final_durable_state": {
+        "containment_active": false,
+        "dependency_mutation_started": false,
+        "gate_failure_receipt": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/failure-during-origin-verification/evidence/origin-failure-gate-gate-failure-receipt.json",
+        "gate_verified": false,
+        "rollback_complete": false,
+        "static_gate_active": false,
+        "status": "origin-failure-gate_failed_original_restored"
+      },
+      "final_front_controller": {
+        "bytes": 44,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "path": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/failure-during-origin-verification/application/public/index.php",
+        "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+      },
+      "final_is_exact_gate": false,
+      "final_is_original": true,
+      "scenario": "failure-during-origin-verification",
+      "status": "pass"
+    },
+    "failure-during-public-verification": {
+      "details": {
+        "expected_failure_sha256": "72807efef89e268ff96da695b56242b994b3669dfe76a58aa9f9804f87c8a036",
+        "failed_route": "public_cloudflare"
+      },
+      "durable_transitions": [
+        {
+          "operation": "public-failure-gate",
+          "phase": "replacement_pending",
+          "sequence": 1
+        },
+        {
+          "operation": "public-failure-gate",
+          "phase": "installed",
+          "sequence": 2
+        },
+        {
+          "operation": "public-failure-gate-automatic-original-restore",
+          "phase": "replacement_pending",
+          "sequence": 3
+        },
+        {
+          "operation": "public-failure-gate-automatic-original-restore",
+          "phase": "installed",
+          "sequence": 4
+        },
+        {
+          "operation": "public-failure-gate-automatic-original-restore",
+          "phase": "exact_original_verified",
+          "sequence": 5
+        }
+      ],
+      "evidence_manifest": [
+        {
+          "bytes": 44,
+          "mode": "0o600",
+          "path": "front-controller-before.php",
+          "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+        },
+        {
+          "bytes": 765,
+          "mode": "0o600",
+          "path": "gate-events.jsonl",
+          "sha256": "7a38696f60a4845cf0fd24b388ba4bbbc4adab64700bbdf5cd84576d0547c6a1"
+        },
+        {
+          "bytes": 2043,
+          "mode": "0o600",
+          "path": "public-failure-gate-automatic-original-restore-receipt.json",
+          "sha256": "4c41d0250dbb432c7c89bbdc5654f59a442776db9a18b548f1e135bf431d94a6"
+        },
+        {
+          "bytes": 5126,
+          "mode": "0o600",
+          "path": "public-failure-gate-gate-failure-receipt.json",
+          "sha256": "2da505669507aabb5394f199d3c79ffc5917c4b46cc4ac64375c708bd56b129b"
+        },
+        {
+          "bytes": 8259,
+          "mode": "0o600",
+          "path": "state.json",
+          "sha256": "b415c32044d7282719adb9d5600db4d5457eb5eaa182c8042ca883632f5f60d9"
+        }
+      ],
+      "final_durable_state": {
+        "containment_active": false,
+        "dependency_mutation_started": false,
+        "gate_failure_receipt": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/failure-during-public-verification/evidence/public-failure-gate-gate-failure-receipt.json",
+        "gate_verified": false,
+        "rollback_complete": false,
+        "static_gate_active": false,
+        "status": "public-failure-gate_failed_original_restored"
+      },
+      "final_front_controller": {
+        "bytes": 44,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "path": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/failure-during-public-verification/application/public/index.php",
+        "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+      },
+      "final_is_exact_gate": false,
+      "final_is_original": true,
+      "scenario": "failure-during-public-verification",
+      "status": "pass"
+    },
+    "interruption-after-containment-transition": {
+      "details": {
+        "containment_receipt_sha256": "2629dd8589a19079116aa09ac9855b25278615a071104bed3470aaf15c2a8989",
+        "decision": {
+          "action": "rollback_dependencies",
+          "latest_phase": "containment_retained",
+          "latest_target_sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03",
+          "live": {
+            "bytes": 339,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/interruption-after-containment-transition/application/public/index.php",
+            "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+          },
+          "mutation_started": true,
+          "persisted_gate_boolean_ignored": true,
+          "recovery_required": true,
+          "transition_count": 3
+        },
+        "expected_interruption_sha256": "73cc3948608eae11f135bef37f6efba9eb6d3e783abfd32f04f1e969d344a5a2",
+        "restore_receipt_sha256": "14a5e32532c6e10188af61a2dece0ce029ac0c281a6f7bf9d40bc4dcb81f280b"
+      },
+      "durable_transitions": [
+        {
+          "operation": "interrupted-containment-exact-containment-install",
+          "phase": "replacement_pending",
+          "sequence": 1
+        },
+        {
+          "operation": "interrupted-containment-exact-containment-install",
+          "phase": "installed",
+          "sequence": 2
+        },
+        {
+          "operation": "interrupted-containment",
+          "phase": "containment_retained",
+          "sequence": 3
+        },
+        {
+          "operation": "recovered-containment",
+          "phase": "containment_retained",
+          "sequence": 4
+        },
+        {
+          "operation": "containment-post-rollback-restore",
+          "phase": "replacement_pending",
+          "sequence": 5
+        },
+        {
+          "operation": "containment-post-rollback-restore",
+          "phase": "installed",
+          "sequence": 6
+        },
+        {
+          "operation": "containment-post-rollback-restore",
+          "phase": "exact_original_verified",
+          "sequence": 7
+        }
+      ],
+      "evidence_manifest": [
+        {
+          "bytes": 2065,
+          "mode": "0o600",
+          "path": "containment-post-rollback-restore-receipt.json",
+          "sha256": "14a5e32532c6e10188af61a2dece0ce029ac0c281a6f7bf9d40bc4dcb81f280b"
+        },
+        {
+          "bytes": 44,
+          "mode": "0o600",
+          "path": "front-controller-before.php",
+          "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+        },
+        {
+          "bytes": 1074,
+          "mode": "0o600",
+          "path": "gate-events.jsonl",
+          "sha256": "c36392f5e51c5d36e198147860a9bbf71dd067b92ec0c9d53573a875e3891123"
+        },
+        {
+          "bytes": 951,
+          "mode": "0o600",
+          "path": "recovered-containment-containment-receipt.json",
+          "sha256": "2629dd8589a19079116aa09ac9855b25278615a071104bed3470aaf15c2a8989"
+        },
+        {
+          "bytes": 10132,
+          "mode": "0o600",
+          "path": "state.json",
+          "sha256": "8b082d380d87aa9ab4e725d6cff92716026399a91aed52fec2a92beded559f8b"
+        }
+      ],
+      "final_durable_state": {
+        "containment_active": false,
+        "dependency_mutation_started": true,
+        "gate_failure_receipt": null,
+        "gate_verified": false,
+        "rollback_complete": true,
+        "static_gate_active": false,
+        "status": "recovered-containment_site_gated"
+      },
+      "final_front_controller": {
+        "bytes": 44,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "path": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/interruption-after-containment-transition/application/public/index.php",
+        "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+      },
+      "final_is_exact_gate": false,
+      "final_is_original": true,
+      "scenario": "interruption-after-containment-transition",
+      "status": "pass"
+    },
+    "interruption-after-installed": {
+      "details": {
+        "decision": {
+          "action": "restore_original",
+          "latest_phase": "installed",
+          "latest_target_sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03",
+          "live": {
+            "bytes": 339,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/interruption-after-installed/application/public/index.php",
+            "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+          },
+          "mutation_started": false,
+          "persisted_gate_boolean_ignored": true,
+          "recovery_required": true,
+          "transition_count": 2
+        },
+        "expected_interruption_sha256": "79bc600bc79c25c5f512879538e4ed90009ce80578c3661d51f2e058e207fe73",
+        "fault_stage": "after_installed",
+        "restore_receipt_sha256": "37c48a68c89c140238d6162f5903d0b4c25b388fd588389a92be9bb0be9e55ee"
+      },
+      "durable_transitions": [
+        {
+          "operation": "interruption-after-installed-gate",
+          "phase": "replacement_pending",
+          "sequence": 1
+        },
+        {
+          "operation": "interruption-after-installed-gate",
+          "phase": "installed",
+          "sequence": 2
+        },
+        {
+          "operation": "interruption-after-installed-recovery-restore",
+          "phase": "replacement_pending",
+          "sequence": 3
+        },
+        {
+          "operation": "interruption-after-installed-recovery-restore",
+          "phase": "installed",
+          "sequence": 4
+        },
+        {
+          "operation": "interruption-after-installed-recovery-restore",
+          "phase": "exact_original_verified",
+          "sequence": 5
+        }
+      ],
+      "evidence_manifest": [
+        {
+          "bytes": 44,
+          "mode": "0o600",
+          "path": "front-controller-before.php",
+          "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+        },
+        {
+          "bytes": 790,
+          "mode": "0o600",
+          "path": "gate-events.jsonl",
+          "sha256": "7d31217c9c9d3c7415775da01523c5829a292e6fce3a152da1f97b64b7049f9c"
+        },
+        {
+          "bytes": 2012,
+          "mode": "0o600",
+          "path": "interruption-after-installed-recovery-restore-receipt.json",
+          "sha256": "37c48a68c89c140238d6162f5903d0b4c25b388fd588389a92be9bb0be9e55ee"
+        },
+        {
+          "bytes": 7883,
+          "mode": "0o600",
+          "path": "state.json",
+          "sha256": "d5daf70543a19e6011df9ab84c6021dafb16f91e4ad44c3c67b773e7469fb57c"
+        }
+      ],
+      "final_durable_state": {
+        "containment_active": false,
+        "dependency_mutation_started": false,
+        "gate_failure_receipt": null,
+        "gate_verified": false,
+        "rollback_complete": false,
+        "static_gate_active": false,
+        "status": "rehearsal"
+      },
+      "final_front_controller": {
+        "bytes": 44,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "path": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/interruption-after-installed/application/public/index.php",
+        "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+      },
+      "final_is_exact_gate": false,
+      "final_is_original": true,
+      "scenario": "interruption-after-installed",
+      "status": "pass"
+    },
+    "interruption-after-live-gate-reconciliation": {
+      "details": {
+        "decision": {
+          "action": "restore_original",
+          "latest_phase": "installed_reconciled_from_live_identity",
+          "latest_target_sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03",
+          "live": {
+            "bytes": 339,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/interruption-after-live-gate-reconciliation/application/public/index.php",
+            "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+          },
+          "mutation_started": false,
+          "persisted_gate_boolean_ignored": true,
+          "recovery_required": true,
+          "transition_count": 2
+        },
+        "expected_interruption_sha256": "6ac52ce888df2c7a4495921208838de338830a1ead757cf1cffa46c5c46f55a8",
+        "restore_receipt_sha256": "7a0aaff10b25f1bb2522b018fefe43bc9a92203a1d335a47fd63c45440fb294f"
+      },
+      "durable_transitions": [
+        {
+          "operation": "pre-reconciliation-interruption",
+          "phase": "replacement_pending",
+          "sequence": 1
+        },
+        {
+          "operation": "live-gate-reconciliation",
+          "phase": "installed_reconciled_from_live_identity",
+          "sequence": 2
+        },
+        {
+          "operation": "reconciliation-recovery-restore",
+          "phase": "replacement_pending",
+          "sequence": 3
+        },
+        {
+          "operation": "reconciliation-recovery-restore",
+          "phase": "installed",
+          "sequence": 4
+        },
+        {
+          "operation": "reconciliation-recovery-restore",
+          "phase": "exact_original_verified",
+          "sequence": 5
+        }
+      ],
+      "evidence_manifest": [
+        {
+          "bytes": 44,
+          "mode": "0o600",
+          "path": "front-controller-before.php",
+          "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+        },
+        {
+          "bytes": 767,
+          "mode": "0o600",
+          "path": "gate-events.jsonl",
+          "sha256": "857dfd997a551819525d04e5515c18a4143cec5160c3502ec53ff5da79d8a472"
+        },
+        {
+          "bytes": 2073,
+          "mode": "0o600",
+          "path": "reconciliation-recovery-restore-receipt.json",
+          "sha256": "7a0aaff10b25f1bb2522b018fefe43bc9a92203a1d335a47fd63c45440fb294f"
+        },
+        {
+          "bytes": 9292,
+          "mode": "0o600",
+          "path": "state.json",
+          "sha256": "55f5b981eaabe8b27ae1f80a982b306088cb70fb94a574506d12eb14a6ac4110"
+        }
+      ],
+      "final_durable_state": {
+        "containment_active": false,
+        "dependency_mutation_started": false,
+        "gate_failure_receipt": null,
+        "gate_verified": false,
+        "rollback_complete": false,
+        "static_gate_active": false,
+        "status": "rehearsal"
+      },
+      "final_front_controller": {
+        "bytes": 44,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "path": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/interruption-after-live-gate-reconciliation/application/public/index.php",
+        "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+      },
+      "final_is_exact_gate": false,
+      "final_is_original": true,
+      "scenario": "interruption-after-live-gate-reconciliation",
+      "status": "pass"
+    },
+    "interruption-after-origin": {
+      "details": {
+        "decision": {
+          "action": "restore_original",
+          "latest_phase": "installed",
+          "latest_target_sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03",
+          "live": {
+            "bytes": 339,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/interruption-after-origin/application/public/index.php",
+            "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+          },
+          "mutation_started": false,
+          "persisted_gate_boolean_ignored": true,
+          "recovery_required": true,
+          "transition_count": 2
+        },
+        "expected_interruption_sha256": "cb51b39b199bdfdef7c900003e83e96bb15a40f6c015bdc730fb9c5db1b2f258",
+        "fault_stage": "after_origin_verified",
+        "restore_receipt_sha256": "1da65641b5868d1784085adfe9fc368890ee9c4cef4d46acb9e4d311e583af52"
+      },
+      "durable_transitions": [
+        {
+          "operation": "interruption-after-origin-gate",
+          "phase": "replacement_pending",
+          "sequence": 1
+        },
+        {
+          "operation": "interruption-after-origin-gate",
+          "phase": "installed",
+          "sequence": 2
+        },
+        {
+          "operation": "interruption-after-origin-recovery-restore",
+          "phase": "replacement_pending",
+          "sequence": 3
+        },
+        {
+          "operation": "interruption-after-origin-recovery-restore",
+          "phase": "installed",
+          "sequence": 4
+        },
+        {
+          "operation": "interruption-after-origin-recovery-restore",
+          "phase": "exact_original_verified",
+          "sequence": 5
+        }
+      ],
+      "evidence_manifest": [
+        {
+          "bytes": 44,
+          "mode": "0o600",
+          "path": "front-controller-before.php",
+          "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+        },
+        {
+          "bytes": 775,
+          "mode": "0o600",
+          "path": "gate-events.jsonl",
+          "sha256": "e117038ffd47ac696648a9a3cf57dd1dad250087ef7efb5c005e7a28ee65c9a9"
+        },
+        {
+          "bytes": 1994,
+          "mode": "0o600",
+          "path": "interruption-after-origin-recovery-restore-receipt.json",
+          "sha256": "1da65641b5868d1784085adfe9fc368890ee9c4cef4d46acb9e4d311e583af52"
+        },
+        {
+          "bytes": 7817,
+          "mode": "0o600",
+          "path": "state.json",
+          "sha256": "0da3e5168ee2d71c5b8e9b75273f2a94974bbf1bf837349910a6ac3697707b27"
+        }
+      ],
+      "final_durable_state": {
+        "containment_active": false,
+        "dependency_mutation_started": false,
+        "gate_failure_receipt": null,
+        "gate_verified": false,
+        "rollback_complete": false,
+        "static_gate_active": false,
+        "status": "rehearsal"
+      },
+      "final_front_controller": {
+        "bytes": 44,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "path": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/interruption-after-origin/application/public/index.php",
+        "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+      },
+      "final_is_exact_gate": false,
+      "final_is_original": true,
+      "scenario": "interruption-after-origin",
+      "status": "pass"
+    },
+    "interruption-after-pending": {
+      "details": {
+        "decision": {
+          "action": "restore_original",
+          "latest_phase": "replacement_pending",
+          "latest_target_sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03",
+          "live": {
+            "bytes": 44,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/interruption-after-pending/application/public/index.php",
+            "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+          },
+          "mutation_started": false,
+          "persisted_gate_boolean_ignored": true,
+          "recovery_required": true,
+          "transition_count": 1
+        },
+        "expected_interruption_sha256": "226f967ac72749685a7befc54009b9f7e25b887b8abb1a46550a95244c0e55e2",
+        "fault_stage": "after_replacement_pending",
+        "restore_receipt_sha256": "446979f192e47e7a33db5080b953f06ffd3b86baf63e054b6f92c617238f64cf"
+      },
+      "durable_transitions": [
+        {
+          "operation": "interruption-after-pending-gate",
+          "phase": "replacement_pending",
+          "sequence": 1
+        },
+        {
+          "operation": "interruption-after-pending-recovery-restore",
+          "phase": "original_already_present",
+          "sequence": 2
+        },
+        {
+          "operation": "interruption-after-pending-recovery-restore",
+          "phase": "exact_original_verified",
+          "sequence": 3
+        }
+      ],
+      "evidence_manifest": [
+        {
+          "bytes": 44,
+          "mode": "0o600",
+          "path": "front-controller-before.php",
+          "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+        },
+        {
+          "bytes": 489,
+          "mode": "0o600",
+          "path": "gate-events.jsonl",
+          "sha256": "e317b2b690538cdfb825de3b707844d56f971c4c6c125ab63a8c613623924855"
+        },
+        {
+          "bytes": 871,
+          "mode": "0o600",
+          "path": "interruption-after-pending-recovery-restore-receipt.json",
+          "sha256": "446979f192e47e7a33db5080b953f06ffd3b86baf63e054b6f92c617238f64cf"
+        },
+        {
+          "bytes": 4671,
+          "mode": "0o600",
+          "path": "state.json",
+          "sha256": "4323aceeb6fee09eb70f6c6cbde6479115141fda04230bcec1a24aa0bcdbc254"
+        }
+      ],
+      "final_durable_state": {
+        "containment_active": false,
+        "dependency_mutation_started": false,
+        "gate_failure_receipt": null,
+        "gate_verified": false,
+        "rollback_complete": false,
+        "static_gate_active": false,
+        "status": "rehearsal"
+      },
+      "final_front_controller": {
+        "bytes": 44,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "path": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/interruption-after-pending/application/public/index.php",
+        "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+      },
+      "final_is_exact_gate": false,
+      "final_is_original": true,
+      "scenario": "interruption-after-pending",
+      "status": "pass"
+    },
+    "interruption-after-public": {
+      "details": {
+        "decision": {
+          "action": "restore_original",
+          "latest_phase": "installed",
+          "latest_target_sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03",
+          "live": {
+            "bytes": 339,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/interruption-after-public/application/public/index.php",
+            "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+          },
+          "mutation_started": false,
+          "persisted_gate_boolean_ignored": true,
+          "recovery_required": true,
+          "transition_count": 2
+        },
+        "expected_interruption_sha256": "6981588e63adc13bf826b82609db29c94d9fe539f5f3568105a163f1ccbd58d5",
+        "fault_stage": "after_public_verified",
+        "restore_receipt_sha256": "7fc4012da6a388de3f2e764eee701a03f630fec54d2525e12f0739a30d469f2d"
+      },
+      "durable_transitions": [
+        {
+          "operation": "interruption-after-public-gate",
+          "phase": "replacement_pending",
+          "sequence": 1
+        },
+        {
+          "operation": "interruption-after-public-gate",
+          "phase": "installed",
+          "sequence": 2
+        },
+        {
+          "operation": "interruption-after-public-recovery-restore",
+          "phase": "replacement_pending",
+          "sequence": 3
+        },
+        {
+          "operation": "interruption-after-public-recovery-restore",
+          "phase": "installed",
+          "sequence": 4
+        },
+        {
+          "operation": "interruption-after-public-recovery-restore",
+          "phase": "exact_original_verified",
+          "sequence": 5
+        }
+      ],
+      "evidence_manifest": [
+        {
+          "bytes": 44,
+          "mode": "0o600",
+          "path": "front-controller-before.php",
+          "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+        },
+        {
+          "bytes": 775,
+          "mode": "0o600",
+          "path": "gate-events.jsonl",
+          "sha256": "b973e831a5903a5ec664118dc4fb6abacfe22137c604b61d616e8cc4edf542bc"
+        },
+        {
+          "bytes": 1994,
+          "mode": "0o600",
+          "path": "interruption-after-public-recovery-restore-receipt.json",
+          "sha256": "7fc4012da6a388de3f2e764eee701a03f630fec54d2525e12f0739a30d469f2d"
+        },
+        {
+          "bytes": 7817,
+          "mode": "0o600",
+          "path": "state.json",
+          "sha256": "3a97f489b637aee99df36a1efb17a7eb304282d98617937e1d0ca73e915987cf"
+        }
+      ],
+      "final_durable_state": {
+        "containment_active": false,
+        "dependency_mutation_started": false,
+        "gate_failure_receipt": null,
+        "gate_verified": false,
+        "rollback_complete": false,
+        "static_gate_active": false,
+        "status": "rehearsal"
+      },
+      "final_front_controller": {
+        "bytes": 44,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "path": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/interruption-after-public/application/public/index.php",
+        "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+      },
+      "final_is_exact_gate": false,
+      "final_is_original": true,
+      "scenario": "interruption-after-public",
+      "status": "pass"
+    },
+    "interruption-after-swap-before-installed": {
+      "details": {
+        "decision": {
+          "action": "restore_original",
+          "latest_phase": "replacement_pending",
+          "latest_target_sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03",
+          "live": {
+            "bytes": 339,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/interruption-after-swap-before-installed/application/public/index.php",
+            "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+          },
+          "mutation_started": false,
+          "persisted_gate_boolean_ignored": true,
+          "recovery_required": true,
+          "transition_count": 1
+        },
+        "expected_interruption_sha256": "4899f8c32d25884fe2aaba29fb4a218c41b5aac7e5188558dcc8199444a45cff",
+        "fault_stage": "after_replace_before_installed",
+        "restore_receipt_sha256": "5bcdfb80c55315d72198b5a036e0b083990d69945428f205764195c15b098a9a"
+      },
+      "durable_transitions": [
+        {
+          "operation": "interruption-after-swap-before-installed-gate",
+          "phase": "replacement_pending",
+          "sequence": 1
+        },
+        {
+          "operation": "interruption-after-swap-before-installed-recovery-restore",
+          "phase": "replacement_pending",
+          "sequence": 2
+        },
+        {
+          "operation": "interruption-after-swap-before-installed-recovery-restore",
+          "phase": "installed",
+          "sequence": 3
+        },
+        {
+          "operation": "interruption-after-swap-before-installed-recovery-restore",
+          "phase": "exact_original_verified",
+          "sequence": 4
+        }
+      ],
+      "evidence_manifest": [
+        {
+          "bytes": 44,
+          "mode": "0o600",
+          "path": "front-controller-before.php",
+          "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+        },
+        {
+          "bytes": 694,
+          "mode": "0o600",
+          "path": "gate-events.jsonl",
+          "sha256": "6c5510827a2895bc874fb74b5aa8dff592b675b9ea81f1f74ae0e45bb8d88984"
+        },
+        {
+          "bytes": 2084,
+          "mode": "0o600",
+          "path": "interruption-after-swap-before-installed-recovery-restore-receipt.json",
+          "sha256": "5bcdfb80c55315d72198b5a036e0b083990d69945428f205764195c15b098a9a"
+        },
+        {
+          "bytes": 6732,
+          "mode": "0o600",
+          "path": "state.json",
+          "sha256": "a58386441a06cac005b955da28fb80fcd7e693f98d97c7d7bd3fda937d3d9ad0"
+        }
+      ],
+      "final_durable_state": {
+        "containment_active": false,
+        "dependency_mutation_started": false,
+        "gate_failure_receipt": null,
+        "gate_verified": false,
+        "rollback_complete": false,
+        "static_gate_active": false,
+        "status": "rehearsal"
+      },
+      "final_front_controller": {
+        "bytes": 44,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "path": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/interruption-after-swap-before-installed/application/public/index.php",
+        "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+      },
+      "final_is_exact_gate": false,
+      "final_is_original": true,
+      "scenario": "interruption-after-swap-before-installed",
+      "status": "pass"
+    },
+    "interruption-after-verified": {
+      "details": {
+        "decision": {
+          "action": "restore_original",
+          "latest_phase": "verified",
+          "latest_target_sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03",
+          "live": {
+            "bytes": 339,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/interruption-after-verified/application/public/index.php",
+            "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+          },
+          "mutation_started": false,
+          "persisted_gate_boolean_ignored": true,
+          "recovery_required": true,
+          "transition_count": 3
+        },
+        "expected_interruption_sha256": "819d27ae0d484be4e9df42d788adb7d937242c2c16e01cbd43d15d0413c47a67",
+        "fault_stage": "after_verified",
+        "restore_receipt_sha256": "9d5d4dd056c8715a61c366a479e2ea83d52fb0d15bff934c24ffee8a78955ecb"
+      },
+      "durable_transitions": [
+        {
+          "operation": "interruption-after-verified-gate",
+          "phase": "replacement_pending",
+          "sequence": 1
+        },
+        {
+          "operation": "interruption-after-verified-gate",
+          "phase": "installed",
+          "sequence": 2
+        },
+        {
+          "operation": "interruption-after-verified-gate",
+          "phase": "verified",
+          "sequence": 3
+        },
+        {
+          "operation": "interruption-after-verified-recovery-restore",
+          "phase": "replacement_pending",
+          "sequence": 4
+        },
+        {
+          "operation": "interruption-after-verified-recovery-restore",
+          "phase": "installed",
+          "sequence": 5
+        },
+        {
+          "operation": "interruption-after-verified-recovery-restore",
+          "phase": "exact_original_verified",
+          "sequence": 6
+        }
+      ],
+      "evidence_manifest": [
+        {
+          "bytes": 44,
+          "mode": "0o600",
+          "path": "front-controller-before.php",
+          "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+        },
+        {
+          "bytes": 927,
+          "mode": "0o600",
+          "path": "gate-events.jsonl",
+          "sha256": "9ef0e1dfcbd656be663ca5c987814acf9de972c49e13a3eb67487cebd0facd65"
+        },
+        {
+          "bytes": 2006,
+          "mode": "0o600",
+          "path": "interruption-after-verified-recovery-restore-receipt.json",
+          "sha256": "9d5d4dd056c8715a61c366a479e2ea83d52fb0d15bff934c24ffee8a78955ecb"
+        },
+        {
+          "bytes": 12257,
+          "mode": "0o600",
+          "path": "state.json",
+          "sha256": "0e4d1e9a328a67a520a473923abd3ce5ac901d3d8b69d27c5b1ee449f805b2e0"
+        }
+      ],
+      "final_durable_state": {
+        "containment_active": false,
+        "dependency_mutation_started": false,
+        "gate_failure_receipt": null,
+        "gate_verified": false,
+        "rollback_complete": false,
+        "static_gate_active": false,
+        "status": "rehearsal"
+      },
+      "final_front_controller": {
+        "bytes": 44,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "path": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/interruption-after-verified/application/public/index.php",
+        "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+      },
+      "final_is_exact_gate": false,
+      "final_is_original": true,
+      "scenario": "interruption-after-verified",
+      "status": "pass"
+    },
+    "legacy-mode-0600-gate-restoration": {
+      "details": {
+        "expected_failure_sha256": "1be1e684df156f2af9d1b9eaba161a2a705c736d4bddde9430ba5444c8356ea1",
+        "incorrect_mode": "0600"
+      },
+      "durable_transitions": [
+        {
+          "operation": "legacy-mode-0600-gate-automatic-original-restore",
+          "phase": "replacement_pending",
+          "sequence": 1
+        },
+        {
+          "operation": "legacy-mode-0600-gate-automatic-original-restore",
+          "phase": "installed",
+          "sequence": 2
+        },
+        {
+          "operation": "legacy-mode-0600-gate-automatic-original-restore",
+          "phase": "exact_original_verified",
+          "sequence": 3
+        }
+      ],
+      "evidence_manifest": [
+        {
+          "bytes": 44,
+          "mode": "0o600",
+          "path": "front-controller-before.php",
+          "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+        },
+        {
+          "bytes": 501,
+          "mode": "0o600",
+          "path": "gate-events.jsonl",
+          "sha256": "de2e01c448604065b310c1fc6f918f80bae566c3723ed696ef6abdcde1bbc0ea"
+        },
+        {
+          "bytes": 2040,
+          "mode": "0o600",
+          "path": "legacy-mode-0600-gate-automatic-original-restore-receipt.json",
+          "sha256": "e4737cbf709e00598a33e0728d73598bfbd53ef38fd956569f9d34f8cb8e7807"
+        },
+        {
+          "bytes": 2232,
+          "mode": "0o600",
+          "path": "legacy-mode-0600-gate-gate-failure-receipt.json",
+          "sha256": "1b3bf00f63ea45613dd6c152166142d49be66b1c67194b3ec3c23a6ccfd59927"
+        },
+        {
+          "bytes": 5473,
+          "mode": "0o600",
+          "path": "state.json",
+          "sha256": "80e937a598352e42ce0ffec247176dc96ea83f6a1a0bb8e05b14800dd49394a6"
+        }
+      ],
+      "final_durable_state": {
+        "containment_active": false,
+        "dependency_mutation_started": false,
+        "gate_failure_receipt": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/legacy-mode-0600-gate-restoration/evidence/legacy-mode-0600-gate-gate-failure-receipt.json",
+        "gate_verified": false,
+        "rollback_complete": false,
+        "static_gate_active": false,
+        "status": "legacy-mode-0600-gate_failed_original_restored"
+      },
+      "final_front_controller": {
+        "bytes": 44,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "path": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/legacy-mode-0600-gate-restoration/application/public/index.php",
+        "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+      },
+      "final_is_exact_gate": false,
+      "final_is_original": true,
+      "scenario": "legacy-mode-0600-gate-restoration",
+      "status": "pass"
+    },
+    "post-mutation-origin-failure-containment": {
+      "details": {
+        "containment": {
+          "failure_message_sha256": "f8d030b21dd5fe0e2fc9e667edbcfba20a9e46a0736323e844ecbb5b85eb1fc3",
+          "gate_failure_receipt": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/post-mutation-origin-failure-containment/evidence/post-mutation-origin-failure-containment-rollback-gate-gate-failure-receipt.json",
+          "http_verified": false,
+          "identity": {
+            "bytes": 339,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/post-mutation-origin-failure-containment/application/public/index.php",
+            "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+          },
+          "rollback_may_continue_boot_independently": true,
+          "status": "site_gated_http_unverified"
+        },
+        "failed_route": "origin_loopback",
+        "restore_receipt_sha256": "a570547489bd35104a15b834c69505e70649ce50fab0b934a8cb872745c51f8d"
+      },
+      "durable_transitions": [
+        {
+          "operation": "post-mutation-origin-failure-containment-rollback-gate",
+          "phase": "replacement_pending",
+          "sequence": 1
+        },
+        {
+          "operation": "post-mutation-origin-failure-containment-rollback-gate",
+          "phase": "installed",
+          "sequence": 2
+        },
+        {
+          "operation": "post-mutation-origin-failure-containment-rollback-gate-verification-failure",
+          "phase": "containment_retained",
+          "sequence": 3
+        },
+        {
+          "operation": "post-mutation-origin-failure-containment-post-rollback-restore",
+          "phase": "replacement_pending",
+          "sequence": 4
+        },
+        {
+          "operation": "post-mutation-origin-failure-containment-post-rollback-restore",
+          "phase": "installed",
+          "sequence": 5
+        },
+        {
+          "operation": "post-mutation-origin-failure-containment-post-rollback-restore",
+          "phase": "exact_original_verified",
+          "sequence": 6
+        }
+      ],
+      "evidence_manifest": [
+        {
+          "bytes": 44,
+          "mode": "0o600",
+          "path": "front-controller-before.php",
+          "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+        },
+        {
+          "bytes": 1814,
+          "mode": "0o600",
+          "path": "gate-events.jsonl",
+          "sha256": "0a3a7f018d600882724b482bdbbac75b1734a359153ebcd9999e4bab9a11c934"
+        },
+        {
+          "bytes": 2089,
+          "mode": "0o600",
+          "path": "post-mutation-origin-failure-containment-post-rollback-restore-receipt.json",
+          "sha256": "a570547489bd35104a15b834c69505e70649ce50fab0b934a8cb872745c51f8d"
+        },
+        {
+          "bytes": 3263,
+          "mode": "0o600",
+          "path": "post-mutation-origin-failure-containment-rollback-gate-gate-failure-receipt.json",
+          "sha256": "180945c9f5fc00d858d403ad98db0874f30332aa4fe6a1cbe34ea36e2f77787e"
+        },
+        {
+          "bytes": 1003,
+          "mode": "0o600",
+          "path": "post-mutation-origin-failure-containment-rollback-gate-verification-failure-containment-receipt.json",
+          "sha256": "f8bbf8112c486e88da63ad5da204141e4a8e7522e3afd6481e7ea7ede97f7e51"
+        },
+        {
+          "bytes": 9633,
+          "mode": "0o600",
+          "path": "state.json",
+          "sha256": "797971810d7a2a52a01a16e5bd8bc168957667ec63eda936c4e1f59c6e7d7d3d"
+        }
+      ],
+      "final_durable_state": {
+        "containment_active": false,
+        "dependency_mutation_started": true,
+        "gate_failure_receipt": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/post-mutation-origin-failure-containment/evidence/post-mutation-origin-failure-containment-rollback-gate-gate-failure-receipt.json",
+        "gate_verified": false,
+        "rollback_complete": true,
+        "static_gate_active": false,
+        "status": "post-mutation-origin-failure-containment-rollback-gate_http_unverified_site_gated"
+      },
+      "final_front_controller": {
+        "bytes": 44,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "path": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/post-mutation-origin-failure-containment/application/public/index.php",
+        "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+      },
+      "final_is_exact_gate": false,
+      "final_is_original": true,
+      "scenario": "post-mutation-origin-failure-containment",
+      "status": "pass"
+    },
+    "post-mutation-public-failure-containment": {
+      "details": {
+        "containment": {
+          "failure_message_sha256": "e6adade421db71bbd1a8e11b76a552146e53d60a5346de26fe6127f0b62ca761",
+          "gate_failure_receipt": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/post-mutation-public-failure-containment/evidence/post-mutation-public-failure-containment-rollback-gate-gate-failure-receipt.json",
+          "http_verified": false,
+          "identity": {
+            "bytes": 339,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/post-mutation-public-failure-containment/application/public/index.php",
+            "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+          },
+          "rollback_may_continue_boot_independently": true,
+          "status": "site_gated_http_unverified"
+        },
+        "failed_route": "public_cloudflare",
+        "restore_receipt_sha256": "22614b6a267b9ebc562782ebc30892bf593021ae7f060cab6817f93102a3e40e"
+      },
+      "durable_transitions": [
+        {
+          "operation": "post-mutation-public-failure-containment-rollback-gate",
+          "phase": "replacement_pending",
+          "sequence": 1
+        },
+        {
+          "operation": "post-mutation-public-failure-containment-rollback-gate",
+          "phase": "installed",
+          "sequence": 2
+        },
+        {
+          "operation": "post-mutation-public-failure-containment-rollback-gate-verification-failure",
+          "phase": "containment_retained",
+          "sequence": 3
+        },
+        {
+          "operation": "post-mutation-public-failure-containment-post-rollback-restore",
+          "phase": "replacement_pending",
+          "sequence": 4
+        },
+        {
+          "operation": "post-mutation-public-failure-containment-post-rollback-restore",
+          "phase": "installed",
+          "sequence": 5
+        },
+        {
+          "operation": "post-mutation-public-failure-containment-post-rollback-restore",
+          "phase": "exact_original_verified",
+          "sequence": 6
+        }
+      ],
+      "evidence_manifest": [
+        {
+          "bytes": 44,
+          "mode": "0o600",
+          "path": "front-controller-before.php",
+          "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+        },
+        {
+          "bytes": 1814,
+          "mode": "0o600",
+          "path": "gate-events.jsonl",
+          "sha256": "a2e3deb0f4a8873615a2b3a337009d2896286138ed67c2fee2e1f256c33a0c63"
+        },
+        {
+          "bytes": 2089,
+          "mode": "0o600",
+          "path": "post-mutation-public-failure-containment-post-rollback-restore-receipt.json",
+          "sha256": "22614b6a267b9ebc562782ebc30892bf593021ae7f060cab6817f93102a3e40e"
+        },
+        {
+          "bytes": 4716,
+          "mode": "0o600",
+          "path": "post-mutation-public-failure-containment-rollback-gate-gate-failure-receipt.json",
+          "sha256": "3014c00b7183c652d410d97afde2b31ecd8f82bfd57769d43d182b1332c95195"
+        },
+        {
+          "bytes": 1003,
+          "mode": "0o600",
+          "path": "post-mutation-public-failure-containment-rollback-gate-verification-failure-containment-receipt.json",
+          "sha256": "6fa6eab140f2d6eb23237efe47b77bf3d1d0fc8eed733274a61cd8d1fa75b3ce"
+        },
+        {
+          "bytes": 9633,
+          "mode": "0o600",
+          "path": "state.json",
+          "sha256": "7c3b74b9e9dc1eb5a5f5001277de0fe674dfb273fc196ff2b82d1df12883e807"
+        }
+      ],
+      "final_durable_state": {
+        "containment_active": false,
+        "dependency_mutation_started": true,
+        "gate_failure_receipt": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/post-mutation-public-failure-containment/evidence/post-mutation-public-failure-containment-rollback-gate-gate-failure-receipt.json",
+        "gate_verified": false,
+        "rollback_complete": true,
+        "static_gate_active": false,
+        "status": "post-mutation-public-failure-containment-rollback-gate_http_unverified_site_gated"
+      },
+      "final_front_controller": {
+        "bytes": 44,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "path": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/post-mutation-public-failure-containment/application/public/index.php",
+        "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+      },
+      "final_is_exact_gate": false,
+      "final_is_original": true,
+      "scenario": "post-mutation-public-failure-containment",
+      "status": "pass"
+    },
+    "restore-interruption-after-exact-verification": {
+      "details": {
+        "decision": {
+          "action": "none",
+          "latest_phase": "exact_original_verified",
+          "latest_target_sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1",
+          "live": {
+            "bytes": 44,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/restore-interruption-after-exact-verification/application/public/index.php",
+            "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+          },
+          "mutation_started": false,
+          "persisted_gate_boolean_ignored": true,
+          "recovery_required": false,
+          "transition_count": 6
+        },
+        "expected_interruption_sha256": "e323f0c1c8908c07894f5e211d73bd7b7b3918b1f0daeee9ac1c90232a35b2a6",
+        "fault_stage": "after_exact_original_verified",
+        "restore_receipt_sha256": "ec86c0d8df43697f71311c5899e83ab202120ae8cf9a652ce4e913026cb6baa1"
+      },
+      "durable_transitions": [
+        {
+          "operation": "restore-interruption-after-exact-verification-initial-gate",
+          "phase": "replacement_pending",
+          "sequence": 1
+        },
+        {
+          "operation": "restore-interruption-after-exact-verification-initial-gate",
+          "phase": "installed",
+          "sequence": 2
+        },
+        {
+          "operation": "restore-interruption-after-exact-verification-initial-gate",
+          "phase": "verified",
+          "sequence": 3
+        },
+        {
+          "operation": "restore-interruption-after-exact-verification-interrupted-restore",
+          "phase": "replacement_pending",
+          "sequence": 4
+        },
+        {
+          "operation": "restore-interruption-after-exact-verification-interrupted-restore",
+          "phase": "installed",
+          "sequence": 5
+        },
+        {
+          "operation": "restore-interruption-after-exact-verification-interrupted-restore",
+          "phase": "exact_original_verified",
+          "sequence": 6
+        },
+        {
+          "operation": "restore-interruption-after-exact-verification-completed-restore",
+          "phase": "original_already_present",
+          "sequence": 7
+        },
+        {
+          "operation": "restore-interruption-after-exact-verification-completed-restore",
+          "phase": "exact_original_verified",
+          "sequence": 8
+        }
+      ],
+      "evidence_manifest": [
+        {
+          "bytes": 44,
+          "mode": "0o600",
+          "path": "front-controller-before.php",
+          "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+        },
+        {
+          "bytes": 1445,
+          "mode": "0o600",
+          "path": "gate-events.jsonl",
+          "sha256": "7edbdf0300375dfdbdc75bbaa5f23fbad8c89fe0f8d37b18de9e21891f9fc0cf"
+        },
+        {
+          "bytes": 929,
+          "mode": "0o600",
+          "path": "restore-interruption-after-exact-verification-completed-restore-receipt.json",
+          "sha256": "ec86c0d8df43697f71311c5899e83ab202120ae8cf9a652ce4e913026cb6baa1"
+        },
+        {
+          "bytes": 14848,
+          "mode": "0o600",
+          "path": "state.json",
+          "sha256": "8d531462ccf245a6f094bc6f789511db46336e317f36b10a6d82588292a359a6"
+        }
+      ],
+      "final_durable_state": {
+        "containment_active": false,
+        "dependency_mutation_started": false,
+        "gate_failure_receipt": null,
+        "gate_verified": false,
+        "rollback_complete": false,
+        "static_gate_active": false,
+        "status": "rehearsal"
+      },
+      "final_front_controller": {
+        "bytes": 44,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "path": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/restore-interruption-after-exact-verification/application/public/index.php",
+        "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+      },
+      "final_is_exact_gate": false,
+      "final_is_original": true,
+      "scenario": "restore-interruption-after-exact-verification",
+      "status": "pass"
+    },
+    "restore-interruption-after-installed": {
+      "details": {
+        "decision": {
+          "action": "restore_original",
+          "latest_phase": "installed",
+          "latest_target_sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1",
+          "live": {
+            "bytes": 44,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/restore-interruption-after-installed/application/public/index.php",
+            "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+          },
+          "mutation_started": false,
+          "persisted_gate_boolean_ignored": true,
+          "recovery_required": true,
+          "transition_count": 5
+        },
+        "expected_interruption_sha256": "79bc600bc79c25c5f512879538e4ed90009ce80578c3661d51f2e058e207fe73",
+        "fault_stage": "after_installed",
+        "restore_receipt_sha256": "14a4665fbbacdef1dd3a21eb0b659ded9a69fcf87cb140158e72efccb5d63876"
+      },
+      "durable_transitions": [
+        {
+          "operation": "restore-interruption-after-installed-initial-gate",
+          "phase": "replacement_pending",
+          "sequence": 1
+        },
+        {
+          "operation": "restore-interruption-after-installed-initial-gate",
+          "phase": "installed",
+          "sequence": 2
+        },
+        {
+          "operation": "restore-interruption-after-installed-initial-gate",
+          "phase": "verified",
+          "sequence": 3
+        },
+        {
+          "operation": "restore-interruption-after-installed-interrupted-restore",
+          "phase": "replacement_pending",
+          "sequence": 4
+        },
+        {
+          "operation": "restore-interruption-after-installed-interrupted-restore",
+          "phase": "installed",
+          "sequence": 5
+        },
+        {
+          "operation": "restore-interruption-after-installed-completed-restore",
+          "phase": "original_already_present",
+          "sequence": 6
+        },
+        {
+          "operation": "restore-interruption-after-installed-completed-restore",
+          "phase": "exact_original_verified",
+          "sequence": 7
+        }
+      ],
+      "evidence_manifest": [
+        {
+          "bytes": 44,
+          "mode": "0o600",
+          "path": "front-controller-before.php",
+          "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+        },
+        {
+          "bytes": 1192,
+          "mode": "0o600",
+          "path": "gate-events.jsonl",
+          "sha256": "013e54c470bdc34ba63398d1fd9616a571a417a7476d436709aeef5514032114"
+        },
+        {
+          "bytes": 902,
+          "mode": "0o600",
+          "path": "restore-interruption-after-installed-completed-restore-receipt.json",
+          "sha256": "14a4665fbbacdef1dd3a21eb0b659ded9a69fcf87cb140158e72efccb5d63876"
+        },
+        {
+          "bytes": 13541,
+          "mode": "0o600",
+          "path": "state.json",
+          "sha256": "3f599e010e1308c970c5daef46ca7d2a3a7fcca0ea898bc454701b3949ec1b70"
+        }
+      ],
+      "final_durable_state": {
+        "containment_active": false,
+        "dependency_mutation_started": false,
+        "gate_failure_receipt": null,
+        "gate_verified": false,
+        "rollback_complete": false,
+        "static_gate_active": false,
+        "status": "rehearsal"
+      },
+      "final_front_controller": {
+        "bytes": 44,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "path": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/restore-interruption-after-installed/application/public/index.php",
+        "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+      },
+      "final_is_exact_gate": false,
+      "final_is_original": true,
+      "scenario": "restore-interruption-after-installed",
+      "status": "pass"
+    },
+    "restore-interruption-after-pending": {
+      "details": {
+        "decision": {
+          "action": "restore_original",
+          "latest_phase": "replacement_pending",
+          "latest_target_sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1",
+          "live": {
+            "bytes": 339,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/restore-interruption-after-pending/application/public/index.php",
+            "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+          },
+          "mutation_started": false,
+          "persisted_gate_boolean_ignored": true,
+          "recovery_required": true,
+          "transition_count": 4
+        },
+        "expected_interruption_sha256": "226f967ac72749685a7befc54009b9f7e25b887b8abb1a46550a95244c0e55e2",
+        "fault_stage": "after_replacement_pending",
+        "restore_receipt_sha256": "72f1d90ef447bfcb18f0faf2c4d832e359ff6d16f747a8591b3feb9d46f62a9e"
+      },
+      "durable_transitions": [
+        {
+          "operation": "restore-interruption-after-pending-initial-gate",
+          "phase": "replacement_pending",
+          "sequence": 1
+        },
+        {
+          "operation": "restore-interruption-after-pending-initial-gate",
+          "phase": "installed",
+          "sequence": 2
+        },
+        {
+          "operation": "restore-interruption-after-pending-initial-gate",
+          "phase": "verified",
+          "sequence": 3
+        },
+        {
+          "operation": "restore-interruption-after-pending-interrupted-restore",
+          "phase": "replacement_pending",
+          "sequence": 4
+        },
+        {
+          "operation": "restore-interruption-after-pending-completed-restore",
+          "phase": "replacement_pending",
+          "sequence": 5
+        },
+        {
+          "operation": "restore-interruption-after-pending-completed-restore",
+          "phase": "installed",
+          "sequence": 6
+        },
+        {
+          "operation": "restore-interruption-after-pending-completed-restore",
+          "phase": "exact_original_verified",
+          "sequence": 7
+        }
+      ],
+      "evidence_manifest": [
+        {
+          "bytes": 44,
+          "mode": "0o600",
+          "path": "front-controller-before.php",
+          "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+        },
+        {
+          "bytes": 1171,
+          "mode": "0o600",
+          "path": "gate-events.jsonl",
+          "sha256": "9df9965ff80014120c9bba5f48b7a2f0b56c6e475723948af3af483ebfaa6d5a"
+        },
+        {
+          "bytes": 2049,
+          "mode": "0o600",
+          "path": "restore-interruption-after-pending-completed-restore-receipt.json",
+          "sha256": "72f1d90ef447bfcb18f0faf2c4d832e359ff6d16f747a8591b3feb9d46f62a9e"
+        },
+        {
+          "bytes": 13925,
+          "mode": "0o600",
+          "path": "state.json",
+          "sha256": "e3d42c68862ae48845ff5c89a71c6a3956a89cb92ba50f3a87cd57bdfce6b6bf"
+        }
+      ],
+      "final_durable_state": {
+        "containment_active": false,
+        "dependency_mutation_started": false,
+        "gate_failure_receipt": null,
+        "gate_verified": false,
+        "rollback_complete": false,
+        "static_gate_active": false,
+        "status": "rehearsal"
+      },
+      "final_front_controller": {
+        "bytes": 44,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "path": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/restore-interruption-after-pending/application/public/index.php",
+        "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+      },
+      "final_is_exact_gate": false,
+      "final_is_original": true,
+      "scenario": "restore-interruption-after-pending",
+      "status": "pass"
+    },
+    "restore-interruption-after-state-persisted": {
+      "details": {
+        "decision": {
+          "action": "none",
+          "latest_phase": "exact_original_verified",
+          "latest_target_sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1",
+          "live": {
+            "bytes": 44,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/restore-interruption-after-state-persisted/application/public/index.php",
+            "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+          },
+          "mutation_started": false,
+          "persisted_gate_boolean_ignored": true,
+          "recovery_required": false,
+          "transition_count": 6
+        },
+        "expected_interruption_sha256": "8dbdf220fc36122277ea9b7615f6888056c38c73d96b9e3a7697bed88626574f",
+        "fault_stage": "after_original_state_persisted",
+        "restore_receipt_sha256": "5ac7bb3298e9b480d57662457e21edf23112c0c980b0b7970b70eb23406cf664"
+      },
+      "durable_transitions": [
+        {
+          "operation": "restore-interruption-after-state-persisted-initial-gate",
+          "phase": "replacement_pending",
+          "sequence": 1
+        },
+        {
+          "operation": "restore-interruption-after-state-persisted-initial-gate",
+          "phase": "installed",
+          "sequence": 2
+        },
+        {
+          "operation": "restore-interruption-after-state-persisted-initial-gate",
+          "phase": "verified",
+          "sequence": 3
+        },
+        {
+          "operation": "restore-interruption-after-state-persisted-interrupted-restore",
+          "phase": "replacement_pending",
+          "sequence": 4
+        },
+        {
+          "operation": "restore-interruption-after-state-persisted-interrupted-restore",
+          "phase": "installed",
+          "sequence": 5
+        },
+        {
+          "operation": "restore-interruption-after-state-persisted-interrupted-restore",
+          "phase": "exact_original_verified",
+          "sequence": 6
+        },
+        {
+          "operation": "restore-interruption-after-state-persisted-completed-restore",
+          "phase": "original_already_present",
+          "sequence": 7
+        },
+        {
+          "operation": "restore-interruption-after-state-persisted-completed-restore",
+          "phase": "exact_original_verified",
+          "sequence": 8
+        }
+      ],
+      "evidence_manifest": [
+        {
+          "bytes": 44,
+          "mode": "0o600",
+          "path": "front-controller-before.php",
+          "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+        },
+        {
+          "bytes": 1421,
+          "mode": "0o600",
+          "path": "gate-events.jsonl",
+          "sha256": "e4c21b065c62f91e6659031c5efd2fffbcadc81efc4179d322726350031b9676"
+        },
+        {
+          "bytes": 920,
+          "mode": "0o600",
+          "path": "restore-interruption-after-state-persisted-completed-restore-receipt.json",
+          "sha256": "5ac7bb3298e9b480d57662457e21edf23112c0c980b0b7970b70eb23406cf664"
+        },
+        {
+          "bytes": 14749,
+          "mode": "0o600",
+          "path": "state.json",
+          "sha256": "fa58294a7acbacd5c455165156b001487249ef59b13409619be7a1de69db634d"
+        }
+      ],
+      "final_durable_state": {
+        "containment_active": false,
+        "dependency_mutation_started": false,
+        "gate_failure_receipt": null,
+        "gate_verified": false,
+        "rollback_complete": false,
+        "static_gate_active": false,
+        "status": "rehearsal"
+      },
+      "final_front_controller": {
+        "bytes": 44,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "path": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/restore-interruption-after-state-persisted/application/public/index.php",
+        "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+      },
+      "final_is_exact_gate": false,
+      "final_is_original": true,
+      "scenario": "restore-interruption-after-state-persisted",
+      "status": "pass"
+    },
+    "restore-interruption-after-swap-before-installed": {
+      "details": {
+        "decision": {
+          "action": "restore_original",
+          "latest_phase": "replacement_pending",
+          "latest_target_sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1",
+          "live": {
+            "bytes": 44,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/restore-interruption-after-swap-before-installed/application/public/index.php",
+            "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+          },
+          "mutation_started": false,
+          "persisted_gate_boolean_ignored": true,
+          "recovery_required": true,
+          "transition_count": 4
+        },
+        "expected_interruption_sha256": "4899f8c32d25884fe2aaba29fb4a218c41b5aac7e5188558dcc8199444a45cff",
+        "fault_stage": "after_replace_before_installed",
+        "restore_receipt_sha256": "ab8820c29e305fb22f2cee1a480031bd5e906481e738ed98a3664f7816dd18ad"
+      },
+      "durable_transitions": [
+        {
+          "operation": "restore-interruption-after-swap-before-installed-initial-gate",
+          "phase": "replacement_pending",
+          "sequence": 1
+        },
+        {
+          "operation": "restore-interruption-after-swap-before-installed-initial-gate",
+          "phase": "installed",
+          "sequence": 2
+        },
+        {
+          "operation": "restore-interruption-after-swap-before-installed-initial-gate",
+          "phase": "verified",
+          "sequence": 3
+        },
+        {
+          "operation": "restore-interruption-after-swap-before-installed-interrupted-restore",
+          "phase": "replacement_pending",
+          "sequence": 4
+        },
+        {
+          "operation": "restore-interruption-after-swap-before-installed-completed-restore",
+          "phase": "original_already_present",
+          "sequence": 5
+        },
+        {
+          "operation": "restore-interruption-after-swap-before-installed-completed-restore",
+          "phase": "exact_original_verified",
+          "sequence": 6
+        }
+      ],
+      "evidence_manifest": [
+        {
+          "bytes": 44,
+          "mode": "0o600",
+          "path": "front-controller-before.php",
+          "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+        },
+        {
+          "bytes": 1097,
+          "mode": "0o600",
+          "path": "gate-events.jsonl",
+          "sha256": "bffefbee12b9ccd5692bac67f7009bffc9eb7aaa62c88c163bc7152b06750080"
+        },
+        {
+          "bytes": 938,
+          "mode": "0o600",
+          "path": "restore-interruption-after-swap-before-installed-completed-restore-receipt.json",
+          "sha256": "ab8820c29e305fb22f2cee1a480031bd5e906481e738ed98a3664f7816dd18ad"
+        },
+        {
+          "bytes": 12439,
+          "mode": "0o600",
+          "path": "state.json",
+          "sha256": "27b1c8a4da5df1cb63148f992ff9e333ea1734ef0fd9e09ac9b43f761141e97d"
+        }
+      ],
+      "final_durable_state": {
+        "containment_active": false,
+        "dependency_mutation_started": false,
+        "gate_failure_receipt": null,
+        "gate_verified": false,
+        "rollback_complete": false,
+        "static_gate_active": false,
+        "status": "rehearsal"
+      },
+      "final_front_controller": {
+        "bytes": 44,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "path": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/restore-interruption-after-swap-before-installed/application/public/index.php",
+        "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+      },
+      "final_is_exact_gate": false,
+      "final_is_original": true,
+      "scenario": "restore-interruption-after-swap-before-installed",
+      "status": "pass"
+    },
+    "restore-original-already-present-interruption": {
+      "details": {
+        "decision": {
+          "action": "none",
+          "latest_phase": "original_already_present",
+          "latest_target_sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1",
+          "live": {
+            "bytes": 44,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/restore-original-already-present-interruption/application/public/index.php",
+            "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+          },
+          "mutation_started": false,
+          "persisted_gate_boolean_ignored": true,
+          "recovery_required": false,
+          "transition_count": 1
+        },
+        "expected_interruption_sha256": "2df234a0f1fe9b8690983798f2146bd185df27fef73ca68095a08c344107a345",
+        "restore_receipt_sha256": "127409fc375280fac74ff39f471b775b36b284346855871a1fad0af43857c375"
+      },
+      "durable_transitions": [
+        {
+          "operation": "original-already-present-interrupted-restore",
+          "phase": "original_already_present",
+          "sequence": 1
+        },
+        {
+          "operation": "original-already-present-completed-restore",
+          "phase": "original_already_present",
+          "sequence": 2
+        },
+        {
+          "operation": "original-already-present-completed-restore",
+          "phase": "exact_original_verified",
+          "sequence": 3
+        }
+      ],
+      "evidence_manifest": [
+        {
+          "bytes": 44,
+          "mode": "0o600",
+          "path": "front-controller-before.php",
+          "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+        },
+        {
+          "bytes": 505,
+          "mode": "0o600",
+          "path": "gate-events.jsonl",
+          "sha256": "23943b12b4b51fc25d1e6476d6baff896c436a51dfe4b833859f7a77444b4649"
+        },
+        {
+          "bytes": 908,
+          "mode": "0o600",
+          "path": "original-already-present-completed-restore-receipt.json",
+          "sha256": "127409fc375280fac74ff39f471b775b36b284346855871a1fad0af43857c375"
+        },
+        {
+          "bytes": 4395,
+          "mode": "0o600",
+          "path": "state.json",
+          "sha256": "25e53e46bc018b475d213baa9bc806b614c1913f62af73aaba129630207a64ad"
+        }
+      ],
+      "final_durable_state": {
+        "containment_active": false,
+        "dependency_mutation_started": false,
+        "gate_failure_receipt": null,
+        "gate_verified": false,
+        "rollback_complete": false,
+        "static_gate_active": false,
+        "status": "rehearsal"
+      },
+      "final_front_controller": {
+        "bytes": 44,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "path": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/restore-original-already-present-interruption/application/public/index.php",
+        "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+      },
+      "final_is_exact_gate": false,
+      "final_is_original": true,
+      "scenario": "restore-original-already-present-interruption",
+      "status": "pass"
+    },
+    "stale-boolean-live-gate-recovery": {
+      "details": {
+        "decision": {
+          "action": "restore_original",
+          "latest_phase": "verified",
+          "latest_target_sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03",
+          "live": {
+            "bytes": 339,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/stale-boolean-live-gate-recovery/application/public/index.php",
+            "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+          },
+          "mutation_started": false,
+          "persisted_gate_boolean_ignored": true,
+          "recovery_required": true,
+          "transition_count": 3
+        },
+        "restore_receipt_sha256": "a22de9e3d233e1e7ce3d8fa71d9fcf93f96373c609c0666d66cafd97b9baeb29"
+      },
+      "durable_transitions": [
+        {
+          "operation": "stale-boolean-gate",
+          "phase": "replacement_pending",
+          "sequence": 1
+        },
+        {
+          "operation": "stale-boolean-gate",
+          "phase": "installed",
+          "sequence": 2
+        },
+        {
+          "operation": "stale-boolean-gate",
+          "phase": "verified",
+          "sequence": 3
+        },
+        {
+          "operation": "stale-boolean-recovery-restore",
+          "phase": "replacement_pending",
+          "sequence": 4
+        },
+        {
+          "operation": "stale-boolean-recovery-restore",
+          "phase": "installed",
+          "sequence": 5
+        },
+        {
+          "operation": "stale-boolean-recovery-restore",
+          "phase": "exact_original_verified",
+          "sequence": 6
+        }
+      ],
+      "evidence_manifest": [
+        {
+          "bytes": 44,
+          "mode": "0o600",
+          "path": "front-controller-before.php",
+          "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+        },
+        {
+          "bytes": 843,
+          "mode": "0o600",
+          "path": "gate-events.jsonl",
+          "sha256": "1f63c361ecfa7ecd7b9c7e2c29f50b97e0d3ae2598d2f63d54f94189fb2b527a"
+        },
+        {
+          "bytes": 2017,
+          "mode": "0o600",
+          "path": "stale-boolean-recovery-restore-receipt.json",
+          "sha256": "a22de9e3d233e1e7ce3d8fa71d9fcf93f96373c609c0666d66cafd97b9baeb29"
+        },
+        {
+          "bytes": 12259,
+          "mode": "0o600",
+          "path": "state.json",
+          "sha256": "f8a01b114b1e48de6351940abd867a73e2dcc8aba035b46066b9383daff41272"
+        }
+      ],
+      "final_durable_state": {
+        "containment_active": false,
+        "dependency_mutation_started": false,
+        "gate_failure_receipt": null,
+        "gate_verified": false,
+        "rollback_complete": false,
+        "static_gate_active": false,
+        "status": "rehearsal"
+      },
+      "final_front_controller": {
+        "bytes": 44,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "path": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/stale-boolean-live-gate-recovery/application/public/index.php",
+        "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+      },
+      "final_is_exact_gate": false,
+      "final_is_original": true,
+      "scenario": "stale-boolean-live-gate-recovery",
+      "status": "pass"
+    },
+    "success-and-exact-restoration": {
+      "details": {
+        "origin_reader": {
+          "bytes": 339,
+          "egid": 33,
+          "euid": 33,
+          "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+        },
+        "public_reader": {
+          "bytes": 339,
+          "egid": 33,
+          "euid": 33,
+          "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+        },
+        "restore_receipt_sha256": "fecd077dc71eb6540c6f7dd337384487b7c79e10d99e93c6eaa0811fbdc72362"
+      },
+      "durable_transitions": [
+        {
+          "operation": "success-gate",
+          "phase": "replacement_pending",
+          "sequence": 1
+        },
+        {
+          "operation": "success-gate",
+          "phase": "installed",
+          "sequence": 2
+        },
+        {
+          "operation": "success-gate",
+          "phase": "verified",
+          "sequence": 3
+        },
+        {
+          "operation": "success-original-restore",
+          "phase": "replacement_pending",
+          "sequence": 4
+        },
+        {
+          "operation": "success-original-restore",
+          "phase": "installed",
+          "sequence": 5
+        },
+        {
+          "operation": "success-original-restore",
+          "phase": "exact_original_verified",
+          "sequence": 6
+        }
+      ],
+      "evidence_manifest": [
+        {
+          "bytes": 44,
+          "mode": "0o600",
+          "path": "front-controller-before.php",
+          "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+        },
+        {
+          "bytes": 807,
+          "mode": "0o600",
+          "path": "gate-events.jsonl",
+          "sha256": "622f2d2dc092e9715b62074bb104af06acb30680777fba33a0c9457082264452"
+        },
+        {
+          "bytes": 12157,
+          "mode": "0o600",
+          "path": "state.json",
+          "sha256": "70b339d63d1418a2b2c30af0806f60d9b4e6e8658ba368c94ed62c89ccdef7a9"
+        },
+        {
+          "bytes": 1996,
+          "mode": "0o600",
+          "path": "success-original-restore-receipt.json",
+          "sha256": "fecd077dc71eb6540c6f7dd337384487b7c79e10d99e93c6eaa0811fbdc72362"
+        }
+      ],
+      "final_durable_state": {
+        "containment_active": false,
+        "dependency_mutation_started": false,
+        "gate_failure_receipt": null,
+        "gate_verified": false,
+        "rollback_complete": false,
+        "static_gate_active": false,
+        "status": "rehearsal"
+      },
+      "final_front_controller": {
+        "bytes": 44,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "path": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/success-and-exact-restoration/application/public/index.php",
+        "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+      },
+      "final_is_exact_gate": false,
+      "final_is_original": true,
+      "scenario": "success-and-exact-restoration",
+      "status": "pass"
+    },
+    "unknown-front-controller-bytes-rejected": {
+      "details": {
+        "expected_failure_sha256": "7669c485561e138d30513e2b11181f93554a56d7abe5020b1be234a90c9665e9",
+        "unknown_bytes_preserved": true,
+        "unknown_sha256": "4ee53133892c3d86ccf7cd0a39c25ab7904af868693496aefc1751c8e52eb031"
+      },
+      "durable_transitions": [],
+      "evidence_manifest": [
+        {
+          "bytes": 44,
+          "mode": "0o600",
+          "path": "front-controller-before.php",
+          "sha256": "ac18446bbc3d2cd6a3c90b2d84cbd15098dbb44eb7f9db8f81a4766fcab379c1"
+        },
+        {
+          "bytes": 356,
+          "mode": "0o600",
+          "path": "state.json",
+          "sha256": "da091c5392bf1b48a3c0095a70c8e9e111ce9bcacfceda4867eeac7ea635e1ac"
+        }
+      ],
+      "final_durable_state": {
+        "containment_active": false,
+        "dependency_mutation_started": false,
+        "gate_failure_receipt": null,
+        "gate_verified": false,
+        "rollback_complete": false,
+        "static_gate_active": false,
+        "status": "rehearsal"
+      },
+      "final_front_controller": {
+        "bytes": 45,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "path": "/tmp/buy-dtf-laravel-dependency-gate-v3-t_7kxk2t/unknown-front-controller-bytes-rejected/application/public/index.php",
+        "sha256": "4ee53133892c3d86ccf7cd0a39c25ab7904af868693496aefc1751c8e52eb031"
+      },
+      "final_is_exact_gate": false,
+      "final_is_original": false,
+      "scenario": "unknown-front-controller-bytes-rejected",
+      "status": "pass"
+    }
+  },
+  "status": "pass",
+  "umask": "0077",
+  "unknown_bytes_rejected_without_overwrite": true,
+  "web_identity": {
+    "egid": 33,
+    "euid": 33
+  }
+}

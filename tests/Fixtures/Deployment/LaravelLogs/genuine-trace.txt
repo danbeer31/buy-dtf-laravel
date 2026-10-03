@@ -1,0 +1,5 @@
+[2026-10-02 01:01:00] production.WARNING: Synthetic operation emitted a trace
+[stacktrace]
+#0 /var/www/buy-dtf/app/SyntheticWorker.php(42): SyntheticWorker->run()
+#1 {main}
+[2026-10-02 01:01:01] production.INFO: A later entry remains separate from the trace

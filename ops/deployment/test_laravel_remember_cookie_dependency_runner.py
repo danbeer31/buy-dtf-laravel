@@ -31,9 +31,9 @@ class LaravelRememberCookieDependencyRunnerTest(unittest.TestCase):
         self.assertEqual(RUNNER.NEW_PACKAGE_VERSIONS, RUNNER.locked_package_versions(lock))
         self.assertEqual("12.69.0", RUNNER.OLD_PACKAGE_VERSIONS["laravel/framework"])
 
-    def test_v2_candidate_identity_is_fully_pinned(self) -> None:
+    def test_v3_candidate_identity_is_fully_pinned(self) -> None:
         self.assertEqual(
-            "f198e8658848f64ac003528e45d925a606ef6788769e81b5d7269ec8be345dcb",
+            "305127ee8dc6c578ea8a8a1901a455b2e18378c481c8c726b3b120917e62a984",
             RUNNER.HANDOFF_SHA256,
         )
         self.assertEqual(
@@ -65,16 +65,16 @@ class LaravelRememberCookieDependencyRunnerTest(unittest.TestCase):
             RUNNER.EXPECTED_CANDIDATE_CACHE_IDENTITY["manifest"]["sha256"],
         )
 
-    def test_describe_is_review_only_v2_and_preserves_scope_boundaries(self) -> None:
+    def test_describe_is_review_only_v3_and_preserves_scope_boundaries(self) -> None:
         output = io.StringIO()
         with redirect_stdout(output):
             RUNNER.describe()
         payload = json.loads(output.getvalue())
-        self.assertEqual("buy-dtf-laravel-remember-cookie-dependency-review-v2", payload["artifact"])
+        self.assertEqual("buy-dtf-laravel-remember-cookie-dependency-review-v3", payload["artifact"])
         self.assertEqual("review-only; not staged or deployed", payload["artifact_review_status"])
         self.assertEqual("proxy", payload["composer_bin_compat"])
         self.assertEqual(178, payload["expected_route_count"])
-        self.assertIn("laravel-remember-cookie-v2-releases", payload["release_root"])
+        self.assertIn("laravel-remember-cookie-v3-releases", payload["release_root"])
         self.assertNotEqual(
             RUNNER.STAGE_APPROVAL_TOKEN,
             "STAGE-BUYDTF-LARAVEL-REMEMBER-77055fc8acf89149",
@@ -202,7 +202,7 @@ class LaravelRememberCookieDependencyRunnerTest(unittest.TestCase):
             app_root = Path(directory) / "app"
             operations = app_root / "storage/app/private/operations"
             operations.mkdir(parents=True)
-            release_root = operations / "laravel-remember-cookie-v2-releases"
+            release_root = operations / "laravel-remember-cookie-v3-releases"
             with patch.object(RUNNER, "APP_ROOT", app_root), patch.object(
                 RUNNER, "PRIVATE_OPERATIONS_ROOT", operations
             ), patch.object(RUNNER, "EXPECTED_APP_UID", os.getuid()), patch.object(

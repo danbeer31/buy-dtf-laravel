@@ -1,0 +1,169 @@
+{
+  "application_autoload_entries": 126,
+  "application_autoload_sha256": "342f417d353f8742f116898d307c34a2677e0a1cb0f814f3e8088f0bb2be1a91",
+  "application_root": "/var/www/buy-dtf",
+  "artifact": "buy-dtf-laravel-remember-cookie-dependency-review-v3",
+  "artifact_review_status": "review-only; not staged or deployed",
+  "atomic_cache_operation": "renameat2(RENAME_EXCHANGE) when identities differ; skipped for the frozen identical identities",
+  "atomic_vendor_operation": "renameat2(RENAME_EXCHANGE)",
+  "cache_exchange_required": false,
+  "candidate_cache_identity": {
+    "entries": {
+      "packages.php": {
+        "bytes": 415,
+        "gid": 33,
+        "kind": "file",
+        "mode": 436,
+        "sha256": "21da8f9ed19687e708cc7bc5cc59394c6fcdf9b9deadf617ae70526f815a1db0",
+        "uid": 1000
+      },
+      "services.php": {
+        "bytes": 21353,
+        "gid": 33,
+        "kind": "file",
+        "mode": 436,
+        "sha256": "1f7623b2b4ffd2c4099fb34ad86fc96c1479e27bf81b1b0ba328c988cc4ffcb5",
+        "uid": 1000
+      }
+    },
+    "manifest": {
+      "bytes": 21768,
+      "directories": 0,
+      "files": 2,
+      "sha256": "468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9"
+    },
+    "root_metadata": {
+      "gid": 33,
+      "kind": "directory",
+      "mode": 1533,
+      "uid": 1000
+    }
+  },
+  "candidate_install_no_dev": true,
+  "candidate_lock_sha256": "77055fc8acf891496b0b356bb034d7935c04989a3751f52b788ecd1b7999206d",
+  "candidate_package_versions": {
+    "guzzlehttp/guzzle": "7.15.2",
+    "laravel/framework": "12.69.1",
+    "league/commonmark": "2.10.2",
+    "league/flysystem": "3.35.3",
+    "league/flysystem-local": "3.35.3"
+  },
+  "candidate_vendor_executable_allowlist_sha256": "551df886bc842a49ea87d8d9bb0cfe3478e3cc5eeea841c83409e8349d120154",
+  "candidate_vendor_executable_paths": [
+    "bin/carbon",
+    "bin/patch-type-declarations",
+    "bin/php-parse",
+    "bin/psysh",
+    "bin/var-dump-server",
+    "nesbot/carbon/bin/carbon",
+    "nikic/php-parser/bin/php-parse",
+    "psy/psysh/bin/psysh",
+    "symfony/error-handler/Resources/bin/patch-type-declarations",
+    "symfony/var-dumper/Resources/bin/var-dump-server"
+  ],
+  "candidate_vendor_manifest": {
+    "bytes": 26481661,
+    "directories": 925,
+    "files": 6460,
+    "sha256": "7df0a101ceb0386b72ec4cfc71f2be8576fc5a5d4b777d11c05e5b7f1ed770d8"
+  },
+  "candidate_vendor_metadata_sha256": "db8aba0a4f49d0cecaeaac0b5b742c5f94b1a514a8d4452c361cb61e2dbacf0d",
+  "composer_bin_compat": "proxy",
+  "database_config_sha256": "d25ab83243dc255e43ddbaa856991dae93016dd8ff77fa11be20d222693bb8f9",
+  "database_envelope": {
+    "incoming_order_tables_zero_rows": true,
+    "migration_ledger_rows": 21,
+    "migration_ledger_sha256": "f1140209ad897fbdba506d87329f9e4481ccfa5aff7fb6a423e6ec7a0dbe5f53",
+    "read_only": true,
+    "savedimages_item_meta_policy": "nullable_text_and_zero_nonnull_through_dependency_deployment",
+    "schema_sha256": "5485779bdcf0ea3a4372410ef76cd0bc418d1f6400128868606e901b8e9e85da",
+    "target_migration_entry_count": 1
+  },
+  "database_envelope_validator_sha256": "e3aa9109fcc6a6c8725f07665f27fc28a242447861b5b6c2a8d614a5a0a805b3",
+  "dependency_update_operations": false,
+  "durable_gate_transition_history": true,
+  "expected_route_count": 178,
+  "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
+  "gate_helper_sha256": "1269a277e931dee346293bed4ea0f6d029cf9ded7810127a0ef547289ce51f80",
+  "git_operations": false,
+  "handoff": {
+    "filename": "HANDOFF.md",
+    "sha256": "305127ee8dc6c578ea8a8a1901a455b2e18378c481c8c726b3b120917e62a984"
+  },
+  "laravel_log_delta": {
+    "complete_entry_parser": true,
+    "direct_success_before_independent_review": false,
+    "independent_read_only_review_required": true,
+    "invalid_utf8_or_unparsed_data_fails_closed": true,
+    "raw_evidence": "private-do-not-commit",
+    "rotation_safe": true
+  },
+  "live_composer_json_sha256": "7098f3a19cb65f88bcc945f019dda0aa7f515737eb5d4918c30705f25c6ad872",
+  "log_parser_sha256": "b91ac879b9559e229e18b7613fa4c570cee54016fbadc2e306925c0a71bcf179",
+  "migration_operations": false,
+  "monitor_finalization_is_separate_action": true,
+  "old_cache_identity": {
+    "entries": {
+      "packages.php": {
+        "bytes": 415,
+        "gid": 33,
+        "kind": "file",
+        "mode": 436,
+        "sha256": "21da8f9ed19687e708cc7bc5cc59394c6fcdf9b9deadf617ae70526f815a1db0",
+        "uid": 1000
+      },
+      "services.php": {
+        "bytes": 21353,
+        "gid": 33,
+        "kind": "file",
+        "mode": 436,
+        "sha256": "1f7623b2b4ffd2c4099fb34ad86fc96c1479e27bf81b1b0ba328c988cc4ffcb5",
+        "uid": 1000
+      }
+    },
+    "manifest": {
+      "bytes": 21768,
+      "directories": 0,
+      "files": 2,
+      "sha256": "468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9"
+    },
+    "root_metadata": {
+      "gid": 33,
+      "kind": "directory",
+      "mode": 1533,
+      "uid": 1000
+    }
+  },
+  "old_lock_sha256": "22af12c7e58fcfe809735dbf9955b2d22a264e9e7345cefd74398e36bf2773b9",
+  "old_package_versions": {
+    "guzzlehttp/guzzle": "7.15.2",
+    "laravel/framework": "12.69.0",
+    "league/commonmark": "2.10.2",
+    "league/flysystem": "3.35.3",
+    "league/flysystem-local": "3.35.3"
+  },
+  "old_vendor_manifest": {
+    "bytes": 26453056,
+    "directories": 925,
+    "files": 6460,
+    "sha256": "7399949f857da190c5ff07b89c85e8fba8a6f681695e20a462862be591b698ed"
+  },
+  "old_vendor_manifest_sha256": "7399949f857da190c5ff07b89c85e8fba8a6f681695e20a462862be591b698ed",
+  "read_only_preflight_available": true,
+  "release_root": "/var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-v3-releases",
+  "reported_app_debug": false,
+  "reported_app_environment": "local",
+  "rollback_root": "/var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-v3-rollbacks",
+  "runtime_helper_sha256": "7cd804545f9e09d096d348924021047e0a7b1b6ecf3a1b783fd015aef24c48d2",
+  "service_restart_operations": false,
+  "source_manifest": {
+    "files": 326,
+    "sha256": "3909bdc2303b5c578135859c847f311cd84b827e62ac4e5dbce3d2297f6da71f"
+  },
+  "source_manifest_sha256": "3909bdc2303b5c578135859c847f311cd84b827e62ac4e5dbce3d2297f6da71f",
+  "static_gate_verification_routes": [
+    "direct_origin",
+    "public_cloudflare"
+  ],
+  "static_maintenance_gate_sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+}

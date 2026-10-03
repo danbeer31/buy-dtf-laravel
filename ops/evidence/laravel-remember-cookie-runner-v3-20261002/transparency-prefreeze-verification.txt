@@ -1,0 +1,6 @@
+worktree=C:\Users\danie\projects\buy-dtf-transparency-repair-20261001
+head=3db18d1fff3f599299eecd2aae21b9102fc45540
+status_entries=0
+dependency_envelope_false_matches=2
+C:\Users\danie\projects\buy-dtf-transparency-repair-20261001\ops\evidence\production-alpha-transparency-source-only-v2-prefreeze-20261002\README.md:53:`DEPENDENCY_ENVELOPE_FROZEN = False`. Both stage and deploy entry points stop
+C:\Users\danie\projects\buy-dtf-transparency-repair-20261001\ops\deployment\production_alpha_transparency_deploy.py:113:DEPENDENCY_ENVELOPE_FROZEN = False

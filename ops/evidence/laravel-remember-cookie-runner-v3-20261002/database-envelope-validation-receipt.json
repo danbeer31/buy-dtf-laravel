@@ -1,0 +1,76 @@
+{
+  "artifact": "buy-dtf-laravel-remember-cookie-database-envelope-local-validation-v3",
+  "classification": "review-only-synthetic-local-fixture",
+  "database_writes": false,
+  "incoming_definition_fixture_sha256": "aa0a038110dc355ffcd0ed12768c2adb7b0954ecbcc9aeb0fc4ef0efb5d287dc",
+  "independent_drift_categories": [
+    "schema_sha256",
+    "schema_section_counts",
+    "migration_ledger_row_count",
+    "migration_ledger_sha256",
+    "target_migration_entry_count",
+    "incoming_migration_entry_count",
+    "savedimages_item_meta_definition",
+    "savedimages_item_meta_nonnull_rows",
+    "incoming_order_table_definitions",
+    "incoming_order_table_row_counts",
+    "connection_identity",
+    "capability_flags",
+    "queue_connection_and_counts"
+  ],
+  "migration_commands": false,
+  "production_accessed": false,
+  "runtime_helper_sha256": "7cd804545f9e09d096d348924021047e0a7b1b6ecf3a1b783fd015aef24c48d2",
+  "status": "pass",
+  "test_count": 9,
+  "test_module": "ops/deployment/test_laravel_dependency_database_envelope.py",
+  "validated_envelope": {
+    "capabilities_disabled": true,
+    "database_envelope_version": 1,
+    "incoming_order_definitions_sha256": "aa0a038110dc355ffcd0ed12768c2adb7b0954ecbcc9aeb0fc4ef0efb5d287dc",
+    "incoming_order_row_counts": {
+      "api_asset_records": 0,
+      "incoming_order_jobs": 0
+    },
+    "incoming_order_tables": {
+      "api_asset_records": true,
+      "incoming_order_jobs": true
+    },
+    "item_meta_row_policy": "pre_source_exactly_zero",
+    "migration_ledger": {
+      "incoming_order_entry_count": 1,
+      "incoming_order_migration": "2026_09_27_120000_create_incoming_order_v1_tables",
+      "row_count": 21,
+      "rows_sha256": "f1140209ad897fbdba506d87329f9e4481ccfa5aff7fb6a423e6ec7a0dbe5f53",
+      "target_entry_count": 1,
+      "target_migration": "2026_10_01_120000_add_item_meta_to_savedimages_table"
+    },
+    "queues_empty": true,
+    "savedimages_item_meta": {
+      "definition": {
+        "CHARACTER_SET_NAME": "utf8mb4",
+        "COLLATION_NAME": "utf8mb4_unicode_ci",
+        "COLUMN_DEFAULT": null,
+        "COLUMN_NAME": "item_meta",
+        "COLUMN_TYPE": "text",
+        "EXTRA": "",
+        "GENERATION_EXPRESSION": "",
+        "IS_NULLABLE": "YES",
+        "ORDINAL_POSITION": 12,
+        "TABLE_NAME": "savedimages"
+      },
+      "nonnull_rows": 0
+    },
+    "schema_section_row_counts": {
+      "columns": 411,
+      "key_column_usage": 49,
+      "referential_constraints": 2,
+      "statistics": 76,
+      "table_constraints": 46,
+      "tables": 36
+    },
+    "schema_sha256": "5485779bdcf0ea3a4372410ef76cd0bc418d1f6400128868606e901b8e9e85da",
+    "status": "pass"
+  },
+  "validator_sha256": "e3aa9109fcc6a6c8725f07665f27fc28a242447861b5b6c2a8d614a5a0a805b3"
+}

@@ -1,0 +1,185 @@
+
+   PASS  Tests\Unit\AdminQboRequestIsolationTest
+  ✓ admin controllers only depend on cached qbo snapshots                0.01s  
+
+   PASS  Tests\Unit\ExampleTest
+  ✓ that true is true                                                    0.02s  
+
+   PASS  Tests\Unit\GangSheetPricingServiceTest
+  ✓ non 22x96 uses fixed price                                           0.01s  
+  ✓ 22x96 tiers are applied
+  ✓ invalid size throws
+  ✓ supported sizes preserve their print dimensions and base prices
+
+   PASS  Tests\Unit\Jobs\ProcessStripePayoutWebhookTest
+  ✓ missing event is a no op                                             0.21s  
+  ✓ already processed event is a no op                                   0.03s  
+  ✓ paid payout syncs transfer and marks event processed                 0.03s  
+  ✓ failed payout does not create qbo transfer and marks event processe… 0.02s  
+  ✓ stripe sync exception propagates and leaves event unprocessed        0.02s  
+  ✓ qbo exception propagates and leaves event unprocessed                0.02s  
+  ✓ malformed payout payload is a no op and remains unprocessed          0.02s  
+
+   PASS  Tests\Unit\NameNumberServiceTest
+  ✓ render retries a transient server failure                            0.36s  
+  ✓ render does not retry a validation failure                           0.02s  
+
+   PASS  Tests\Unit\QboAdminReadCircuitBreakerTest
+  ✓ it opens with retry details and can close                            0.04s  
+
+   PASS  Tests\Unit\QboAdminSnapshotBuilderTest
+  ✓ it sums open invoices and groups recent invoices                     0.01s  
+
+   PASS  Tests\Unit\QboAdminSnapshotRefresherTest
+  ✓ a successful refresh stores business snapshots                       0.03s  
+  ✓ an outage opens the circuit and preserves stale data                 0.02s  
+  ✓ an open circuit skips qbo calls                                      0.02s  
+
+   PASS  Tests\Unit\QboAdminSnapshotStoreTest
+  ✓ a failure preserves the last successful snapshot and timestamp       0.03s  
+  ✓ it can read the emergency legacy cache as a fallback                 0.02s  
+
+   PASS  Tests\Unit\QboServiceAdminReadTest
+  ✓ customer balances use the short admin timeout                        0.03s  
+  ✓ invoice history is normalized for cached payment checks              0.02s  
+  ✓ open invoices are filtered and normalized for admin balances         0.02s  
+  ✓ http errors fail the refresh instead of replacing stale data         0.02s  
+  ✓ qbo writes are blocked before token or http work                     0.02s  
+
+   PASS  Tests\Unit\QboServiceInvoiceBalanceTest
+  ✓ unpaid taxable invoice uses total amount when balance excludes tax   0.05s  
+  ✓ partially paid invoice uses remaining balance                        0.02s  
+  ✓ balance difference must match tax to use total amount                0.02s  
+  ✓ paid invoice returns zero                                            0.03s  
+Dropbox: Refreshing tokens for ID: 1... (Old access token: dropbox-ac...)
+Dropbox refresh success. New token starting with: dropbox-ac, length: 28
+
+   PASS  Tests\Unit\Services\OutboundHttpCompatibilityTest
+  ✓ qbo refresh and api requests keep their expected guzzle shape        0.05s  
+  ✓ shippo shipment request keeps authentication and json payload shape  0.02s  
+  ✓ dropbox oauth exchange and refresh remain form encoded and persist…  0.03s  
+  ✓ dropbox service upload stream keeps the actual spatie guzzle contra… 0.03s  
+  ✓ name number renderer keeps token header and normalized json payload  0.02s  
+  ✓ name number font upload keeps multipart contract and cleans up temp… 0.02s  
+
+   PASS  Tests\Feature\Api\IncomingOrderAuthenticationTest
+  ✓ invalid hmac is rejected before remote image fetch                   0.07s  
+  ✓ valid hmac converts a local data uri into an ordered image           0.05s  
+  ✓ valid hmac passes authentication without remote image fetch          0.02s  
+
+   PASS  Tests\Feature\Auth\AuthenticationTest
+  ✓ login screen can be rendered                                         0.07s  
+  ✓ users can authenticate using the login screen                        0.05s  
+  ✓ users can not authenticate with invalid password                     0.03s  
+  ✓ users can logout                                                     0.03s  
+  ✓ stale remember cookie for a missing user falls through as a guest    0.03s  
+  ✓ valid remember cookie authenticates the matching user                0.03s  
+
+   PASS  Tests\Feature\Auth\EmailVerificationTest
+  ✓ email verification screen can be rendered                            0.06s  
+  ✓ email can be verified                                                0.04s  
+  ✓ email is not verified with invalid hash                              0.03s  
+
+   PASS  Tests\Feature\Auth\PasswordConfirmationTest
+  ✓ confirm password screen can be rendered                              0.04s  
+  ✓ password can be confirmed                                            0.03s  
+  ✓ password is not confirmed with invalid password                      0.22s  
+
+   PASS  Tests\Feature\Auth\PasswordResetTest
+  ✓ reset password link screen can be rendered                           0.04s  
+  ✓ reset password link can be requested                                 0.23s  
+  ✓ reset password screen can be rendered                                0.23s  
+  ✓ password can be reset with valid token                               0.24s  
+
+   PASS  Tests\Feature\Auth\PasswordUpdateTest
+  ✓ password can be updated                                              0.05s  
+  ✓ correct password must be provided to update password                 0.03s  
+
+   PASS  Tests\Feature\Auth\RegistrationTest
+  ✓ registration screen can be rendered                                  0.04s  
+  ✓ new users can register                                               0.16s  
+
+   PASS  Tests\Feature\Cart\UploadAttachmentTest
+  ✓ png upload uses processed pixel dimensions and attaches to an isola… 0.01s  
+
+   PASS  Tests\Feature\Cart\UploadPreflightTest
+  ✓ supported upload metadata is accepted and scoped to the users busin… 0.03s  
+  ✓ upload metadata rejects unsupported file types                       0.02s  
+  ✓ upload metadata rejects files over fifty megabytes                   0.02s  
+  ✓ upload metadata requires name size and mime                          0.04s  
+
+   PASS  Tests\Feature\Checkout\InvoiceCheckoutTest
+  ✓ invoice checkout completes locally when qbo creation fails           0.06s  
+  ✓ customer cannot complete another business invoice                    0.03s  
+
+   PASS  Tests\Feature\Checkout\StripeCardCheckoutTest
+  ✓ starting card payment creates the expected intent and persists tota… 0.10s  
+  ✓ non succeeded card payment does not mark the order paid              0.03s  
+  ✓ succeeded card payment records payment order metrics and qbo result… 0.05s  
+  ✓ replaying a succeeded completion does not duplicate local or qbo re… 0.04s  
+
+   PASS  Tests\Feature\ExampleTest
+  ✓ the application returns a successful response                        0.05s  
+
+   PASS  Tests\Feature\IsolatedDatabaseHarnessTest
+  ✓ every database alias uses the same isolated sqlite connection        0.03s  
+  ✓ database guard rejects a network driver before it can be used        0.03s  
+  ✓ external side effect drivers and credentials are forced safe         0.02s  
+
+   PASS  Tests\Feature\Mail\OrderStatusMailRenderingTest
+  ✓ production markdown mail renders as a valid mime message without ou… 0.06s  
+  ✓ production markdown mail renders as a valid mime message without ou… 0.03s  
+  ✓ production markdown mail renders as a valid mime message without ou… 0.03s  
+  ✓ production markdown mail renders as a valid mime message without ou… 0.03s  
+  ✓ production markdown mail renders as a valid mime message without ou… 0.03s  
+  ✓ production markdown mail renders as a valid mime message without ou… 0.03s  
+  ✓ production markdown mail renders as a valid mime message without ou… 0.04s  
+
+   PASS  Tests\Feature\Mail\ResendMailTransportCompatibilityTest
+  ✓ rendered order mail is handed to resend without credentials or netw… 0.09s  
+
+   PASS  Tests\Feature\Migrations\StripePayoutEntryNotesMigrationTest
+  ✓ additive correction repairs the observed notes write failure         0.04s  
+  ✓ correction refuses a different active connection without touching e… 0.02s  
+  ✓ pretend mode emits only the expected additive column statement       0.02s  
+
+   PASS  Tests\Feature\Production\OrdinaryImageHandoffTest
+  ✓ ordinary duplicate group handoff builds one job and never contacts…  0.01s  
+addToProduction call: {"image_id":1}
+
+   PASS  Tests\Feature\Production\PricingAndHandoffTest
+  ✓ gang sheet price uses the quantity tier and is persisted             0.03s  
+  ✓ locked admin price overrides calculated pricing                      0.02s  
+  ✓ gang sheet cannot enter the automated production handoff             0.04s  
+
+   PASS  Tests\Feature\ProfileTest
+  ✓ profile page is displayed                                            0.06s  
+  ✓ profile information can be updated                                   0.04s  
+  ✓ email verification status is unchanged when the email address is un… 0.03s  
+  ✓ user can delete their account                                        0.03s  
+  ✓ correct password must be provided to delete account                  0.03s  
+
+   PASS  Tests\Feature\SchedulerRegistrationTest
+  ✓ payout and reconciliation commands have expected frequencies         0.05s  
+
+   PASS  Tests\Feature\Webhooks\ShippoWebhookTest
+  ✓ tracking update changes status and sends expected email with data s… 0.04s  
+  ✓ tracking update changes status and sends expected email with data s… 0.03s  
+  ✓ tracking update changes status and sends expected email with data s… 0.03s  
+  ✓ repeated same status does not send duplicate email                   0.02s  
+  ✓ out of order transit event currently regresses delivered order       0.03s  
+  ✓ missing tracking number is rejected without email                    0.03s  
+  ✓ unknown tracking number returns not found without email              0.04s  
+  ✓ unhandled event is ignored without changing order or sending email   0.03s  
+
+   PASS  Tests\Feature\Webhooks\StripeWebhookTest
+  ✓ valid payout signature records event and queues work without outbou… 0.08s  
+  ✓ rotation fallback secret is accepted                                 0.03s  
+  ✓ invalid signature is rejected without recording or queueing          0.02s  
+  ✓ stale signature is rejected without recording or queueing            0.03s  
+  ✓ sequential duplicate is acknowledged without a second record or job  0.03s  
+  ✓ balance available event is marked processed without queueing work    0.02s  
+
+  Tests:    110 passed (718 assertions)
+  Duration: 5.76s
+

@@ -13,7 +13,7 @@ import sys
 from typing import Any
 
 
-CANDIDATE_COMMIT = "6a98c74686f1ceffded8012d332318ac075b444e"
+LOCK_TRANSITION_COMMIT = "6a98c74686f1ceffded8012d332318ac075b444e"
 EXPECTED_LIVE_LOCK_SHA256 = "22af12c7e58fcfe809735dbf9955b2d22a264e9e7345cefd74398e36bf2773b9"
 EXPECTED_CANDIDATE_LOCK_SHA256 = "77055fc8acf891496b0b356bb034d7935c04989a3751f52b788ecd1b7999206d"
 
@@ -60,7 +60,7 @@ def main() -> int:
     args = parse_arguments()
     repository = args.repository.resolve(strict=True)
     output_parent = args.output.parent.resolve(strict=True)
-    if output_parent.name != "laravel-remember-cookie-runner-v2-20261002":
+    if output_parent.name != "laravel-remember-cookie-runner-v3-20261002":
         raise RuntimeError("Lock-delta receipt target is outside the reviewed evidence root.")
     git = shutil.which("git.exe") or shutil.which("git")
     if git is None:
@@ -78,7 +78,7 @@ def main() -> int:
             raise RuntimeError("Could not convert the repository path for Git.")
         repository_argument = converted.stdout.strip()
     baseline = subprocess.run(
-        [git, "-C", repository_argument, "show", f"{CANDIDATE_COMMIT}^:composer.lock"],
+        [git, "-C", repository_argument, "show", f"{LOCK_TRANSITION_COMMIT}^:composer.lock"],
         cwd=repository,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
@@ -113,10 +113,10 @@ def main() -> int:
     if old_laravel.get("version") != "v12.69.0" or new_laravel.get("version") != "v12.69.1":
         raise RuntimeError("Laravel lock versions are not the exact reviewed pair.")
     receipt = {
-        "artifact": "buy-dtf-laravel-remember-cookie-lock-delta-v2",
+        "artifact": "buy-dtf-laravel-remember-cookie-lock-delta-v3",
         "status": "pass",
         "verifier_sha256": sha256_bytes(Path(__file__).resolve(strict=True).read_bytes()),
-        "candidate_commit": CANDIDATE_COMMIT,
+        "historical_lock_transition_commit": LOCK_TRANSITION_COMMIT,
         "live_lock_sha256": EXPECTED_LIVE_LOCK_SHA256,
         "candidate_lock_sha256": EXPECTED_CANDIDATE_LOCK_SHA256,
         "production_package_count": len(new_prod),

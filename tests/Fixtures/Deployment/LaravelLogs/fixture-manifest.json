@@ -1,0 +1,31 @@
+{
+  "artifact": "buy-dtf-laravel-remember-cookie-log-fixtures-v1",
+  "classification": "redacted-and-synthetic-regression-fixtures",
+  "reviewed_transparency_source": {
+    "commit": "3db18d1fff3f599299eecd2aae21b9102fc45540",
+    "parser_sha256": "4bdec766469e71568631dbcf7408e94696f2fd99c46c18dd58b8374f31a488c8",
+    "fixture_provenance_sha256": "2230b2a71e4a215fd558adccd89090fecf70d1fd69e95f04448531f311dba06a",
+    "reviewed_56_fixture_sha256": "d8bf0641949f96ac39240e92f0b5545c4ac5fb6a8fbfa4af2fe2f6029dd27f53"
+  },
+  "fixtures": {
+    "genuine-caught-failure-message.txt": "d15655149998cb9d5d044150696edb78798b08bfba616b4058c88c6877538817",
+    "genuine-exception.txt": "63df5926c4bf907e281add7a4d475018cc058431a68450294c57127f2d2fc24f",
+    "genuine-fatal.txt": "9de34c7c43645feb9cdd18c51981e35e12190ebf46e5e3a2a048f8d9301c9eee",
+    "genuine-missing-class.txt": "6e98603d75b7aa399b5f056b77d53bbecb8879227410e237167fde1503c5f74e",
+    "genuine-missing-view.txt": "f9e8474b3554b7cd77c4c8752c03d9870c17620bea40e53a9fbe66b4becb8077",
+    "genuine-orphan-trace.txt": "f6eb8b63ff4033ab43b0e2ead345c20ed92b86e22dcfd13f5fa26f0591bd0181",
+    "genuine-sqlstate.txt": "f0643758e7d928c9f71e965ed3dc573d892d989d524049215f1381703d6fef03",
+    "genuine-structured-exception.txt": "af3dd128c3bf1b27b03a9ac6f50d5f34dca4e70c97af9089a65fd8f37ba7374c",
+    "genuine-trace.txt": "30d9f629f7db5153bd0fee22e517bbc73077feb0e0101e65a8717afa9e6c6d01",
+    "genuine-type-error.txt": "8f963c9cad50497d6a6908d2efc9ccea42409e2aaa657806855f85055ac00540",
+    "reviewed-56-error-delta.provenance.json": "2230b2a71e4a215fd558adccd89090fecf70d1fd69e95f04448531f311dba06a",
+    "reviewed-56-error-delta.redacted.txt": "d8bf0641949f96ac39240e92f0b5545c4ac5fb6a8fbfa4af2fe2f6029dd27f53",
+    "stale-remember-cookie.txt": "d81c5e978cf4906680e6ed71e6d2450dff99a78ab05ccdf7a848ac9296e4c283"
+  },
+  "privacy": {
+    "raw_production_logs_included": false,
+    "customer_addresses_included": false,
+    "full_carrier_payloads_included": false,
+    "stale_cookie_fixture_is_synthetic": true
+  }
+}

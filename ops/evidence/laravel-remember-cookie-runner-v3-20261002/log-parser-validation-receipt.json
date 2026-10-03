@@ -1,0 +1,120 @@
+{
+  "artifact": "buy-dtf-laravel-remember-cookie-log-parser-local-validation-v3",
+  "benign_reviewed_delta": {
+    "bytes": 4894,
+    "customer_addresses_included": false,
+    "entry_count": 56,
+    "fatal_finding_count": 0,
+    "fixture_sha256": "d8bf0641949f96ac39240e92f0b5545c4ac5fb6a8fbfa4af2fe2f6029dd27f53",
+    "full_carrier_payloads_included": false,
+    "level_counts": {
+      "ERROR": 56
+    },
+    "nonfatal_error_entry_count": 56,
+    "status": "pass"
+  },
+  "classification": "redacted-and-synthetic-local-fixtures-only",
+  "fail_closed_categories": [
+    "critical_alert_emergency",
+    "invalid_utf8",
+    "orphan_or_unparsed_data",
+    "partial_trailing_header_or_continuation",
+    "truncation",
+    "copytruncate",
+    "continuity_anchor_rewrite",
+    "candidate_related_error"
+  ],
+  "fixture_manifest_sha256": "41212c2c3a2ff1bb89ecdb06b74860b891f637ca247919d0983dbe2e51e276fb",
+  "genuine_error_fixtures": {
+    "genuine-caught-failure-message.txt": {
+      "sha256": "d15655149998cb9d5d044150696edb78798b08bfba616b4058c88c6877538817",
+      "signal_counts": {
+        "failure_message": 2
+      },
+      "status": "fail"
+    },
+    "genuine-exception.txt": {
+      "sha256": "63df5926c4bf907e281add7a4d475018cc058431a68450294c57127f2d2fc24f",
+      "signal_counts": {
+        "exception": 1
+      },
+      "status": "fail"
+    },
+    "genuine-fatal.txt": {
+      "sha256": "9de34c7c43645feb9cdd18c51981e35e12190ebf46e5e3a2a048f8d9301c9eee",
+      "signal_counts": {
+        "fatal": 1,
+        "severe_level": 1
+      },
+      "status": "fail"
+    },
+    "genuine-missing-class.txt": {
+      "sha256": "6e98603d75b7aa399b5f056b77d53bbecb8879227410e237167fde1503c5f74e",
+      "signal_counts": {
+        "missing_class": 1
+      },
+      "status": "fail"
+    },
+    "genuine-missing-view.txt": {
+      "sha256": "f9e8474b3554b7cd77c4c8752c03d9870c17620bea40e53a9fbe66b4becb8077",
+      "signal_counts": {
+        "missing_view": 1
+      },
+      "status": "fail"
+    },
+    "genuine-orphan-trace.txt": {
+      "sha256": "f6eb8b63ff4033ab43b0e2ead345c20ed92b86e22dcfd13f5fa26f0591bd0181",
+      "signal_counts": {
+        "trace": 1,
+        "unparsed_data": 1
+      },
+      "status": "fail"
+    },
+    "genuine-sqlstate.txt": {
+      "sha256": "f0643758e7d928c9f71e965ed3dc573d892d989d524049215f1381703d6fef03",
+      "signal_counts": {
+        "sqlstate": 1
+      },
+      "status": "fail"
+    },
+    "genuine-structured-exception.txt": {
+      "sha256": "af3dd128c3bf1b27b03a9ac6f50d5f34dca4e70c97af9089a65fd8f37ba7374c",
+      "signal_counts": {
+        "exception": 2
+      },
+      "status": "fail"
+    },
+    "genuine-trace.txt": {
+      "sha256": "30d9f629f7db5153bd0fee22e517bbc73077feb0e0101e65a8717afa9e6c6d01",
+      "signal_counts": {
+        "trace": 1
+      },
+      "status": "fail"
+    },
+    "genuine-type-error.txt": {
+      "sha256": "8f963c9cad50497d6a6908d2efc9ccea42409e2aaa657806855f85055ac00540",
+      "signal_counts": {
+        "exception": 1
+      },
+      "status": "fail"
+    }
+  },
+  "independent_review_binding_tests": "pass",
+  "parser_sha256": "b91ac879b9559e229e18b7613fa4c570cee54016fbadc2e306925c0a71bcf179",
+  "production_accessed": false,
+  "raw_production_logs_in_git": false,
+  "rotation_and_boundary_context_replay": "pass",
+  "stale_remember_cookie": {
+    "fixture_sha256": "d81c5e978cf4906680e6ed71e6d2450dff99a78ab05ccdf7a848ac9296e4c283",
+    "signal_counts": {
+      "candidate_error": 1,
+      "exception": 1,
+      "stale_remember_cookie": 1,
+      "trace": 1
+    },
+    "status": "fail"
+  },
+  "status": "pass",
+  "test_count": 22,
+  "test_module": "ops/deployment/test_laravel_log_delta.py"
+}

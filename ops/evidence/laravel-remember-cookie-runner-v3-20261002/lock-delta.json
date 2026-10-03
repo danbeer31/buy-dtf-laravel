@@ -1,0 +1,27 @@
+{
+  "artifact": "buy-dtf-laravel-remember-cookie-lock-delta-v3",
+  "candidate_lock_sha256": "77055fc8acf891496b0b356bb034d7935c04989a3751f52b788ecd1b7999206d",
+  "changed_packages": [
+    "laravel/framework"
+  ],
+  "development_package_count": 36,
+  "development_packages_unchanged": true,
+  "historical_lock_transition_commit": "6a98c74686f1ceffded8012d332318ac075b444e",
+  "laravel_changed_fields": [
+    "dist.reference",
+    "dist.url",
+    "source.reference",
+    "time",
+    "version"
+  ],
+  "laravel_versions": {
+    "after": "12.69.1",
+    "before": "12.69.0"
+  },
+  "live_lock_sha256": "22af12c7e58fcfe809735dbf9955b2d22a264e9e7345cefd74398e36bf2773b9",
+  "package_membership_unchanged": true,
+  "production_package_count": 80,
+  "status": "pass",
+  "top_level_lock_data_unchanged": true,
+  "verifier_sha256": "3a258f21efacecbd0ac76b329cd6565c854283d66f4d712e6206bf26a888cfe2"
+}

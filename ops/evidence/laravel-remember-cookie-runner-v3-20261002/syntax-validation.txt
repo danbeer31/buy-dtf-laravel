@@ -1,0 +1,10 @@
+command: PYTHONPYCACHEPREFIX=/tmp/buydtf-v3-pycache python3 -m py_compile v3 Python artifacts
+exit_code: 0
+
+command: /usr/bin/php8.3 -l tests/Feature/Auth/AuthenticationTest.php
+No syntax errors detected in tests/Feature/Auth/AuthenticationTest.php
+exit_code: 0
+
+command: /usr/bin/php8.3 -l ops/deployment/laravel_remember_cookie_runtime_probe.php
+No syntax errors detected in ops/deployment/laravel_remember_cookie_runtime_probe.php
+exit_code: 0

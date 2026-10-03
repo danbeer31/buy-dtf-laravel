@@ -1,0 +1,2 @@
+[2026-10-02 01:14:00] production.ERROR: Checkout database load failed {"exception_type":"Illuminate\\Database\\QueryException","exception_code":"HY000"}
+[2026-10-02 01:14:01] production.ERROR: Shippo tracking email failed {"exception_type":"RuntimeException","exception_code":0}

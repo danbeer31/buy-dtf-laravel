@@ -1,0 +1,53 @@
+{
+  "artifact": "buy-dtf-laravel-remember-cookie-artifact-identities-v3",
+  "base_reviewed_commit": "cfaadedfda941e593a1ff7f1729ad8a461fdc0e7",
+  "branch": "fix/laravel-12.69.1-remember-cookie-v3-20261002",
+  "code": {
+    "database_envelope_validator": {
+      "path": "ops/deployment/laravel_dependency_database_envelope.py",
+      "sha256": "e3aa9109fcc6a6c8725f07665f27fc28a242447861b5b6c2a8d614a5a0a805b3"
+    },
+    "gate_rehearsal": {
+      "path": "ops/deployment/rehearse_laravel_dependency_gate.py",
+      "sha256": "2d52ec99a3d57c8c8534db7283f43bd54debcfca8349370058662631523e0b3e"
+    },
+    "log_parser": {
+      "path": "ops/deployment/laravel_log_delta.py",
+      "sha256": "b91ac879b9559e229e18b7613fa4c570cee54016fbadc2e306925c0a71bcf179"
+    },
+    "runner": {
+      "path": "ops/deployment/laravel_remember_cookie_dependency_deploy.py",
+      "sha256": "97cb4e8d702b7ceb1b9efde26dba93e6e0f4a833bb55650843fed1c0746f0307"
+    },
+    "runtime_helper": {
+      "path": "ops/deployment/laravel_remember_cookie_runtime_probe.php",
+      "sha256": "7cd804545f9e09d096d348924021047e0a7b1b6ecf3a1b783fd015aef24c48d2"
+    },
+    "static_gate_helper": {
+      "path": "ops/deployment/laravel_dependency_gate.py",
+      "sha256": "1269a277e931dee346293bed4ea0f6d029cf9ded7810127a0ef547289ce51f80"
+    }
+  },
+  "database": {
+    "migration_ledger_rows": 21,
+    "migration_ledger_sha256": "f1140209ad897fbdba506d87329f9e4481ccfa5aff7fb6a423e6ec7a0dbe5f53",
+    "schema_sha256": "5485779bdcf0ea3a4372410ef76cd0bc418d1f6400128868606e901b8e9e85da"
+  },
+  "dependency": {
+    "application_autoload_sha256": "342f417d353f8742f116898d307c34a2677e0a1cb0f814f3e8088f0bb2be1a91",
+    "candidate_cache_sha256": "468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9",
+    "candidate_lock_sha256": "77055fc8acf891496b0b356bb034d7935c04989a3751f52b788ecd1b7999206d",
+    "candidate_vendor_sha256": "7df0a101ceb0386b72ec4cfc71f2be8576fc5a5d4b777d11c05e5b7f1ed770d8",
+    "executable_allowlist_sha256": "551df886bc842a49ea87d8d9bb0cfe3478e3cc5eeea841c83409e8349d120154",
+    "live_lock_sha256": "22af12c7e58fcfe809735dbf9955b2d22a264e9e7345cefd74398e36bf2773b9",
+    "source_cas_sha256": "3909bdc2303b5c578135859c847f311cd84b827e62ac4e5dbce3d2297f6da71f",
+    "vendor_complete_inventory_sha256": "c646726893e4d74b42343218f891409e925541d9bf8ab0563ff98a9c998b8fd5",
+    "vendor_ownership_mode_sha256": "db8aba0a4f49d0cecaeaac0b5b742c5f94b1a514a8d4452c361cb61e2dbacf0d"
+  },
+  "handoff_sha256": "305127ee8dc6c578ea8a8a1901a455b2e18378c481c8c726b3b120917e62a984",
+  "production_accessed": false,
+  "redacted_56_entry_fixture_sha256": "d8bf0641949f96ac39240e92f0b5545c4ac5fb6a8fbfa4af2fe2f6029dd27f53",
+  "stage_or_deployment_performed": false,
+  "static_gate_sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03",
+  "status": "frozen-for-independent-review"
+}

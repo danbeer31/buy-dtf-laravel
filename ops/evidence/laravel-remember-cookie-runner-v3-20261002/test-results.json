@@ -1,0 +1,67 @@
+{
+  "application": {
+    "full_suite": {
+      "assertions": 718,
+      "sha256": "bd37d4ad8661b0dd7b4fb9b9bb0be24517cd951168400c0f48f2d0d970df45b3",
+      "tests": 110
+    },
+    "remember_cookie": {
+      "assertions": 10,
+      "sha256": "c911852ef379deaa9a7f4b00f447079264c34637243ebebdb73128d5e3ea6945",
+      "tests": 2
+    }
+  },
+  "artifact": "buy-dtf-laravel-remember-cookie-complete-test-results-v3",
+  "build_validation": {
+    "build_a_status": "pass",
+    "build_b_status": "pass",
+    "locked_no_dev_advisories": 0,
+    "php_8_2_30_platform": "pass",
+    "routes_each": 178,
+    "two_build_comparison": "pass"
+  },
+  "classification": "local-review-only-no-production-access",
+  "production_accessed": false,
+  "rehearsals": {
+    "atomic_cutover_rollback_recovery_scenarios": 25,
+    "atomic_receipt_sha256": "6ccaba8a17642cf77d6e82110f870e1fcfbb6a5b929f76d619e114890c45d6d7",
+    "gate_receipt_sha256": "7b0ec64767dfa828bacf5d7695d4d9b8c6a0014baeea7c412619b0762522a553",
+    "gate_transition_scenarios": 26,
+    "uid33_gate_readability": {
+      "mode_0600_negative_control": true,
+      "origin_reader": {
+        "bytes": 339,
+        "egid": 33,
+        "euid": 33,
+        "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+      },
+      "public_reader": {
+        "bytes": 339,
+        "egid": 33,
+        "euid": 33,
+        "sha256": "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+      },
+      "status": "pass"
+    }
+  },
+  "runner_controls": {
+    "database_envelope_tests": 9,
+    "log_parser_tests": 22,
+    "root_suite": {
+      "sha256": "bcdfaf3b8325612a5a7de9c2a05bd9b9ca45e4db542cac4d07d30d0812512438",
+      "skipped_uid1000_specific": 2,
+      "tests": 63
+    },
+    "uid1000_suite": {
+      "sha256": "182ab97e2f3187f03b3badc8c42f760fb5897ff0dd3e894b493d2d9749f2b70f",
+      "tests": 33
+    },
+    "v3_control_tests": 11
+  },
+  "stage_or_deployment_performed": false,
+  "status": "pass",
+  "syntax": {
+    "sha256": "ff75b7568db42667681d10662b641c33019cf53609aec5b789e5434cba2a06be",
+    "status": "pass"
+  }
+}

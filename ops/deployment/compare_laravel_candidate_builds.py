@@ -11,7 +11,7 @@ import sys
 from typing import Any
 
 
-EVIDENCE_DIRECTORY_NAME = "laravel-remember-cookie-runner-v2-20261002"
+EVIDENCE_DIRECTORY_NAME = "laravel-remember-cookie-runner-v3-20261002"
 EXPECTED_VENDOR_MANIFEST = {
     "bytes": 26_481_661,
     "directories": 925,
@@ -141,8 +141,8 @@ def main() -> int:
     summary = validate_inventory(inventory_a)
 
     for receipt in (receipt_a, receipt_b):
-        if receipt.get("artifact") != "buy-dtf-laravel-remember-cookie-clean-build-v2" or receipt.get("status") != "pass":
-            raise RuntimeError("A clean-build receipt is not a passing v2 artifact.")
+        if receipt.get("artifact") != "buy-dtf-laravel-remember-cookie-clean-build-v3" or receipt.get("status") != "pass":
+            raise RuntimeError("A clean-build receipt is not a passing v3 artifact.")
         identity = receipt.get("vendor_identity", {})
         if identity.get("manifest") != EXPECTED_VENDOR_MANIFEST:
             raise RuntimeError("A clean build has an unexpected vendor manifest.")
@@ -200,7 +200,7 @@ def main() -> int:
             raise RuntimeError(f"Clean-build receipts disagree on {field}.")
 
     result = {
-        "artifact": "buy-dtf-laravel-remember-cookie-two-build-comparison-v2",
+        "artifact": "buy-dtf-laravel-remember-cookie-two-build-comparison-v3",
         "status": "pass",
         "verifier_sha256": sha256_bytes(Path(__file__).resolve(strict=True).read_bytes()),
         "runner_sha256": actual_runner_sha256,

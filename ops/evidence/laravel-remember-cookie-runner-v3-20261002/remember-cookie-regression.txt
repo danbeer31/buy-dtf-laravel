@@ -1,0 +1,8 @@
+
+   PASS  Tests\Feature\Auth\AuthenticationTest
+  ✓ stale remember cookie for a missing user falls through as a guest    0.34s  
+  ✓ valid remember cookie authenticates the matching user                0.03s  
+
+  Tests:    2 passed (10 assertions)
+  Duration: 0.47s
+

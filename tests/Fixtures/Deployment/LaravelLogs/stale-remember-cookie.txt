@@ -1,0 +1,5 @@
+[2026-10-02 23:15:00] production.ERROR: TypeError: hash_equals(): Argument #1 ($known_string) must be of type string, null given in /var/www/buy-dtf/vendor/laravel/framework/src/Illuminate/Auth/SessionGuard.php:235
+[stacktrace]
+#0 /var/www/buy-dtf/vendor/laravel/framework/src/Illuminate/Auth/SessionGuard.php(235): hash_equals()
+#1 /var/www/buy-dtf/vendor/laravel/framework/src/Illuminate/Auth/SessionGuard.php(197): Illuminate\Auth\SessionGuard->userFromRecaller()
+#2 {main}

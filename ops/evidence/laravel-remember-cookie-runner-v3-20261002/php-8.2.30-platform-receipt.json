@@ -1,0 +1,129 @@
+{
+  "application_autoload_identity": {
+    "entries": 126,
+    "files": {
+      "autoload_classmap.php": {
+        "entries": 126,
+        "sha256": "5236a6ef5a0803719a2cb9b24d525946342063421aac9c6bec3914f1a9d9d893"
+      },
+      "autoload_static.php": {
+        "entries": 126,
+        "sha256": "1e82d08d78ebc0936284cf10cd7aca90b1753e0b7868627b2dda13bb67e54dc5"
+      }
+    },
+    "sha256": "342f417d353f8742f116898d307c34a2677e0a1cb0f814f3e8088f0bb2be1a91"
+  },
+  "artifact": "buy-dtf-laravel-remember-cookie-php-platform-v3",
+  "cache_identity": {
+    "entries": {
+      "packages.php": {
+        "bytes": 415,
+        "gid": 33,
+        "kind": "file",
+        "mode": 436,
+        "sha256": "21da8f9ed19687e708cc7bc5cc59394c6fcdf9b9deadf617ae70526f815a1db0",
+        "uid": 1000
+      },
+      "services.php": {
+        "bytes": 21353,
+        "gid": 33,
+        "kind": "file",
+        "mode": 436,
+        "sha256": "1f7623b2b4ffd2c4099fb34ad86fc96c1479e27bf81b1b0ba328c988cc4ffcb5",
+        "uid": 1000
+      }
+    },
+    "manifest": {
+      "bytes": 21768,
+      "directories": 0,
+      "files": 2,
+      "sha256": "468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9"
+    },
+    "root_metadata": {
+      "gid": 33,
+      "kind": "directory",
+      "mode": 1533,
+      "uid": 1000
+    }
+  },
+  "candidate_lock_sha256": "77055fc8acf891496b0b356bb034d7935c04989a3751f52b788ecd1b7999206d",
+  "command": [
+    "php.exe",
+    "-n",
+    "-d",
+    "extension_dir=<isolated-php-8.2.30-nts>/ext",
+    "-d",
+    "extension=php_curl.dll",
+    "-d",
+    "extension=php_fileinfo.dll",
+    "-d",
+    "extension=php_mbstring.dll",
+    "-d",
+    "extension=php_openssl.dll",
+    "composer.phar",
+    "--no-plugins",
+    "check-platform-reqs",
+    "--no-dev",
+    "--format=json",
+    "--no-interaction",
+    "--no-ansi",
+    "--working-dir=<installed-candidate-shadow>"
+  ],
+  "composer_root_version": "1.0.0",
+  "composer_sha256": "3b3f9503a2d46590170e45edd29734197e797cea545b396d0b2823cac8ef4643",
+  "exit_code": 0,
+  "ini_sha256": "7c54db08eb1e2e3eace1d9dc8cb1c5308960d656339898acfeac4260f6725403",
+  "installed_candidate_project": "\\\\wsl.localhost\\Ubuntu\\tmp\\buydtf-remember-v3-build-a\\shadow",
+  "modules_sha256": "9cfcb4a1e707f0f19d517dd83eaadd844a19dbea47cbf50835c7f51730438486",
+  "native_extensions": [
+    "curl",
+    "fileinfo",
+    "mbstring",
+    "openssl"
+  ],
+  "package_versions": {
+    "guzzlehttp/guzzle": "7.15.2",
+    "laravel/framework": "12.69.1",
+    "league/commonmark": "2.10.2",
+    "league/flysystem": "3.35.3",
+    "league/flysystem-local": "3.35.3"
+  },
+  "php_archive_sha256": "8a6e409adb5f7fb196c07315c69195c4eb87eec8acae2e74a0e04ec50745a055",
+  "php_archive_url": "https://windows.php.net/downloads/releases/archives/php-8.2.30-nts-Win32-vs16-x64.zip",
+  "php_executable_sha256": "132075655257b1558c5d896dce117081bc068c90c50dfc5fd9c24c93dbc4312a",
+  "php_thread_safety": false,
+  "php_version": "8.2.30",
+  "runner_sha256": "97cb4e8d702b7ceb1b9efde26dba93e6e0f4a833bb55650843fed1c0746f0307",
+  "source_manifest": {
+    "files": 326,
+    "sha256": "3909bdc2303b5c578135859c847f311cd84b827e62ac4e5dbce3d2297f6da71f"
+  },
+  "status": "pass",
+  "stderr_sha256": "63871553cd792a777ff916c8d57fb5c503e5c62403caaa30ef73b27fe1f53897",
+  "stdout_sha256": "f62d09fb6290ee219b3b9379541f2c2f7267a93b850d3b8e4aa449b416c343be",
+  "vendor_identity": {
+    "directory_mode": 509,
+    "executable_allowlist_sha256": "551df886bc842a49ea87d8d9bb0cfe3478e3cc5eeea841c83409e8349d120154",
+    "executable_file_mode": 509,
+    "executable_files": 10,
+    "gid": 1000,
+    "manifest": {
+      "bytes": 26481661,
+      "directories": 925,
+      "files": 6460,
+      "sha256": "7df0a101ceb0386b72ec4cfc71f2be8576fc5a5d4b777d11c05e5b7f1ed770d8"
+    },
+    "metadata_sha256": "db8aba0a4f49d0cecaeaac0b5b742c5f94b1a514a8d4452c361cb61e2dbacf0d",
+    "ordinary_file_mode": 436,
+    "ordinary_files": 6450,
+    "root_metadata": {
+      "gid": 1000,
+      "kind": "directory",
+      "mode": 509,
+      "uid": 1000
+    },
+    "total_bytes": 26481661,
+    "uid": 1000
+  },
+  "verifier_sha256": "baaa77a1c5a5a41a3cfe37c2ac74d362c8c431d8c5c6d5371947514a1619fef4"
+}
