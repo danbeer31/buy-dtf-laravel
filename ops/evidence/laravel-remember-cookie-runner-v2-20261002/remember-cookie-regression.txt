@@ -1,0 +1,14 @@
+command: /usr/bin/php8.3 artisan test tests/Feature/Auth/AuthenticationTest.php --filter=remember_cookie --colors=never
+exit_code: 0
+
+STDOUT
+
+   PASS  Tests\Feature\Auth\AuthenticationTest
+  ✓ stale remember cookie for a missing user falls through as a guest    0.29s  
+  ✓ valid remember cookie authenticates the matching user                0.03s  
+
+  Tests:    2 passed (10 assertions)
+  Duration: 0.42s
+
+
+STDERR

@@ -1,0 +1,2 @@
+Do not run Composer as root/super user! See https://getcomposer.org/root for details
+Checking non-dev platform requirements for packages in the vendor dir

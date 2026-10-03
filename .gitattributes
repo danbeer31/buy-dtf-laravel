@@ -6,6 +6,13 @@
 *.md diff=markdown
 *.php diff=php
 
+# Preserve hash-bound deployment evidence byte for byte.
+ops/evidence/laravel-remember-cookie-runner-v2-20261002/** -text
+ops/evidence/laravel-remember-cookie-runner-v2-20261002/**/*.stdout binary
+ops/evidence/laravel-remember-cookie-runner-v2-20261002/**/*.stderr binary
+ops/evidence/laravel-remember-cookie-runner-v2-20261002/**/*.txt binary
+ops/evidence/laravel-remember-cookie-runner-v2-20261002/**/*.jsonl binary
+
 /.github export-ignore
 CHANGELOG.md export-ignore
 .styleci.yml export-ignore

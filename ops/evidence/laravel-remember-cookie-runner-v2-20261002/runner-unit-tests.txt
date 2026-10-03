@@ -1,0 +1,11 @@
+command: python3 -m unittest ops/deployment/test_laravel_remember_cookie_dependency_runner.py
+exit_code: 0
+
+STDOUT
+
+STDERR
+..........
+----------------------------------------------------------------------
+Ran 10 tests in 1.175s
+
+OK

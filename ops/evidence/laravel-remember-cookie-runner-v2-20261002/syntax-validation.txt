@@ -1,0 +1,11 @@
+command: python3 -m py_compile ops/deployment/laravel_remember_cookie_dependency_deploy.py ops/deployment/build_laravel_remember_cookie_candidate.py ops/deployment/compare_laravel_candidate_builds.py ops/deployment/verify_laravel_lock_delta.py ops/deployment/verify_php_8230_platform.py ops/deployment/test_laravel_remember_cookie_dependency_runner.py
+exit_code: 0
+
+command: /usr/bin/php8.3 -l tests/Feature/Auth/AuthenticationTest.php
+exit_code: 0
+No syntax errors detected in tests/Feature/Auth/AuthenticationTest.php
+
+command: /usr/bin/php8.3 -l ops/deployment/laravel_remember_cookie_runtime_probe.php
+exit_code: 0
+No syntax errors detected in ops/deployment/laravel_remember_cookie_runtime_probe.php
+

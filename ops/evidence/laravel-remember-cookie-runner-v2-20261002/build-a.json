@@ -1,0 +1,257 @@
+{
+  "application_autoload_identity": {
+    "entries": 126,
+    "files": {
+      "autoload_classmap.php": {
+        "entries": 126,
+        "sha256": "5236a6ef5a0803719a2cb9b24d525946342063421aac9c6bec3914f1a9d9d893"
+      },
+      "autoload_static.php": {
+        "entries": 126,
+        "sha256": "1e82d08d78ebc0936284cf10cd7aca90b1753e0b7868627b2dda13bb67e54dc5"
+      }
+    },
+    "sha256": "342f417d353f8742f116898d307c34a2677e0a1cb0f814f3e8088f0bb2be1a91"
+  },
+  "artifact": "buy-dtf-laravel-remember-cookie-clean-build-v2",
+  "artifact_review_status": "review-only; not staged or deployed",
+  "audit_advisory_count": 0,
+  "builder_sha256": "8331e5bb8bf83341fc2b46cbc78688177a6e176599bed3cce4c1440045a9ab8b",
+  "cache_identity": {
+    "entries": {
+      "packages.php": {
+        "bytes": 415,
+        "gid": 33,
+        "kind": "file",
+        "mode": 436,
+        "sha256": "21da8f9ed19687e708cc7bc5cc59394c6fcdf9b9deadf617ae70526f815a1db0",
+        "uid": 1000
+      },
+      "services.php": {
+        "bytes": 21353,
+        "gid": 33,
+        "kind": "file",
+        "mode": 436,
+        "sha256": "1f7623b2b4ffd2c4099fb34ad86fc96c1479e27bf81b1b0ba328c988cc4ffcb5",
+        "uid": 1000
+      }
+    },
+    "manifest": {
+      "bytes": 21768,
+      "directories": 0,
+      "files": 2,
+      "sha256": "468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9"
+    },
+    "root_metadata": {
+      "gid": 33,
+      "kind": "directory",
+      "mode": 1533,
+      "uid": 1000
+    }
+  },
+  "commands": {
+    "composer-audit": {
+      "command": [
+        "/usr/local/bin/composer",
+        "--no-plugins",
+        "audit",
+        "--locked",
+        "--no-dev",
+        "--format=json",
+        "--no-interaction",
+        "--no-ansi"
+      ],
+      "exit_code": 0,
+      "seconds": 0.546,
+      "stderr_sha256": "405be96fa53ca39ceaa2d4c24864712d6bba7677367e5c036473dfbf1e177c29",
+      "stdout_sha256": "e464a6f19a008d852b61fd0966a47b663d20d70ccfba0b30edd6483a787f15f5"
+    },
+    "composer-dump-autoload": {
+      "command": [
+        "/usr/local/bin/composer",
+        "--no-plugins",
+        "dump-autoload",
+        "--no-dev",
+        "--optimize",
+        "--no-scripts",
+        "--no-interaction",
+        "--no-ansi"
+      ],
+      "exit_code": 0,
+      "seconds": 1.409,
+      "stderr_sha256": "405be96fa53ca39ceaa2d4c24864712d6bba7677367e5c036473dfbf1e177c29",
+      "stdout_sha256": "4b67c368bb0370bd36f0a332107a621fffe1db8c010d9760e4a18efe16313058"
+    },
+    "composer-install": {
+      "command": [
+        "/usr/local/bin/composer",
+        "--no-plugins",
+        "install",
+        "--no-dev",
+        "--prefer-dist",
+        "--no-autoloader",
+        "--no-interaction",
+        "--no-scripts",
+        "--no-ansi"
+      ],
+      "exit_code": 0,
+      "seconds": 3.721,
+      "stderr_sha256": "3e00d0f3eea408e237106c588732690d4ed9c5610890b28891af4a922213af57",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "composer-platform": {
+      "command": [
+        "/usr/local/bin/composer",
+        "--no-plugins",
+        "check-platform-reqs",
+        "--no-dev",
+        "--no-interaction",
+        "--no-ansi"
+      ],
+      "exit_code": 0,
+      "seconds": 0.21,
+      "stderr_sha256": "50eb805af63be40353a1584949817baa5d622d92a2c094fbcd47a0dc62f8385b",
+      "stdout_sha256": "d2cd5b74dec8db1076279b5e764fdea9132e1162ee7212038a509f934ce4f34b"
+    },
+    "composer-validate": {
+      "command": [
+        "/usr/local/bin/composer",
+        "--no-plugins",
+        "validate",
+        "--strict",
+        "--no-check-publish",
+        "--no-interaction",
+        "--no-ansi"
+      ],
+      "exit_code": 0,
+      "seconds": 0.535,
+      "stderr_sha256": "405be96fa53ca39ceaa2d4c24864712d6bba7677367e5c036473dfbf1e177c29",
+      "stdout_sha256": "43add299dc97ecbd90ec2dc456ef5a0bd824bb9abdae2a3d7cdb520e21f8e86d"
+    },
+    "package-discovery": {
+      "command": [
+        "/usr/bin/php8.3",
+        "artisan",
+        "package:discover",
+        "--no-interaction",
+        "--no-ansi"
+      ],
+      "exit_code": 0,
+      "seconds": 0.29,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "1306c598a02c1f6569bca56d18f0b5710b08dbab9e8d5636f9655701c917188f"
+    },
+    "route-discovery": {
+      "command": [
+        "/usr/bin/php8.3",
+        "artisan",
+        "route:list",
+        "--json",
+        "--no-ansi"
+      ],
+      "exit_code": 0,
+      "seconds": 0.266,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "cf18de6815e951980f6c83d466572a8c39eb6162abb86412593b3c72bb831dc0"
+    }
+  },
+  "composer_bin_compat": "proxy",
+  "composer_json_sha256": "7098f3a19cb65f88bcc945f019dda0aa7f515737eb5d4918c30705f25c6ad872",
+  "composer_lock_sha256": "77055fc8acf891496b0b356bb034d7935c04989a3751f52b788ecd1b7999206d",
+  "composer_sha256": "3b3f9503a2d46590170e45edd29734197e797cea545b396d0b2823cac8ef4643",
+  "composer_version": "Composer version 2.9.3 2025-12-30 13:40:17",
+  "created_at_utc": "2026-10-03T01:56:45Z",
+  "extraction": "system-unzip",
+  "handoff": {
+    "filename": "HANDOFF.md",
+    "sha256": "f198e8658848f64ac003528e45d925a606ef6788769e81b5d7269ec8be345dcb"
+  },
+  "label": "build-a-system-unzip",
+  "laravel_pail_present": false,
+  "package_versions": {
+    "guzzlehttp/guzzle": "7.15.2",
+    "laravel/framework": "12.69.1",
+    "league/commonmark": "2.10.2",
+    "league/flysystem": "3.35.3",
+    "league/flysystem-local": "3.35.3"
+  },
+  "php_sha256": "1c564e6bafa56d03359c3774be6f4c77d0edecabd2075e18556940a56747c8d7",
+  "php_version": "8.3.6",
+  "route_count": 178,
+  "runner_sha256": "a7657bbfea760be186301503c567042f76739c2954fffbfc76f31c9f4eefede5",
+  "shadow_source_manifest": {
+    "files": 326,
+    "sha256": "3909bdc2303b5c578135859c847f311cd84b827e62ac4e5dbce3d2297f6da71f"
+  },
+  "shadow_source_manifest_after": {
+    "files": 326,
+    "sha256": "3909bdc2303b5c578135859c847f311cd84b827e62ac4e5dbce3d2297f6da71f"
+  },
+  "source_manifest_after": {
+    "files": 326,
+    "sha256": "3909bdc2303b5c578135859c847f311cd84b827e62ac4e5dbce3d2297f6da71f"
+  },
+  "source_manifest_before": {
+    "files": 326,
+    "sha256": "3909bdc2303b5c578135859c847f311cd84b827e62ac4e5dbce3d2297f6da71f"
+  },
+  "status": "pass",
+  "uid33_read_only_probe": {
+    "command": {
+      "command": [
+        "/usr/bin/setpriv",
+        "--reuid=33",
+        "--regid=33",
+        "--clear-groups",
+        "/usr/bin/php8.3",
+        "/tmp/buydtf-remember-v2-build-a/uid33-vendor-probe.php",
+        "/tmp/buydtf-remember-v2-build-a/shadow"
+      ],
+      "exit_code": 0,
+      "seconds": 0.072,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "5c172d0d657f189bba4a516fcae8241b958f90b9cf7f80c3d5baaeb039120fc9"
+    },
+    "result": {
+      "append_opened": false,
+      "create_result": false,
+      "egid": 33,
+      "euid": 33,
+      "laravel_class_loaded": true,
+      "laravel_version": "12.69.1",
+      "probe_residue": false,
+      "vendor_is_readable": true,
+      "vendor_is_writable": false
+    }
+  },
+  "unzip_path": "/usr/bin/unzip",
+  "vendor_identity": {
+    "directory_mode": 509,
+    "executable_allowlist_sha256": "551df886bc842a49ea87d8d9bb0cfe3478e3cc5eeea841c83409e8349d120154",
+    "executable_file_mode": 509,
+    "executable_files": 10,
+    "gid": 1000,
+    "manifest": {
+      "bytes": 26481661,
+      "directories": 925,
+      "files": 6460,
+      "sha256": "7df0a101ceb0386b72ec4cfc71f2be8576fc5a5d4b777d11c05e5b7f1ed770d8"
+    },
+    "metadata_sha256": "db8aba0a4f49d0cecaeaac0b5b742c5f94b1a514a8d4452c361cb61e2dbacf0d",
+    "ordinary_file_mode": 436,
+    "ordinary_files": 6450,
+    "root_metadata": {
+      "gid": 1000,
+      "kind": "directory",
+      "mode": 509,
+      "uid": 1000
+    },
+    "total_bytes": 26481661,
+    "uid": 1000
+  },
+  "vendor_inventory": {
+    "bytes": 1386597,
+    "entries": 7386,
+    "sha256": "c646726893e4d74b42343218f891409e925541d9bf8ab0563ff98a9c998b8fd5"
+  }
+}

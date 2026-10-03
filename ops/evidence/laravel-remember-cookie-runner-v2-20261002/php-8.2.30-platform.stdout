@@ -1,0 +1,114 @@
+[
+    {
+        "name": "composer-runtime-api",
+        "version": "2.2.2",
+        "status": "success",
+        "failed_requirement": null,
+        "provider": null
+    },
+    {
+        "name": "ext-ctype",
+        "version": "*",
+        "status": "success",
+        "failed_requirement": null,
+        "provider": "provided by symfony/polyfill-ctype"
+    },
+    {
+        "name": "ext-curl",
+        "version": "8.2.30",
+        "status": "success",
+        "failed_requirement": null,
+        "provider": null
+    },
+    {
+        "name": "ext-dom",
+        "version": "20031129",
+        "status": "success",
+        "failed_requirement": null,
+        "provider": null
+    },
+    {
+        "name": "ext-fileinfo",
+        "version": "8.2.30",
+        "status": "success",
+        "failed_requirement": null,
+        "provider": null
+    },
+    {
+        "name": "ext-filter",
+        "version": "8.2.30",
+        "status": "success",
+        "failed_requirement": null,
+        "provider": null
+    },
+    {
+        "name": "ext-hash",
+        "version": "8.2.30",
+        "status": "success",
+        "failed_requirement": null,
+        "provider": null
+    },
+    {
+        "name": "ext-iconv",
+        "version": "8.2.30",
+        "status": "success",
+        "failed_requirement": null,
+        "provider": null
+    },
+    {
+        "name": "ext-json",
+        "version": "8.2.30",
+        "status": "success",
+        "failed_requirement": null,
+        "provider": null
+    },
+    {
+        "name": "ext-libxml",
+        "version": "8.2.30",
+        "status": "success",
+        "failed_requirement": null,
+        "provider": null
+    },
+    {
+        "name": "ext-mbstring",
+        "version": "*",
+        "status": "success",
+        "failed_requirement": null,
+        "provider": "provided by symfony/polyfill-mbstring"
+    },
+    {
+        "name": "ext-openssl",
+        "version": "8.2.30",
+        "status": "success",
+        "failed_requirement": null,
+        "provider": null
+    },
+    {
+        "name": "ext-pcre",
+        "version": "8.2.30",
+        "status": "success",
+        "failed_requirement": null,
+        "provider": null
+    },
+    {
+        "name": "ext-session",
+        "version": "8.2.30",
+        "status": "success",
+        "failed_requirement": null,
+        "provider": null
+    },
+    {
+        "name": "ext-tokenizer",
+        "version": "8.2.30",
+        "status": "success",
+        "failed_requirement": null,
+        "provider": null
+    },
+    {
+        "name": "php",
+        "version": "8.2.30",
+        "status": "success",
+        "failed_requirement": null,
+        "provider": null
+    }
+]

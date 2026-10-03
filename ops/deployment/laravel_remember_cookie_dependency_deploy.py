@@ -2,8 +2,8 @@
 """Stage, atomically exchange, verify, and roll back Laravel 12.69.1.
 
 Production modes are intentionally fixed to /var/www/buy-dtf and to reviewed
-artifact hashes. There are no Git, migration, dependency-update, source-copy,
-configuration-copy, or service-restart operations in this program.
+artifact hashes. There are no Git, migration, dependency-update, live-source
+mutation, configuration-copy, or service-restart operations in this program.
 """
 
 from __future__ import annotations
@@ -16,6 +16,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import secrets
 import shutil
 import signal
@@ -28,8 +29,9 @@ from typing import Any, Callable
 
 
 APP_ROOT = Path("/var/www/buy-dtf")
-RELEASE_ROOT = APP_ROOT / "storage/app/private/operations/laravel-remember-cookie-releases"
-ROLLBACK_ROOT = APP_ROOT / "storage/app/private/operations/laravel-remember-cookie-rollbacks"
+PRIVATE_OPERATIONS_ROOT = APP_ROOT / "storage/app/private/operations"
+RELEASE_ROOT = PRIVATE_OPERATIONS_ROOT / "laravel-remember-cookie-v2-releases"
+ROLLBACK_ROOT = PRIVATE_OPERATIONS_ROOT / "laravel-remember-cookie-v2-rollbacks"
 DEPLOYMENT_LOCK = APP_ROOT / "storage/framework/dependency-deployment.lock"
 FPM_SOCKET = Path("/run/php/php8.2-fpm.sock")
 LARAVEL_MAINTENANCE_FILE = APP_ROOT / "storage/framework/down"
@@ -50,8 +52,8 @@ EXPECTED_APP_ENVIRONMENT = "local"
 EXPECTED_APP_DEBUG = False
 EXPECTED_PHP_VERSION = "8.2.30"
 RUNTIME_HELPER_SHA256 = "74ae751d18f0396e86c066e908a006b1a170e223b1ad56c59168c94491925362"
-HANDOFF_FILENAME = "buy-dtf-codie-handoff-2026-10-02.md"
-HANDOFF_SHA256 = "ba9fd4dcf5fa5854b2e23418e0cd6ed8799874494a0341c726302b92a5acc127"
+HANDOFF_FILENAME = "HANDOFF.md"
+HANDOFF_SHA256 = "f198e8658848f64ac003528e45d925a606ef6788769e81b5d7269ec8be345dcb"
 ARTIFACT_REVIEW_STATUS = "review-only; not staged or deployed"
 
 EXPECTED_SOURCE_MANIFEST = {
@@ -98,12 +100,39 @@ EXPECTED_LIVE_CACHE_IDENTITY = {
     },
 }
 EXPECTED_CANDIDATE_VENDOR_MANIFEST = {
-    "bytes": 26482354,
+    "bytes": 26481661,
     "directories": 925,
-    "files": 6465,
-    "sha256": "b8e0e3afa65171a66ad3d1875404fe209d7598c9b3f690e494d40c4fde4408f8",
+    "files": 6460,
+    "sha256": "7df0a101ceb0386b72ec4cfc71f2be8576fc5a5d4b777d11c05e5b7f1ed770d8",
 }
+EXPECTED_CANDIDATE_VENDOR_FILE_COUNT = 6460
+EXPECTED_CANDIDATE_VENDOR_DIRECTORY_COUNT = 925
+EXPECTED_CANDIDATE_VENDOR_ORDINARY_FILE_COUNT = 6450
 EXPECTED_CANDIDATE_CACHE_IDENTITY = EXPECTED_LIVE_CACHE_IDENTITY
+
+CANDIDATE_VENDOR_EXECUTABLE_PATHS = (
+    "bin/carbon",
+    "bin/patch-type-declarations",
+    "bin/php-parse",
+    "bin/psysh",
+    "bin/var-dump-server",
+    "nesbot/carbon/bin/carbon",
+    "nikic/php-parser/bin/php-parse",
+    "psy/psysh/bin/psysh",
+    "symfony/error-handler/Resources/bin/patch-type-declarations",
+    "symfony/var-dumper/Resources/bin/var-dump-server",
+)
+CANDIDATE_VENDOR_EXECUTABLE_ALLOWLIST_SHA256 = (
+    "551df886bc842a49ea87d8d9bb0cfe3478e3cc5eeea841c83409e8349d120154"
+)
+EXPECTED_CANDIDATE_VENDOR_METADATA_SHA256 = (
+    "db8aba0a4f49d0cecaeaac0b5b742c5f94b1a514a8d4452c361cb61e2dbacf0d"
+)
+EXPECTED_APPLICATION_AUTOLOAD_ENTRIES = 126
+EXPECTED_APPLICATION_AUTOLOAD_SHA256 = (
+    "342f417d353f8742f116898d307c34a2677e0a1cb0f814f3e8088f0bb2be1a91"
+)
+EXPECTED_ROUTE_COUNT = 178
 
 OLD_PACKAGE_VERSIONS = {
     "guzzlehttp/guzzle": "7.15.2",
@@ -119,9 +148,9 @@ NEW_PACKAGE_VERSIONS = {
     "league/flysystem": "3.35.3",
     "league/flysystem-local": "3.35.3",
 }
-STAGE_APPROVAL_TOKEN = f"STAGE-BUYDTF-LARAVEL-REMEMBER-{CANDIDATE_LOCK_SHA256[:16]}"
-CUTOVER_APPROVAL_TOKEN = f"DEPLOY-BUYDTF-LARAVEL-REMEMBER-{CANDIDATE_LOCK_SHA256[:16]}"
-RECOVERY_APPROVAL_TOKEN = f"RECOVER-BUYDTF-LARAVEL-REMEMBER-{EXPECTED_LIVE_LOCK_SHA256[:16]}"
+STAGE_APPROVAL_TOKEN = f"STAGE-BUYDTF-LARAVEL-REMEMBER-V2-{CANDIDATE_LOCK_SHA256[:16]}"
+CUTOVER_APPROVAL_TOKEN = f"DEPLOY-BUYDTF-LARAVEL-REMEMBER-V2-{CANDIDATE_LOCK_SHA256[:16]}"
+RECOVERY_APPROVAL_TOKEN = f"RECOVER-BUYDTF-LARAVEL-REMEMBER-V2-{EXPECTED_LIVE_LOCK_SHA256[:16]}"
 
 DRAIN_SECONDS = 65
 OPCACHE_WAIT_SECONDS = 5
@@ -218,6 +247,43 @@ def require_real_directory(path: Path, *, within: Path | None = None) -> Path:
     resolved = path.resolve(strict=True)
     if within is not None and not is_relative_to(resolved, within.resolve(strict=True)):
         raise DeploymentError(f"Directory escapes its approved root: {path}")
+    return resolved
+
+
+def ensure_private_operations_root(root: Path, *, create: bool) -> Path:
+    app_root = require_real_directory(APP_ROOT)
+    try:
+        relative_operations = PRIVATE_OPERATIONS_ROOT.relative_to(APP_ROOT)
+    except ValueError as exception:
+        raise DeploymentError("Private operations path escapes the application root.") from exception
+    current = app_root
+    for part in relative_operations.parts:
+        current = current / part
+        if current.is_symlink() or not current.is_dir():
+            raise DeploymentError(f"Private operations path is missing, invalid, or symbolic: {current}")
+    operations_root = current.resolve(strict=True)
+    if not is_relative_to(operations_root, app_root):
+        raise DeploymentError("Private operations path escapes the application root.")
+    if root.parent != PRIVATE_OPERATIONS_ROOT:
+        raise DeploymentError("Dependency operations root is outside the fixed private parent.")
+    if root.is_symlink():
+        raise DeploymentError("Dependency operations root must not be symbolic.")
+    if not root.exists():
+        if not create:
+            raise DeploymentError("Dependency operations root does not exist.")
+        root.mkdir(mode=0o700, parents=False, exist_ok=False)
+        os.chmod(root, 0o700)
+        fsync_directory(operations_root)
+    resolved = require_real_directory(root, within=operations_root)
+    if resolved.parent != operations_root:
+        raise DeploymentError("Dependency operations root resolves outside its fixed parent.")
+    metadata = resolved.lstat()
+    if (
+        stat.S_IMODE(metadata.st_mode) != 0o700
+        or metadata.st_uid != EXPECTED_APP_UID
+        or metadata.st_gid != EXPECTED_WEB_GID
+    ):
+        raise DeploymentError("Dependency operations root ownership or mode differs from review.")
     return resolved
 
 
@@ -409,6 +475,333 @@ def tree_manifest(root: Path) -> dict[str, Any]:
         "directories": directory_count,
         "bytes": total_bytes,
     }
+
+
+def tree_metadata_identity(root: Path) -> dict[str, Any]:
+    root = require_real_directory(root)
+    records: list[bytes] = []
+    root_entry = path_metadata(root)
+    records.append(
+        (
+            f"{root_entry['kind']}\0.\0{root_entry['mode']:o}\0"
+            f"{root_entry['uid']}\0{root_entry['gid']}\n"
+        ).encode()
+    )
+    for path in sorted(root.rglob("*"), key=lambda item: item.relative_to(root).as_posix()):
+        relative = path.relative_to(root).as_posix()
+        entry = path_metadata(path)
+        records.append(
+            (
+                f"{entry['kind']}\0{relative}\0{entry['mode']:o}\0"
+                f"{entry['uid']}\0{entry['gid']}\n"
+            ).encode()
+        )
+    records.sort()
+    return {
+        "manifest": tree_manifest(root),
+        "metadata_sha256": sha256_bytes(b"".join(records)),
+        "root_metadata": root_entry,
+    }
+
+
+def executable_allowlist_sha256() -> str:
+    canonical = "".join(f"{path}\n" for path in CANDIDATE_VENDOR_EXECUTABLE_PATHS)
+    return sha256_bytes(canonical.encode("utf-8"))
+
+
+def hash_regular_file_nofollow(path: Path, expected: os.stat_result) -> str:
+    flags = os.O_RDONLY
+    if hasattr(os, "O_CLOEXEC"):
+        flags |= os.O_CLOEXEC
+    if hasattr(os, "O_NOFOLLOW"):
+        flags |= os.O_NOFOLLOW
+    try:
+        descriptor = os.open(path, flags)
+    except OSError as exception:
+        raise DeploymentError(f"Candidate vendor file could not be opened safely: {path}") from exception
+    digest = hashlib.sha256()
+    try:
+        before = os.fstat(descriptor)
+        stable_fields = (
+            "st_dev",
+            "st_ino",
+            "st_mode",
+            "st_nlink",
+            "st_uid",
+            "st_gid",
+            "st_size",
+            "st_mtime_ns",
+        )
+        if any(getattr(before, field) != getattr(expected, field) for field in stable_fields):
+            raise DeploymentError(f"Candidate vendor file changed before hashing: {path}")
+        while True:
+            chunk = os.read(descriptor, 1024 * 1024)
+            if not chunk:
+                break
+            digest.update(chunk)
+        after = os.fstat(descriptor)
+        if any(getattr(after, field) != getattr(before, field) for field in stable_fields):
+            raise DeploymentError(f"Candidate vendor file changed while hashing: {path}")
+    finally:
+        os.close(descriptor)
+    return digest.hexdigest()
+
+
+def candidate_vendor_identity(root: Path) -> dict[str, Any]:
+    root = require_real_directory(root)
+    if executable_allowlist_sha256() != CANDIDATE_VENDOR_EXECUTABLE_ALLOWLIST_SHA256:
+        raise DeploymentError("Candidate vendor executable allowlist is not canonical.")
+
+    expected_root = {
+        "kind": "directory",
+        "mode": 0o775,
+        "uid": EXPECTED_APP_UID,
+        "gid": EXPECTED_APP_GID,
+    }
+    root_before = root.lstat()
+    if (
+        not stat.S_ISDIR(root_before.st_mode)
+        or stat.S_IMODE(root_before.st_mode) != expected_root["mode"]
+        or root_before.st_uid != EXPECTED_APP_UID
+        or root_before.st_gid != EXPECTED_APP_GID
+    ):
+        raise DeploymentError("Candidate vendor root metadata differs from review.")
+
+    metadata_records = [
+        (
+            f"d\0.\0{expected_root['mode']:o}\0"
+            f"{expected_root['uid']}\0{expected_root['gid']}\n"
+        ).encode()
+    ]
+    manifest_records: list[bytes] = []
+    executable_paths = set(CANDIDATE_VENDOR_EXECUTABLE_PATHS)
+    found_executable_paths: set[str] = set()
+    file_count = 0
+    directory_count = 0
+    ordinary_file_count = 0
+    total_bytes = 0
+
+    for current_root, directory_names, file_names in os.walk(
+        root, topdown=True, followlinks=False
+    ):
+        directory_names.sort()
+        file_names.sort()
+        current = Path(current_root)
+        for name in directory_names:
+            path = current / name
+            relative = path.relative_to(root).as_posix()
+            metadata = path.lstat()
+            if (
+                not stat.S_ISDIR(metadata.st_mode)
+                or stat.S_IMODE(metadata.st_mode) != 0o775
+                or metadata.st_uid != EXPECTED_APP_UID
+                or metadata.st_gid != EXPECTED_APP_GID
+            ):
+                raise DeploymentError(f"Candidate vendor directory metadata differs: {path}")
+            metadata_records.append(
+                f"d\0{relative}\0{0o775:o}\0{metadata.st_uid}\0{metadata.st_gid}\n".encode()
+            )
+            manifest_records.append(f"d\0{relative}\0{0o775:o}\n".encode())
+            directory_count += 1
+        for name in file_names:
+            path = current / name
+            relative = path.relative_to(root).as_posix()
+            if relative.startswith("bin/") and Path(relative).name.lower().endswith(".bat"):
+                raise DeploymentError(f"Candidate vendor contains a Windows proxy: {relative}")
+            is_executable = relative in executable_paths
+            expected_mode = 0o775 if is_executable else 0o664
+            metadata = path.lstat()
+            if (
+                not stat.S_ISREG(metadata.st_mode)
+                or metadata.st_nlink != 1
+                or stat.S_IMODE(metadata.st_mode) != expected_mode
+                or metadata.st_uid != EXPECTED_APP_UID
+                or metadata.st_gid != EXPECTED_APP_GID
+            ):
+                raise DeploymentError(f"Candidate vendor file metadata differs: {path}")
+            digest = hash_regular_file_nofollow(path, metadata)
+            metadata_records.append(
+                f"f\0{relative}\0{expected_mode:o}\0{metadata.st_uid}\0{metadata.st_gid}\n".encode()
+            )
+            manifest_records.append(
+                f"f\0{relative}\0{expected_mode:o}\0{metadata.st_size}\0{digest}\n".encode()
+            )
+            file_count += 1
+            total_bytes += metadata.st_size
+            if is_executable:
+                found_executable_paths.add(relative)
+            else:
+                ordinary_file_count += 1
+
+    if found_executable_paths != executable_paths:
+        missing = sorted(executable_paths - found_executable_paths)
+        raise DeploymentError(f"Candidate vendor executable allowlist is incomplete: {missing}")
+    if (file_count, directory_count, ordinary_file_count) != (
+        EXPECTED_CANDIDATE_VENDOR_FILE_COUNT,
+        EXPECTED_CANDIDATE_VENDOR_DIRECTORY_COUNT,
+        EXPECTED_CANDIDATE_VENDOR_ORDINARY_FILE_COUNT,
+    ):
+        raise DeploymentError(
+            "Candidate vendor structural counts differ from 6,460 files, "
+            "925 directories, and 6,450 ordinary files."
+        )
+
+    root_after = root.lstat()
+    if (
+        root_after.st_dev,
+        root_after.st_ino,
+        root_after.st_mode,
+        root_after.st_uid,
+        root_after.st_gid,
+    ) != (
+        root_before.st_dev,
+        root_before.st_ino,
+        root_before.st_mode,
+        root_before.st_uid,
+        root_before.st_gid,
+    ):
+        raise DeploymentError("Candidate vendor root changed while hashing.")
+    metadata_records.sort()
+    manifest_records.sort()
+    manifest = {
+        "sha256": sha256_bytes(b"".join(manifest_records)),
+        "files": file_count,
+        "directories": directory_count,
+        "bytes": total_bytes,
+    }
+    return {
+        "manifest": manifest,
+        "metadata_sha256": sha256_bytes(b"".join(metadata_records)),
+        "root_metadata": expected_root,
+        "uid": EXPECTED_APP_UID,
+        "gid": EXPECTED_APP_GID,
+        "directory_mode": 0o775,
+        "ordinary_file_mode": 0o664,
+        "executable_file_mode": 0o775,
+        "ordinary_files": ordinary_file_count,
+        "executable_files": len(found_executable_paths),
+        "executable_allowlist_sha256": CANDIDATE_VENDOR_EXECUTABLE_ALLOWLIST_SHA256,
+        "total_bytes": total_bytes,
+    }
+
+
+def normalize_candidate_vendor(root: Path) -> dict[str, Any]:
+    root = require_real_directory(root)
+    directories: list[Path] = []
+    files: list[tuple[Path, str]] = []
+    for current_root, directory_names, file_names in os.walk(
+        root, topdown=True, followlinks=False
+    ):
+        directory_names.sort()
+        file_names.sort()
+        current = Path(current_root)
+        for name in directory_names:
+            path = current / name
+            if path.is_symlink() or not path.is_dir():
+                raise DeploymentError(f"Candidate vendor contains an invalid directory: {path}")
+            directories.append(path)
+        for name in file_names:
+            path = current / name
+            metadata = path.lstat()
+            if (
+                path.is_symlink()
+                or not stat.S_ISREG(metadata.st_mode)
+                or metadata.st_nlink != 1
+            ):
+                raise DeploymentError(f"Candidate vendor contains an invalid file: {path}")
+            relative = path.relative_to(root).as_posix()
+            if relative.startswith("bin/") and Path(relative).name.lower().endswith(".bat"):
+                raise DeploymentError(f"Candidate vendor contains a Windows proxy: {relative}")
+            files.append((path, relative))
+
+    executable_paths = set(CANDIDATE_VENDOR_EXECUTABLE_PATHS)
+    actual_paths = {relative for _path, relative in files}
+    missing = sorted(executable_paths - actual_paths)
+    if missing:
+        raise DeploymentError(f"Candidate vendor executable allowlist is incomplete: {missing}")
+    if (len(files), len(directories), sum(rel not in executable_paths for _, rel in files)) != (
+        EXPECTED_CANDIDATE_VENDOR_FILE_COUNT,
+        EXPECTED_CANDIDATE_VENDOR_DIRECTORY_COUNT,
+        EXPECTED_CANDIDATE_VENDOR_ORDINARY_FILE_COUNT,
+    ):
+        raise DeploymentError("Candidate vendor cannot be normalized because its structure differs.")
+
+    os.chown(root, EXPECTED_APP_UID, EXPECTED_APP_GID)
+    os.chmod(root, 0o775)
+    for path in directories:
+        os.chown(path, EXPECTED_APP_UID, EXPECTED_APP_GID)
+        os.chmod(path, 0o775)
+    for path, relative in files:
+        os.chown(path, EXPECTED_APP_UID, EXPECTED_APP_GID)
+        os.chmod(path, 0o775 if relative in executable_paths else 0o664)
+    fsync_directory(root)
+    return candidate_vendor_identity(root)
+
+
+def require_candidate_vendor(root: Path) -> dict[str, Any]:
+    identity = candidate_vendor_identity(root)
+    if identity["manifest"] != EXPECTED_CANDIDATE_VENDOR_MANIFEST:
+        raise DeploymentError("Candidate vendor differs from the deterministic reviewed manifest.")
+    if identity["metadata_sha256"] != EXPECTED_CANDIDATE_VENDOR_METADATA_SHA256:
+        raise DeploymentError("Candidate vendor ownership/mode identity differs from review.")
+    return identity
+
+
+def application_autoload_identity(shadow: Path) -> dict[str, Any]:
+    shadow = require_real_directory(shadow)
+    composer_root = require_real_directory(shadow / "vendor/composer", within=shadow)
+    pattern = re.compile(
+        r"'(?P<class>App(?:\\\\[^']+)+)'\s*=>[^\n]*'(?P<path>/app/[^']+)'"
+    )
+    entries_by_file: dict[str, set[tuple[str, str]]] = {}
+    application_root = require_real_directory(shadow / "app", within=shadow)
+    for name in ("autoload_classmap.php", "autoload_static.php"):
+        path = require_regular_file(composer_root / name)
+        try:
+            content = path.read_text(encoding="utf-8")
+        except UnicodeDecodeError as exception:
+            raise DeploymentError(f"Composer optimized autoload file is not UTF-8: {name}") from exception
+        entries = {
+            (match.group("class").replace("\\\\", "\\"), match.group("path"))
+            for match in pattern.finditer(content)
+        }
+        if len(entries) != EXPECTED_APPLICATION_AUTOLOAD_ENTRIES:
+            raise DeploymentError(
+                f"{name} has {len(entries)} application entries; expected "
+                f"{EXPECTED_APPLICATION_AUTOLOAD_ENTRIES}."
+            )
+        for _class_name, relative_path in entries:
+            mapped = require_regular_file(shadow / relative_path.removeprefix("/"))
+            if not is_relative_to(mapped, application_root):
+                raise DeploymentError(f"Composer application entry escapes app/: {relative_path}")
+        entries_by_file[name] = entries
+
+    classmap_entries = entries_by_file["autoload_classmap.php"]
+    static_entries = entries_by_file["autoload_static.php"]
+    if classmap_entries != static_entries:
+        raise DeploymentError("Composer optimized application autoload entries disagree.")
+    canonical = b"".join(
+        f"{class_name}\0{relative_path}\n".encode("utf-8")
+        for class_name, relative_path in sorted(classmap_entries)
+    )
+    return {
+        "entries": len(classmap_entries),
+        "sha256": sha256_bytes(canonical),
+        "files": {
+            name: {
+                "entries": len(entries),
+                "sha256": sha256_file(composer_root / name),
+            }
+            for name, entries in sorted(entries_by_file.items())
+        },
+    }
+
+
+def require_application_autoload(shadow: Path) -> dict[str, Any]:
+    identity = application_autoload_identity(shadow)
+    if identity["sha256"] != EXPECTED_APPLICATION_AUTOLOAD_SHA256:
+        raise DeploymentError("Composer application autoload identity differs from review.")
+    return identity
 
 
 def cache_identity(root: Path) -> dict[str, Any]:
@@ -780,6 +1173,7 @@ def safe_environment(composer_home: Path) -> dict[str, str]:
         "SESSION_DRIVER": "array",
         "COMPOSER_HOME": str(composer_home),
         "COMPOSER_CACHE_DIR": str(composer_home / "cache"),
+        "COMPOSER_BIN_COMPAT": "proxy",
     }
 
 
@@ -849,7 +1243,7 @@ def production_preflight(
     runtime = runtime_probe(helper)
     validate_runtime_baseline(runtime, expected_versions=OLD_PACKAGE_VERSIONS)
     return {
-        "artifact": "buy-dtf-laravel-remember-cookie-production-preflight-v1",
+        "artifact": "buy-dtf-laravel-remember-cookie-production-preflight-v2",
         "handoff": {"filename": HANDOFF_FILENAME, "sha256": HANDOFF_SHA256},
         "cutover_requires_separate_independent_review": True,
         "status": "pass",
@@ -873,27 +1267,47 @@ def production_preflight(
     }
 
 
-def copy_runtime_shadow(destination: Path) -> None:
+def copy_runtime_shadow(source_root: Path, destination: Path) -> dict[str, Any]:
+    source_root = require_real_directory(source_root)
+    destination = require_real_directory(destination)
+    source_identity = source_manifest(source_root)
+    if source_identity != EXPECTED_SOURCE_MANIFEST:
+        raise DeploymentError("Runtime source differs from the approved CAS before shadow copy.")
+
     for relative_name in SOURCE_TOP_LEVEL_FILES:
-        if relative_name == "composer.json":
-            continue
-        source = APP_ROOT / relative_name
+        source = source_root / relative_name
         target = destination / relative_name
         target.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+        if target.exists() or target.is_symlink():
+            raise DeploymentError(f"Runtime shadow target already exists: {target}")
         shutil.copy2(source, target, follow_symlinks=False)
-    for relative_root in ("app", "bootstrap", "config", "database", "resources", "routes"):
-        source = APP_ROOT / relative_root
+    for relative_root in SOURCE_ROOTS:
+        source = source_root / relative_root
         target = destination / relative_root
         if source.is_symlink():
             raise DeploymentError(f"Cannot shadow-copy symbolic runtime root: {source}")
+        target.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+        if target.exists() or target.is_symlink():
+            raise DeploymentError(f"Runtime shadow target already exists: {target}")
+
+        def ignore_bootstrap_cache(directory: str, names: list[str]) -> set[str]:
+            if Path(directory) == source_root / "bootstrap" and "cache" in names:
+                return {"cache"}
+            return set()
+
         shutil.copytree(
             source,
             target,
-            symlinks=False,
-            ignore=shutil.ignore_patterns("cache") if relative_root == "bootstrap" else None,
+            symlinks=True,
+            ignore=ignore_bootstrap_cache if relative_root == "bootstrap" else None,
         )
     cache = destination / "bootstrap/cache"
     cache.mkdir(mode=0o700, parents=True, exist_ok=True)
+    copied_identity = source_manifest(destination)
+    if copied_identity != source_identity:
+        raise DeploymentError("Runtime source CAS changed while constructing the shadow.")
+    if source_manifest(source_root) != source_identity:
+        raise DeploymentError("Runtime source CAS changed during the shadow copy.")
     for relative in (
         "storage/app",
         "storage/framework/cache",
@@ -902,6 +1316,7 @@ def copy_runtime_shadow(destination: Path) -> None:
         "storage/logs",
     ):
         (destination / relative).mkdir(mode=0o700, parents=True, exist_ok=True)
+    return copied_identity
 
 
 def stage_release(candidate_lock: Path, approval_token: str, helper: Path) -> Path:
@@ -918,10 +1333,9 @@ def stage_release(candidate_lock: Path, approval_token: str, helper: Path) -> Pa
     before_runtime = preflight["runtime"]
     candidate_lock = require_regular_file(candidate_lock, CANDIDATE_LOCK_SHA256)
 
-    RELEASE_ROOT.mkdir(mode=0o700, parents=True, exist_ok=True)
-    os.chmod(RELEASE_ROOT, 0o700)
+    release_root = ensure_private_operations_root(RELEASE_ROOT, create=True)
     timestamp = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
-    release = RELEASE_ROOT / f"{CANDIDATE_LOCK_SHA256[:12]}-{timestamp}"
+    release = release_root / f"{CANDIDATE_LOCK_SHA256[:12]}-{timestamp}"
     release.mkdir(mode=0o700)
     shadow = release / "shadow"
     shadow.mkdir(mode=0o700)
@@ -932,7 +1346,7 @@ def stage_release(candidate_lock: Path, approval_token: str, helper: Path) -> Pa
     (release / ".home").mkdir(mode=0o700)
     environment = safe_environment(composer_home)
 
-    atomic_copy(APP_ROOT / "composer.json", shadow / "composer.json", 0o600)
+    shadow_source = copy_runtime_shadow(APP_ROOT, shadow)
     atomic_copy(candidate_lock, shadow / "composer.lock", 0o600)
     command_receipts: dict[str, str] = {}
     composer = "/usr/local/bin/composer"
@@ -974,7 +1388,7 @@ def stage_release(candidate_lock: Path, approval_token: str, helper: Path) -> Pa
             "install",
             "--no-dev",
             "--prefer-dist",
-            "--optimize-autoloader",
+            "--no-autoloader",
             "--no-interaction",
             "--no-scripts",
             "--no-ansi",
@@ -984,6 +1398,24 @@ def stage_release(candidate_lock: Path, approval_token: str, helper: Path) -> Pa
         env=environment,
     )
     command_receipts["composer_install"] = write_command_result(logs / "composer-install.txt", install)
+    dump_autoload = run(
+        [
+            composer,
+            "--no-plugins",
+            "dump-autoload",
+            "--no-dev",
+            "--optimize",
+            "--no-scripts",
+            "--no-interaction",
+            "--no-ansi",
+        ],
+        cwd=shadow,
+        timeout=300,
+        env=environment,
+    )
+    command_receipts["composer_dump_autoload"] = write_command_result(
+        logs / "composer-dump-autoload.txt", dump_autoload
+    )
     platform = run(
         [
             composer,
@@ -999,7 +1431,6 @@ def stage_release(candidate_lock: Path, approval_token: str, helper: Path) -> Pa
     )
     command_receipts["platform"] = write_command_result(logs / "platform.txt", platform)
 
-    copy_runtime_shadow(shadow)
     package_discovery = run(
         ["/usr/bin/php", "artisan", "package:discover", "--no-interaction", "--no-ansi"],
         cwd=shadow,
@@ -1010,17 +1441,27 @@ def stage_release(candidate_lock: Path, approval_token: str, helper: Path) -> Pa
         logs / "shadow-package-discovery.txt", package_discovery
     )
     routes = run(
-        ["/usr/bin/php", "artisan", "route:list", "--no-ansi"],
+        ["/usr/bin/php", "artisan", "route:list", "--json", "--no-ansi"],
         cwd=shadow,
         timeout=120,
         env=environment,
     )
     command_receipts["shadow_routes"] = write_command_result(logs / "shadow-routes.txt", routes)
+    try:
+        route_payload = json.loads(routes.stdout)
+    except json.JSONDecodeError as exception:
+        raise DeploymentError("Candidate route discovery did not return JSON.") from exception
+    if not isinstance(route_payload, list) or len(route_payload) != EXPECTED_ROUTE_COUNT:
+        raise DeploymentError("Candidate route discovery did not return the expected 178 routes.")
 
-    vendor = tree_manifest(shadow / "vendor")
+    vendor_identity = normalize_candidate_vendor(shadow / "vendor")
+    vendor = vendor_identity["manifest"]
+    autoload_identity = require_application_autoload(shadow)
     candidate_cache = normalize_candidate_cache(shadow / "bootstrap/cache")
     if vendor != EXPECTED_CANDIDATE_VENDOR_MANIFEST:
         raise DeploymentError("Staged vendor differs from the deterministic reviewed candidate.")
+    if vendor_identity["metadata_sha256"] != EXPECTED_CANDIDATE_VENDOR_METADATA_SHA256:
+        raise DeploymentError("Staged vendor metadata differs from the deterministic reviewed candidate.")
     if candidate_cache != EXPECTED_CANDIDATE_CACHE_IDENTITY:
         raise DeploymentError("Staged bootstrap cache differs from the deterministic reviewed candidate.")
     installed = json.loads((shadow / "vendor/composer/installed.json").read_text(encoding="utf-8"))
@@ -1039,9 +1480,12 @@ def stage_release(candidate_lock: Path, approval_token: str, helper: Path) -> Pa
         raise DeploymentError("The no-dev candidate unexpectedly contains Laravel Pail.")
     if (shadow / "vendor/laravel/pail").exists():
         raise DeploymentError("The no-dev candidate contains a Laravel Pail directory.")
+    shadow_source_after = source_manifest(shadow)
+    if shadow_source_after != shadow_source:
+        raise DeploymentError("Staged source CAS changed during candidate construction.")
 
     receipt = {
-        "artifact": "buy-dtf-laravel-remember-cookie-release-v1",
+        "artifact": "buy-dtf-laravel-remember-cookie-release-v2",
         "status": "staged",
         "handoff": {"filename": HANDOFF_FILENAME, "sha256": HANDOFF_SHA256},
         "cutover_requires_separate_independent_review": True,
@@ -1051,10 +1495,16 @@ def stage_release(candidate_lock: Path, approval_token: str, helper: Path) -> Pa
         "candidate_lock_sha256": CANDIDATE_LOCK_SHA256,
         "live_composer_json_sha256": EXPECTED_LIVE_COMPOSER_JSON_SHA256,
         "approved_source_manifest": baseline["source"],
+        "shadow_source_manifest": shadow_source,
+        "shadow_source_manifest_after": shadow_source_after,
         "retained_vendor_manifest": baseline["vendor"],
         "retained_cache_identity": baseline["cache"],
         "candidate_cache_identity": candidate_cache,
         "candidate_vendor_manifest": vendor,
+        "candidate_vendor_identity": vendor_identity,
+        "application_autoload_identity": autoload_identity,
+        "composer_bin_compat": "proxy",
+        "route_count": len(route_payload),
         "front_controller": baseline["front_controller"],
         "maintenance_gate_sha256": MAINTENANCE_GATE_SHA256,
         "command_receipts": command_receipts,
@@ -1074,15 +1524,16 @@ def stage_release(candidate_lock: Path, approval_token: str, helper: Path) -> Pa
 
 
 def load_approved_release(receipt_path: Path, approved_sha256: str) -> tuple[dict[str, Any], Path]:
+    release_root = ensure_private_operations_root(RELEASE_ROOT, create=False)
     receipt_path = require_regular_file(receipt_path, approved_sha256)
-    if not is_relative_to(receipt_path, RELEASE_ROOT.resolve(strict=True)):
+    if not is_relative_to(receipt_path, release_root):
         raise DeploymentError("Release receipt is outside the fixed release root.")
     try:
         receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
     except json.JSONDecodeError as exception:
         raise DeploymentError("Release receipt is invalid JSON.") from exception
     if (
-        receipt.get("artifact") != "buy-dtf-laravel-remember-cookie-release-v1"
+        receipt.get("artifact") != "buy-dtf-laravel-remember-cookie-release-v2"
         or receipt.get("status") != "staged"
     ):
         raise DeploymentError("Release receipt is not an approved staged release.")
@@ -1096,6 +1547,29 @@ def load_approved_release(receipt_path: Path, approved_sha256: str) -> tuple[dic
         raise DeploymentError("Release receipt references different candidate package versions.")
     if receipt.get("candidate_vendor_manifest") != EXPECTED_CANDIDATE_VENDOR_MANIFEST:
         raise DeploymentError("Release receipt references a different candidate vendor.")
+    candidate_identity = receipt.get("candidate_vendor_identity")
+    if (
+        not isinstance(candidate_identity, dict)
+        or candidate_identity.get("manifest") != EXPECTED_CANDIDATE_VENDOR_MANIFEST
+        or candidate_identity.get("metadata_sha256")
+        != EXPECTED_CANDIDATE_VENDOR_METADATA_SHA256
+        or candidate_identity.get("executable_allowlist_sha256")
+        != CANDIDATE_VENDOR_EXECUTABLE_ALLOWLIST_SHA256
+    ):
+        raise DeploymentError("Release receipt has no approved candidate metadata identity.")
+    if receipt.get("application_autoload_identity", {}).get("sha256") != (
+        EXPECTED_APPLICATION_AUTOLOAD_SHA256
+    ):
+        raise DeploymentError("Release receipt has no approved application autoload identity.")
+    if (
+        receipt.get("composer_bin_compat") != "proxy"
+        or receipt.get("route_count") != EXPECTED_ROUTE_COUNT
+    ):
+        raise DeploymentError("Release receipt lacks the reviewed Unix proxy or route proof.")
+    if receipt.get("shadow_source_manifest") != EXPECTED_SOURCE_MANIFEST:
+        raise DeploymentError("Release receipt has no exact shadow-source CAS proof.")
+    if receipt.get("shadow_source_manifest_after") != EXPECTED_SOURCE_MANIFEST:
+        raise DeploymentError("Release receipt has no final shadow-source CAS proof.")
     if receipt.get("candidate_cache_identity") != EXPECTED_CANDIDATE_CACHE_IDENTITY:
         raise DeploymentError("Release receipt references a different candidate bootstrap cache.")
     preflight = receipt.get("production_preflight")
@@ -1107,11 +1581,15 @@ def load_approved_release(receipt_path: Path, approved_sha256: str) -> tuple[dic
     ):
         raise DeploymentError("Release receipt has no matching successful production preflight.")
     shadow = Path(str(receipt.get("shadow_path", "")))
-    shadow = require_real_directory(shadow, within=RELEASE_ROOT)
+    shadow = require_real_directory(shadow, within=release_root)
+    if source_manifest(shadow) != EXPECTED_SOURCE_MANIFEST:
+        raise DeploymentError("Staged source differs from the approved CAS manifest.")
     require_regular_file(shadow / "composer.lock", CANDIDATE_LOCK_SHA256)
-    vendor = tree_manifest(shadow / "vendor")
-    if vendor != receipt.get("candidate_vendor_manifest"):
+    vendor_identity = require_candidate_vendor(shadow / "vendor")
+    if vendor_identity != receipt.get("candidate_vendor_identity"):
         raise DeploymentError("Staged vendor differs from the approved release receipt.")
+    if require_application_autoload(shadow) != receipt.get("application_autoload_identity"):
+        raise DeploymentError("Staged optimized autoload differs from its release receipt.")
     candidate_cache = receipt.get("candidate_cache_identity")
     if not isinstance(candidate_cache, dict):
         raise DeploymentError("Release receipt has no candidate bootstrap-cache identity.")
@@ -1211,6 +1689,7 @@ def install_static_gate(
 
 
 def restore_front_controller(state: dict[str, Any], state_path: Path) -> dict[str, Any]:
+    rollback_root = ensure_private_operations_root(ROLLBACK_ROOT, create=False)
     backup_value = state.get("front_controller_backup")
     backup_sha256 = state.get("front_controller_backup_sha256")
     metadata = state.get("front_controller_metadata")
@@ -1222,7 +1701,7 @@ def restore_front_controller(state: dict[str, Any], state_path: Path) -> dict[st
     state_directory = state_path.resolve(strict=True).parent
     expected_backup = state_directory / "public-index.before.php"
     if (
-        not is_relative_to(state_directory, ROLLBACK_ROOT.resolve(strict=True))
+        not is_relative_to(state_directory, rollback_root)
         or backup != expected_backup
     ):
         raise DeploymentError("Front-controller rollback backup is outside the state directory.")
@@ -1426,9 +1905,11 @@ def write_state(path: Path, state: dict[str, Any]) -> None:
 
 
 def validate_rollback_state_paths(state: dict[str, Any], state_path: Path) -> None:
+    rollback_root = ensure_private_operations_root(ROLLBACK_ROOT, create=False)
+    release_root = ensure_private_operations_root(RELEASE_ROOT, create=False)
     state_path = require_regular_file(state_path)
     state_directory = state_path.parent.resolve(strict=True)
-    if not is_relative_to(state_directory, ROLLBACK_ROOT.resolve(strict=True)):
+    if not is_relative_to(state_directory, rollback_root):
         raise DeploymentError("Rollback state directory is outside the fixed rollback root.")
     expected_files = {
         "old_lock_backup": state_directory / "composer.lock.before",
@@ -1441,7 +1922,7 @@ def validate_rollback_state_paths(state: dict[str, Any], state_path: Path) -> No
     cache_value = state.get("cache_backup")
     if not isinstance(cache_value, str):
         raise DeploymentError("Rollback state has no cache-backup path.")
-    cache_backup = require_real_directory(Path(cache_value), within=ROLLBACK_ROOT)
+    cache_backup = require_real_directory(Path(cache_value), within=rollback_root)
     if cache_backup != state_directory / "bootstrap-cache-before":
         raise DeploymentError("Rollback cache backup is outside the state directory.")
 
@@ -1450,17 +1931,19 @@ def validate_rollback_state_paths(state: dict[str, Any], state_path: Path) -> No
     if not isinstance(receipt_value, str) or not isinstance(receipt_sha256, str):
         raise DeploymentError("Rollback state has no approved release receipt.")
     receipt_path = require_regular_file(Path(receipt_value), receipt_sha256)
-    if not is_relative_to(receipt_path, RELEASE_ROOT.resolve(strict=True)):
+    if not is_relative_to(receipt_path, release_root):
         raise DeploymentError("Rollback release receipt is outside the fixed release root.")
     try:
         receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
     except json.JSONDecodeError as exception:
         raise DeploymentError("Rollback release receipt is invalid JSON.") from exception
-    if receipt.get("artifact") != "buy-dtf-laravel-remember-cookie-release-v1":
+    if receipt.get("artifact") != "buy-dtf-laravel-remember-cookie-release-v2":
         raise DeploymentError("Rollback release receipt has an unexpected artifact identity.")
+    if receipt.get("status") != "staged":
+        raise DeploymentError("Rollback release receipt is not a staged v2 release.")
     if receipt.get("handoff") != {"filename": HANDOFF_FILENAME, "sha256": HANDOFF_SHA256}:
         raise DeploymentError("Rollback release receipt references a different review handoff.")
-    shadow = require_real_directory(Path(str(receipt.get("shadow_path", ""))), within=RELEASE_ROOT)
+    shadow = require_real_directory(Path(str(receipt.get("shadow_path", ""))), within=release_root)
     if Path(str(state.get("staged_vendor", ""))).resolve(strict=True) != shadow / "vendor":
         raise DeploymentError("Rollback staged-vendor path differs from its release receipt.")
     if Path(str(state.get("staged_cache", ""))).resolve(strict=True) != shadow / "bootstrap/cache":
@@ -1469,6 +1952,57 @@ def validate_rollback_state_paths(state: dict[str, Any], state_path: Path) -> No
         raise DeploymentError("Rollback state was created by a different deployment script.")
     if state.get("runtime_helper_sha256") != RUNTIME_HELPER_SHA256:
         raise DeploymentError("Rollback state references a different runtime helper.")
+    if receipt.get("candidate_lock_sha256") != CANDIDATE_LOCK_SHA256:
+        raise DeploymentError("Rollback receipt references a different candidate lock.")
+    if receipt.get("approved_source_manifest") != EXPECTED_SOURCE_MANIFEST:
+        raise DeploymentError("Rollback receipt references a different source CAS.")
+    if (
+        receipt.get("shadow_source_manifest") != EXPECTED_SOURCE_MANIFEST
+        or receipt.get("shadow_source_manifest_after") != EXPECTED_SOURCE_MANIFEST
+    ):
+        raise DeploymentError("Rollback receipt lacks the initial and final shadow-source CAS.")
+    if receipt.get("retained_vendor_manifest") != EXPECTED_LIVE_VENDOR_MANIFEST:
+        raise DeploymentError("Rollback receipt references a different retained vendor.")
+    if receipt.get("candidate_vendor_manifest") != EXPECTED_CANDIDATE_VENDOR_MANIFEST:
+        raise DeploymentError("Rollback receipt references a different candidate manifest.")
+    if receipt.get("candidate_vendor_identity", {}).get("metadata_sha256") != (
+        EXPECTED_CANDIDATE_VENDOR_METADATA_SHA256
+    ):
+        raise DeploymentError("Rollback receipt references a different vendor metadata identity.")
+    if receipt.get("application_autoload_identity", {}).get("sha256") != (
+        EXPECTED_APPLICATION_AUTOLOAD_SHA256
+    ):
+        raise DeploymentError("Rollback receipt references a different autoload identity.")
+    if receipt.get("candidate_cache_identity") != EXPECTED_CANDIDATE_CACHE_IDENTITY:
+        raise DeploymentError("Rollback receipt references a different candidate cache.")
+    if receipt.get("retained_cache_identity") != EXPECTED_LIVE_CACHE_IDENTITY:
+        raise DeploymentError("Rollback receipt references a different retained cache.")
+    if receipt.get("maintenance_gate_sha256") != MAINTENANCE_GATE_SHA256:
+        raise DeploymentError("Rollback receipt references a different maintenance gate.")
+    if receipt.get("front_controller") != {
+        "sha256": EXPECTED_FRONT_CONTROLLER_SHA256,
+        "metadata": {
+            "kind": "file",
+            "mode": 0o644,
+            "uid": EXPECTED_APP_UID,
+            "gid": EXPECTED_APP_GID,
+        },
+    }:
+        raise DeploymentError("Rollback receipt references a different front controller.")
+    if state.get("candidate_vendor_identity") != receipt.get("candidate_vendor_identity"):
+        raise DeploymentError("Rollback state references a different candidate vendor identity.")
+    if state.get("application_autoload_identity") != receipt.get("application_autoload_identity"):
+        raise DeploymentError("Rollback state references a different application autoload identity.")
+    if state.get("candidate_vendor_sha256") != EXPECTED_CANDIDATE_VENDOR_MANIFEST["sha256"]:
+        raise DeploymentError("Rollback state references a different candidate vendor manifest.")
+    if state.get("candidate_cache_identity") != receipt.get("candidate_cache_identity"):
+        raise DeploymentError("Rollback state references a different candidate cache.")
+    if state.get("retained_cache_identity") != receipt.get("retained_cache_identity"):
+        raise DeploymentError("Rollback state references a different retained cache.")
+    if state.get("maintenance_gate_sha256") != MAINTENANCE_GATE_SHA256:
+        raise DeploymentError("Rollback state references a different maintenance gate.")
+    if state.get("front_controller_backup_sha256") != EXPECTED_FRONT_CONTROLLER_SHA256:
+        raise DeploymentError("Rollback state references a different front-controller backup.")
 
 
 def rollback_from_state(
@@ -1512,11 +2046,16 @@ def rollback_from_state(
             live_manifest == state["candidate_vendor_sha256"]
             and staged_manifest == EXPECTED_LIVE_VENDOR_MANIFEST_SHA256
         ):
+            if require_candidate_vendor(live_vendor) != state["candidate_vendor_identity"]:
+                raise DeploymentError("Rollback found candidate vendor metadata drift.")
             rename_exchange(live_vendor, staged_vendor)
-        elif not (
+        elif (
             live_manifest == EXPECTED_LIVE_VENDOR_MANIFEST_SHA256
             and staged_manifest == state["candidate_vendor_sha256"]
         ):
+            if require_candidate_vendor(staged_vendor) != state["candidate_vendor_identity"]:
+                raise DeploymentError("Rollback retained candidate vendor metadata drift.")
+        else:
             raise DeploymentError("Rollback cannot identify the retained old vendor safely.")
         inject("after_rollback_vendor")
 
@@ -1526,7 +2065,15 @@ def rollback_from_state(
         staged_cache_identity = cache_identity(staged_cache)
         old_cache_identity = state["retained_cache_identity"]
         candidate_cache_identity = state["candidate_cache_identity"]
-        if (
+        if candidate_cache_identity == old_cache_identity:
+            if (
+                live_cache_identity != old_cache_identity
+                or staged_cache_identity != candidate_cache_identity
+            ):
+                raise DeploymentError("Rollback found drift in identical bootstrap caches.")
+            state["rollback_cache_exchange_skipped_identical"] = True
+            write_state(state_path, state)
+        elif (
             live_cache_identity == candidate_cache_identity
             and staged_cache_identity == old_cache_identity
         ):
@@ -1608,10 +2155,9 @@ def cutover(
     validate_runtime_baseline(before_runtime, expected_versions=OLD_PACKAGE_VERSIONS)
     old_fpm_preflight = fpm_probe(OLD_PACKAGE_VERSIONS)
 
-    ROLLBACK_ROOT.mkdir(mode=0o700, parents=True, exist_ok=True)
-    os.chmod(ROLLBACK_ROOT, 0o700)
+    rollback_root = ensure_private_operations_root(ROLLBACK_ROOT, create=True)
     timestamp = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
-    rollback_directory = ROLLBACK_ROOT / f"{CANDIDATE_LOCK_SHA256[:12]}-{timestamp}"
+    rollback_directory = rollback_root / f"{CANDIDATE_LOCK_SHA256[:12]}-{timestamp}"
     rollback_directory.mkdir(mode=0o700)
     state_path = rollback_directory / "deployment-state.json"
     old_lock_backup = rollback_directory / "composer.lock.before"
@@ -1625,7 +2171,7 @@ def cutover(
     require_regular_file(front_controller_backup, EXPECTED_FRONT_CONTROLLER_SHA256)
 
     state: dict[str, Any] = {
-        "artifact": "buy-dtf-laravel-remember-cookie-cutover-v1",
+        "artifact": "buy-dtf-laravel-remember-cookie-cutover-v2",
         "handoff": {"filename": HANDOFF_FILENAME, "sha256": HANDOFF_SHA256},
         "status": "preparing",
         "started_at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
@@ -1636,6 +2182,8 @@ def cutover(
         "staged_vendor": str(shadow / "vendor"),
         "staged_cache": str(shadow / "bootstrap/cache"),
         "candidate_vendor_sha256": receipt["candidate_vendor_manifest"]["sha256"],
+        "candidate_vendor_identity": receipt["candidate_vendor_identity"],
+        "application_autoload_identity": receipt["application_autoload_identity"],
         "candidate_cache_identity": receipt["candidate_cache_identity"],
         "retained_cache_identity": receipt["retained_cache_identity"],
         "old_lock_backup": str(old_lock_backup),
@@ -1655,6 +2203,9 @@ def cutover(
         "vendor_exchange_complete": False,
         "cache_exchange_intent": False,
         "cache_exchange_complete": False,
+        "cache_exchange_required": (
+            receipt["candidate_cache_identity"] != receipt["retained_cache_identity"]
+        ),
         "lock_replaced": False,
         "rollback_started": False,
         "rollback_complete": False,
@@ -1700,7 +2251,7 @@ def cutover(
         staged_vendor = shadow / "vendor"
         live_cache = APP_ROOT / "bootstrap/cache"
         staged_cache = shadow / "bootstrap/cache"
-        if tree_manifest(staged_vendor) != receipt["candidate_vendor_manifest"]:
+        if require_candidate_vendor(staged_vendor) != receipt["candidate_vendor_identity"]:
             raise DeploymentError("Staged vendor changed during the maintenance drain.")
         require_candidate_cache(staged_cache, receipt["candidate_cache_identity"])
         devices = {
@@ -1719,16 +2270,26 @@ def cutover(
         write_state(state_path, state)
         inject("after_vendor_exchange")
 
-        state["cache_exchange_intent"] = True
-        write_state(state_path, state)
-        rename_exchange(live_cache, staged_cache)
-        state["cache_exchange_complete"] = True
-        state["status"] = "cache_exchanged"
-        write_state(state_path, state)
+        if receipt["candidate_cache_identity"] == receipt["retained_cache_identity"]:
+            require_cache_identity(live_cache, receipt["retained_cache_identity"])
+            require_cache_identity(staged_cache, receipt["candidate_cache_identity"])
+            state["cache_exchange_complete"] = True
+            state["cache_exchange_skipped_identical"] = True
+            state["status"] = "cache_identity_reused"
+            write_state(state_path, state)
+        else:
+            state["cache_exchange_intent"] = True
+            write_state(state_path, state)
+            rename_exchange(live_cache, staged_cache)
+            state["cache_exchange_complete"] = True
+            state["status"] = "cache_exchanged"
+            write_state(state_path, state)
         inject("after_cache_exchange")
 
-        if tree_manifest(live_vendor) != receipt["candidate_vendor_manifest"]:
+        if require_candidate_vendor(live_vendor) != receipt["candidate_vendor_identity"]:
             raise DeploymentError("Live candidate vendor differs from its approved manifest.")
+        if require_application_autoload(APP_ROOT) != receipt["application_autoload_identity"]:
+            raise DeploymentError("Live optimized autoload differs from its approved identity.")
         if tree_manifest(staged_vendor)["sha256"] != EXPECTED_LIVE_VENDOR_MANIFEST_SHA256:
             raise DeploymentError("Retained old vendor differs after atomic exchange.")
         require_cache_identity(live_cache, receipt["candidate_cache_identity"])
@@ -1787,7 +2348,12 @@ def cutover(
         state["status"] = "success"
         state["completed_at_utc"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
         state["rollback_retained_vendor_path"] = str(staged_vendor)
-        state["rollback_retained_cache_path"] = str(staged_cache)
+        if state.get("cache_exchange_skipped_identical") is True:
+            state["rollback_retained_cache_path"] = str(live_cache)
+            state["candidate_cache_duplicate_path"] = str(staged_cache)
+        else:
+            state["rollback_retained_cache_path"] = str(staged_cache)
+            state["active_candidate_cache_path"] = str(live_cache)
         write_state(state_path, state)
         print(f"Dependency cutover complete. State/receipt: {state_path}")
         return state_path
@@ -1805,14 +2371,15 @@ def cutover(
 def recover(state_path: Path, approval_token: str, helper: Path) -> None:
     if approval_token != RECOVERY_APPROVAL_TOKEN:
         raise DeploymentError("The exact reviewed recovery approval token was not supplied.")
+    rollback_root = ensure_private_operations_root(ROLLBACK_ROOT, create=False)
     state_path = require_regular_file(state_path)
-    if not is_relative_to(state_path, ROLLBACK_ROOT.resolve(strict=True)):
+    if not is_relative_to(state_path, rollback_root):
         raise DeploymentError("Recovery state is outside the fixed rollback root.")
     try:
         state = json.loads(state_path.read_text(encoding="utf-8"))
     except json.JSONDecodeError as exception:
         raise DeploymentError("Recovery state is invalid JSON.") from exception
-    if state.get("artifact") != "buy-dtf-laravel-remember-cookie-cutover-v1":
+    if state.get("artifact") != "buy-dtf-laravel-remember-cookie-cutover-v2":
         raise DeploymentError("Recovery state has an unexpected artifact identity.")
     if state.get("handoff") != {"filename": HANDOFF_FILENAME, "sha256": HANDOFF_SHA256}:
         raise DeploymentError("Recovery state references a different review handoff.")
@@ -1842,7 +2409,7 @@ def rehearse(parent: Path) -> dict[str, Any]:
         tempfile.mkdtemp(prefix="buy-dtf-laravel-remember-cookie-rehearsal-", dir=parent)
     )
     results: dict[str, Any] = {
-        "artifact": "buy-dtf-laravel-remember-cookie-atomic-exchange-rehearsal-v1",
+        "artifact": "buy-dtf-laravel-remember-cookie-atomic-exchange-rehearsal-v2",
         "artifact_review_status": ARTIFACT_REVIEW_STATUS,
         "handoff": {"filename": HANDOFF_FILENAME, "sha256": HANDOFF_SHA256},
         "script_sha256": sha256_file(Path(__file__).resolve()),
@@ -1850,6 +2417,11 @@ def rehearse(parent: Path) -> dict[str, Any]:
         "candidate_lock_sha256": CANDIDATE_LOCK_SHA256,
         "retained_vendor_manifest": EXPECTED_LIVE_VENDOR_MANIFEST,
         "candidate_vendor_manifest": EXPECTED_CANDIDATE_VENDOR_MANIFEST,
+        "candidate_vendor_metadata_sha256": EXPECTED_CANDIDATE_VENDOR_METADATA_SHA256,
+        "candidate_vendor_executable_allowlist_sha256": (
+            CANDIDATE_VENDOR_EXECUTABLE_ALLOWLIST_SHA256
+        ),
+        "application_autoload_sha256": EXPECTED_APPLICATION_AUTOLOAD_SHA256,
         "retained_cache_identity": EXPECTED_LIVE_CACHE_IDENTITY,
         "candidate_cache_identity": EXPECTED_CANDIDATE_CACHE_IDENTITY,
         "maintenance_gate_sha256": MAINTENANCE_GATE_SHA256,
@@ -1860,7 +2432,12 @@ def rehearse(parent: Path) -> dict[str, Any]:
     }
 
     try:
-        def fixture(name: str, *, unbootable: bool = False) -> dict[str, Any]:
+        def fixture(
+            name: str,
+            *,
+            unbootable: bool = False,
+            stale_live_cache: bool = False,
+        ) -> dict[str, Any]:
             root = rehearsal_root / name
             application = root / "application"
             release = root / "release"
@@ -1882,12 +2459,17 @@ def rehearse(parent: Path) -> dict[str, Any]:
 
             (live_vendor / "identity.txt").write_text("retained-old-vendor\n", encoding="utf-8")
             (staged_vendor / "identity.txt").write_text("approved-new-vendor\n", encoding="utf-8")
+            live_provider = (
+                "Laravel\\\\Pail\\\\PailServiceProvider"
+                if stale_live_cache
+                else "production-provider"
+            )
             (live_cache / "packages.php").write_text(
-                "<?php return ['Laravel\\\\Pail\\\\PailServiceProvider'];\n",
+                f"<?php return ['{live_provider}'];\n",
                 encoding="utf-8",
             )
             (live_cache / "services.php").write_text(
-                "<?php return ['providers' => ['Laravel\\\\Pail\\\\PailServiceProvider']];\n",
+                f"<?php return ['providers' => ['{live_provider}']];\n",
                 encoding="utf-8",
             )
             (staged_cache / "packages.php").write_text(
@@ -1918,10 +2500,13 @@ def rehearse(parent: Path) -> dict[str, Any]:
                 "staged_vendor": staged_vendor,
                 "old_vendor_sha256": tree_manifest(live_vendor)["sha256"],
                 "candidate_vendor_sha256": tree_manifest(staged_vendor)["sha256"],
+                "candidate_vendor_identity": tree_metadata_identity(staged_vendor),
                 "live_cache": live_cache,
                 "staged_cache": staged_cache,
                 "old_cache_identity": cache_identity(live_cache),
                 "candidate_cache_identity": cache_identity(staged_cache),
+                "live_cache_inode": (live_cache.stat().st_dev, live_cache.stat().st_ino),
+                "staged_cache_inode": (staged_cache.stat().st_dev, staged_cache.stat().st_ino),
                 "live_lock": live_lock,
                 "candidate_lock": candidate_lock,
                 "old_lock_backup": old_lock_backup,
@@ -1976,17 +2561,29 @@ def rehearse(parent: Path) -> dict[str, Any]:
                 live_hash == item["candidate_vendor_sha256"]
                 and staged_hash == item["old_vendor_sha256"]
             ):
+                if tree_metadata_identity(item["live_vendor"]) != item["candidate_vendor_identity"]:
+                    raise DeploymentError("Rehearsal candidate vendor metadata drifted.")
                 rename_exchange(item["live_vendor"], item["staged_vendor"])
-            elif not (
+            elif (
                 live_hash == item["old_vendor_sha256"]
                 and staged_hash == item["candidate_vendor_sha256"]
             ):
+                if tree_metadata_identity(item["staged_vendor"]) != item["candidate_vendor_identity"]:
+                    raise DeploymentError("Rehearsal retained candidate metadata drifted.")
+            else:
                 raise DeploymentError("Rehearsal recovery found unknown vendor identities.")
 
         def restore_cache_pair(item: dict[str, Any]) -> None:
             live_identity = cache_identity(item["live_cache"])
             staged_identity = cache_identity(item["staged_cache"])
-            if (
+            if item["candidate_cache_identity"] == item["old_cache_identity"]:
+                if (
+                    live_identity != item["old_cache_identity"]
+                    or staged_identity != item["candidate_cache_identity"]
+                ):
+                    raise DeploymentError("Rehearsal identical cache identities drifted.")
+                item["events"].append("identical_cache_exchange_skipped")
+            elif (
                 live_identity == item["candidate_cache_identity"]
                 and staged_identity == item["old_cache_identity"]
             ):
@@ -2017,7 +2614,7 @@ def rehearse(parent: Path) -> dict[str, Any]:
             item["candidate_boot_attempts"] += 1
             if item["unbootable"]:
                 raise DeploymentError("modeled candidate Laravel runtime is completely unbootable")
-            if tree_manifest(item["live_vendor"])["sha256"] != item["candidate_vendor_sha256"]:
+            if tree_metadata_identity(item["live_vendor"]) != item["candidate_vendor_identity"]:
                 raise DeploymentError("Modeled candidate boot found the wrong vendor.")
             require_cache_identity(item["live_cache"], item["candidate_cache_identity"])
             for name in REQUIRED_CANDIDATE_CACHE_FILES:
@@ -2070,7 +2667,10 @@ def rehearse(parent: Path) -> dict[str, Any]:
                 checkpoint(item, "after_gate_install", failure_at, interruption=interruption)
                 rename_exchange(item["live_vendor"], item["staged_vendor"])
                 checkpoint(item, "after_vendor_exchange", failure_at, interruption=interruption)
-                rename_exchange(item["live_cache"], item["staged_cache"])
+                if item["candidate_cache_identity"] != item["old_cache_identity"]:
+                    rename_exchange(item["live_cache"], item["staged_cache"])
+                else:
+                    item["events"].append("identical_cache_exchange_skipped")
                 checkpoint(item, "after_cache_exchange", failure_at, interruption=interruption)
                 atomic_copy(item["candidate_lock"], item["live_lock"])
                 checkpoint(item, "after_lock_replacement", failure_at, interruption=interruption)
@@ -2098,10 +2698,13 @@ def rehearse(parent: Path) -> dict[str, Any]:
         def prepare_unbootable_candidate_state(item: dict[str, Any]) -> None:
             install_modeled_gate(item, "gate_installed")
             rename_exchange(item["live_vendor"], item["staged_vendor"])
-            rename_exchange(item["live_cache"], item["staged_cache"])
+            if item["candidate_cache_identity"] != item["old_cache_identity"]:
+                rename_exchange(item["live_cache"], item["staged_cache"])
+            else:
+                item["events"].append("identical_cache_exchange_skipped")
             atomic_copy(item["candidate_lock"], item["live_lock"])
 
-        item = fixture("stale-dev-provider-success")
+        item = fixture("stale-dev-provider-success", stale_live_cache=True)
         if b"Pail" not in (item["live_cache"] / "packages.php").read_bytes():
             raise DeploymentError("Stale-provider rehearsal fixture is invalid.")
         if execute_cutover(item) is not None:
@@ -2166,6 +2769,42 @@ def rehearse(parent: Path) -> dict[str, Any]:
             verify_restored(item)
             results["scenarios"][f"recovery_interruption_{transition}"] = "pass"
 
+        item = fixture("identical-cache-idempotence", unbootable=True)
+        original_cache_inodes = (
+            (item["live_cache"].stat().st_dev, item["live_cache"].stat().st_ino),
+            (item["staged_cache"].stat().st_dev, item["staged_cache"].stat().st_ino),
+        )
+        prepare_unbootable_candidate_state(item)
+        recover_fixture(item)
+        recover_fixture(item)
+        recovered_cache_inodes = (
+            (item["live_cache"].stat().st_dev, item["live_cache"].stat().st_ino),
+            (item["staged_cache"].stat().st_dev, item["staged_cache"].stat().st_ino),
+        )
+        if recovered_cache_inodes != original_cache_inodes:
+            raise DeploymentError("Repeated recovery moved identical bootstrap caches.")
+        verify_restored(item)
+        results["scenarios"]["identical_cache_recovery_is_idempotent"] = "pass"
+
+        if os.geteuid() != 0:
+            raise DeploymentError("Metadata-drift rehearsal requires root on a safe local tree.")
+        item = fixture("candidate-owner-drift", unbootable=True)
+        prepare_unbootable_candidate_state(item)
+        candidate_tree_before = tree_manifest(item["live_vendor"])
+        os.chown(item["live_vendor"] / "identity.txt", 33, 33)
+        if tree_manifest(item["live_vendor"]) != candidate_tree_before:
+            raise DeploymentError("Ownership-only rehearsal unexpectedly changed legacy manifest.")
+        try:
+            recover_fixture(item)
+        except DeploymentError as exception:
+            if "metadata drifted" not in str(exception):
+                raise
+        else:
+            raise DeploymentError("Recovery accepted candidate ownership drift.")
+        if sha256_file(item["front_controller"]) != MAINTENANCE_GATE_SHA256:
+            raise DeploymentError("Metadata-drift refusal did not retain the static gate.")
+        results["scenarios"]["candidate_owner_drift_fails_closed"] = "pass"
+
         item = fixture("stale-gate-state")
         item["events"].append("persisted_gate_active_but_public")
         recover_fixture(item)
@@ -2197,7 +2836,7 @@ def describe() -> None:
     print(
         json.dumps(
             {
-                "artifact": "buy-dtf-laravel-remember-cookie-dependency-review-v1",
+                "artifact": "buy-dtf-laravel-remember-cookie-dependency-review-v2",
                 "artifact_review_status": ARTIFACT_REVIEW_STATUS,
                 "handoff": {"filename": HANDOFF_FILENAME, "sha256": HANDOFF_SHA256},
                 "application_root": str(APP_ROOT),
@@ -2210,6 +2849,15 @@ def describe() -> None:
                 "old_lock_sha256": EXPECTED_LIVE_LOCK_SHA256,
                 "candidate_lock_sha256": CANDIDATE_LOCK_SHA256,
                 "candidate_vendor_manifest": EXPECTED_CANDIDATE_VENDOR_MANIFEST,
+                "candidate_vendor_metadata_sha256": EXPECTED_CANDIDATE_VENDOR_METADATA_SHA256,
+                "candidate_vendor_executable_paths": list(
+                    CANDIDATE_VENDOR_EXECUTABLE_PATHS
+                ),
+                "candidate_vendor_executable_allowlist_sha256": (
+                    CANDIDATE_VENDOR_EXECUTABLE_ALLOWLIST_SHA256
+                ),
+                "application_autoload_entries": EXPECTED_APPLICATION_AUTOLOAD_ENTRIES,
+                "application_autoload_sha256": EXPECTED_APPLICATION_AUTOLOAD_SHA256,
                 "candidate_cache_identity": EXPECTED_CANDIDATE_CACHE_IDENTITY,
                 "database_config_sha256": EXPECTED_DATABASE_CONFIG_SHA256,
                 "front_controller_sha256": EXPECTED_FRONT_CONTROLLER_SHA256,
@@ -2217,9 +2865,19 @@ def describe() -> None:
                 "old_package_versions": OLD_PACKAGE_VERSIONS,
                 "candidate_package_versions": NEW_PACKAGE_VERSIONS,
                 "atomic_vendor_operation": "renameat2(RENAME_EXCHANGE)",
-                "atomic_cache_operation": "renameat2(RENAME_EXCHANGE)",
+                "cache_exchange_required": (
+                    EXPECTED_CANDIDATE_CACHE_IDENTITY != EXPECTED_LIVE_CACHE_IDENTITY
+                ),
+                "atomic_cache_operation": (
+                    "renameat2(RENAME_EXCHANGE) when identities differ; "
+                    "skipped for the frozen identical identities"
+                ),
                 "static_maintenance_gate_sha256": MAINTENANCE_GATE_SHA256,
                 "candidate_install_no_dev": True,
+                "composer_bin_compat": "proxy",
+                "expected_route_count": EXPECTED_ROUTE_COUNT,
+                "release_root": str(RELEASE_ROOT),
+                "rollback_root": str(ROLLBACK_ROOT),
                 "read_only_preflight_available": True,
                 "reported_app_environment": EXPECTED_APP_ENVIRONMENT,
                 "reported_app_debug": EXPECTED_APP_DEBUG,

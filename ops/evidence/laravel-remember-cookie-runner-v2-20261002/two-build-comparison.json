@@ -1,0 +1,56 @@
+{
+  "artifact": "buy-dtf-laravel-remember-cookie-two-build-comparison-v2",
+  "builder_sha256": "8331e5bb8bf83341fc2b46cbc78688177a6e176599bed3cce4c1440045a9ab8b",
+  "complete_inventories_byte_identical": true,
+  "complete_inventory_sha256": "c646726893e4d74b42343218f891409e925541d9bf8ab0563ff98a9c998b8fd5",
+  "environments": {
+    "build-a": {
+      "extraction": "system-unzip",
+      "unzip_path": "/usr/bin/unzip"
+    },
+    "build-b": {
+      "extraction": "php-zip-only",
+      "unzip_path": null
+    }
+  },
+  "equal_receipt_fields": [
+    "source_manifest_before",
+    "source_manifest_after",
+    "shadow_source_manifest",
+    "shadow_source_manifest_after",
+    "composer_json_sha256",
+    "composer_lock_sha256",
+    "composer_bin_compat",
+    "php_version",
+    "php_sha256",
+    "composer_version",
+    "composer_sha256",
+    "handoff",
+    "package_versions",
+    "route_count",
+    "application_autoload_identity",
+    "vendor_identity",
+    "vendor_inventory",
+    "cache_identity",
+    "laravel_pail_present"
+  ],
+  "executable_allowlist_sha256": "551df886bc842a49ea87d8d9bb0cfe3478e3cc5eeea841c83409e8349d120154",
+  "runner_sha256": "a7657bbfea760be186301503c567042f76739c2954fffbfc76f31c9f4eefede5",
+  "status": "pass",
+  "structure": {
+    "bytes": 26481661,
+    "directories_excluding_root": 925,
+    "entries_including_root": 7386,
+    "executable_files": 10,
+    "files": 6460,
+    "ordinary_files": 6450
+  },
+  "vendor_manifest": {
+    "bytes": 26481661,
+    "directories": 925,
+    "files": 6460,
+    "sha256": "7df0a101ceb0386b72ec4cfc71f2be8576fc5a5d4b777d11c05e5b7f1ed770d8"
+  },
+  "vendor_metadata_sha256": "db8aba0a4f49d0cecaeaac0b5b742c5f94b1a514a8d4452c361cb61e2dbacf0d",
+  "verifier_sha256": "1e99628adcd823db2136d0e98de4d0a0718515a959ab543bc646b9851e08a37f"
+}
