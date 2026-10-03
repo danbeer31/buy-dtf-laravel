@@ -73,7 +73,7 @@
   "composer_sha256": "3b3f9503a2d46590170e45edd29734197e797cea545b396d0b2823cac8ef4643",
   "exit_code": 0,
   "ini_sha256": "7c54db08eb1e2e3eace1d9dc8cb1c5308960d656339898acfeac4260f6725403",
-  "installed_candidate_project": "\\\\wsl.localhost\\Ubuntu\\tmp\\buydtf-remember-v4-build-a\\shadow",
+  "installed_candidate_project": "\\\\wsl.localhost\\Ubuntu\\tmp\\buy-dtf-v4-emergency-build-validation-20261003T185431Z\\build-a\\shadow",
   "modules_sha256": "9cfcb4a1e707f0f19d517dd83eaadd844a19dbea47cbf50835c7f51730438486",
   "native_extensions": [
     "curl",
@@ -93,13 +93,13 @@
   "php_executable_sha256": "132075655257b1558c5d896dce117081bc068c90c50dfc5fd9c24c93dbc4312a",
   "php_thread_safety": false,
   "php_version": "8.2.30",
-  "runner_sha256": "e2d735c9c9c86c8bd38be3085b3372a2d2079ada9866d87487e8aa486dfc79f0",
+  "runner_sha256": "464bd6a28c8bed84c90176d42bc88d22eea5977c2698d5cddb7fe3eca50f9558",
   "source_manifest": {
     "files": 326,
     "sha256": "3909bdc2303b5c578135859c847f311cd84b827e62ac4e5dbce3d2297f6da71f"
   },
   "status": "pass",
-  "stderr_sha256": "63871553cd792a777ff916c8d57fb5c503e5c62403caaa30ef73b27fe1f53897",
+  "stderr_sha256": "a861c3978fe99f4a03f43c510d094966b975c61fb29688c176542af5180ce0bc",
   "stdout_sha256": "f62d09fb6290ee219b3b9379541f2c2f7267a93b850d3b8e4aa449b416c343be",
   "vendor_identity": {
     "directory_mode": 509,

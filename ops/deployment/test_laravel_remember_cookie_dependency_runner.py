@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from contextlib import redirect_stdout
+from dataclasses import replace
 import hashlib
 import importlib.util
 import inspect
@@ -33,7 +34,7 @@ class LaravelRememberCookieDependencyRunnerTest(unittest.TestCase):
 
     def test_v4_candidate_identity_is_fully_pinned(self) -> None:
         self.assertEqual(
-            "8ee888883bf2330c7a5c7d70efe48244122b600067ba030976a53cbe0009e4c1",
+            "6539058cf602fc23b03552665faf9a32c6975e29e6cb11fb5b2deb2c7e02afa9",
             RUNNER.HANDOFF_SHA256,
         )
         self.assertEqual(
@@ -102,7 +103,7 @@ class LaravelRememberCookieDependencyRunnerTest(unittest.TestCase):
                 raise RUNNER.DeploymentError("injected nginx capture failure")
 
             with patch.object(RUNNER, "require_gate_helper"), patch.object(
-                RUNNER, "gate_context", return_value=object()
+                RUNNER, "post_mutation_emergency_gate_context", return_value=object()
             ) as gate_context_mock, patch.object(
                 RUNNER.dependency_gate,
                 "establish_rollback_containment",
@@ -119,11 +120,7 @@ class LaravelRememberCookieDependencyRunnerTest(unittest.TestCase):
                 )
 
             self.assertEqual(["gate", "nginx"], order)
-            gate_context_mock.assert_called_once_with(
-                state,
-                state_path,
-                allow_frozen_policy_for_exact_existing_gate=True,
-            )
+            gate_context_mock.assert_called_once_with(state, state_path)
             self.assertEqual(
                 "unavailable_fail_closed",
                 result["nginx_route_verification"]["status"],
@@ -152,7 +149,7 @@ class LaravelRememberCookieDependencyRunnerTest(unittest.TestCase):
                 raise RUNNER.DeploymentError("injected nginx capture failure")
 
             with patch.object(RUNNER, "require_gate_helper"), patch.object(
-                RUNNER, "gate_context", return_value=object()
+                RUNNER, "post_mutation_emergency_gate_context", return_value=object()
             ) as gate_context_mock, patch.object(
                 RUNNER.dependency_gate,
                 "retain_static_gate_exact",
@@ -169,11 +166,7 @@ class LaravelRememberCookieDependencyRunnerTest(unittest.TestCase):
                 )
 
             self.assertEqual(["gate", "nginx"], order)
-            gate_context_mock.assert_called_once_with(
-                state,
-                state_path,
-                allow_frozen_policy_for_exact_existing_gate=True,
-            )
+            gate_context_mock.assert_called_once_with(state, state_path)
             self.assertEqual("rollback_failed_static_gate_retained", state["status"])
             containment = state["rollback_failure_containment"]
             self.assertEqual(
@@ -227,13 +220,6 @@ class LaravelRememberCookieDependencyRunnerTest(unittest.TestCase):
                 "uid": front_controller.stat().st_uid,
                 "gid": front_controller.stat().st_gid,
             }
-            def timed_out_fpm_probe():
-                RUNNER.run(
-                    ["/usr/bin/cgi-fcgi", "-bind", "-connect", "/tmp/fpm.sock"],
-                    cwd=root,
-                    timeout=1,
-                )
-
             with patch.object(RUNNER, "FRONT_CONTROLLER", front_controller), patch.object(
                 RUNNER,
                 "MAINTENANCE_GATE_SHA256",
@@ -241,11 +227,7 @@ class LaravelRememberCookieDependencyRunnerTest(unittest.TestCase):
             ), patch.object(
                 RUNNER,
                 "probe_fpm_opcache",
-                side_effect=timed_out_fpm_probe,
-            ), patch.object(
-                RUNNER.subprocess,
-                "run",
-                side_effect=RUNNER.subprocess.TimeoutExpired("cgi-fcgi", 1),
+                side_effect=RUNNER.FpmProbeUnavailable("FPM unavailable"),
             ), patch.object(
                 RUNNER.dependency_gate,
                 "reviewed_front_controller_metadata",
@@ -263,7 +245,7 @@ class LaravelRememberCookieDependencyRunnerTest(unittest.TestCase):
                 )
                 front_controller.write_bytes(original)
                 os.chmod(front_controller, 0o644)
-                with self.assertRaisesRegex(RUNNER.DeploymentError, "Command execution failed"):
+                with self.assertRaisesRegex(RUNNER.FpmProbeUnavailable, "FPM unavailable"):
                     RUNNER.gate_context(
                         state,
                         state_path,
@@ -271,7 +253,7 @@ class LaravelRememberCookieDependencyRunnerTest(unittest.TestCase):
                     )
                 front_controller.write_bytes(b"<?php echo 'unknown';\n")
                 os.chmod(front_controller, 0o644)
-                with self.assertRaisesRegex(RUNNER.DeploymentError, "Command execution failed"):
+                with self.assertRaisesRegex(RUNNER.FpmProbeUnavailable, "FPM unavailable"):
                     RUNNER.gate_context(
                         state,
                         state_path,
@@ -456,44 +438,296 @@ class LaravelRememberCookieDependencyRunnerTest(unittest.TestCase):
             with self.assertRaisesRegex(RUNNER.DeploymentError, "Invalid HTTP status"):
                 RUNNER.http_status("https://buy-dtf.com/")
 
-    def test_post_mutation_unsafe_gate_install_records_durable_manual_stop(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="buy-dtf-containment-stop-") as directory:
+    def test_post_mutation_fpm_timeout_with_original_uses_frozen_context(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="buy-dtf-emergency-original-") as directory:
             root = Path(directory)
+            application = root / "application"
+            public = application / "public"
+            public.mkdir(parents=True)
+            front_controller = public / "index.php"
+            original = b"<?php echo 'original';\n"
+            front_controller.write_bytes(original)
+            os.chmod(front_controller, 0o644)
+            backup = root / "public-index.before.php"
+            backup.write_bytes(original)
+            os.chmod(backup, 0o600)
             state_path = root / "deployment-state.json"
-            state: dict[str, object] = {"dependency_mutation_started": True}
-            original_identity = {
-                "path": str(root / "index.php"),
-                "sha256": RUNNER.EXPECTED_FRONT_CONTROLLER_SHA256,
-                "bytes": 100,
-                "metadata": RUNNER.dependency_gate.reviewed_front_controller_metadata(),
+            state = {
+                **RUNNER.dependency_gate.initial_gate_state(),
+                "front_controller_backup": str(backup),
+                "front_controller_backup_sha256": hashlib.sha256(original).hexdigest(),
+                "release_receipt_sha256": "a" * 64,
+                "fpm_opcache": self.valid_fpm_opcache_envelope(),
+                "dependency_mutation_started": False,
             }
+            RUNNER.write_state(state_path, state)
             with patch.object(
                 RUNNER,
-                "establish_rollback_gate",
-                side_effect=RUNNER.DeploymentError(
-                    "PHP-FPM OPcache settings cannot guarantee revalidation"
-                ),
+                "probe_fpm_opcache",
+                return_value=state["fpm_opcache"],
+            ):
+                RUNNER.record_fpm_opcache_before_mutation(state, state_path)
+            state["dependency_mutation_started"] = True
+            RUNNER.write_state(state_path, state)
+            metadata = {
+                "kind": "file",
+                "mode": 0o644,
+                "uid": front_controller.stat().st_uid,
+                "gid": front_controller.stat().st_gid,
+            }
+            with patch.object(RUNNER, "APP_ROOT", application), patch.object(
+                RUNNER, "FRONT_CONTROLLER", front_controller
+            ), patch.object(
+                RUNNER,
+                "EXPECTED_FRONT_CONTROLLER_SHA256",
+                hashlib.sha256(original).hexdigest(),
+            ), patch.object(
+                RUNNER,
+                "probe_fpm_opcache",
+                side_effect=RUNNER.FpmProbeUnavailable("timed out"),
+            ) as probe, patch.object(
+                RUNNER.dependency_gate,
+                "reviewed_front_controller_metadata",
+                return_value=metadata,
+            ):
+                context = RUNNER.post_mutation_emergency_gate_context(state, state_path)
+            probe.assert_called_once_with()
+            self.assertEqual(state["fpm_opcache"]["policy"], context.opcache_policy)
+            self.assertEqual(
+                "exact_original_gate_install_with_frozen_policy",
+                state["post_mutation_emergency_fpm_fallbacks"][0]["status"],
+            )
+
+    def test_post_mutation_timeout_installs_gate_then_automatically_invokes_rollback(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="buy-dtf-emergency-install-") as directory:
+            root = Path(directory)
+            application = root / "application"
+            public = application / "public"
+            public.mkdir(parents=True)
+            front_controller = public / "index.php"
+            original = b"<?php echo 'original';\n"
+            front_controller.write_bytes(original)
+            os.chmod(front_controller, 0o644)
+            backup = root / "public-index.before.php"
+            backup.write_bytes(original)
+            os.chmod(backup, 0o600)
+            state_path = root / "deployment-state.json"
+            state: dict[str, object] = {
+                **RUNNER.dependency_gate.initial_gate_state(),
+                "front_controller_backup": str(backup),
+                "front_controller_backup_sha256": hashlib.sha256(original).hexdigest(),
+                "release_receipt_sha256": "c" * 64,
+                "fpm_opcache": self.valid_fpm_opcache_envelope(),
+                "dependency_mutation_started": False,
+            }
+            RUNNER.write_state(state_path, state)
+            with patch.object(
+                RUNNER,
+                "probe_fpm_opcache",
+                return_value=state["fpm_opcache"],
+            ):
+                RUNNER.record_fpm_opcache_before_mutation(state, state_path)
+            state["dependency_mutation_started"] = True
+            RUNNER.write_state(state_path, state)
+
+            metadata = {
+                "kind": "file",
+                "mode": 0o644,
+                "uid": front_controller.stat().st_uid,
+                "gid": front_controller.stat().st_gid,
+            }
+            probe_sequence = iter(("origin-1", "origin-2", "public-1"))
+
+            class FakeClock:
+                def __init__(self) -> None:
+                    self.nanoseconds = 30_000_000_000
+                    self.wall_epoch = 1_700_000_000.0
+
+                def monotonic_ns(self) -> int:
+                    return self.nanoseconds
+
+                def wall_clock(self) -> float:
+                    return self.wall_epoch + (
+                        self.nanoseconds - 30_000_000_000
+                    ) / 1_000_000_000
+
+                def sleep(self, seconds: float) -> None:
+                    self.nanoseconds += round(seconds * 1_000_000_000)
+
+            clock = FakeClock()
+            build_context = RUNNER._gate_context_from_frozen_envelope
+
+            def deterministic_context(*args, **kwargs):
+                return replace(
+                    build_context(*args, **kwargs),
+                    sleep=clock.sleep,
+                    monotonic_ns=clock.monotonic_ns,
+                    wall_clock=clock.wall_clock,
+                )
+
+            def successful_probe(route: str) -> dict[str, object]:
+                nonce = next(probe_sequence)
+                return {
+                    "route": route,
+                    "status": 503,
+                    "header_verified": True,
+                    "sentinel_verified": True,
+                    "cache_buster_verified": True,
+                    "route_identity_verified": True,
+                    "cache_buster_sha256": hashlib.sha256(
+                        nonce.encode("utf-8")
+                    ).hexdigest(),
+                    "request_url_sha256": hashlib.sha256(
+                        f"url-{nonce}".encode("utf-8")
+                    ).hexdigest(),
+                }
+
+            with patch.object(RUNNER, "APP_ROOT", application), patch.object(
+                RUNNER,
+                "FRONT_CONTROLLER",
+                front_controller,
+            ), patch.object(
+                RUNNER,
+                "EXPECTED_FRONT_CONTROLLER_SHA256",
+                hashlib.sha256(original).hexdigest(),
+            ), patch.multiple(
+                RUNNER.dependency_gate,
+                EXPECTED_APP_UID=os.getuid(),
+                EXPECTED_APP_GID=os.getgid(),
             ), patch.object(
                 RUNNER.dependency_gate,
-                "file_identity",
-                return_value=original_identity,
-            ):
-                with self.assertRaisesRegex(RUNNER.DeploymentError, "durable state"):
-                    RUNNER.contain_cutover_failure(
-                        state,
-                        state_path,
-                        RUNNER.DeploymentError("candidate failure"),
-                    )
-            persisted = json.loads(state_path.read_text(encoding="utf-8"))
+                "reviewed_front_controller_metadata",
+                return_value=metadata,
+            ), patch.object(
+                RUNNER,
+                "probe_fpm_opcache",
+                side_effect=RUNNER.FpmProbeUnavailable("timed out after mutation"),
+            ), patch.object(
+                RUNNER,
+                "_gate_context_from_frozen_envelope",
+                side_effect=deterministic_context,
+            ), patch.object(
+                RUNNER,
+                "_gate_origin_probe",
+                side_effect=lambda _directory, _operation, _ordinal: successful_probe(
+                    RUNNER.dependency_gate.ORIGIN_ROUTE
+                ),
+            ), patch.object(
+                RUNNER,
+                "_gate_public_probe",
+                side_effect=lambda _directory, _operation: successful_probe(
+                    RUNNER.dependency_gate.PUBLIC_ROUTE
+                ),
+            ), patch.object(
+                RUNNER,
+                "record_emergency_nginx_verification",
+                return_value={"status": "pass", "route_verified": True},
+            ), patch.object(
+                RUNNER,
+                "rollback_from_state",
+            ) as rollback:
+                RUNNER.handle_cutover_failure(
+                    state,
+                    state_path,
+                    Path("/reviewed/runtime-helper.php"),
+                    RUNNER.FpmProbeUnavailable("candidate FPM unavailable"),
+                )
+
+            rollback.assert_called_once()
             self.assertEqual(
-                "failed_dependency_gate_install_blocked_manual_review_required",
-                persisted["status"],
+                RUNNER.MAINTENANCE_GATE_SHA256,
+                RUNNER.dependency_gate.file_identity(front_controller)["sha256"],
             )
-            self.assertFalse(persisted["containment_pending"])
-            receipt_path = Path(persisted["containment_failure_receipt"]["path"])
-            receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
-            self.assertTrue(receipt["separately_reviewed_fpm_reload_plan_required"])
-            self.assertFalse(receipt["exact_reviewed_gate_live"])
+            persisted = RUNNER.dependency_gate.load_state(state_path)
+            waits = persisted["front_controller_revalidation_waits"]
+            self.assertGreaterEqual(
+                waits[0]["elapsed_monotonic_seconds"],
+                state["fpm_opcache"]["policy"]["minimum_wait_seconds"],
+            )
+            self.assertEqual("complete", waits[0]["status"])
+            self.assertEqual(
+                "exact_original_gate_install_with_frozen_policy",
+                persisted["post_mutation_emergency_fpm_fallbacks"][0]["status"],
+            )
+            self.assertEqual("failed_dependency_rollback_required", state["status"])
+
+    def test_post_mutation_http_gate_failure_still_invokes_rollback(self) -> None:
+        state: dict[str, object] = {"dependency_mutation_started": True}
+        state_path = Path("/private/deployment-state.json")
+        helper = Path("/private/runtime-helper.php")
+        containment = {
+            "status": "site_gated_http_unverified",
+            "http_verified": False,
+            "rollback_may_continue_boot_independently": True,
+        }
+        interrupted = lambda _stage: None
+        with patch.object(
+            RUNNER,
+            "establish_rollback_gate",
+            return_value=containment,
+        ) as establish, patch.object(RUNNER, "write_state"), patch.object(
+            RUNNER,
+            "rollback_from_state",
+        ) as rollback:
+            RUNNER.handle_cutover_failure(
+                state,
+                state_path,
+                helper,
+                RUNNER.FpmProbeUnavailable("post-mutation timeout"),
+                failure_injector=interrupted,
+            )
+        establish.assert_called_once_with(
+            state,
+            state_path,
+            "cutover_failure",
+            fault_injector=interrupted,
+        )
+        rollback.assert_called_once_with(
+            state,
+            state_path,
+            helper,
+            failure_injector=interrupted,
+        )
+        self.assertEqual("failed_dependency_rollback_required", state["status"])
+        self.assertTrue(state["gate_active"])
+        self.assertFalse(state["gate_verified"])
+
+    def test_missing_or_malformed_emergency_frozen_envelope_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="buy-dtf-emergency-envelope-") as directory:
+            root = Path(directory)
+            state_path = root / "deployment-state.json"
+            valid = {
+                "release_receipt_sha256": "b" * 64,
+                "fpm_opcache": self.valid_fpm_opcache_envelope(),
+                "dependency_mutation_started": False,
+            }
+            RUNNER.write_state(state_path, valid)
+            with patch.object(
+                RUNNER,
+                "probe_fpm_opcache",
+                return_value=valid["fpm_opcache"],
+            ):
+                RUNNER.record_fpm_opcache_before_mutation(valid, state_path)
+            valid["dependency_mutation_started"] = True
+            RUNNER.write_state(state_path, valid)
+            self.assertIs(
+                valid["fpm_opcache"],
+                RUNNER.validate_post_mutation_frozen_fpm_opcache(valid, state_path),
+            )
+            for mutation in ("missing_envelope", "missing_checkpoint", "malformed_checkpoint"):
+                with self.subTest(mutation=mutation):
+                    candidate = dict(valid)
+                    if mutation == "missing_envelope":
+                        candidate.pop("fpm_opcache")
+                    elif mutation == "missing_checkpoint":
+                        candidate.pop("fpm_opcache_before_mutation")
+                    else:
+                        candidate["fpm_opcache_before_mutation"] = {"status": "pass"}
+                    with self.assertRaises(RUNNER.DeploymentError):
+                        RUNNER.validate_post_mutation_frozen_fpm_opcache(
+                            candidate,
+                            state_path,
+                        )
 
     def test_rollback_failure_records_context_rejection(self) -> None:
         with tempfile.TemporaryDirectory(prefix="buy-dtf-rollback-context-stop-") as directory:
@@ -501,7 +735,7 @@ class LaravelRememberCookieDependencyRunnerTest(unittest.TestCase):
             state: dict[str, object] = {}
             with patch.object(
                 RUNNER,
-                "gate_context",
+                "post_mutation_emergency_gate_context",
                 side_effect=RUNNER.DeploymentError("injected context rejection"),
             ), patch.object(
                 RUNNER.dependency_gate,
@@ -539,6 +773,25 @@ class LaravelRememberCookieDependencyRunnerTest(unittest.TestCase):
         self.assertEqual("monotonic", payload["fpm_opcache_policy"]["clock"])
         self.assertTrue(payload["fpm_opcache_policy"]["timestamp_validation_required"])
         self.assertEqual("/var/www/buy-dtf/public", payload["nginx_document_root_required"])
+        self.assertEqual(
+            "/run/php/php8.2-fpm.sock",
+            payload["nginx_fpm_socket_required"],
+        )
+        self.assertEqual(
+            "/var/www/buy-dtf/public/index.php",
+            payload["nginx_script_filename_required"],
+        )
+        self.assertTrue(payload["nginx_php_route_identity_bound_to_release_receipt"])
+        self.assertEqual(
+            "current-live-exact-match-required",
+            payload["pre_mutation_fpm_probe"],
+        )
+        emergency = payload["post_mutation_emergency_fpm_policy"]
+        self.assertEqual(
+            "typed-live-fpm-unavailability-only",
+            emergency["fallback_trigger"],
+        )
+        self.assertTrue(emergency["boot_independent_rollback_continues"])
         self.assertNotEqual(
             RUNNER.STAGE_APPROVAL_TOKEN,
             "STAGE-BUYDTF-LARAVEL-REMEMBER-77055fc8acf89149",

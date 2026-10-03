@@ -1,86 +1,62 @@
 {
   "artifact": "buy-dtf-laravel-remember-cookie-v4-root-cause-receipt",
-  "schema_version": 1,
-  "status": "confirmed",
-  "review_date": "2026-10-03",
-  "failed_attempt": {
-    "deployment_state_sha256": "bc6bb48b4eab5ca9a21ba06fb628c436d098f5b40dc71817ec9ac938c34c0624",
-    "status": "failed_before_dependency_mutation_original_restored",
-    "gate_failure_receipt_sha256": "3c0d9cf398759347835c3ae697bf8d94faaa2857609711e292480baf7d920185",
-    "automatic_restoration_receipt_sha256": "63ca5213ba8549f97308722c238b21bc7086efff0e28f0072911afe88e8e2b5e",
-    "pre_mutation_restoration_receipt_sha256": "e50850896a920a845fd6c4bbd9ded309c8bcafca146e73088afcd2c4f97ba168",
-    "gate_transition_log_sha256": "71a777cb49c0a9ea76520e4554ceb9c4079664ad868117fcf52296eb97363732",
-    "failed_cutover_receipt_sha256": "484b080ff8eb876e873d3466add728c3b3d631ee8145fe5bfd21c11da72a02c1",
-    "failure_report_sha256": "e048bf78eea28f2adcc2b870b0a71df12ec17d7fec1d0866d4bcb9ffc31c1638",
-    "evidence_manifest_sha256": "c7686569c538bda53b5715f3efea804012508d0f520574b42df0d67d3f2d46e7",
-    "sha256sums_sha256": "0d60240cabcca0e6541a72c25a6c760a02227fd9e320f4ffff7f78a4324027d0"
-  },
   "control_defect": {
+    "candidate_executed": false,
     "classification": "missing_fpm_opcache_revalidation_interval",
-    "retired_runner_sha256": "97cb4e8d702b7ceb1b9efde26dba93e6e0f4a833bb55650843fed1c0746f0307",
-    "retired_gate_helper_sha256": "1269a277e931dee346293bed4ea0f6d029cf9ded7810127a0ef547289ce51f80",
-    "reference_runner_sha256": "9a8d130eeee5b9aab1cbe89632a9357af6dcdcb8bbd1b484b6d2fdf7f0ce56be",
-    "reference_wait_seconds": 5,
-    "v3_wait_constant_defined_but_not_applied_by_shared_helper": true,
+    "dependency_mutation_started": false,
     "gate_install_and_failed_origin_response_occurred_in_same_utc_second": true,
     "php_fpm_executed_cached_original_front_controller": true,
-    "candidate_executed": false,
-    "dependency_mutation_started": false
+    "reference_runner_sha256": "9a8d130eeee5b9aab1cbe89632a9357af6dcdcb8bbd1b484b6d2fdf7f0ce56be",
+    "reference_wait_seconds": 5,
+    "retired_gate_helper_sha256": "1269a277e931dee346293bed4ea0f6d029cf9ded7810127a0ef547289ce51f80",
+    "retired_runner_sha256": "97cb4e8d702b7ceb1b9efde26dba93e6e0f4a833bb55650843fed1c0746f0307",
+    "v3_wait_constant_defined_but_not_applied_by_shared_helper": true
   },
-  "restoration": {
-    "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
-    "mode": "0644",
-    "uid": 1000,
-    "gid": 1000,
-    "production_laravel_version": "12.69.0",
-    "production_healthy": true
+  "failed_attempt": {
+    "automatic_restoration_receipt_sha256": "63ca5213ba8549f97308722c238b21bc7086efff0e28f0072911afe88e8e2b5e",
+    "deployment_state_sha256": "bc6bb48b4eab5ca9a21ba06fb628c436d098f5b40dc71817ec9ac938c34c0624",
+    "evidence_manifest_sha256": "c7686569c538bda53b5715f3efea804012508d0f520574b42df0d67d3f2d46e7",
+    "failed_cutover_receipt_sha256": "484b080ff8eb876e873d3466add728c3b3d631ee8145fe5bfd21c11da72a02c1",
+    "failure_report_sha256": "e048bf78eea28f2adcc2b870b0a71df12ec17d7fec1d0866d4bcb9ffc31c1638",
+    "gate_failure_receipt_sha256": "3c0d9cf398759347835c3ae697bf8d94faaa2857609711e292480baf7d920185",
+    "gate_transition_log_sha256": "71a777cb49c0a9ea76520e4554ceb9c4079664ad868117fcf52296eb97363732",
+    "pre_mutation_restoration_receipt_sha256": "e50850896a920a845fd6c4bbd9ded309c8bcafca146e73088afcd2c4f97ba168",
+    "sha256sums_sha256": "0d60240cabcca0e6541a72c25a6c760a02227fd9e320f4ffff7f78a4324027d0",
+    "status": "failed_before_dependency_mutation_original_restored"
   },
-  "required_v4_control": {
-    "shared_transition_revalidation_wait": true,
-    "clock": "monotonic",
-    "minimum_wait_seconds": 5,
-    "minimum_wait_formula": "max(5, 2 * revalidate_freq + file_update_protection + 1)",
-    "two_revalidation_frequency_windows_required": true,
-    "php_fpm_sapi_probe_required": true,
-    "opcache_enable_required": true,
-    "opcache_validate_timestamps_required": true,
-    "two_unique_direct_origin_probes_before_public_probe": true,
-    "effective_nginx_document_root_required": "/var/www/buy-dtf/public",
-    "original_restoration_uses_same_wait": true,
-    "cli_opcache_invalidation_accepted_as_fpm_proof": false,
-    "nginx_capture_command": "/usr/bin/sudo -n -- /usr/sbin/nginx -T",
-    "existing_noninteractive_sudo_permission_required": true,
-    "sudoers_change_authorized": false
+  "generated_at_utc": "2026-10-03T19:09:05Z",
+  "preparation_boundary_incident": {
+    "application_http_request_made": false,
+    "authorization_breached": true,
+    "commands_limited_to": [
+      "id -u",
+      "id -g",
+      "/usr/sbin/nginx -T with stdout redirected to /dev/null"
+    ],
+    "effective_configuration_stdout_retained": false,
+    "eligible_as_preflight_or_staging_evidence": false,
+    "further_production_access_occurred": false,
+    "intentional_remote_mutation": false,
+    "nginx_exit_status": 1,
+    "nginx_stderr_observations": [
+      "permission denied opening /var/log/nginx/error.log",
+      "permission denied opening /etc/letsencrypt/live/buy-dtf.com/fullchain.pem",
+      "non-root user warning",
+      "configuration test failed",
+      "reported process id 3866303"
+    ],
+    "occurred_at_utc_approx": "2026-10-03T15:55Z/2026-10-03T15:56Z",
+    "possible_host_side_effect": "normal SSH/auth/audit connection logging only",
+    "remote_gid": 1000,
+    "remote_uid": 1000,
+    "ssh_connection_count": 4,
+    "sudo_invoked": false
   },
   "preserved_database_envelope": {
-    "schema_sha256": "5485779bdcf0ea3a4372410ef76cd0bc418d1f6400128868606e901b8e9e85da",
+    "api_asset_records_rows": 0,
+    "artwork_host_allowlist_count": 0,
     "database_name_sha256": "9566898c6940c2248e1e0ee02d8460bfb42d6b407d3108ad60044bab86ac4567",
-    "schema_section_counts": {
-      "tables": 36,
-      "columns": 411,
-      "statistics": 76,
-      "table_constraints": 46,
-      "key_column_usage": 49,
-      "referential_constraints": 2
-    },
-    "migration_ledger_rows": 21,
-    "migration_ledger_sha256": "f1140209ad897fbdba506d87329f9e4481ccfa5aff7fb6a423e6ec7a0dbe5f53",
-    "savedimages_item_meta_migration_entry_count": 1,
-    "savedimages_item_meta_definition": {
-      "TABLE_NAME": "savedimages",
-      "ORDINAL_POSITION": 12,
-      "COLUMN_NAME": "item_meta",
-      "COLUMN_TYPE": "text",
-      "IS_NULLABLE": "YES",
-      "COLUMN_DEFAULT": null,
-      "EXTRA": "",
-      "CHARACTER_SET_NAME": "utf8mb4",
-      "COLLATION_NAME": "utf8mb4_unicode_ci",
-      "GENERATION_EXPRESSION": ""
-    },
-    "savedimages_item_meta_nonnull_rows": 0,
-    "incoming_order_migration_entry_count": 1,
-    "incoming_order_table_definitions_sha256": "aa0a038110dc355ffcd0ed12768c2adb7b0954ecbcc9aeb0fc4ef0efb5d287dc",
+    "failed_job_rows": 0,
     "incoming_order_indexes": [
       "PRIMARY",
       "incoming_order_jobs_dtfimage_id_unique",
@@ -94,61 +70,113 @@
       "api_assets_path_hash_index"
     ],
     "incoming_order_jobs_rows": 0,
-    "api_asset_records_rows": 0,
-    "queue_rows": 0,
-    "failed_job_rows": 0,
-    "receiver_enabled": false,
+    "incoming_order_migration_entry_count": 1,
+    "incoming_order_table_definitions_sha256": "aa0a038110dc355ffcd0ed12768c2adb7b0954ecbcc9aeb0fc4ef0efb5d287dc",
     "job_label_enabled": false,
+    "migration_ledger_rows": 21,
+    "migration_ledger_sha256": "f1140209ad897fbdba506d87329f9e4481ccfa5aff7fb6a423e6ec7a0dbe5f53",
+    "queue_rows": 0,
+    "receiver_enabled": false,
     "retention_enabled": false,
-    "artwork_host_allowlist_count": 0
-  },
-  "retained_release_constraints": [
-    {
-      "path": "/var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-releases/77055fc8acf8-20261003T000251Z",
-      "release_receipt_present": false,
-      "staging_token_present": false,
-      "permanently_ineligible": true,
-      "must_remain_untouched": true
+    "savedimages_item_meta_definition": {
+      "CHARACTER_SET_NAME": "utf8mb4",
+      "COLLATION_NAME": "utf8mb4_unicode_ci",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_NAME": "item_meta",
+      "COLUMN_TYPE": "text",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": "",
+      "IS_NULLABLE": "YES",
+      "ORDINAL_POSITION": 12,
+      "TABLE_NAME": "savedimages"
     },
-    {
-      "path": "/var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-v3-releases/77055fc8acf8-20261003T043715Z",
-      "release_receipt_sha256": "ec16a6d017847401ee51a923afe9391a94a82f906f68e69db496db6f617f3b21",
-      "permanently_ineligible": true,
-      "must_remain_untouched": true
-    }
-  ],
+    "savedimages_item_meta_migration_entry_count": 1,
+    "savedimages_item_meta_nonnull_rows": 0,
+    "schema_section_counts": {
+      "columns": 411,
+      "key_column_usage": 49,
+      "referential_constraints": 2,
+      "statistics": 76,
+      "table_constraints": 46,
+      "tables": 36
+    },
+    "schema_sha256": "5485779bdcf0ea3a4372410ef76cd0bc418d1f6400128868606e901b8e9e85da"
+  },
   "privacy": {
-    "raw_origin_headers_included": false,
     "raw_cookie_values_included": false,
+    "raw_origin_headers_included": false,
     "raw_origin_headers_remain_private_mode_0600": true,
     "tracked_or_reviewable_headers_require_cookie_value_redaction": true
   },
   "production_accessed_during_v4_correction": true,
-  "preparation_boundary_incident": {
-    "authorization_breached": true,
-    "occurred_at_utc_approx": "2026-10-03T15:55Z/2026-10-03T15:56Z",
-    "ssh_connection_count": 4,
-    "remote_uid": 1000,
-    "remote_gid": 1000,
-    "commands_limited_to": [
-      "id -u",
-      "id -g",
-      "/usr/sbin/nginx -T with stdout redirected to /dev/null"
+  "remaining_v4_review_blocker": {
+    "classification": "post_mutation_live_fpm_probe_unavailability_escape",
+    "full_monotonic_wait_required": true,
+    "http_gate_verification_failure_keeps_gate_and_continues_boot_independent_rollback": true,
+    "missing_or_malformed_frozen_envelope_rejected": true,
+    "nginx_expected_fpm_socket": "/run/php/php8.2-fpm.sock",
+    "nginx_expected_script_filename": "/var/www/buy-dtf/public/index.php",
+    "post_mutation_fallback_source": "staging-frozen envelope rechecked immediately before dependency mutation",
+    "prior_behavior": "manual-review stop could leave candidate dependencies live while original front controller served",
+    "regression_tests": [
+      "test_post_mutation_fpm_timeout_with_original_uses_frozen_context",
+      "test_post_mutation_timeout_installs_gate_then_automatically_invokes_rollback",
+      "test_post_mutation_http_gate_failure_still_invokes_rollback",
+      "test_missing_or_malformed_emergency_frozen_envelope_is_rejected",
+      "test_interrupted_emergency_containment_wait_restarts_full_wait",
+      "test_fpm_socket_mismatch_is_rejected",
+      "test_script_filename_mismatch_or_unknown_variable_is_rejected"
     ],
-    "nginx_exit_status": 1,
-    "nginx_stderr_observations": [
-      "permission denied opening /var/log/nginx/error.log",
-      "permission denied opening /etc/letsencrypt/live/buy-dtf.com/fullchain.pem",
-      "non-root user warning",
-      "configuration test failed",
-      "reported process id 3866303"
-    ],
-    "effective_configuration_stdout_retained": false,
-    "sudo_invoked": false,
-    "application_http_request_made": false,
-    "intentional_remote_mutation": false,
-    "possible_host_side_effect": "normal SSH/auth/audit connection logging only",
-    "eligible_as_preflight_or_staging_evidence": false,
-    "further_production_access_occurred": false
-  }
+    "replacement_gate_helper_sha256": "b93c08f58a08333120369c1cc75c60631d621c3a8099ca3967065721c45679f5",
+    "replacement_nginx_identity_helper_sha256": "1243fea2757aca89f586ec4b322b0d23ee1e19b2d027c21bd6523e71e6e6e8e0",
+    "replacement_runner_sha256": "464bd6a28c8bed84c90176d42bc88d22eea5977c2698d5cddb7fe3eca50f9558",
+    "reviewed_unapproved_commit": "25fa7c737e969f8dffa251fd5170f6c7064c69f5",
+    "status": "corrected-local-validation-pass",
+    "strict_pre_mutation_live_fpm_probe_required": true
+  },
+  "replacement_correction_network_accessed": false,
+  "replacement_correction_production_accessed": false,
+  "required_v4_control": {
+    "cli_opcache_invalidation_accepted_as_fpm_proof": false,
+    "clock": "monotonic",
+    "effective_nginx_document_root_required": "/var/www/buy-dtf/public",
+    "existing_noninteractive_sudo_permission_required": true,
+    "minimum_wait_formula": "max(5, 2 * revalidate_freq + file_update_protection + 1)",
+    "minimum_wait_seconds": 5,
+    "nginx_capture_command": "/usr/bin/sudo -n -- /usr/sbin/nginx -T",
+    "opcache_enable_required": true,
+    "opcache_validate_timestamps_required": true,
+    "original_restoration_uses_same_wait": true,
+    "php_fpm_sapi_probe_required": true,
+    "shared_transition_revalidation_wait": true,
+    "sudoers_change_authorized": false,
+    "two_revalidation_frequency_windows_required": true,
+    "two_unique_direct_origin_probes_before_public_probe": true
+  },
+  "restoration": {
+    "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
+    "gid": 1000,
+    "mode": "0644",
+    "production_healthy": true,
+    "production_laravel_version": "12.69.0",
+    "uid": 1000
+  },
+  "retained_release_constraints": [
+    {
+      "must_remain_untouched": true,
+      "path": "/var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-releases/77055fc8acf8-20261003T000251Z",
+      "permanently_ineligible": true,
+      "release_receipt_present": false,
+      "staging_token_present": false
+    },
+    {
+      "must_remain_untouched": true,
+      "path": "/var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-v3-releases/77055fc8acf8-20261003T043715Z",
+      "permanently_ineligible": true,
+      "release_receipt_sha256": "ec16a6d017847401ee51a923afe9391a94a82f906f68e69db496db6f617f3b21"
+    }
+  ],
+  "review_date": "2026-10-03",
+  "schema_version": 1,
+  "status": "confirmed-and-corrected-locally-for-independent-review"
 }

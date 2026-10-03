@@ -1,0 +1,167 @@
+{
+  "artifact": "buy-dtf-v4-blocker-local-validation-evidence-manifest-v1",
+  "files": [
+    {
+      "bytes": 726,
+      "gid": 0,
+      "mode": "0600",
+      "path": "evidence/root/frozen-input-sha256.txt",
+      "sha256": "71a84d8cce47efb53a34f9cae289b311978015e6a7a7dff6a95df5b202be5eaa",
+      "uid": 0
+    },
+    {
+      "bytes": 150589,
+      "gid": 0,
+      "mode": "0600",
+      "path": "evidence/root/gate-transition-rehearsal.json",
+      "sha256": "3a49fb00ce4e7958bf8c6c26fe5b60e993e5768458c5bd6f66b4eb5d85f2e8f8",
+      "uid": 0
+    },
+    {
+      "bytes": 0,
+      "gid": 0,
+      "mode": "0600",
+      "path": "evidence/root/gate-transition-rehearsal.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "uid": 0
+    },
+    {
+      "bytes": 2,
+      "gid": 0,
+      "mode": "0600",
+      "path": "evidence/root/laravel-unittest-discovery-root.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "uid": 0
+    },
+    {
+      "bytes": 24263,
+      "gid": 0,
+      "mode": "0600",
+      "path": "evidence/root/laravel-unittest-discovery-root.log",
+      "sha256": "f15a8e7d668e0909378153810ee7127efda1f1a9e7955b4724d3d160ce274f48",
+      "uid": 0
+    },
+    {
+      "bytes": 5386,
+      "gid": 0,
+      "mode": "0600",
+      "path": "evidence/root/local-validation-summary.json",
+      "sha256": "f3af437c653bbb5c09af01534e8a949d84b098746315b5dec1b09f158b048fcb",
+      "uid": 0
+    },
+    {
+      "bytes": 341,
+      "gid": 0,
+      "mode": "0600",
+      "path": "evidence/root/opcache-long-socket-path-setup-failure.json",
+      "sha256": "c96765f866e762323cdb1dfbfa4100e6df0312b81e650b8d03dfe04361ccede5",
+      "uid": 0
+    },
+    {
+      "bytes": 19454,
+      "gid": 0,
+      "mode": "0600",
+      "path": "evidence/root/opcache-production-like-rehearsal-1.json",
+      "sha256": "086273a502fe579ae1f63043ca487ba2a550b039b593bc108fd764ffce59d413",
+      "uid": 0
+    },
+    {
+      "bytes": 0,
+      "gid": 0,
+      "mode": "0600",
+      "path": "evidence/root/opcache-production-like-rehearsal-1.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "uid": 0
+    },
+    {
+      "bytes": 19454,
+      "gid": 0,
+      "mode": "0600",
+      "path": "evidence/root/opcache-production-like-rehearsal-2.json",
+      "sha256": "661d74ab136caccadb777829674210997d176483dc74fe1560b9d1cd96a22a21",
+      "uid": 0
+    },
+    {
+      "bytes": 0,
+      "gid": 0,
+      "mode": "0600",
+      "path": "evidence/root/opcache-production-like-rehearsal-2.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "uid": 0
+    },
+    {
+      "bytes": 19454,
+      "gid": 0,
+      "mode": "0600",
+      "path": "evidence/root/opcache-production-like-rehearsal-3.json",
+      "sha256": "476d8954a02c8022d396c4246b484db1a5220a95a30afde86bbe9da0457482e9",
+      "uid": 0
+    },
+    {
+      "bytes": 0,
+      "gid": 0,
+      "mode": "0600",
+      "path": "evidence/root/opcache-production-like-rehearsal-3.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "uid": 0
+    },
+    {
+      "bytes": 341,
+      "gid": 0,
+      "mode": "0600",
+      "path": "evidence/root/opcache-untraversable-parent-setup-failure.json",
+      "sha256": "157402ecf5590f182e753b5d71bb65f74e189778596de696969023cdf23cfc81",
+      "uid": 0
+    },
+    {
+      "bytes": 8665,
+      "gid": 0,
+      "mode": "0600",
+      "path": "evidence/root/runner-describe.json",
+      "sha256": "2dcddbf726e1c3798deb8219a7d7669fdbb870b5082cdf46186c0c1155677d3e",
+      "uid": 0
+    },
+    {
+      "bytes": 0,
+      "gid": 0,
+      "mode": "0600",
+      "path": "evidence/root/runner-describe.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "uid": 0
+    },
+    {
+      "bytes": 4973,
+      "gid": 0,
+      "mode": "0600",
+      "path": "evidence/root/runner-rehearsal.json",
+      "sha256": "b443b302333ef162f757053ccc5fe24b213f6e3e5f8a06439b7b8ba2c1585891",
+      "uid": 0
+    },
+    {
+      "bytes": 0,
+      "gid": 0,
+      "mode": "0600",
+      "path": "evidence/root/runner-rehearsal.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "uid": 0
+    },
+    {
+      "bytes": 2,
+      "gid": 1000,
+      "mode": "0600",
+      "path": "evidence/uid1000/laravel-unittest-discovery-uid1000.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "uid": 1000
+    },
+    {
+      "bytes": 24297,
+      "gid": 1000,
+      "mode": "0600",
+      "path": "evidence/uid1000/laravel-unittest-discovery-uid1000.log",
+      "sha256": "a2a2603f8bc44426344de85a9c0d7ef29d8b50027ba5d81bc916ea910beef4ee",
+      "uid": 1000
+    }
+  ],
+  "production_accessed": false,
+  "status": "pass"
+}

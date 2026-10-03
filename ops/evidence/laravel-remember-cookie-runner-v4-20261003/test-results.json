@@ -2,12 +2,12 @@
   "application": {
     "full_suite": {
       "assertions": 718,
-      "sha256": "b1fa24f968dcae8f9773bd35100793a0f386973554f67f69cc8c83402f1e7160",
+      "sha256": "a91d7ba61fdfdba01fa3a391a861a44deb9e38a98dd66f2205da3bf6130b6856",
       "tests": 110
     },
     "remember_cookie": {
       "assertions": 10,
-      "sha256": "48dec0fd4625e8aa4f7dc9296385d0e9970243cd143ad4daab27f52ddbd7c823",
+      "sha256": "a10edefe8c292069f38b00961efed79ac1e757ea28f9a4e1eff11cfeb3536b74",
       "tests": 2
     }
   },
@@ -21,27 +21,36 @@
     "two_build_comparison": "pass"
   },
   "classification": "local-validation; preparation boundary incident separately disclosed",
+  "emergency_path_regressions": {
+    "test_fpm_socket_mismatch_is_rejected": "pass",
+    "test_interrupted_emergency_containment_wait_restarts_full_wait": "pass",
+    "test_missing_or_malformed_emergency_frozen_envelope_is_rejected": "pass",
+    "test_post_mutation_fpm_timeout_with_original_uses_frozen_context": "pass",
+    "test_post_mutation_http_gate_failure_still_invokes_rollback": "pass",
+    "test_post_mutation_timeout_installs_gate_then_automatically_invokes_rollback": "pass",
+    "test_script_filename_mismatch_or_unknown_variable_is_rejected": "pass"
+  },
   "frontend": {
     "npm_build_exit_code": 0,
     "npm_ci_exit_code": 0,
     "receipt": "frontend-validation-receipt.json",
-    "receipt_sha256": "5f1d496119eff9d084bbc9c27a84b83cb027d118ff211a6419b53c31418b06d1"
+    "receipt_sha256": "a6372b80cab337b43d5be9a2f3ccd5228669169bf21005fc530ab8b4bfa4520a"
   },
-  "generated_at_utc": "2026-10-03T17:22:38Z",
+  "generated_at_utc": "2026-10-03T19:09:05Z",
   "preparation_production_accessed": true,
   "production_mutation": false,
   "rehearsals": {
     "atomic_cutover_rollback_recovery_scenarios": 25,
-    "atomic_receipt_sha256": "321320d93c5f41c96f522977b892a1165964a9dec9eb9a3036e0eaef4b6699ed",
-    "gate_receipt_sha256": "afae804d5737be4764f006874b7b93fa8caf79fb8d0dc3542f0d27ad8171bbf2",
+    "atomic_receipt_sha256": "b443b302333ef162f757053ccc5fe24b213f6e3e5f8a06439b7b8ba2c1585891",
+    "gate_receipt_sha256": "3a49fb00ce4e7958bf8c6c26fe5b60e993e5768458c5bd6f66b4eb5d85f2e8f8",
     "gate_transition_scenarios": 28,
     "production_like_opcache": {
       "final_runs": 3,
       "immediate_stale_gate_after_restore_reproduced": true,
       "immediate_stale_original_reproduced": true,
       "local_php_fpm_version": "8.3.6",
-      "primary_receipt_sha256": "e5af0fe207c410b3aea2ec2cc5864acd4346fc31462530a35d53f13a455359d8",
-      "repeatability_receipt_sha256": "d1c3af8b62ee08f86277ccb773e349ff90f41102a235fa3ec0772976c6baf486",
+      "primary_receipt_sha256": "086273a502fe579ae1f63043ca487ba2a550b039b593bc108fd764ffce59d413",
+      "repeatability_receipt_sha256": "0fb685001e1ec5701c693ea80b6213d0a666629f25a88e58b3753b003b0197d4",
       "reviewed_wait_seconds": 11
     },
     "shared_monotonic_waits": 48,
@@ -54,33 +63,33 @@
     }
   },
   "runner_controls": {
-    "discovered_tests": 114,
+    "discovered_tests": 123,
     "modules": {
       "database_envelope": 9,
-      "dependency_runner": 23,
-      "environment_controls": 16,
-      "gate": 24,
+      "dependency_runner": 26,
+      "environment_controls": 21,
+      "gate": 25,
       "independent_review_controls": 11,
       "log_parser": 22,
       "opcache_rehearsal": 9
     },
     "root_suite": {
-      "passed": 112,
-      "sha256": "682e49bd4bf417e92cb49e0375251859cd087951c36fcb97f3f65d7dcc62880f",
+      "passed": 121,
+      "sha256": "f15a8e7d668e0909378153810ee7127efda1f1a9e7955b4724d3d160ce274f48",
       "skipped_uid1000_specific": 2,
-      "tests": 114
+      "tests": 123
     },
     "uid1000_suite": {
-      "passed": 111,
-      "sha256": "ac130cbe574b74c7ecb42480204378a39156955f96073273516b340ce0142893",
+      "passed": 120,
+      "sha256": "a2a2603f8bc44426344de85a9c0d7ef29d8b50027ba5d81bc916ea910beef4ee",
       "skipped_root_only": 3,
-      "tests": 114
+      "tests": 123
     }
   },
   "stage_or_deployment_performed": false,
   "status": "pass",
   "syntax": {
-    "sha256": "2fcc22ce2d1cae60b3c49b33845c98d2fe9562b2434794c30a31dcdfc0e81248",
+    "sha256": "a0c6241350bd652576098fc3d7918a9b5be2c4ba332de6669f4108bbf0114950",
     "status": "pass"
   },
   "validation_production_accessed": false

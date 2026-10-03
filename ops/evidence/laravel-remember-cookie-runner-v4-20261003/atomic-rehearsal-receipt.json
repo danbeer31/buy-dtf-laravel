@@ -56,7 +56,7 @@
   "filesystem_device": 2096,
   "handoff": {
     "filename": "HANDOFF.md",
-    "sha256": "8ee888883bf2330c7a5c7d70efe48244122b600067ba030976a53cbe0009e4c1"
+    "sha256": "6539058cf602fc23b03552665faf9a32c6975e29e6cb11fb5b2deb2c7e02afa9"
   },
   "live_lock_sha256": "22af12c7e58fcfe809735dbf9955b2d22a264e9e7345cefd74398e36bf2773b9",
   "maintenance_gate_sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4",
@@ -136,6 +136,6 @@
     "stale_dev_provider_cache_replaced_before_boot": "pass",
     "stale_gate_state_is_reasserted": "pass"
   },
-  "script_sha256": "e2d735c9c9c86c8bd38be3085b3372a2d2079ada9866d87487e8aa486dfc79f0",
+  "script_sha256": "464bd6a28c8bed84c90176d42bc88d22eea5977c2698d5cddb7fe3eca50f9558",
   "status": "pass"
 }

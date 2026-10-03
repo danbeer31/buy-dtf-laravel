@@ -35,7 +35,7 @@
     "laravel_pail_present"
   ],
   "executable_allowlist_sha256": "551df886bc842a49ea87d8d9bb0cfe3478e3cc5eeea841c83409e8349d120154",
-  "runner_sha256": "e2d735c9c9c86c8bd38be3085b3372a2d2079ada9866d87487e8aa486dfc79f0",
+  "runner_sha256": "464bd6a28c8bed84c90176d42bc88d22eea5977c2698d5cddb7fe3eca50f9558",
   "status": "pass",
   "structure": {
     "bytes": 26481661,

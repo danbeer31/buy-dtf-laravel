@@ -65,10 +65,10 @@ EXPECTED_APP_DEBUG = False
 EXPECTED_PHP_VERSION = "8.2.30"
 RUNTIME_HELPER_SHA256 = "7cd804545f9e09d096d348924021047e0a7b1b6ecf3a1b783fd015aef24c48d2"
 DATABASE_ENVELOPE_VALIDATOR_SHA256 = "e3aa9109fcc6a6c8725f07665f27fc28a242447861b5b6c2a8d614a5a0a805b3"
-GATE_HELPER_SHA256 = "ae542dbe387406d5b0e0d379f074251d30e93d066f330c1badb16b11caf776bc"
+GATE_HELPER_SHA256 = "b93c08f58a08333120369c1cc75c60631d621c3a8099ca3967065721c45679f5"
 LOG_PARSER_SHA256 = "b91ac879b9559e229e18b7613fa4c570cee54016fbadc2e306925c0a71bcf179"
 FPM_OPCACHE_PROBE_SHA256 = "b8b34f87d45a0c000cc0df7917496631320cfbdcca1ff44bc41741ce0d569262"
-NGINX_IDENTITY_HELPER_SHA256 = "4beb1fd5e4fabb8d74d2de50b8c96f452ecb6de242ed411c7c0a97304037d192"
+NGINX_IDENTITY_HELPER_SHA256 = "1243fea2757aca89f586ec4b322b0d23ee1e19b2d027c21bd6523e71e6e6e8e0"
 RETIRED_CONTROLS_SHA256 = "622655e74dea16699cd4ffb714460a934ce2aa1abee1f130cdd7b1228a0e2163"
 RETIRED_RUNNER_SHA256S = frozenset(
     {
@@ -84,7 +84,7 @@ RETIRED_RELEASE_RECEIPT_SHA256S = frozenset(
     {"ec16a6d017847401ee51a923afe9391a94a82f906f68e69db496db6f617f3b21"}
 )
 HANDOFF_FILENAME = "HANDOFF.md"
-HANDOFF_SHA256 = "8ee888883bf2330c7a5c7d70efe48244122b600067ba030976a53cbe0009e4c1"
+HANDOFF_SHA256 = "6539058cf602fc23b03552665faf9a32c6975e29e6cb11fb5b2deb2c7e02afa9"
 ARTIFACT_REVIEW_STATUS = "review-only; not staged or deployed"
 
 EXPECTED_SOURCE_MANIFEST = {
@@ -246,6 +246,10 @@ MAINTENANCE_GATE_SHA256 = dependency_gate.EXPECTED_GATE_SHA256
 
 class DeploymentError(RuntimeError):
     """Expected fail-closed stop."""
+
+
+class FpmProbeUnavailable(DeploymentError):
+    """The live PHP-FPM control endpoint could not be reached."""
 
 
 def sha256_file(path: Path) -> str:
@@ -1206,17 +1210,22 @@ def probe_fpm_opcache() -> dict[str, Any]:
     probe = require_fpm_opcache_probe()
     require_nginx_identity_helper()
     if not FPM_SOCKET.is_socket():
-        raise DeploymentError("The reviewed PHP-FPM socket is unavailable.")
+        raise FpmProbeUnavailable("The reviewed PHP-FPM socket is unavailable.")
     environment = fpm_fastcgi_environment(
         probe,
         "/internal-opcache-probe.php",
     )
-    completed = run(
-        ["/usr/bin/cgi-fcgi", "-bind", "-connect", str(FPM_SOCKET)],
-        cwd=APP_ROOT,
-        timeout=30,
-        env=environment,
-    )
+    try:
+        completed = run(
+            ["/usr/bin/cgi-fcgi", "-bind", "-connect", str(FPM_SOCKET)],
+            cwd=APP_ROOT,
+            timeout=30,
+            env=environment,
+        )
+    except DeploymentError as exception:
+        raise FpmProbeUnavailable(
+            "The reviewed PHP-FPM OPcache probe is unavailable."
+        ) from exception
     output = completed.stdout.replace("\r\n", "\n")
     if "\n\n" not in output:
         raise DeploymentError("PHP-FPM OPcache probe returned no CGI body.")
@@ -1298,6 +1307,132 @@ def require_frozen_fpm_opcache(expected: Any) -> dict[str, Any]:
     return current
 
 
+def record_fpm_opcache_before_mutation(
+    state: dict[str, Any],
+    state_path: Path,
+) -> dict[str, Any]:
+    """Recheck and durably bind the staged FPM envelope before mutation."""
+
+    if dependency_gate.dependency_mutation_has_started(state):
+        raise DeploymentError(
+            "PHP-FPM OPcache cannot be frozen after dependency mutation begins."
+        )
+    frozen = validate_frozen_fpm_opcache_record(state.get("fpm_opcache"))
+    current = require_frozen_fpm_opcache(frozen)
+    envelope_sha256 = sha256_bytes(dependency_gate.canonical_bytes(frozen))
+    receipt = {
+        "artifact": "buy-dtf-php-fpm-opcache-before-dependency-mutation-v4",
+        "status": "pass",
+        "checked_at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "release_receipt_sha256": state.get("release_receipt_sha256"),
+        "probe_helper_sha256": FPM_OPCACHE_PROBE_SHA256,
+        "staged_frozen_envelope_sha256": envelope_sha256,
+        "current_live_envelope_sha256": sha256_bytes(
+            dependency_gate.canonical_bytes(current)
+        ),
+        "exact_match": current == frozen,
+        "dependency_mutation_started": False,
+        "fpm_opcache": current,
+    }
+    if (
+        not isinstance(receipt["release_receipt_sha256"], str)
+        or not re.fullmatch(r"[a-f0-9]{64}", receipt["release_receipt_sha256"])
+        or receipt["exact_match"] is not True
+    ):
+        raise DeploymentError(
+            "The pre-mutation PHP-FPM OPcache receipt cannot bind the staged release."
+        )
+    receipt_path = state_path.parent / "fpm-opcache-before-dependency-mutation-receipt.json"
+    receipt_sha256 = dependency_gate.write_new_json(receipt_path, receipt)
+    state["fpm_opcache_before_mutation"] = receipt
+    state["fpm_opcache_before_mutation_receipt"] = {
+        "path": str(receipt_path),
+        "sha256": receipt_sha256,
+    }
+    write_state(state_path, state)
+    return receipt
+
+
+def validate_post_mutation_frozen_fpm_opcache(
+    state: dict[str, Any],
+    state_path: Path,
+) -> dict[str, Any]:
+    """Validate the staged and immediately-pre-mutation envelope offline."""
+
+    if not dependency_gate.dependency_mutation_has_started(state):
+        raise DeploymentError(
+            "Emergency frozen PHP-FPM policy is prohibited before dependency mutation."
+        )
+    frozen = validate_frozen_fpm_opcache_record(state.get("fpm_opcache"))
+    checkpoint = state.get("fpm_opcache_before_mutation")
+    if not isinstance(checkpoint, dict) or set(checkpoint) != {
+        "artifact",
+        "status",
+        "checked_at_utc",
+        "release_receipt_sha256",
+        "probe_helper_sha256",
+        "staged_frozen_envelope_sha256",
+        "current_live_envelope_sha256",
+        "exact_match",
+        "dependency_mutation_started",
+        "fpm_opcache",
+    }:
+        raise DeploymentError(
+            "Durable state has no valid immediately-pre-mutation PHP-FPM envelope."
+        )
+    envelope_sha256 = sha256_bytes(dependency_gate.canonical_bytes(frozen))
+    if (
+        checkpoint.get("artifact")
+        != "buy-dtf-php-fpm-opcache-before-dependency-mutation-v4"
+        or checkpoint.get("status") != "pass"
+        or not isinstance(checkpoint.get("checked_at_utc"), str)
+        or re.fullmatch(
+            r"[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z",
+            checkpoint["checked_at_utc"],
+        )
+        is None
+        or checkpoint.get("release_receipt_sha256")
+        != state.get("release_receipt_sha256")
+        or checkpoint.get("probe_helper_sha256") != FPM_OPCACHE_PROBE_SHA256
+        or checkpoint.get("staged_frozen_envelope_sha256") != envelope_sha256
+        or checkpoint.get("current_live_envelope_sha256") != envelope_sha256
+        or checkpoint.get("exact_match") is not True
+        or checkpoint.get("dependency_mutation_started") is not False
+        or checkpoint.get("fpm_opcache") != frozen
+    ):
+        raise DeploymentError(
+            "Immediately-pre-mutation PHP-FPM envelope differs from the staged envelope."
+        )
+    receipt_item = state.get("fpm_opcache_before_mutation_receipt")
+    if not isinstance(receipt_item, dict) or set(receipt_item) != {"path", "sha256"}:
+        raise DeploymentError(
+            "Durable state has no pre-mutation PHP-FPM envelope receipt binding."
+        )
+    receipt_path = require_regular_file(
+        Path(str(receipt_item.get("path", ""))),
+        str(receipt_item.get("sha256", "")),
+    )
+    expected_path = (
+        state_path.resolve(strict=True).parent
+        / "fpm-opcache-before-dependency-mutation-receipt.json"
+    )
+    if receipt_path != expected_path or path_metadata(receipt_path).get("mode") != 0o600:
+        raise DeploymentError(
+            "Pre-mutation PHP-FPM envelope receipt is outside private durable state."
+        )
+    try:
+        persisted = json.loads(receipt_path.read_text(encoding="utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as exception:
+        raise DeploymentError(
+            "Pre-mutation PHP-FPM envelope receipt is invalid UTF-8 JSON."
+        ) from exception
+    if persisted != checkpoint:
+        raise DeploymentError(
+            "Pre-mutation PHP-FPM envelope receipt differs from durable state."
+        )
+    return frozen
+
+
 def dependency_cache_settle_seconds(state: dict[str, Any]) -> int:
     frozen = state.get("fpm_opcache")
     if not isinstance(frozen, dict) or not isinstance(frozen.get("policy"), dict):
@@ -1316,6 +1451,36 @@ def validate_nginx_stable_identity(identity: Any) -> dict[str, Any]:
     if not isinstance(identity, dict):
         raise DeploymentError("Release receipt has no effective nginx identity.")
     document_root = identity.get("document_root_identity")
+    php_index_route = (
+        document_root.get("php_index_route")
+        if isinstance(document_root, dict)
+        else None
+    )
+    expected_route_keys = {
+        "request_uri",
+        "location_selector",
+        "location_order",
+        "location_block_sha256",
+        "fastcgi_pass",
+        "fpm_socket",
+        "script_filename_expression",
+        "resolved_script_filename",
+        "route_identity_sha256",
+    }
+    route_payload = (
+        {
+            key: value
+            for key, value in php_index_route.items()
+            if key != "route_identity_sha256"
+        }
+        if isinstance(php_index_route, dict)
+        else None
+    )
+    location_selector = (
+        php_index_route.get("location_selector")
+        if isinstance(php_index_route, dict)
+        else None
+    )
     sudo_identity = identity.get("sudo_executable_identity")
     nginx_identity = identity.get("nginx_executable_identity")
     executable_identities = (
@@ -1356,8 +1521,34 @@ def validate_nginx_stable_identity(identity: Any) -> dict[str, Any]:
         != str(environment_controls.EXPECTED_DOCUMENT_ROOT)
         or document_root.get("origin_probe_address") != "127.0.0.1:443"
         or document_root.get("origin_loopback_compatible") is not True
+        or not isinstance(php_index_route, dict)
+        or set(php_index_route) != expected_route_keys
+        or php_index_route.get("request_uri")
+        != environment_controls.EXPECTED_INDEX_REQUEST_URI
+        or not isinstance(location_selector, list)
+        or len(location_selector) not in {1, 2}
+        or not all(isinstance(item, str) and item for item in location_selector)
+        or isinstance(php_index_route.get("location_order"), bool)
+        or not isinstance(php_index_route.get("location_order"), int)
+        or php_index_route["location_order"] < 0
+        or not re.fullmatch(
+            r"[a-f0-9]{64}", str(php_index_route.get("location_block_sha256", ""))
+        )
+        or php_index_route.get("fastcgi_pass")
+        != f"unix:{environment_controls.EXPECTED_FPM_SOCKET}"
+        or php_index_route.get("fpm_socket")
+        != environment_controls.EXPECTED_FPM_SOCKET
+        or not isinstance(php_index_route.get("script_filename_expression"), str)
+        or not php_index_route["script_filename_expression"]
+        or php_index_route.get("resolved_script_filename")
+        != str(environment_controls.EXPECTED_SCRIPT_FILENAME)
+        or not isinstance(route_payload, dict)
+        or php_index_route.get("route_identity_sha256")
+        != sha256_bytes(environment_controls.canonical_bytes(route_payload))
     ):
-        raise DeploymentError("Effective nginx identity differs from the reviewed document root.")
+        raise DeploymentError(
+            "Effective nginx identity differs from the reviewed document root or PHP route."
+        )
     return identity
 
 
@@ -2001,6 +2192,9 @@ def stage_release(candidate_lock: Path, approval_token: str, helper: Path) -> Pa
         "maintenance_gate_sha256": MAINTENANCE_GATE_SHA256,
         "fpm_opcache": baseline["fpm_opcache"],
         "nginx_identity": nginx_after["stable_identity"],
+        "nginx_php_index_route_identity": (
+            nginx_after["stable_identity"]["document_root_identity"]["php_index_route"]
+        ),
         "nginx_stage_captures": {
             "before_build": nginx_before["capture"]["summary_capture"],
             "after_build": nginx_after["capture"]["summary_capture"],
@@ -2110,6 +2304,12 @@ def load_approved_release(receipt_path: Path, approved_sha256: str) -> tuple[dic
     except dependency_gate.GateError as exception:
         raise DeploymentError(f"Release OPcache policy is invalid: {exception}") from exception
     nginx_identity = validate_nginx_stable_identity(receipt.get("nginx_identity"))
+    if receipt.get("nginx_php_index_route_identity") != (
+        nginx_identity["document_root_identity"]["php_index_route"]
+    ):
+        raise DeploymentError(
+            "Release receipt does not bind the reviewed nginx PHP route identity."
+        )
     nginx_stage_captures = receipt.get("nginx_stage_captures")
     if not isinstance(nginx_stage_captures, dict) or set(nginx_stage_captures) != {
         "before_build",
@@ -2250,11 +2450,10 @@ def require_gate_helper() -> Path:
     return require_regular_file(module_path, GATE_HELPER_SHA256)
 
 
-def gate_context(
+def _gate_context_from_frozen_envelope(
     state: dict[str, Any],
     state_path: Path,
-    *,
-    allow_frozen_policy_for_exact_existing_gate: bool = False,
+    frozen_opcache: dict[str, Any],
 ) -> dependency_gate.GateContext:
     backup_value = state.get("front_controller_backup")
     backup_sha256 = state.get("front_controller_backup_sha256")
@@ -2264,14 +2463,33 @@ def gate_context(
     backup = require_regular_file(Path(backup_value), backup_sha256)
     if backup != state_directory / "public-index.before.php":
         raise DeploymentError("Front-controller backup differs from the durable state path.")
-    frozen_opcache = state.get("fpm_opcache")
-    assert isinstance(frozen_opcache, dict)
     policy = frozen_opcache.get("policy")
     if not isinstance(policy, dict):
         raise DeploymentError("Durable state has no frozen OPcache revalidation policy.")
+    return dependency_gate.GateContext(
+        application_root=APP_ROOT,
+        front_controller=FRONT_CONTROLLER,
+        state_path=state_path,
+        evidence_directory=state_directory,
+        original_backup=backup,
+        original_sha256=backup_sha256,
+        opcache_policy=policy,
+    )
+
+
+def gate_context(
+    state: dict[str, Any],
+    state_path: Path,
+    *,
+    allow_frozen_policy_for_exact_existing_gate: bool = False,
+) -> dependency_gate.GateContext:
+    """Build a normal context only after reading the current live FPM SAPI."""
+
+    frozen_opcache = validate_frozen_fpm_opcache_record(state.get("fpm_opcache"))
+    policy = frozen_opcache["policy"]
     try:
         require_frozen_fpm_opcache(frozen_opcache)
-    except DeploymentError as exception:
+    except FpmProbeUnavailable as exception:
         live = dependency_gate.file_identity(FRONT_CONTROLLER)
         if (
             not allow_frozen_policy_for_exact_existing_gate
@@ -2280,11 +2498,17 @@ def gate_context(
             != dependency_gate.reviewed_front_controller_metadata()
         ):
             raise
+        if dependency_gate.dependency_mutation_has_started(state):
+            frozen_opcache = validate_post_mutation_frozen_fpm_opcache(
+                state,
+                state_path,
+            )
+            policy = frozen_opcache["policy"]
         try:
             dependency_gate.validate_opcache_revalidation_policy(policy)
         except dependency_gate.GateError as policy_exception:
             raise DeploymentError(
-                "Frozen OPcache policy is invalid during emergency containment."
+                "Frozen OPcache policy is invalid during emergency restoration."
             ) from policy_exception
         history = state.setdefault("emergency_existing_gate_opcache_fallbacks", [])
         if not isinstance(history, list):
@@ -2299,15 +2523,53 @@ def gate_context(
             }
         )
         write_state(state_path, state)
-    return dependency_gate.GateContext(
-        application_root=APP_ROOT,
-        front_controller=FRONT_CONTROLLER,
-        state_path=state_path,
-        evidence_directory=state_directory,
-        original_backup=backup,
-        original_sha256=backup_sha256,
-        opcache_policy=policy,
-    )
+    return _gate_context_from_frozen_envelope(state, state_path, frozen_opcache)
+
+
+def post_mutation_emergency_gate_context(
+    state: dict[str, Any],
+    state_path: Path,
+) -> dependency_gate.GateContext:
+    """Build post-mutation containment, falling back only when FPM is unavailable."""
+
+    frozen_opcache = validate_post_mutation_frozen_fpm_opcache(state, state_path)
+    live = dependency_gate.file_identity(FRONT_CONTROLLER)
+    if (
+        live.get("sha256")
+        not in {EXPECTED_FRONT_CONTROLLER_SHA256, MAINTENANCE_GATE_SHA256}
+        or live.get("metadata") != dependency_gate.reviewed_front_controller_metadata()
+    ):
+        raise DeploymentError(
+            "Post-mutation emergency containment found an unknown front controller."
+        )
+    try:
+        current = require_frozen_fpm_opcache(frozen_opcache)
+    except FpmProbeUnavailable as exception:
+        history = state.setdefault("post_mutation_emergency_fpm_fallbacks", [])
+        if not isinstance(history, list):
+            raise DeploymentError("Emergency PHP-FPM fallback history is invalid.")
+        history.append(
+            {
+                "status": (
+                    "exact_gate_reassertion_with_frozen_policy"
+                    if live.get("sha256") == MAINTENANCE_GATE_SHA256
+                    else "exact_original_gate_install_with_frozen_policy"
+                ),
+                "failure_class": type(exception).__name__,
+                "failure_message_sha256": sha256_bytes(str(exception).encode("utf-8")),
+                "front_controller": live,
+                "frozen_envelope_sha256": sha256_bytes(
+                    dependency_gate.canonical_bytes(frozen_opcache)
+                ),
+                "policy": frozen_opcache["policy"],
+                "immediately_before_mutation_receipt": state.get(
+                    "fpm_opcache_before_mutation_receipt"
+                ),
+            }
+        )
+        write_state(state_path, state)
+        current = frozen_opcache
+    return _gate_context_from_frozen_envelope(state, state_path, current)
 
 
 def _next_gate_operation(state: dict[str, Any], reason: str) -> str:
@@ -2407,14 +2669,12 @@ def establish_rollback_gate(
     state: dict[str, Any],
     state_path: Path,
     reason: str,
+    *,
+    fault_injector: Callable[[str], None] | None = None,
 ) -> dict[str, Any]:
     require_gate_helper()
     operation = _next_gate_operation(state, reason)
-    context = gate_context(
-        state,
-        state_path,
-        allow_frozen_policy_for_exact_existing_gate=True,
-    )
+    context = post_mutation_emergency_gate_context(state, state_path)
     try:
         containment = dependency_gate.establish_rollback_containment(
             context=context,
@@ -2427,6 +2687,7 @@ def establish_rollback_gate(
             ),
             public_probe=lambda: _gate_public_probe(context.evidence_directory, operation),
             restored_health_probe=health_snapshot,
+            fault_injector=fault_injector,
         )
     except dependency_gate.GateError as exception:
         raise DeploymentError(str(exception)) from exception
@@ -2585,6 +2846,8 @@ def contain_cutover_failure(
     state: dict[str, Any],
     state_path: Path,
     exception: BaseException,
+    *,
+    failure_injector: Callable[[str], None] | None = None,
 ) -> bool:
     """Contain a cutover failure and return whether dependency rollback is armed."""
 
@@ -2604,6 +2867,7 @@ def contain_cutover_failure(
             state,
             state_path,
             "cutover_failure",
+            fault_injector=failure_injector,
         )
     except (DeploymentError, dependency_gate.GateError) as containment_exception:
         try:
@@ -2669,6 +2933,31 @@ def contain_cutover_failure(
     return True
 
 
+def handle_cutover_failure(
+    state: dict[str, Any],
+    state_path: Path,
+    helper: Path,
+    exception: BaseException,
+    *,
+    failure_injector: Callable[[str], None] | None = None,
+) -> None:
+    """Contain a failed cutover and automatically run any required rollback."""
+
+    rollback_required = contain_cutover_failure(
+        state,
+        state_path,
+        exception,
+        failure_injector=failure_injector,
+    )
+    if rollback_required:
+        rollback_from_state(
+            state,
+            state_path,
+            helper,
+            failure_injector=failure_injector,
+        )
+
+
 def contain_rollback_failure(
     state: dict[str, Any],
     state_path: Path,
@@ -2678,11 +2967,7 @@ def contain_rollback_failure(
 
     operation = _next_gate_operation(state, "rollback_failure")
     try:
-        context = gate_context(
-            state,
-            state_path,
-            allow_frozen_policy_for_exact_existing_gate=True,
-        )
+        context = post_mutation_emergency_gate_context(state, state_path)
         containment = dependency_gate.retain_static_gate_exact(
             context=context,
             state=state,
@@ -2936,9 +3221,17 @@ def validate_rollback_state_paths(state: dict[str, Any], state_path: Path) -> No
     if state.get("fpm_opcache") != receipt.get("fpm_opcache"):
         raise DeploymentError("Rollback state changed the frozen PHP-FPM OPcache envelope.")
     validate_frozen_fpm_opcache_record(state.get("fpm_opcache"))
+    if dependency_gate.dependency_mutation_has_started(state):
+        validate_post_mutation_frozen_fpm_opcache(state, state_path)
     state_nginx = validate_nginx_stable_identity(state.get("nginx_identity"))
     if state_nginx != validate_nginx_stable_identity(receipt.get("nginx_identity")):
         raise DeploymentError("Rollback state changed the effective nginx identity.")
+    expected_php_route = state_nginx["document_root_identity"]["php_index_route"]
+    if (
+        state.get("nginx_php_index_route_identity") != expected_php_route
+        or receipt.get("nginx_php_index_route_identity") != expected_php_route
+    ):
+        raise DeploymentError("Rollback state changed the reviewed nginx PHP route identity.")
     nginx_capture = state.get("nginx_pre_gate_capture")
     validate_nginx_capture_summary(
         nginx_capture,
@@ -3030,6 +3323,7 @@ def rollback_from_state(
             state,
             state_path,
             "rollback_start",
+            fault_injector=failure_injector,
         )
         state["rollback_containment"] = containment
         state["status"] = "rollback_contained_by_static_gate"
@@ -3253,6 +3547,9 @@ def cutover(
         "retired_controls": baseline["retired_controls"],
         "fpm_opcache": baseline["fpm_opcache"],
         "nginx_identity": nginx_cutover["stable_identity"],
+        "nginx_php_index_route_identity": (
+            nginx_cutover["stable_identity"]["document_root_identity"]["php_index_route"]
+        ),
         "nginx_pre_gate_capture": nginx_cutover["capture"]["summary_capture"],
         "database_envelope_receipt": receipt["database_envelope_receipt"],
         "database_envelope_staged": receipt["database_envelope"],
@@ -3439,6 +3736,12 @@ def cutover(
             "baseline_before_dependency_mutation": True,
         }
         write_state(state_path, state)
+
+        # This is the last live PHP-FPM settings read before the durable
+        # dependency-mutation boundary.  Its private receipt is what permits
+        # boot-independent emergency containment if FPM later becomes
+        # unreachable while candidate dependencies are live.
+        record_fpm_opcache_before_mutation(state, state_path)
 
         # This durable boundary is written before the first dependency mutation.
         # Every subsequent failure retains/reasserts the reviewed gate and runs
@@ -3726,14 +4029,13 @@ def cutover(
     except BaseException as exception:
         if log_collector is not None:
             log_collector.close()
-        rollback_required = contain_cutover_failure(state, state_path, exception)
-        if rollback_required:
-            rollback_from_state(
-                state,
-                state_path,
-                helper,
-                failure_injector=failure_injector,
-            )
+        handle_cutover_failure(
+            state,
+            state_path,
+            helper,
+            exception,
+            failure_injector=failure_injector,
+        )
         raise
 
 
@@ -4335,10 +4637,14 @@ def recover(state_path: Path, approval_token: str, helper: Path) -> None:
     }:
         raise DeploymentError("Recovery state has invalid front-controller metadata.")
     validate_rollback_state_paths(state, state_path)
-    context = gate_context(
-        state,
-        state_path,
-        allow_frozen_policy_for_exact_existing_gate=True,
+    context = (
+        post_mutation_emergency_gate_context(state, state_path)
+        if dependency_gate.dependency_mutation_has_started(state)
+        else gate_context(
+            state,
+            state_path,
+            allow_frozen_policy_for_exact_existing_gate=True,
+        )
     )
     try:
         decision = dependency_gate.recovery_decision(
@@ -4909,6 +5215,21 @@ def describe() -> None:
                 "nginx_document_root_required": str(
                     environment_controls.EXPECTED_DOCUMENT_ROOT
                 ),
+                "nginx_fpm_socket_required": environment_controls.EXPECTED_FPM_SOCKET,
+                "nginx_script_filename_required": str(
+                    environment_controls.EXPECTED_SCRIPT_FILENAME
+                ),
+                "nginx_php_route_identity_bound_to_release_receipt": True,
+                "pre_mutation_fpm_probe": "current-live-exact-match-required",
+                "post_mutation_emergency_fpm_policy": {
+                    "fallback_trigger": "typed-live-fpm-unavailability-only",
+                    "staging_envelope_required": True,
+                    "immediate_pre_mutation_recheck_receipt_required": True,
+                    "exact_original_or_gate_identity_required": True,
+                    "full_monotonic_wait_required": True,
+                    "http_verification_failure_retains_gate": True,
+                    "boot_independent_rollback_continues": True,
+                },
                 "durable_gate_transition_history": True,
                 "laravel_log_delta": {
                     "rotation_safe": True,

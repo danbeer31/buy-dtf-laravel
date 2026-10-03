@@ -99,11 +99,11 @@
   },
   "fpm_opcache_probe_sha256": "b8b34f87d45a0c000cc0df7917496631320cfbdcca1ff44bc41741ce0d569262",
   "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
-  "gate_helper_sha256": "ae542dbe387406d5b0e0d379f074251d30e93d066f330c1badb16b11caf776bc",
+  "gate_helper_sha256": "b93c08f58a08333120369c1cc75c60631d621c3a8099ca3967065721c45679f5",
   "git_operations": false,
   "handoff": {
     "filename": "HANDOFF.md",
-    "sha256": "8ee888883bf2330c7a5c7d70efe48244122b600067ba030976a53cbe0009e4c1"
+    "sha256": "6539058cf602fc23b03552665faf9a32c6975e29e6cb11fb5b2deb2c7e02afa9"
   },
   "laravel_log_delta": {
     "complete_entry_parser": true,
@@ -118,7 +118,10 @@
   "migration_operations": false,
   "monitor_finalization_is_separate_action": true,
   "nginx_document_root_required": "/var/www/buy-dtf/public",
-  "nginx_identity_helper_sha256": "4beb1fd5e4fabb8d74d2de50b8c96f452ecb6de242ed411c7c0a97304037d192",
+  "nginx_fpm_socket_required": "/run/php/php8.2-fpm.sock",
+  "nginx_identity_helper_sha256": "1243fea2757aca89f586ec4b322b0d23ee1e19b2d027c21bd6523e71e6e6e8e0",
+  "nginx_php_route_identity_bound_to_release_receipt": true,
+  "nginx_script_filename_required": "/var/www/buy-dtf/public/index.php",
   "old_cache_identity": {
     "entries": {
       "packages.php": {
@@ -177,6 +180,16 @@
     "97cb4e8d702b7ceb1b9efde26dba93e6e0f4a833bb55650843fed1c0746f0307",
     "a7657bbfea760be186301503c567042f76739c2954fffbfc76f31c9f4eefede5"
   ],
+  "post_mutation_emergency_fpm_policy": {
+    "boot_independent_rollback_continues": true,
+    "exact_original_or_gate_identity_required": true,
+    "fallback_trigger": "typed-live-fpm-unavailability-only",
+    "full_monotonic_wait_required": true,
+    "http_verification_failure_retains_gate": true,
+    "immediate_pre_mutation_recheck_receipt_required": true,
+    "staging_envelope_required": true
+  },
+  "pre_mutation_fpm_probe": "current-live-exact-match-required",
   "read_only_preflight_available": true,
   "release_root": "/var/www/buy-dtf/storage/app/private/operations/laravel-remember-cookie-v4-releases",
   "reported_app_debug": false,

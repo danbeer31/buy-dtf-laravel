@@ -1,0 +1,161 @@
+{
+  "artifact": "buy-dtf-v4-blocker-local-validation-summary-v1",
+  "external_network_accessed": false,
+  "forbidden_actions_invoked": [],
+  "frozen_inputs": {
+    "gate_helper_sha256": "b93c08f58a08333120369c1cc75c60631d621c3a8099ca3967065721c45679f5",
+    "handoff_sha256": "6539058cf602fc23b03552665faf9a32c6975e29e6cb11fb5b2deb2c7e02afa9",
+    "nginx_identity_helper_sha256": "1243fea2757aca89f586ec4b322b0d23ee1e19b2d027c21bd6523e71e6e6e8e0",
+    "runner_sha256": "464bd6a28c8bed84c90176d42bc88d22eea5977c2698d5cddb7fe3eca50f9558"
+  },
+  "gate_rehearsal": {
+    "canonical_sha256": "fc520b9298fc446dd62c046ac0435742f3f7f3abec1c98533096ec91d92b5721",
+    "receipt_sha256": "3a49fb00ce4e7958bf8c6c26fe5b60e993e5768458c5bd6f66b4eb5d85f2e8f8",
+    "scenario_count": 28,
+    "shared_monotonic_revalidation_waits_verified": 48,
+    "status": "pass"
+  },
+  "generated_at_utc": "2026-10-03T19:02:13.476808Z",
+  "harness_setup_events": [
+    {
+      "failure_receipt_sha256": "c96765f866e762323cdb1dfbfa4100e6df0312b81e650b8d03dfe04361ccede5",
+      "issue": "initial rehearsal parent path exceeded UNIX socket path limit",
+      "status": "corrected_before_official_runs"
+    },
+    {
+      "failure_receipt_sha256": "157402ecf5590f182e753b5d71bb65f74e189778596de696969023cdf23cfc81",
+      "issue": "short rehearsal parent initially lacked www-data traverse permission",
+      "status": "corrected_before_official_runs"
+    }
+  ],
+  "loopback_only": true,
+  "opcache_rehearsals": [
+    {
+      "cache_busters_unique": true,
+      "canonical_sha256": "aac8f08dd5e9c83b7f895fed0d32b7b7f4634e8e1ffd0879435e0d57979df2a6",
+      "file_update_protection_seconds": 2,
+      "final_original_statuses": [
+        200,
+        200
+      ],
+      "gate_probe_statuses": [
+        503,
+        503,
+        503
+      ],
+      "gate_wait_elapsed_seconds": 11.000277977,
+      "immediate_after_gate_status": 200,
+      "immediate_after_restore_status": 503,
+      "minimum_wait_seconds": 11,
+      "php_version": "8.3.6",
+      "private_evidence_entries": 26,
+      "private_evidence_modes": [
+        384
+      ],
+      "production_accessed": false,
+      "receipt_sha256": "086273a502fe579ae1f63043ca487ba2a550b039b593bc108fd764ffce59d413",
+      "restore_wait_elapsed_seconds": 11.000833779,
+      "revalidate_freq_seconds": 4,
+      "run": 1,
+      "sapi": "fpm-fcgi",
+      "status": "pass",
+      "system_services_changed": false,
+      "validate_timestamps": true
+    },
+    {
+      "cache_busters_unique": true,
+      "canonical_sha256": "94cc267d01b2633917e762de932369f8ea8249be5aa1e4c755b38871d2bd0e19",
+      "file_update_protection_seconds": 2,
+      "final_original_statuses": [
+        200,
+        200
+      ],
+      "gate_probe_statuses": [
+        503,
+        503,
+        503
+      ],
+      "gate_wait_elapsed_seconds": 11.001157862,
+      "immediate_after_gate_status": 200,
+      "immediate_after_restore_status": 503,
+      "minimum_wait_seconds": 11,
+      "php_version": "8.3.6",
+      "private_evidence_entries": 26,
+      "private_evidence_modes": [
+        384
+      ],
+      "production_accessed": false,
+      "receipt_sha256": "661d74ab136caccadb777829674210997d176483dc74fe1560b9d1cd96a22a21",
+      "restore_wait_elapsed_seconds": 11.004206857,
+      "revalidate_freq_seconds": 4,
+      "run": 2,
+      "sapi": "fpm-fcgi",
+      "status": "pass",
+      "system_services_changed": false,
+      "validate_timestamps": true
+    },
+    {
+      "cache_busters_unique": true,
+      "canonical_sha256": "264c2c6d25ed2ccffd4ea7f40925d7788f182a42399b1fa2336cb57b53c82704",
+      "file_update_protection_seconds": 2,
+      "final_original_statuses": [
+        200,
+        200
+      ],
+      "gate_probe_statuses": [
+        503,
+        503,
+        503
+      ],
+      "gate_wait_elapsed_seconds": 11.001819286,
+      "immediate_after_gate_status": 200,
+      "immediate_after_restore_status": 503,
+      "minimum_wait_seconds": 11,
+      "php_version": "8.3.6",
+      "private_evidence_entries": 26,
+      "private_evidence_modes": [
+        384
+      ],
+      "production_accessed": false,
+      "receipt_sha256": "476d8954a02c8022d396c4246b484db1a5220a95a30afde86bbe9da0457482e9",
+      "restore_wait_elapsed_seconds": 11.003444675,
+      "revalidate_freq_seconds": 4,
+      "run": 3,
+      "sapi": "fpm-fcgi",
+      "status": "pass",
+      "system_services_changed": false,
+      "validate_timestamps": true
+    }
+  ],
+  "production_accessed": false,
+  "runner_describe": {
+    "artifact": "buy-dtf-laravel-remember-cookie-dependency-review-v4",
+    "receipt_sha256": "2dcddbf726e1c3798deb8219a7d7669fdbb870b5082cdf46186c0c1155677d3e",
+    "status": "pass"
+  },
+  "runner_rehearsal": {
+    "receipt_sha256": "b443b302333ef162f757053ccc5fe24b213f6e3e5f8a06439b7b8ba2c1585891",
+    "scenario_count": 25,
+    "status": "pass"
+  },
+  "scratch_root": "/tmp/buy-dtf-v4-blocker-local-validation-20261003T135100Z",
+  "status": "pass",
+  "unittest_discovery": {
+    "root": {
+      "gid": 0,
+      "log_sha256": "f15a8e7d668e0909378153810ee7127efda1f1a9e7955b4724d3d160ce274f48",
+      "skipped": 2,
+      "status": "pass",
+      "tests": 123,
+      "uid": 0
+    },
+    "uid1000": {
+      "gid": 1000,
+      "log_sha256": "a2a2603f8bc44426344de85a9c0d7ef29d8b50027ba5d81bc916ea910beef4ee",
+      "skipped": 3,
+      "status": "pass",
+      "tests": 123,
+      "uid": 1000
+    }
+  }
+}

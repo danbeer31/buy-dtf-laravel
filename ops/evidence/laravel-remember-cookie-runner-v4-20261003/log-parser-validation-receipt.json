@@ -25,7 +25,7 @@
     "candidate_related_error"
   ],
   "fixture_manifest_sha256": "41212c2c3a2ff1bb89ecdb06b74860b891f637ca247919d0983dbe2e51e276fb",
-  "generated_at_utc": "2026-10-03T17:21:28Z",
+  "generated_at_utc": "2026-10-03T19:09:05Z",
   "genuine_error_fixtures": {
     "genuine-caught-failure-message.txt": {
       "sha256": "d15655149998cb9d5d044150696edb78798b08bfba616b4058c88c6877538817",
@@ -117,8 +117,8 @@
   },
   "status": "pass",
   "suite_receipts": {
-    "runner-unit-tests-root.txt": "682e49bd4bf417e92cb49e0375251859cd087951c36fcb97f3f65d7dcc62880f",
-    "runner-unit-tests-uid1000.txt": "ac130cbe574b74c7ecb42480204378a39156955f96073273516b340ce0142893"
+    "runner-unit-tests-root.txt": "f15a8e7d668e0909378153810ee7127efda1f1a9e7955b4724d3d160ce274f48",
+    "runner-unit-tests-uid1000.txt": "a2a2603f8bc44426344de85a9c0d7ef29d8b50027ba5d81bc916ea910beef4ee"
   },
   "test_count": 22,
   "test_module": "ops/deployment/test_laravel_log_delta.py",

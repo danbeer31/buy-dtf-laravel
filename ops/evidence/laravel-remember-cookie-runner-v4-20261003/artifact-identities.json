@@ -33,7 +33,7 @@
     },
     "nginx_identity_helper": {
       "path": "ops/deployment/laravel_nginx_identity.py",
-      "sha256": "4beb1fd5e4fabb8d74d2de50b8c96f452ecb6de242ed411c7c0a97304037d192"
+      "sha256": "1243fea2757aca89f586ec4b322b0d23ee1e19b2d027c21bd6523e71e6e6e8e0"
     },
     "opcache_rehearsal": {
       "path": "ops/deployment/rehearse_laravel_dependency_opcache.py",
@@ -49,7 +49,7 @@
     },
     "runner": {
       "path": "ops/deployment/laravel_remember_cookie_dependency_deploy.py",
-      "sha256": "e2d735c9c9c86c8bd38be3085b3372a2d2079ada9866d87487e8aa486dfc79f0"
+      "sha256": "464bd6a28c8bed84c90176d42bc88d22eea5977c2698d5cddb7fe3eca50f9558"
     },
     "runtime_helper": {
       "path": "ops/deployment/laravel_remember_cookie_runtime_probe.php",
@@ -57,7 +57,7 @@
     },
     "static_gate_helper": {
       "path": "ops/deployment/laravel_dependency_gate.py",
-      "sha256": "ae542dbe387406d5b0e0d379f074251d30e93d066f330c1badb16b11caf776bc"
+      "sha256": "b93c08f58a08333120369c1cc75c60631d621c3a8099ca3967065721c45679f5"
     }
   },
   "database": {
@@ -77,8 +77,8 @@
     "vendor_complete_inventory_sha256": "c646726893e4d74b42343218f891409e925541d9bf8ab0563ff98a9c998b8fd5",
     "vendor_ownership_mode_sha256": "db8aba0a4f49d0cecaeaac0b5b742c5f94b1a514a8d4452c361cb61e2dbacf0d"
   },
-  "generated_at_utc": "2026-10-03T17:22:38Z",
-  "handoff_sha256": "8ee888883bf2330c7a5c7d70efe48244122b600067ba030976a53cbe0009e4c1",
+  "generated_at_utc": "2026-10-03T19:09:05Z",
+  "handoff_sha256": "6539058cf602fc23b03552665faf9a32c6975e29e6cb11fb5b2deb2c7e02afa9",
   "permanent_retirements": {
     "gate_helper_sha256s": [
       "1269a277e931dee346293bed4ea0f6d029cf9ded7810127a0ef547289ce51f80"
@@ -96,13 +96,14 @@
     "authorized": false,
     "captured_configuration_or_application_data": false,
     "detail_receipt": "root-cause-receipt.json",
-    "detail_receipt_sha256": "e377fc7a7f9cdcd47bcc0b2d1ba6859babc3820153d6f175764fb15dd63256ea",
+    "detail_receipt_sha256": "8c2b7be2279d22d8b190a8b31d6a1743c59f6562eaff6202ecd342965fe41260",
     "eligible_as_stage_evidence": false,
     "production_accessed": true,
     "production_mutation": false,
     "read_only_sessions": 4
   },
   "redacted_56_entry_fixture_sha256": "d8bf0641949f96ac39240e92f0b5545c4ac5fb6a8fbfa4af2fe2f6029dd27f53",
+  "reviewed_v4_predecessor_commit": "25fa7c737e969f8dffa251fd5170f6c7064c69f5",
   "stage_or_deployment_performed": false,
   "static_gate_sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4",
   "status": "frozen-for-independent-review"

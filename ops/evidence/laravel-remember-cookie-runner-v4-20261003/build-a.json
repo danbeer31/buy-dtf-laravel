@@ -62,7 +62,7 @@
         "--no-ansi"
       ],
       "exit_code": 0,
-      "seconds": 0.611,
+      "seconds": 0.547,
       "stderr_sha256": "405be96fa53ca39ceaa2d4c24864712d6bba7677367e5c036473dfbf1e177c29",
       "stdout_sha256": "e464a6f19a008d852b61fd0966a47b663d20d70ccfba0b30edd6483a787f15f5"
     },
@@ -78,7 +78,7 @@
         "--no-ansi"
       ],
       "exit_code": 0,
-      "seconds": 1.465,
+      "seconds": 1.256,
       "stderr_sha256": "405be96fa53ca39ceaa2d4c24864712d6bba7677367e5c036473dfbf1e177c29",
       "stdout_sha256": "4b67c368bb0370bd36f0a332107a621fffe1db8c010d9760e4a18efe16313058"
     },
@@ -95,7 +95,7 @@
         "--no-ansi"
       ],
       "exit_code": 0,
-      "seconds": 4.385,
+      "seconds": 3.724,
       "stderr_sha256": "3e00d0f3eea408e237106c588732690d4ed9c5610890b28891af4a922213af57",
       "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
@@ -109,7 +109,7 @@
         "--no-ansi"
       ],
       "exit_code": 0,
-      "seconds": 0.236,
+      "seconds": 0.222,
       "stderr_sha256": "50eb805af63be40353a1584949817baa5d622d92a2c094fbcd47a0dc62f8385b",
       "stdout_sha256": "d2cd5b74dec8db1076279b5e764fdea9132e1162ee7212038a509f934ce4f34b"
     },
@@ -124,7 +124,7 @@
         "--no-ansi"
       ],
       "exit_code": 0,
-      "seconds": 0.34,
+      "seconds": 0.287,
       "stderr_sha256": "405be96fa53ca39ceaa2d4c24864712d6bba7677367e5c036473dfbf1e177c29",
       "stdout_sha256": "43add299dc97ecbd90ec2dc456ef5a0bd824bb9abdae2a3d7cdb520e21f8e86d"
     },
@@ -137,7 +137,7 @@
         "--no-ansi"
       ],
       "exit_code": 0,
-      "seconds": 0.293,
+      "seconds": 0.291,
       "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "stdout_sha256": "1306c598a02c1f6569bca56d18f0b5710b08dbab9e8d5636f9655701c917188f"
     },
@@ -150,7 +150,7 @@
         "--no-ansi"
       ],
       "exit_code": 0,
-      "seconds": 0.268,
+      "seconds": 0.236,
       "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "stdout_sha256": "cf18de6815e951980f6c83d466572a8c39eb6162abb86412593b3c72bb831dc0"
     }
@@ -160,13 +160,13 @@
   "composer_lock_sha256": "77055fc8acf891496b0b356bb034d7935c04989a3751f52b788ecd1b7999206d",
   "composer_sha256": "3b3f9503a2d46590170e45edd29734197e797cea545b396d0b2823cac8ef4643",
   "composer_version": "Composer version 2.9.3 2025-12-30 13:40:17",
-  "created_at_utc": "2026-10-03T17:04:25Z",
+  "created_at_utc": "2026-10-03T18:54:55Z",
   "extraction": "system-unzip",
   "handoff": {
     "filename": "HANDOFF.md",
-    "sha256": "8ee888883bf2330c7a5c7d70efe48244122b600067ba030976a53cbe0009e4c1"
+    "sha256": "6539058cf602fc23b03552665faf9a32c6975e29e6cb11fb5b2deb2c7e02afa9"
   },
-  "label": "linux-system-unzip",
+  "label": "build-a-system-unzip",
   "laravel_pail_present": false,
   "package_versions": {
     "guzzlehttp/guzzle": "7.15.2",
@@ -178,7 +178,7 @@
   "php_sha256": "1c564e6bafa56d03359c3774be6f4c77d0edecabd2075e18556940a56747c8d7",
   "php_version": "8.3.6",
   "route_count": 178,
-  "runner_sha256": "e2d735c9c9c86c8bd38be3085b3372a2d2079ada9866d87487e8aa486dfc79f0",
+  "runner_sha256": "464bd6a28c8bed84c90176d42bc88d22eea5977c2698d5cddb7fe3eca50f9558",
   "shadow_source_manifest": {
     "files": 326,
     "sha256": "3909bdc2303b5c578135859c847f311cd84b827e62ac4e5dbce3d2297f6da71f"
@@ -204,11 +204,11 @@
         "--regid=33",
         "--clear-groups",
         "/usr/bin/php8.3",
-        "/tmp/buydtf-remember-v4-build-a/uid33-vendor-probe.php",
-        "/tmp/buydtf-remember-v4-build-a/shadow"
+        "/tmp/buy-dtf-v4-emergency-build-validation-20261003T185431Z/build-a/uid33-vendor-probe.php",
+        "/tmp/buy-dtf-v4-emergency-build-validation-20261003T185431Z/build-a/shadow"
       ],
       "exit_code": 0,
-      "seconds": 0.081,
+      "seconds": 0.064,
       "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "stdout_sha256": "5c172d0d657f189bba4a516fcae8241b958f90b9cf7f80c3d5baaeb039120fc9"
     },

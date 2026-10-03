@@ -1,0 +1,22 @@
+{
+  "aggregates": {
+    "artifact-identities.json": "fef4ab04c37b98ec875551728326257b850aa90731cc6fc65335fb79878b59fc",
+    "database-envelope-validation-receipt.json": "40094be593bd9704adc31e9fce1a536b645335d2996c44c0cd34cd1fad9fe1d9",
+    "environment-controls-validation-receipt.json": "c422cdd6d5604a655bdd21315f68fc239889ff440b43363901a7207236d2ee04",
+    "frontend-validation-receipt.json": "a6372b80cab337b43d5be9a2f3ccd5228669169bf21005fc530ab8b4bfa4520a",
+    "log-parser-validation-receipt.json": "2b492cc3b9e616e34d1e5e01840872ea5af9cdd0fb71eaff8fc5f4ec872f5b6c",
+    "opcache-rehearsal-repeatability.json": "0fb685001e1ec5701c693ea80b6213d0a666629f25a88e58b3753b003b0197d4",
+    "rollback-set.json": "064fe2f6df0a5d1a4ea442edaab3370d9a4f544cca91172cf180667ca7050044",
+    "root-cause-receipt.json": "8c2b7be2279d22d8b190a8b31d6a1743c59f6562eaff6202ecd342965fe41260",
+    "test-results.json": "b73e90a8f5e09d19acf5744c01a5f73f62c89b92d06de9a8cf6804253e933d24",
+    "vendor-mode-ownership-policy.json": "dce7ff9dc45f36f450ebac60291b3a0ad0bc12c8efb818c9fb2cf5a1c601b224"
+  },
+  "generated_at_utc": "2026-10-03T19:09:05Z",
+  "network_accessed": false,
+  "output": "/mnt/c/Users/danie/AppData/Local/Temp/buydtf-v4-emergency-evidence-final-20261003",
+  "production_accessed": false,
+  "repo": "/mnt/c/Users/danie/projects/buy-dtf-laravel-remember-cookie-v2-20261002",
+  "scratch_evidence": "/mnt/c/Users/danie/AppData/Local/Temp/buydtf-v4-emergency-evidence-final-20261003",
+  "status": "pass",
+  "tracked_files_written": false
+}

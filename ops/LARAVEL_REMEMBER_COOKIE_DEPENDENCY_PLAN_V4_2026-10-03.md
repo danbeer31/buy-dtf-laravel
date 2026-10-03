@@ -15,10 +15,19 @@ Branch: `fix/laravel-12.69.1-remember-cookie-v4-20261003`
 
 Reviewed base: `e7c839947a5bdf49776dd184926a28d0756196ae`
 
+Immediate reviewed predecessor:
+`25fa7c737e969f8dffa251fd5170f6c7064c69f5`
+
 This revision corrects the PHP-FPM OPcache revalidation control exposed by
 the failed v3 cutover. It does not change the accepted Laravel 12.69.1
 dependency candidate, application source, production schema, configuration,
 or capabilities.
+
+Independent review accepted that predecessor's OPcache timing control but
+found one post-mutation containment defect: a missing live FPM probe while the
+original front controller was serving could stop before installing the gate or
+rolling dependencies back. This replacement keeps live FPM proof mandatory
+before mutation and adds a receipt-bound emergency path after mutation.
 
 ## Permanently retired controls
 
@@ -195,6 +204,28 @@ rollback containment, pre-mutation original restoration, post-rollback
 restoration, and explicit recovery. Original health is never probed before
 the restoration wait and final identity check complete.
 
+### Post-mutation emergency envelope
+
+The staged FPM envelope is checked again immediately before the durable
+dependency-mutation boundary. The runner writes and fsyncs a private receipt
+that binds the staged release receipt, FPM probe helper, complete normalized
+envelope, derived policy, and exact equality with the current live FPM SAPI.
+Dependency mutation cannot begin until that receipt exists.
+
+Pre-mutation gate installation always re-reads FPM and never uses frozen-only
+evidence. After mutation, a separate emergency primitive may fall back to the
+staged and immediately rechecked envelope only when the live FastCGI probe is
+unavailable. It rejects a reachable but changed or malformed response. It also
+rejects missing, malformed, mismatched, nonprivate, relocated, or altered
+receipt evidence with an explicit `DeploymentError`.
+
+The emergency path accepts only the exact reviewed original front controller
+or exact reviewed gate with `1000:1000/0644` metadata. It installs or reasserts
+the exact gate, performs the complete shared monotonic wait, records durable
+containment, and continues the boot-independent rollback. If gate HTTP
+verification fails after mutation, it retains the exact gate and still restores
+the Laravel 12.69.0 lock, vendor, and cache set.
+
 ## Gate and HTTP verification
 
 After the wait, the runner verifies the exact v4 gate bytes, SHA-256,
@@ -230,7 +261,13 @@ read-only with the exact noninteractive command
 The receipt freezes root-owned, non-writable sudo/nginx executable metadata,
 nginx version/build identity, the complete effective-configuration hash,
 selected HTTPS server-block identity, server name, listen route, document-root
-text, and resolved path. No sudoers change is part of this candidate. Existing
+text, and resolved path. It also proves that the effective `buy-dtf.com`
+`/index.php` request selects a PHP handler with
+`fastcgi_pass unix:/run/php/php8.2-fpm.sock` and resolves its exact-case
+`SCRIPT_FILENAME` parameter to `/var/www/buy-dtf/public/index.php`. The receipt
+binds the location selector and order, handler-block hash, socket, source
+expression, resolved filename, and route-identity hash. No sudoers change is
+part of this candidate. Existing
 noninteractive permission is a stage prerequisite; its absence fails closed
 before candidate construction or an initial gate installation. The accidental
 read-only probe used plain non-root `nginx -T`, captured no configuration, and
@@ -316,6 +353,8 @@ When separately authorized, Phase 1 will:
 3. capture and freeze the effective PHP-FPM OPcache envelope and calculated
    wait without changing FPM;
 4. capture and validate the effective nginx route and exact document root;
+   bind the reviewed PHP-FPM socket and resolved `SCRIPT_FILENAME` identity in
+   the release receipt;
 5. create only a new private v4 shadow release beneath a new v4 release root;
 6. reproduce the exact accepted Laravel 12.69.1 lock, vendor, ownership/mode,
    inventory, autoload, cache, source, platform, discovery, route, and audit
@@ -351,12 +390,13 @@ authorization.
 
 Before dependency mutation, any failure restores the exact original through
 the shared wait and verifies normal health. After mutation begins, failure
-retains or reasserts the exact gate through the same wait, records durable
-containment, and runs the reviewed boot-independent rollback to Laravel
-12.69.0. Recovery uses only the exact v4 durable state and a separately
-reviewed recovery authorization. If the FPM settings cannot guarantee path
-revalidation, recovery fails closed and requires a separately reviewed FPM
-reload plan; it never substitutes CLI OPcache manipulation.
+uses the validated staging envelope and immediately pre-mutation receipt if a
+fresh FPM probe is unavailable, retains or reasserts the exact gate through the
+same wait, records durable containment, and runs the reviewed boot-independent
+rollback to Laravel 12.69.0 even when HTTP gate verification is unavailable.
+Recovery uses only the exact v4 durable state and a separately reviewed
+recovery authorization. A reachable changed FPM envelope fails closed; the
+emergency fallback never substitutes CLI OPcache manipulation.
 
 The transparency dependency envelope may be frozen only after Laravel
 12.69.1 is successfully deployed, its monitor passes, and independent log

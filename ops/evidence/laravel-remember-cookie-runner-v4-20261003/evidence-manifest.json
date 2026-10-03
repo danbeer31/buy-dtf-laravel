@@ -1,44 +1,56 @@
 {
-  "artifact": "buy-dtf-laravel-remember-cookie-evidence-manifest-v4",
+  "artifact": "buy-dtf-laravel-remember-cookie-evidence-manifest-v4-replacement",
   "base_commit": "e7c839947a5bdf49776dd184926a28d0756196ae",
   "branch": "fix/laravel-12.69.1-remember-cookie-v4-20261003",
-  "file_count_excluding_manifest_and_sha256sums": 74,
+  "file_count_excluding_manifest_and_sha256sums": 80,
   "files": [
     {
-      "bytes": 7936,
+      "bytes": 10211,
       "classification": "review-document",
       "path": "HANDOFF.md",
-      "sha256": "8ee888883bf2330c7a5c7d70efe48244122b600067ba030976a53cbe0009e4c1"
+      "sha256": "6539058cf602fc23b03552665faf9a32c6975e29e6cb11fb5b2deb2c7e02afa9"
     },
     {
-      "bytes": 9691,
+      "bytes": 9659,
       "classification": "review-document",
       "path": "README.md",
-      "sha256": "e864e49044dd70a6779bbf5cfeddff6cf93a6b73affe4c2599de017b866f44b5"
+      "sha256": "c035a033471b3015671854c16020681715379e84863afa3a85927c2000d481ad"
     },
     {
-      "bytes": 8026,
+      "bytes": 9802,
       "classification": "review-document",
       "path": "ROOT_CAUSE.md",
-      "sha256": "c0cc1153269518836673d836137245811b531b0062eb15cb4b0e464827d167ec"
+      "sha256": "1948b7091211dd52ef4958ffd6ed4cbf7c820e37316324a931e0607c46f9cd01"
     },
     {
-      "bytes": 4708,
+      "bytes": 4862,
       "classification": "review-document",
       "path": "VALIDATION.md",
-      "sha256": "cb158184eafb483080035f2de7d73d09fd8405c46229bdebcf65d4485d15ba53"
+      "sha256": "156c7304f29ea69a2335b03fe4dfabc4e0e0198681f5741f0bcd7169cf4ccff7"
     },
     {
-      "bytes": 5393,
+      "bytes": 1536,
+      "classification": "aggregate-generation-receipt",
+      "path": "aggregate-generator-output.json",
+      "sha256": "b41692eb675874c457372bb9d4bfe7e29df2e1ec3231082804c31ac430090a6b"
+    },
+    {
+      "bytes": 426,
+      "classification": "aggregate-generation-input",
+      "path": "aggregate-inputs.json",
+      "sha256": "265e0f16680c5fd4c2eb3b3334bd59f7bd256c8547300c3ae1259d90bffc8b40"
+    },
+    {
+      "bytes": 5473,
       "classification": "receipt-or-manifest",
       "path": "artifact-identities.json",
-      "sha256": "e8830a0f3c74f0b7a7295e31b787748854d0f33a1d9286694ec0b16c48a778d7"
+      "sha256": "fef4ab04c37b98ec875551728326257b850aa90731cc6fc65335fb79878b59fc"
     },
     {
       "bytes": 4973,
       "classification": "receipt-or-manifest",
       "path": "atomic-rehearsal-receipt.json",
-      "sha256": "321320d93c5f41c96f522977b892a1165964a9dec9eb9a3036e0eaef4b6699ed"
+      "sha256": "b443b302333ef162f757053ccc5fe24b213f6e3e5f8a06439b7b8ba2c1585891"
     },
     {
       "bytes": 85,
@@ -137,10 +149,10 @@
       "sha256": "5c172d0d657f189bba4a516fcae8241b958f90b9cf7f80c3d5baaeb039120fc9"
     },
     {
-      "bytes": 8105,
+      "bytes": 8180,
       "classification": "receipt-or-manifest",
       "path": "build-a.json",
-      "sha256": "6eaaf4826db1bef6eb52b3fd98d7d71b1fe5124b3358a99ce4b972cd71277060"
+      "sha256": "52877a50e6d4e0253cea8cbfaab76e55d9a910cfa55b410096dd6f363429317e"
     },
     {
       "bytes": 85,
@@ -239,34 +251,52 @@
       "sha256": "5c172d0d657f189bba4a516fcae8241b958f90b9cf7f80c3d5baaeb039120fc9"
     },
     {
-      "bytes": 8094,
+      "bytes": 8168,
       "classification": "receipt-or-manifest",
       "path": "build-b.json",
-      "sha256": "4a7d7dc5e20e94cda96b4b9ec7ba4175748fb48b54209d6f03166fcb9d1ed01c"
+      "sha256": "44a54c40a10d8ed961c524548f6cbd06607f32873520c1030e6fccf422487ff6"
     },
     {
       "bytes": 3113,
       "classification": "receipt-or-manifest",
       "path": "database-envelope-validation-receipt.json",
-      "sha256": "f843199040f4e18c2e2d53b33e859e7daad19e1e13e27a7972b29a309963703f"
+      "sha256": "40094be593bd9704adc31e9fce1a536b645335d2996c44c0cd34cd1fad9fe1d9"
     },
     {
-      "bytes": 1766,
+      "bytes": 3044,
       "classification": "receipt-or-manifest",
       "path": "environment-controls-validation-receipt.json",
-      "sha256": "d829f0690cce4e9658a1803a969cee04933bb4878d79a0862e9b9d2f320d906d"
+      "sha256": "c422cdd6d5604a655bdd21315f68fc239889ff440b43363901a7207236d2ee04"
     },
     {
-      "bytes": 932,
+      "bytes": 765,
       "classification": "receipt-or-manifest",
       "path": "frontend-validation-receipt.json",
-      "sha256": "5f1d496119eff9d084bbc9c27a84b83cb027d118ff211a6419b53c31418b06d1"
+      "sha256": "a6372b80cab337b43d5be9a2f3ccd5228669169bf21005fc530ab8b4bfa4520a"
     },
     {
-      "bytes": 147283,
+      "bytes": 150589,
       "classification": "receipt-or-manifest",
       "path": "gate-transition-rehearsal-receipt.json",
-      "sha256": "afae804d5737be4764f006874b7b93fa8caf79fb8d0dc3542f0d27ad8171bbf2"
+      "sha256": "3a49fb00ce4e7958bf8c6c26fe5b60e993e5768458c5bd6f66b4eb5d85f2e8f8"
+    },
+    {
+      "bytes": 2963,
+      "classification": "receipt-or-manifest",
+      "path": "local-build-validation-summary.json",
+      "sha256": "8a459b35eeeac51c92a42b63ae2606b14fdc9728f3295c734e05474975c60b09"
+    },
+    {
+      "bytes": 4888,
+      "classification": "receipt-or-manifest",
+      "path": "local-validation-evidence-manifest.json",
+      "sha256": "2bb1a6ac573b93305f382d58086a69ab8b1b63e542646456c4cdc744d88f0e05"
+    },
+    {
+      "bytes": 5386,
+      "classification": "receipt-or-manifest",
+      "path": "local-validation-summary.json",
+      "sha256": "f3af437c653bbb5c09af01534e8a949d84b098746315b5dec1b09f158b048fcb"
     },
     {
       "bytes": 888,
@@ -278,43 +308,43 @@
       "bytes": 4018,
       "classification": "receipt-or-manifest",
       "path": "log-parser-validation-receipt.json",
-      "sha256": "4c1d2453e46d30c295d1a55ee2feadf05deea7083868352008be5d04854718af"
+      "sha256": "2b492cc3b9e616e34d1e5e01840872ea5af9cdd0fb71eaff8fc5f4ec872f5b6c"
     },
     {
-      "bytes": 24164,
+      "bytes": 11628,
       "classification": "validation-log",
       "path": "npm-build.txt",
-      "sha256": "048ab09638c099b7a65e56488ffa5f9ec2ab89bbbfccd531b657c960164dc8cb"
+      "sha256": "b240f06794c0ebf1a6e6217157205281352757379ba2a9a8287d731ab1ae915f"
     },
     {
-      "bytes": 1436,
+      "bytes": 425,
       "classification": "validation-log",
       "path": "npm-ci.txt",
-      "sha256": "c3f745406fc433d12b32eb6c8e661783457b575dbdd4d20b1a9f0bd08e5e4d82"
+      "sha256": "517fc18e4035b308c4822b1fc55f49be1629e9055c87a11f7d5c6fab6626b1ea"
     },
     {
       "bytes": 19454,
       "classification": "receipt-or-manifest",
       "path": "opcache-production-like-rehearsal-receipt.json",
-      "sha256": "e5af0fe207c410b3aea2ec2cc5864acd4346fc31462530a35d53f13a455359d8"
+      "sha256": "086273a502fe579ae1f63043ca487ba2a550b039b593bc108fd764ffce59d413"
     },
     {
       "bytes": 19454,
       "classification": "receipt-or-manifest",
       "path": "opcache-production-like-rehearsal-repeat-1.json",
-      "sha256": "cc61e72542c2b798eca0de3afc88bb6de0cd88f6e7c2a5e54591e10c355e62c6"
+      "sha256": "661d74ab136caccadb777829674210997d176483dc74fe1560b9d1cd96a22a21"
     },
     {
       "bytes": 19454,
       "classification": "receipt-or-manifest",
       "path": "opcache-production-like-rehearsal-repeat-2.json",
-      "sha256": "20c56ea9adfa736654483ab9948f664400aa75769f437bfdc1d875824f57a651"
+      "sha256": "476d8954a02c8022d396c4246b484db1a5220a95a30afde86bbe9da0457482e9"
     },
     {
       "bytes": 4581,
       "classification": "receipt-or-manifest",
       "path": "opcache-rehearsal-repeatability.json",
-      "sha256": "d1c3af8b62ee08f86277ccb773e349ff90f41102a235fa3ec0772976c6baf486"
+      "sha256": "0fb685001e1ec5701c693ea80b6213d0a666629f25a88e58b3753b003b0197d4"
     },
     {
       "bytes": 162,
@@ -329,16 +359,16 @@
       "sha256": "9cfcb4a1e707f0f19d517dd83eaadd844a19dbea47cbf50835c7f51730438486"
     },
     {
-      "bytes": 4173,
+      "bytes": 4210,
       "classification": "receipt-or-manifest",
       "path": "php-8.2.30-platform-receipt.json",
-      "sha256": "19855bc41a90d6ed459d1975dbb8833ab19cf61ff654d8f2562d714c17822b6c"
+      "sha256": "da3c0d23e120c8ff5ee7be95949cd260be08e943101dbf3249aaf9caf2d0da23"
     },
     {
-      "bytes": 71,
+      "bytes": 330,
       "classification": "validation-log",
       "path": "php-8.2.30-platform.stderr",
-      "sha256": "63871553cd792a777ff916c8d57fb5c503e5c62403caaa30ef73b27fe1f53897"
+      "sha256": "a861c3978fe99f4a03f43c510d094966b975c61fb29688c176542af5180ce0bc"
     },
     {
       "bytes": 2653,
@@ -353,92 +383,98 @@
       "sha256": "24786bdc66d5d0cfc767f23e162190b5cbf5a93adb95db7a994c50929998df9f"
     },
     {
-      "bytes": 10962,
+      "bytes": 11012,
       "classification": "validation-log",
       "path": "phpunit-full.txt",
-      "sha256": "b1fa24f968dcae8f9773bd35100793a0f386973554f67f69cc8c83402f1e7160"
+      "sha256": "a91d7ba61fdfdba01fa3a391a861a44deb9e38a98dd66f2205da3bf6130b6856"
     },
     {
-      "bytes": 13316,
+      "bytes": 2143,
+      "classification": "receipt-or-manifest",
+      "path": "post-validation-identities.json",
+      "sha256": "962fce4605efaeedfc02c3f1cd4fc32da3bc3fea986da35380b692bbd9928f3a"
+    },
+    {
+      "bytes": 14598,
       "classification": "receipt-or-manifest",
       "path": "preparation-scope-verification.json",
-      "sha256": "e486f840aa15370dd5c4b446b174aca9f9fbd7bcd442627ce2ad54e62078f6b3"
+      "sha256": "7628b0da933b9740125dd6723ee1338a38047e1c7d35f0ea753cd0375da4bc69"
     },
     {
-      "bytes": 5490,
+      "bytes": 2637,
       "classification": "receipt-or-manifest",
       "path": "privacy-scan-receipt.json",
-      "sha256": "a5861b5377d3d2121544091655c2bfa83c4fe3fce529c3d00bb3d83e1fc1f770"
+      "sha256": "fea35eef9ccf9636c1a1bb883c69e9f32dfc33775d11242690d04b2f1ff2fe57"
     },
     {
       "bytes": 271,
       "classification": "validation-log",
       "path": "remember-cookie-regression.txt",
-      "sha256": "48dec0fd4625e8aa4f7dc9296385d0e9970243cd143ad4daab27f52ddbd7c823"
+      "sha256": "a10edefe8c292069f38b00961efed79ac1e757ea28f9a4e1eff11cfeb3536b74"
     },
     {
       "bytes": 1169,
       "classification": "receipt-or-manifest",
       "path": "rollback-set.json",
-      "sha256": "bac8f1ee7cd229460563f8a22b147a2a2819e5850b948499d3553dfc75598beb"
+      "sha256": "064fe2f6df0a5d1a4ea442edaab3370d9a4f544cca91172cf180667ca7050044"
     },
     {
-      "bytes": 6802,
+      "bytes": 8713,
       "classification": "receipt-or-manifest",
       "path": "root-cause-receipt.json",
-      "sha256": "e377fc7a7f9cdcd47bcc0b2d1ba6859babc3820153d6f175764fb15dd63256ea"
+      "sha256": "8c2b7be2279d22d8b190a8b31d6a1743c59f6562eaff6202ecd342965fe41260"
     },
     {
-      "bytes": 8002,
+      "bytes": 8665,
       "classification": "receipt-or-manifest",
       "path": "runner-describe.json",
-      "sha256": "6986cbf1374052126dc136dd5950d1ce068b3880a58866dc8f8ec0c58264de52"
+      "sha256": "2dcddbf726e1c3798deb8219a7d7669fdbb870b5082cdf46186c0c1155677d3e"
     },
     {
-      "bytes": 22473,
+      "bytes": 24263,
       "classification": "validation-log",
       "path": "runner-unit-tests-root.txt",
-      "sha256": "682e49bd4bf417e92cb49e0375251859cd087951c36fcb97f3f65d7dcc62880f"
+      "sha256": "f15a8e7d668e0909378153810ee7127efda1f1a9e7955b4724d3d160ce274f48"
     },
     {
-      "bytes": 22501,
+      "bytes": 24297,
       "classification": "validation-log",
       "path": "runner-unit-tests-uid1000.txt",
-      "sha256": "ac130cbe574b74c7ecb42480204378a39156955f96073273516b340ce0142893"
+      "sha256": "a2a2603f8bc44426344de85a9c0d7ef29d8b50027ba5d81bc916ea910beef4ee"
     },
     {
-      "bytes": 1512,
+      "bytes": 371,
       "classification": "validation-log",
       "path": "syntax-validation.txt",
-      "sha256": "2fcc22ce2d1cae60b3c49b33845c98d2fe9562b2434794c30a31dcdfc0e81248"
+      "sha256": "a0c6241350bd652576098fc3d7918a9b5be2c4ba332de6669f4108bbf0114950"
     },
     {
-      "bytes": 2970,
+      "bytes": 3541,
       "classification": "receipt-or-manifest",
       "path": "test-results.json",
-      "sha256": "20ba7461b4ad44940cb8d58a97eab7ec6dc0c56ffaaf7a5156e0eda5bf7a1e68"
+      "sha256": "b73e90a8f5e09d19acf5744c01a5f73f62c89b92d06de9a8cf6804253e933d24"
     },
     {
-      "bytes": 559,
+      "bytes": 553,
       "classification": "validation-log",
       "path": "transparency-prefreeze-verification.txt",
-      "sha256": "86d076162ad3b4cfe49e766e0fc31a4fb6f377550809bd84b8a4d51f1750be34"
+      "sha256": "6673eb560d9c4f1bef38fbdd0235bd0dfc699d0d33411466b6d4cb8cdb445920"
     },
     {
       "bytes": 1794,
       "classification": "receipt-or-manifest",
       "path": "two-build-comparison.json",
-      "sha256": "f81fd96b2b28657898cf629f3cf044d58820b5209721fa4b259640b9a328836d"
+      "sha256": "91bde6b79bd4f273b808e352a9b66a36835dd8556751a63ab88144e3a9cfb45a"
     },
     {
       "bytes": 1386597,
-      "classification": "complete-inventory",
+      "classification": "complete-vendor-inventory",
       "path": "vendor-inventory-a.jsonl",
       "sha256": "c646726893e4d74b42343218f891409e925541d9bf8ab0563ff98a9c998b8fd5"
     },
     {
       "bytes": 1386597,
-      "classification": "complete-inventory",
+      "classification": "complete-vendor-inventory",
       "path": "vendor-inventory-b.jsonl",
       "sha256": "c646726893e4d74b42343218f891409e925541d9bf8ab0563ff98a9c998b8fd5"
     },
@@ -449,35 +485,49 @@
       "sha256": "dce7ff9dc45f36f450ebac60291b3a0ad0bc12c8efb818c9fb2cf5a1c601b224"
     }
   ],
-  "fpm_opcache_probe_sha256": "b8b34f87d45a0c000cc0df7917496631320cfbdcca1ff44bc41741ce0d569262",
-  "gate_helper_sha256": "ae542dbe387406d5b0e0d379f074251d30e93d066f330c1badb16b11caf776bc",
-  "generated_at_utc": "2026-10-03T17:42:42Z",
-  "handoff_sha256": "8ee888883bf2330c7a5c7d70efe48244122b600067ba030976a53cbe0009e4c1",
-  "nginx_identity_helper_sha256": "4beb1fd5e4fabb8d74d2de50b8c96f452ecb6de242ed411c7c0a97304037d192",
-  "package_generation": "v4",
-  "preparation_boundary": {
+  "gate_helper_sha256": "b93c08f58a08333120369c1cc75c60631d621c3a8099ca3967065721c45679f5",
+  "generated_at_utc": "2026-10-03T19:23:19Z",
+  "handoff_sha256": "6539058cf602fc23b03552665faf9a32c6975e29e6cb11fb5b2deb2c7e02afa9",
+  "immediate_predecessor_commit": "25fa7c737e969f8dffa251fd5170f6c7064c69f5",
+  "nginx_identity_helper_sha256": "1243fea2757aca89f586ec4b322b0d23ee1e19b2d027c21bd6523e71e6e6e8e0",
+  "preparation_boundary_incident": {
     "authorized": false,
     "eligible_as_stage_evidence": false,
     "production_accessed": true,
     "production_mutation": false,
     "read_only_sessions": 4
   },
+  "raw_cookie_values_in_package": false,
   "raw_production_http_evidence_in_package": false,
   "receipt_protocol_note": "The production-like OPcache receipt artifact suffix v1 identifies its receipt schema, not the deployment generation.",
+  "replacement_correction": {
+    "deployment_performed": false,
+    "external_network_accessed": false,
+    "git_push_performed": false,
+    "production_accessed": false,
+    "recovery_performed": false,
+    "staging_performed": false
+  },
   "required_files": [
     "HANDOFF.md",
     "ROOT_CAUSE.md",
+    "README.md",
+    "VALIDATION.md",
     "root-cause-receipt.json",
     "artifact-identities.json",
     "runner-describe.json",
     "build-a.json",
     "build-b.json",
     "two-build-comparison.json",
+    "local-build-validation-summary.json",
+    "post-validation-identities.json",
     "php-8.2.30-platform-receipt.json",
     "opcache-production-like-rehearsal-receipt.json",
     "opcache-production-like-rehearsal-repeat-1.json",
     "opcache-production-like-rehearsal-repeat-2.json",
     "opcache-rehearsal-repeatability.json",
+    "local-validation-summary.json",
+    "local-validation-evidence-manifest.json",
     "gate-transition-rehearsal-receipt.json",
     "atomic-rehearsal-receipt.json",
     "database-envelope-validation-receipt.json",
@@ -489,11 +539,13 @@
     "test-results.json",
     "rollback-set.json",
     "vendor-mode-ownership-policy.json",
-    "transparency-prefreeze-verification.txt"
+    "transparency-prefreeze-verification.txt",
+    "aggregate-inputs.json",
+    "aggregate-generator-output.json"
   ],
-  "runner_sha256": "e2d735c9c9c86c8bd38be3085b3372a2d2079ada9866d87487e8aa486dfc79f0",
-  "schema_version": 1,
+  "runner_sha256": "464bd6a28c8bed84c90176d42bc88d22eea5977c2698d5cddb7fe3eca50f9558",
+  "schema_version": 2,
   "stage_or_deployment_performed": false,
   "status": "pass",
-  "total_bytes_excluding_manifest_and_sha256sums": 3282914
+  "total_bytes_excluding_manifest_and_sha256sums": 3299887
 }

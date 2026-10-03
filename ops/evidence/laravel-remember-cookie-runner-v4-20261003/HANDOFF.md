@@ -1,4 +1,4 @@
-# BuyDTF Laravel 12.69.1 v4 gate-control correction handoff
+# BuyDTF Laravel 12.69.1 v4 replacement gate-control handoff
 
 Independent review accepted the failed v3 cutover evidence. The attempt failed
 closed before dependency mutation, restored the exact original front
@@ -56,6 +56,14 @@ remain permanently retired.
 
 ## Required v4 control
 
+Independent review accepted the OPcache timing correction in local predecessor
+`25fa7c737e969f8dffa251fd5170f6c7064c69f5`, but rejected its post-mutation
+emergency path. If PHP-FPM became unavailable after dependency mutation while
+the original front controller was live, that predecessor required a fresh FPM
+probe before installing the gate and could stop with candidate dependencies
+still live. This replacement corrects that final blocker without changing the
+accepted dependency candidate.
+
 The shared front-controller transition primitive must apply the same
 monotonic PHP-FPM OPcache revalidation barrier to initial installation,
 reassertion, containment, original restoration, and recovery. It may start
@@ -86,6 +94,30 @@ status and header names while replacing cookie values. A future separately
 authorized restricted stage must bind the effective nginx server block and
 document root `/var/www/buy-dtf/public` into its release receipt before any gate
 installation can be authorized.
+
+Pre-mutation gate installation remains strict: it always requires a current
+live PHP-FPM probe that exactly matches the staged envelope. The runner repeats
+that probe immediately before the durable dependency-mutation boundary and
+writes a private, fsynced receipt binding the exact release receipt, helper,
+envelope, and calculated policy.
+
+After dependency mutation only, a separate emergency path may use that staged
+and immediately rechecked envelope if the live FPM probe is unavailable. The
+fallback accepts only the exact original front controller or exact reviewed
+gate with reviewed metadata, validates the private receipt and durable state
+with explicit deployment errors, installs or reasserts the exact gate, and
+completes a new full monotonic revalidation wait. A reachable but changed or
+malformed FPM response never qualifies for fallback. Missing, malformed,
+mismatched, or misplaced frozen evidence fails closed. If either origin or
+public HTTP gate verification then fails, the exact gate remains installed and
+the boot-independent Laravel 12.69.0 dependency rollback continues.
+
+The nginx identity must also prove that the effective `buy-dtf.com`
+`/index.php` route uses `unix:/run/php/php8.2-fpm.sock` and resolves
+`SCRIPT_FILENAME` to `/var/www/buy-dtf/public/index.php`. The normalized
+selector, handler block, socket, filename expression, resolved filename, and
+route hash are bound into the future staging receipt. Socket, handler, route,
+or filename ambiguity fails closed.
 
 The reviewed capture invokes only
 `/usr/bin/sudo -n -- /usr/sbin/nginx -T` from the non-root runner. It freezes
@@ -123,6 +155,11 @@ Preserve the exact Laravel 12.69.0 rollback lock, vendor, and cache.
 Only operations-control files, their local evidence, and the
 `.gitattributes` rules that preserve v4 evidence bytes may change from the
 reviewed base.
+
+The immediate predecessor for this replacement is
+`25fa7c737e969f8dffa251fd5170f6c7064c69f5`. This replacement remains local
+and unpushed. It made no further production access; the earlier four-session
+read-only boundary incident remains disclosed above as cumulative history.
 
 Return the local branch, commit, hashes, receipts, and revised plan for
 independent review. A later restricted Phase 1 requires separate authorization

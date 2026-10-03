@@ -18,7 +18,7 @@
     "tests": 6,
     "unknown_or_conflicting_values_rejected": true
   },
-  "generated_at_utc": "2026-10-03T17:21:28Z",
+  "generated_at_utc": "2026-10-03T19:09:05Z",
   "nginx_identity": {
     "ambiguous_wrong_variable_nested_or_aliased_roots_rejected": true,
     "exact_capture_command": [
@@ -29,16 +29,39 @@
       "-T"
     ],
     "expected_document_root": "/var/www/buy-dtf/public",
+    "expected_fpm_socket": "/run/php/php8.2-fpm.sock",
+    "expected_index_uri": "/index.php",
+    "expected_script_filename": "/var/www/buy-dtf/public/index.php",
+    "fpm_socket_and_script_filename_bound_into_future_staging_receipt": true,
     "future_production_capture_deferred_to_separately_authorized_stage": true,
     "loopback_tls_route_required": true,
     "path": "ops/deployment/laravel_nginx_identity.py",
     "raw_capture_mode_octal": "0600",
-    "sha256": "4beb1fd5e4fabb8d74d2de50b8c96f452ecb6de242ed411c7c0a97304037d192",
-    "tests": 10
+    "sha256": "1243fea2757aca89f586ec4b322b0d23ee1e19b2d027c21bd6523e71e6e6e8e0",
+    "tests": 15,
+    "wrong_socket_or_script_filename_rejected": true
+  },
+  "post_mutation_emergency_path": {
+    "full_monotonic_wait_on_install_reassertion_and_interrupted_retry": true,
+    "http_gate_verification_failure_does_not_block_dependency_rollback": true,
+    "missing_or_malformed_checkpoint_rejected": true,
+    "required_regression_tests": [
+      "test_post_mutation_fpm_timeout_with_original_uses_frozen_context",
+      "test_post_mutation_timeout_installs_gate_then_automatically_invokes_rollback",
+      "test_post_mutation_http_gate_failure_still_invokes_rollback",
+      "test_missing_or_malformed_emergency_frozen_envelope_is_rejected",
+      "test_interrupted_emergency_containment_wait_restarts_full_wait",
+      "test_fpm_socket_mismatch_is_rejected",
+      "test_script_filename_mismatch_or_unknown_variable_is_rejected"
+    ],
+    "staging_frozen_envelope_rechecked_immediately_before_mutation": true,
+    "status": "pass",
+    "strict_current_fpm_probe_before_mutation": true,
+    "typed_unavailability_only_fallback": true
   },
   "preparation_boundary_incident_recorded_separately": true,
-  "root_suite_sha256": "682e49bd4bf417e92cb49e0375251859cd087951c36fcb97f3f65d7dcc62880f",
+  "root_suite_sha256": "f15a8e7d668e0909378153810ee7127efda1f1a9e7955b4724d3d160ce274f48",
   "status": "pass",
-  "uid1000_suite_sha256": "ac130cbe574b74c7ecb42480204378a39156955f96073273516b340ce0142893",
+  "uid1000_suite_sha256": "a2a2603f8bc44426344de85a9c0d7ef29d8b50027ba5d81bc916ea910beef4ee",
   "validation_production_accessed": false
 }

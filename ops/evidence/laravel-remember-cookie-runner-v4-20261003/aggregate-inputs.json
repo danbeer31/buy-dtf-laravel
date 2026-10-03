@@ -1,0 +1,11 @@
+{
+    "generated_at_utc":  "2026-10-03T19:09:05Z",
+    "branch":  "fix/laravel-12.69.1-remember-cookie-v4-20261003",
+    "reviewed_unapproved_commit":  "25fa7c737e969f8dffa251fd5170f6c7064c69f5",
+    "frontend":  {
+                     "node_version":  "v24.19.0",
+                     "npm_version":  "11.17.0",
+                     "npm_ci_exit_code":  0,
+                     "npm_build_exit_code":  0
+                 }
+}

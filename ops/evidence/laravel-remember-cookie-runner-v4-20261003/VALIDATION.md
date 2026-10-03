@@ -1,70 +1,75 @@
-# V4 validation record
+# V4 replacement validation record
 
 Status: **local validation passed; independent review required; NO-GO for
-production access, restricted staging, cutover, or deployment**.
-
-The four-session read-only preparation boundary incident is disclosed in
-`ROOT_CAUSE.md`; it made no production mutation and produced no eligible stage
-evidence. Every validation result below is local.
+production access, restricted staging, cutover, recovery, or deployment**.
 
 | Check | Result | Evidence |
 |---|---|---|
-| Operations-only scope from reviewed base | pass | `preparation-scope-verification.json` |
-| V3 runner/helper/release retirement enforced | pass | `laravel_remember_cookie_retired_controls.json`, runner tests |
-| Shared post-fsync monotonic wait | pass | gate helper tests and gate rehearsal |
-| Initial install, reassertion, containment, restoration, recovery coverage | pass | 28-scenario gate receipt; 48 wait records |
-| Interrupted wait cannot authorize probe | pass | root/UID1000 suites |
-| FPM SAPI directive shape and conflict validation | pass | environment-control receipt; 6 tests |
-| `validate_timestamps=0` and unsafe values rejected pre-mutation | pass | environment and gate policy tests |
-| Exact nginx route/root parser | pass | environment-control receipt; 10 tests |
-| Nginx raw capture private and summary redacted | pass | environment-control tests |
-| Two origin probes plus public probe use unique identities | pass | gate tests and OPcache rehearsal |
-| Raw HTTP evidence mode `0600` and cookie redaction | pass | gate tests and privacy receipt |
-| Warmed original immediate stale HTTP 200 reproduced | pass | production-like OPcache receipt |
-| Waited exact gate responses | pass | production-like receipt: 503/503/503 |
-| Warmed gate immediate stale 503 after restoration reproduced | pass | production-like receipt |
-| Waited original health restored | pass | production-like receipt: 200/200 |
-| Hardened 11-second formula repeatability | pass | primary plus two repeats; stable invariant match |
-| One-package Laravel lock delta | pass | `lock-delta.json` |
-| Two deterministic candidate builds | pass | build A/B and comparison receipts |
-| Candidate vendor/mode/inventory/autoload/cache identities | pass | build and vendor policy receipts |
+| Operations-control-only scope | pass | `preparation-scope-verification.json` |
+| Current live FPM required before mutation | pass | runner and environment tests |
+| Staged envelope rechecked immediately before mutation | pass | runner integration tests |
+| Missing/malformed frozen emergency evidence rejected | pass | runner tests |
+| Post-mutation FPM timeout with original live | pass | installs gate with frozen receipt and invokes rollback |
+| Interrupted emergency wait | pass | a fresh complete monotonic wait is required |
+| Post-mutation HTTP gate failure | pass | exact gate retained; boot-independent rollback invoked |
+| Frozen-state assertion replaced with `DeploymentError` | pass | source/static review and tests |
+| Nginx `/index.php` socket identity | pass | exact `/run/php/php8.2-fpm.sock` required |
+| Nginx `SCRIPT_FILENAME` identity | pass | exact `/var/www/buy-dtf/public/index.php` required |
+| Nginx socket/filename drift rejection | pass | 15 nginx identity tests |
+| Shared post-fsync monotonic barrier | pass | 28 gate scenarios; 48 complete waits |
+| Local nginx/PHP-FPM OPcache rehearsal | pass | three independent formal runs |
+| Immediate stale original HTTP 200 reproduced | pass | each local rehearsal |
+| Waited gate route verification | pass | 503/503/503 on each run |
+| Immediate stale gate after restore reproduced | pass | each local rehearsal |
+| Waited original health restoration | pass | 200/200 on each run |
+| Cache-buster uniqueness/private raw evidence | pass | 9 unique nonces; mode `0600` |
+| Root deployment-control discovery | pass | 123 tests; 121 pass; 2 expected skips |
+| UID/GID 1000 discovery | pass | 123 tests; 120 pass; 3 expected skips |
+| Atomic cutover/rollback/recovery rehearsal | pass | 25 scenarios |
+| One-package Laravel lock delta | pass | Laravel 12.69.0 to 12.69.1 only |
+| Two deterministic candidate builds | pass | exact path/content/mode/ownership identities |
+| Candidate vendor structure | pass | 6,460 files; 925 dirs; 26,481,661 bytes |
 | Composer strict validation | pass | both build logs |
-| Locked `--no-dev` audit | pass | both builds: zero advisories |
-| PHP 8.2.30 platform proof | pass | platform receipt and captured outputs |
-| Package discovery and route discovery | pass | both builds; 178 routes |
+| Locked `--no-dev` audit | pass | zero advisories in both builds |
+| PHP 8.2.30 platform proof | pass | `php-8.2.30-platform-receipt.json` |
+| Package and route discovery | pass | both builds; 178 routes |
 | UID/GID 33 vendor read/no-write | pass | both builds |
-| Stale remember cookie falls through as guest | pass | 2-test authentication receipt |
-| Valid remember-me authentication | pass | 2-test authentication receipt |
-| Complete application suite | pass | 110 tests, 718 assertions |
-| Npm clean install and frontend build | pass | frontend receipt; both exit 0 |
-| Database envelope drift rejection | pass | database receipt; 9 tests |
-| Complete-entry Laravel log policy | pass | parser receipt; 22 tests |
-| Redacted benign 56-entry fixture | pass | parser receipt |
-| Severe/genuine/stale-cookie/invalid/unparsed failures rejected | pass | parser receipt |
-| Root control suite | pass | 114 tests, 112 passed, 2 expected skips |
-| UID 1000 control suite | pass | 114 tests, 111 passed, 3 expected root-only skips |
-| Atomic dependency rehearsal | pass | 25 scenarios |
+| Stale remember-cookie regression/control | pass | 2 tests; 10 assertions |
+| Complete application suite | pass | 110 tests; 718 assertions |
+| Npm clean install/frontend build | pass | both exit 0 |
+| Database-envelope drift rejection | pass | 9 tests |
+| Laravel complete-entry log parser | pass | 22 tests; benign 56-entry fixture accepted |
+| Genuine/stale/severe/invalid/unparsed logs | pass | all rejected |
 | Python/PHP/JSON syntax | pass | `syntax-validation.txt` |
-| Transparency pre-freeze state | pass | `transparency-prefreeze-verification.txt` |
+| Transparency pre-freeze state | pass | clean at `3db18d1...`; freeze remains false |
+| Raw cookie/header privacy | pass | no raw HTTP evidence committed |
+| Replacement correction production/network access | none | local summaries and scope receipt |
 
-## Frozen control identities
+## Frozen replacement identities
 
 | Control | SHA-256 |
 |---|---|
-| Runner | `e2d735c9c9c86c8bd38be3085b3372a2d2079ada9866d87487e8aa486dfc79f0` |
-| Gate helper | `ae542dbe387406d5b0e0d379f074251d30e93d066f330c1badb16b11caf776bc` |
+| Runner | `464bd6a28c8bed84c90176d42bc88d22eea5977c2698d5cddb7fe3eca50f9558` |
+| Gate helper | `b93c08f58a08333120369c1cc75c60631d621c3a8099ca3967065721c45679f5` |
+| Nginx identity helper | `1243fea2757aca89f586ec4b322b0d23ee1e19b2d027c21bd6523e71e6e6e8e0` |
 | FPM probe | `b8b34f87d45a0c000cc0df7917496631320cfbdcca1ff44bc41741ce0d569262` |
-| Nginx identity helper | `4beb1fd5e4fabb8d74d2de50b8c96f452ecb6de242ed411c7c0a97304037d192` |
 | Runtime helper | `7cd804545f9e09d096d348924021047e0a7b1b6ecf3a1b783fd015aef24c48d2` |
 | Database validator | `e3aa9109fcc6a6c8725f07665f27fc28a242447861b5b6c2a8d614a5a0a805b3` |
 | Log parser | `b91ac879b9559e229e18b7613fa4c570cee54016fbadc2e306925c0a71bcf179` |
-| Handoff | `8ee888883bf2330c7a5c7d70efe48244122b600067ba030976a53cbe0009e4c1` |
+| Handoff | `6539058cf602fc23b03552665faf9a32c6975e29e6cb11fb5b2deb2c7e02afa9` |
 
-The production-like rehearsal uses local PHP-FPM 8.3.6 to exercise stale
-OPcache behavior. The distinct PHP 8.2.30 receipt proves the candidate platform.
-Future production FPM values and nginx route identity must be captured fresh in
-a separately authorized restricted stage; no current production capture is
-claimed.
+The local OPcache rehearsal uses disposable PHP-FPM 8.3.6 to exercise stale
+path behavior with timestamp validation and a nonzero revalidation frequency.
+The separate locked PHP 8.2.30 receipt proves the deployment candidate's
+platform compatibility. A future restricted stage must capture the effective
+production FPM and nginx route identities again and bind them into a new
+release receipt.
 
-`evidence-manifest.json` and `SHA256SUMS` are the final inventories. Restricted
-staging and every later mutation remain separately authorized review gates.
+The earlier cumulative four-session read-only boundary incident remains fully
+disclosed. It produced no eligible staging evidence. This replacement
+correction added no production or external-network access. The branch remains
+local and unpushed.
+
+`evidence-manifest.json` and `SHA256SUMS` are the final byte inventories.
+Restricted staging and every later mutation remain separate review and
+authorization gates.

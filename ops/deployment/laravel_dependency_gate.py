@@ -205,8 +205,8 @@ def derive_opcache_revalidation_policy(probe: dict[str, Any]) -> dict[str, Any]:
             "PHP-FPM reload plan is required."
         )
 
-    assert type(revalidate_frequency) is int
-    assert type(file_update_protection) is int
+    if type(revalidate_frequency) is not int or type(file_update_protection) is not int:
+        raise GateError("PHP-FPM OPcache timing directives must be nonnegative integers.")
     complete_interval = revalidate_frequency + file_update_protection
     second_revalidation_window = revalidate_frequency
     configured_wait = max(
@@ -1229,6 +1229,7 @@ def establish_rollback_containment(
     public_probe: Probe,
     restored_health_probe: HealthProbe,
     mutation_started: MutationPredicate = dependency_mutation_has_started,
+    fault_injector: FaultInjector | None = None,
 ) -> dict[str, Any]:
     """Contain rollback and permit it under an exact gate if HTTP checks fail.
 
@@ -1256,6 +1257,7 @@ def establish_rollback_containment(
             public_probe=public_probe,
             restored_health_probe=restored_health_probe,
             mutation_started=mutation_started,
+            fault_injector=fault_injector,
         )
     except GateError as exception:
         live = file_identity(context.front_controller)

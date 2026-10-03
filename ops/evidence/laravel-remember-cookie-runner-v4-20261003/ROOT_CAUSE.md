@@ -56,6 +56,28 @@ This is an operations-control defect. It did not change the dependency
 candidate, application source, database, configuration, services, queues, or
 capabilities.
 
+## Independently found post-mutation blocker
+
+Independent review accepted the timing correction in local commit
+`25fa7c737e969f8dffa251fd5170f6c7064c69f5`, then found one remaining control
+gap. Its post-mutation failure path still required a current live PHP-FPM probe
+before it could install or reassert the static gate. If FPM became unavailable
+after dependency mutation while the exact original front controller was live,
+the runner could stop for review before gating or restoring Laravel 12.69.0.
+That conflicted with the promised automatic post-mutation containment and
+rollback behavior.
+
+The replacement keeps the current live FPM check mandatory for every
+pre-mutation installation. It freezes the staging envelope and rechecks it
+immediately before the durable mutation boundary, writing a private fsynced
+receipt. After mutation only, typed FPM unavailability permits a separate
+emergency path to validate that frozen evidence, require the exact original or
+gate identity and metadata, install or reassert the gate, complete the full
+monotonic wait, and continue boot-independent rollback. Reachable drift,
+malformed data, or missing receipt evidence never uses the fallback. Failed
+origin or public gate verification retains the exact gate and cannot block the
+dependency rollback.
+
 ## Required v4 correction
 
 The revalidation wait belongs in the shared front-controller transition
@@ -92,6 +114,12 @@ wait and identity checks before normal-health verification.
 A future restricted stage must also capture a read-only identity of the
 effective nginx server block and document root. The root must resolve to
 `/var/www/buy-dtf/public` before gate installation is possible.
+
+The same identity must prove that `buy-dtf.com` routes `/index.php` through
+`unix:/run/php/php8.2-fpm.sock` and resolves `SCRIPT_FILENAME` to
+`/var/www/buy-dtf/public/index.php`. The future staging receipt binds the
+selected location, handler block, socket, filename expression, resolved path,
+and route hash. Socket, filename, route, or handler ambiguity fails closed.
 
 Raw HTTP headers stay in private evidence at mode `0600`. They are not copied
 to Git, review notes, or chat. Review artifacts preserve response status and
@@ -130,6 +158,9 @@ migration, source/dependency exchange, or capability action occurred. Normal
 SSH/audit logging may have appended connection records. The agent was stopped,
 the incident was disclosed, and every subsequent correction and validation
 action remained local.
+
+This replacement correction made no additional production or network access
+and remains local and unpushed.
 
 The failed command captured no effective nginx configuration and cannot
 satisfy, supplement, or substitute for any restricted-stage preflight,

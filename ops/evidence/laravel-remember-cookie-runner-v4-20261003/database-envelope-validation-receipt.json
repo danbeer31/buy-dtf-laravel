@@ -2,7 +2,7 @@
   "artifact": "buy-dtf-laravel-remember-cookie-database-envelope-local-validation-v4",
   "classification": "review-only-synthetic-local-fixture",
   "database_writes": false,
-  "generated_at_utc": "2026-10-03T17:21:28Z",
+  "generated_at_utc": "2026-10-03T19:09:05Z",
   "incoming_definition_fixture_sha256": "aa0a038110dc355ffcd0ed12768c2adb7b0954ecbcc9aeb0fc4ef0efb5d287dc",
   "independent_drift_categories": [
     "schema_sha256",
@@ -24,8 +24,8 @@
   "runtime_helper_sha256": "7cd804545f9e09d096d348924021047e0a7b1b6ecf3a1b783fd015aef24c48d2",
   "status": "pass",
   "suite_receipts": {
-    "runner-unit-tests-root.txt": "682e49bd4bf417e92cb49e0375251859cd087951c36fcb97f3f65d7dcc62880f",
-    "runner-unit-tests-uid1000.txt": "ac130cbe574b74c7ecb42480204378a39156955f96073273516b340ce0142893"
+    "runner-unit-tests-root.txt": "f15a8e7d668e0909378153810ee7127efda1f1a9e7955b4724d3d160ce274f48",
+    "runner-unit-tests-uid1000.txt": "a2a2603f8bc44426344de85a9c0d7ef29d8b50027ba5d81bc916ea910beef4ee"
   },
   "test_count": 9,
   "test_module": "ops/deployment/test_laravel_dependency_database_envelope.py",

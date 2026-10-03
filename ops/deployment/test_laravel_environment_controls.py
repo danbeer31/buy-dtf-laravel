@@ -142,6 +142,10 @@ class NginxIdentityTest(unittest.TestCase):
             ssl_certificate /private/certificate.pem;
             ssl_certificate_key SUPER_SECRET_DO_NOT_COPY;
             location / {{ try_files $uri $uri/ /index.php?$query_string; }}
+            location ~ \\.php$ {{
+                fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+                fastcgi_pass unix:/run/php/php8.2-fpm.sock;
+            }}
         }}
         """
         return f"""
@@ -196,6 +200,111 @@ class NginxIdentityTest(unittest.TestCase):
         self.assertEqual(1, identity["matching_tls_server_count"])
         self.assertEqual(str(self.expected_document_root.resolve()), identity["resolved_document_root"])
         self.assertEqual(2, len(identity["listen_directives"]))
+        route = identity["php_index_route"]
+        self.assertEqual("/index.php", route["request_uri"])
+        self.assertEqual(["~", r"\.php$"], route["location_selector"])
+        self.assertEqual(
+            "unix:/run/php/php8.2-fpm.sock",
+            route["fastcgi_pass"],
+        )
+        self.assertEqual("/run/php/php8.2-fpm.sock", route["fpm_socket"])
+        self.assertEqual(
+            "$document_root$fastcgi_script_name",
+            route["script_filename_expression"],
+        )
+        self.assertEqual(
+            str((self.expected_document_root / "index.php").resolve()),
+            route["resolved_script_filename"],
+        )
+        self.assertRegex(route["location_block_sha256"], r"^[a-f0-9]{64}$")
+        self.assertRegex(route["route_identity_sha256"], r"^[a-f0-9]{64}$")
+
+    def test_fpm_socket_mismatch_is_rejected(self) -> None:
+        mutations = (
+            "unix:/run/php/php8.3-fpm.sock",
+            "127.0.0.1:9000",
+        )
+        for replacement in mutations:
+            with self.subTest(replacement=replacement), self.assertRaisesRegex(
+                CONTROLS.EnvironmentControlError,
+                "reviewed PHP-FPM socket",
+            ):
+                CONTROLS.identify_nginx_document_root(
+                    self.config().replace(
+                        "unix:/run/php/php8.2-fpm.sock",
+                        replacement,
+                    ),
+                    expected_document_root=self.expected_document_root,
+                )
+
+    def test_script_filename_mismatch_or_unknown_variable_is_rejected(self) -> None:
+        mutations = (
+            "$document_root/not-index.php",
+            "$document_root$request_uri",
+        )
+        for replacement in mutations:
+            with self.subTest(replacement=replacement), self.assertRaises(
+                CONTROLS.EnvironmentControlError
+            ):
+                CONTROLS.identify_nginx_document_root(
+                    self.config().replace(
+                        "$document_root$fastcgi_script_name",
+                        replacement,
+                    ),
+                    expected_document_root=self.expected_document_root,
+                )
+
+    def test_missing_or_duplicate_php_route_directives_are_rejected(self) -> None:
+        mutations = (
+            self.config().replace(
+                "fastcgi_pass unix:/run/php/php8.2-fpm.sock;",
+                "# fastcgi_pass deliberately absent",
+            ),
+            self.config().replace(
+                "fastcgi_pass unix:/run/php/php8.2-fpm.sock;",
+                "fastcgi_pass unix:/run/php/php8.2-fpm.sock; "
+                "fastcgi_pass unix:/run/php/php8.2-fpm.sock;",
+            ),
+            self.config().replace(
+                "fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;",
+                "# SCRIPT_FILENAME deliberately absent",
+            ),
+            self.config().replace("SCRIPT_FILENAME", "script_filename"),
+            self.config().replace(
+                "fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;",
+                "fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name; "
+                "fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;",
+            ),
+        )
+        for config in mutations:
+            with self.subTest(config=config), self.assertRaisesRegex(
+                CONTROLS.EnvironmentControlError,
+                "exactly one",
+            ):
+                CONTROLS.identify_nginx_document_root(
+                    config,
+                    expected_document_root=self.expected_document_root,
+                )
+
+    def test_effective_index_location_must_be_the_reviewed_php_handler(self) -> None:
+        exact_override = self.config().replace(
+            "location / {",
+            "location = /index.php { return 200; } location / {",
+        )
+        preferred_prefix = self.config().replace("location / {", "location ^~ / {")
+        first_regex_override = self.config().replace(
+            "location ~ \\.php$ {",
+            "location ~ ^/index\\.php$ { return 200; } location ~ \\.php$ {",
+        )
+        for config in (exact_override, preferred_prefix, first_regex_override):
+            with self.subTest(config=config), self.assertRaisesRegex(
+                CONTROLS.EnvironmentControlError,
+                "exactly one fastcgi_pass",
+            ):
+                CONTROLS.identify_nginx_document_root(
+                    config,
+                    expected_document_root=self.expected_document_root,
+                )
 
     def test_duplicate_tls_server_is_rejected(self) -> None:
         with self.assertRaisesRegex(CONTROLS.EnvironmentControlError, "exactly one"):
@@ -297,6 +406,41 @@ class NginxIdentityTest(unittest.TestCase):
         )
         self.assertTrue(identity["origin_loopback_compatible"])
         self.assertEqual("127.0.0.1:443", identity["origin_probe_address"])
+
+    def test_php_route_directives_from_expanded_include_are_bound(self) -> None:
+        main = """
+        events {}
+        http { include /etc/nginx/sites-enabled/*; }
+        """
+        site = self.config().replace(
+            "http { include /etc/nginx/sites-enabled/*; }",
+            "",
+        ).replace(
+            "fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;\n"
+            "                fastcgi_pass unix:/run/php/php8.2-fpm.sock;",
+            "include /etc/nginx/snippets/buy-dtf-php-route.conf;",
+        )
+        dump = (
+            "# configuration file /etc/nginx/nginx.conf:\n"
+            + main
+            + "\n# configuration file /etc/nginx/sites-enabled/buy-dtf:\n"
+            + site
+            + "\n# configuration file /etc/nginx/snippets/buy-dtf-php-route.conf:\n"
+            + "fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;\n"
+            + "fastcgi_pass unix:/run/php/php8.2-fpm.sock;\n"
+        )
+        identity = CONTROLS.identify_nginx_document_root(
+            dump,
+            expected_document_root=self.expected_document_root,
+        )
+        self.assertEqual(
+            "unix:/run/php/php8.2-fpm.sock",
+            identity["php_index_route"]["fastcgi_pass"],
+        )
+        self.assertEqual(
+            str((self.expected_document_root / "index.php").resolve()),
+            identity["php_index_route"]["resolved_script_filename"],
+        )
 
     def test_capture_is_private_and_summary_does_not_copy_raw_configuration(self) -> None:
         config = self.config()

@@ -487,6 +487,58 @@ class LaravelDependencyGateUnitTest(unittest.TestCase):
             Path(repeated["path"]).name,
         )
 
+    def test_interrupted_emergency_containment_wait_restarts_full_wait(self) -> None:
+        self.state["dependency_mutation_started"] = True
+        GATE.write_state(self.state_path, self.state)
+
+        def interrupt(stage: str) -> None:
+            if stage == "after_revalidation_sleep":
+                raise GATE.GateInterruption(stage)
+
+        with self.assertRaises(GATE.GateInterruption):
+            GATE.establish_rollback_containment(
+                context=self.context,
+                state=self.state,
+                operation="emergency-interrupted",
+                origin_probe=lambda ordinal: self.probe(
+                    GATE.ORIGIN_ROUTE,
+                    f"emergency-interrupted-origin-{ordinal}",
+                ),
+                public_probe=lambda: self.probe(
+                    GATE.PUBLIC_ROUTE,
+                    "emergency-interrupted-public",
+                ),
+                restored_health_probe=self.health,
+                fault_injector=interrupt,
+            )
+
+        self.state = GATE.load_state(self.state_path)
+        self.assertEqual(
+            "waiting",
+            self.state["front_controller_revalidation_waits"][0]["status"],
+        )
+        recovered = GATE.establish_rollback_containment(
+            context=self.context,
+            state=self.state,
+            operation="emergency-retry",
+            origin_probe=lambda ordinal: self.probe(
+                GATE.ORIGIN_ROUTE,
+                f"emergency-retry-origin-{ordinal}",
+            ),
+            public_probe=lambda: self.probe(
+                GATE.PUBLIC_ROUTE,
+                "emergency-retry-public",
+            ),
+            restored_health_probe=self.health,
+        )
+        self.assertTrue(recovered["http_verified"])
+        waits = GATE.load_state(self.state_path)["front_controller_revalidation_waits"]
+        self.assertEqual(["waiting", "complete"], [item["status"] for item in waits])
+        self.assertEqual(
+            [self.policy["minimum_wait_seconds"]] * 2,
+            self.clock.sleep_calls,
+        )
+
     def test_wait_is_shared_by_install_reassert_containment_restore_and_recovery(self) -> None:
         self.install("initial-install")
         self.install("gate-reassertion")

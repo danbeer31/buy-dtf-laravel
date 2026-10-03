@@ -24,10 +24,13 @@ from typing import Any, Callable, Sequence
 
 
 FPM_OPCACHE_ARTIFACT = "buy-dtf-php-fpm-opcache-probe-v1"
-NGINX_IDENTITY_ARTIFACT = "buy-dtf-nginx-document-root-identity-v1"
+NGINX_IDENTITY_ARTIFACT = "buy-dtf-nginx-php-route-identity-v2"
 EXPECTED_FPM_SAPI = "fpm-fcgi"
 EXPECTED_SERVER_NAME = "buy-dtf.com"
 EXPECTED_DOCUMENT_ROOT = Path("/var/www/buy-dtf/public")
+EXPECTED_FPM_SOCKET = "/run/php/php8.2-fpm.sock"
+EXPECTED_INDEX_REQUEST_URI = "/index.php"
+EXPECTED_SCRIPT_FILENAME = EXPECTED_DOCUMENT_ROOT / "index.php"
 RAW_CAPTURE_MODE = 0o600
 
 BOOLEAN_DIRECTIVES = (
@@ -181,11 +184,26 @@ def _tokenize_nginx(text: str) -> list[str]:
             tokens.append("".join(current))
             current.clear()
 
+    def append_escaped(character: str) -> None:
+        # This mirrors the nginx configuration lexer: its small set of
+        # character escapes is decoded, while a backslash before any other
+        # character remains part of the directive argument.
+        if character == "n":
+            current.append("\n")
+        elif character == "r":
+            current.append("\r")
+        elif character == "t":
+            current.append("\t")
+        elif character in {"\\", "'", '"'}:
+            current.append(character)
+        else:
+            current.extend(("\\", character))
+
     while index < len(text):
         character = text[index]
         if quote is not None:
             if escaped:
-                current.append(character)
+                append_escaped(character)
                 escaped = False
             elif character == "\\":
                 escaped = True
@@ -196,7 +214,12 @@ def _tokenize_nginx(text: str) -> list[str]:
             index += 1
             continue
         if escaped:
-            current.append(character)
+            # nginx preserves a backslash before characters other than its
+            # small set of quoted escapes.  In particular, the backslash in a
+            # common PHP location expression such as ``\.php$`` is part of
+            # the regular expression and must not be discarded by this
+            # independent parser.
+            append_escaped(character)
             escaped = False
             index += 1
             continue
@@ -413,13 +436,227 @@ def _statement_identity(statement: NginxStatement) -> dict[str, Any]:
     }
 
 
+@dataclass(frozen=True)
+class LocationSelector:
+    block: NginxStatement
+    kind: str
+    value: str
+    order: int
+
+
+def _location_selector(block: NginxStatement, order: int) -> LocationSelector:
+    arguments = block.arguments
+    if len(arguments) == 1:
+        value = arguments[0]
+        if value.startswith("@"):
+            return LocationSelector(block, "named", value, order)
+        if not value.startswith("/"):
+            raise EnvironmentControlError(
+                "Matching nginx TLS server has an unsupported location selector."
+            )
+        return LocationSelector(block, "prefix", value, order)
+    if len(arguments) == 2 and arguments[0] in {"=", "^~", "~", "~*"}:
+        modifier, value = arguments
+        if modifier in {"=", "^~"} and not value.startswith("/"):
+            raise EnvironmentControlError(
+                "Matching nginx TLS server has an invalid path location selector."
+            )
+        return LocationSelector(
+            block,
+            {
+                "=": "exact",
+                "^~": "prefer-prefix",
+                "~": "regex",
+                "~*": "regex-insensitive",
+            }[modifier],
+            value,
+            order,
+        )
+    raise EnvironmentControlError(
+        "Matching nginx TLS server has a malformed location selector."
+    )
+
+
+def _regex_matches_index(pattern: str, *, insensitive: bool) -> bool:
+    try:
+        compiled = re.compile(pattern, re.IGNORECASE if insensitive else 0)
+    except re.error as exception:
+        raise EnvironmentControlError(
+            "Matching nginx TLS server has a PHP location regex that cannot be independently validated."
+        ) from exception
+    return compiled.search(EXPECTED_INDEX_REQUEST_URI) is not None
+
+
+def _select_index_location(server: NginxStatement) -> LocationSelector:
+    """Select `/index.php` using the nginx top-level location precedence rules.
+
+    Nested location matching is deliberately rejected.  The reviewed service
+    uses direct server children, which lets this independent parser fail closed
+    rather than approximate nested nginx/PCRE behavior.
+    """
+
+    locations = [
+        _location_selector(child, order)
+        for order, child in enumerate(server.children or ())
+        if child.children is not None and child.name.lower() == "location"
+    ]
+    if any(
+        nested.children is not None and nested.name.lower() == "location"
+        for location in locations
+        for nested in location.block.children or ()
+    ):
+        raise EnvironmentControlError(
+            "Matching nginx TLS server has a nested location that prevents exact index routing proof."
+        )
+
+    exact = [
+        location
+        for location in locations
+        if location.kind == "exact" and location.value == EXPECTED_INDEX_REQUEST_URI
+    ]
+    if len(exact) > 1:
+        raise EnvironmentControlError(
+            "Matching nginx TLS server has duplicate exact index locations."
+        )
+    if exact:
+        return exact[0]
+
+    prefixes = [
+        location
+        for location in locations
+        if location.kind in {"prefix", "prefer-prefix"}
+        and EXPECTED_INDEX_REQUEST_URI.startswith(location.value)
+    ]
+    longest_prefix: LocationSelector | None = None
+    if prefixes:
+        longest_length = max(len(location.value) for location in prefixes)
+        longest = [location for location in prefixes if len(location.value) == longest_length]
+        if len(longest) != 1:
+            raise EnvironmentControlError(
+                "Matching nginx TLS server has ambiguous index prefix locations."
+            )
+        longest_prefix = longest[0]
+        if longest_prefix.kind == "prefer-prefix":
+            return longest_prefix
+
+    for location in locations:
+        if location.kind not in {"regex", "regex-insensitive"}:
+            continue
+        if _regex_matches_index(
+            location.value,
+            insensitive=location.kind == "regex-insensitive",
+        ):
+            return location
+
+    if longest_prefix is not None:
+        return longest_prefix
+    raise EnvironmentControlError(
+        "Matching nginx TLS server has no location that routes /index.php."
+    )
+
+
+def _resolve_script_filename_expression(
+    expression: str,
+    *,
+    document_root: str,
+    resolved_document_root: Path,
+) -> str:
+    replacements = {
+        "$document_root": document_root,
+        "$realpath_root": str(resolved_document_root),
+        "$fastcgi_script_name": EXPECTED_INDEX_REQUEST_URI,
+    }
+    resolved = expression
+    for variable in sorted(replacements, key=len, reverse=True):
+        resolved = resolved.replace(variable, replacements[variable])
+    if "$" in resolved:
+        raise EnvironmentControlError(
+            "SCRIPT_FILENAME contains a variable outside the reviewed index route model."
+        )
+    candidate = Path(resolved)
+    if not candidate.is_absolute():
+        raise EnvironmentControlError(
+            "SCRIPT_FILENAME does not resolve to a fixed absolute path."
+        )
+    return str(candidate.resolve(strict=False))
+
+
+def _identify_php_index_route(
+    server: NginxStatement,
+    *,
+    document_root: str,
+    resolved_document_root: Path,
+    expected_fpm_socket: str,
+) -> dict[str, Any]:
+    selected = _select_index_location(server)
+    if any(child.children is not None for child in selected.block.children or ()):
+        raise EnvironmentControlError(
+            "The effective /index.php location contains a nested conditional or location block."
+        )
+    passes = _directives(selected.block, "fastcgi_pass")
+    if len(passes) != 1 or len(passes[0].arguments) != 1:
+        raise EnvironmentControlError(
+            "The effective /index.php location must have exactly one fastcgi_pass."
+        )
+    fastcgi_pass = passes[0].arguments[0]
+    expected_pass = f"unix:{expected_fpm_socket}"
+    if fastcgi_pass != expected_pass:
+        raise EnvironmentControlError(
+            "The effective /index.php location does not use the reviewed PHP-FPM socket."
+        )
+
+    script_parameters = [
+        directive
+        for directive in _directives(selected.block, "fastcgi_param")
+        if directive.arguments
+        and directive.arguments[0] == "SCRIPT_FILENAME"
+    ]
+    if len(script_parameters) != 1 or len(script_parameters[0].arguments) != 2:
+        raise EnvironmentControlError(
+            "The effective /index.php location must define exactly one SCRIPT_FILENAME."
+        )
+    expression = script_parameters[0].arguments[1]
+    resolved_script_filename = _resolve_script_filename_expression(
+        expression,
+        document_root=document_root,
+        resolved_document_root=resolved_document_root,
+    )
+    expected_script_filename = str(
+        (resolved_document_root / EXPECTED_INDEX_REQUEST_URI.lstrip("/")).resolve(
+            strict=False
+        )
+    )
+    if resolved_script_filename != expected_script_filename:
+        raise EnvironmentControlError(
+            "The effective SCRIPT_FILENAME does not resolve to the reviewed public/index.php."
+        )
+
+    route = {
+        "request_uri": EXPECTED_INDEX_REQUEST_URI,
+        "location_selector": list(selected.block.arguments),
+        "location_order": selected.order,
+        "location_block_sha256": sha256_bytes(
+            canonical_bytes(_statement_identity(selected.block))
+        ),
+        "fastcgi_pass": fastcgi_pass,
+        "fpm_socket": expected_fpm_socket,
+        "script_filename_expression": expression,
+        "resolved_script_filename": resolved_script_filename,
+    }
+    return {
+        **route,
+        "route_identity_sha256": sha256_bytes(canonical_bytes(route)),
+    }
+
+
 def identify_nginx_document_root(
     config_text: str,
     *,
     expected_server_name: str = EXPECTED_SERVER_NAME,
     expected_document_root: Path = EXPECTED_DOCUMENT_ROOT,
+    expected_fpm_socket: str = EXPECTED_FPM_SOCKET,
 ) -> dict[str, Any]:
-    """Require one exact TLS virtual host and its exact resolved document root."""
+    """Require the exact TLS root and its effective PHP index route."""
 
     statements = _expand_nginx_dump(config_text)
     expected_name = expected_server_name.rstrip(".").lower()
@@ -479,6 +716,19 @@ def identify_nginx_document_root(
     if not resolved_root.is_dir() or resolved_root != resolved_expected:
         raise EnvironmentControlError("Effective nginx document root differs from review.")
 
+    if (
+        not expected_fpm_socket.startswith("/")
+        or "$" in expected_fpm_socket
+        or posixpath.normpath(expected_fpm_socket) != expected_fpm_socket
+    ):
+        raise EnvironmentControlError("Reviewed PHP-FPM socket path is invalid.")
+    php_index_route = _identify_php_index_route(
+        match,
+        document_root=root_text,
+        resolved_document_root=resolved_root,
+        expected_fpm_socket=expected_fpm_socket,
+    )
+
     listens = sorted(
         " ".join(item.arguments) for item in _directives(match, "listen")
     )
@@ -498,6 +748,7 @@ def identify_nginx_document_root(
         "listen_directives": listens,
         "document_root": root_text,
         "resolved_document_root": str(resolved_root),
+        "php_index_route": php_index_route,
         "server_block_sha256": sha256_bytes(canonical_bytes(_statement_identity(match))),
     }
 
@@ -558,6 +809,7 @@ def capture_nginx_identity(
     summary_filename: str = "nginx-document-root-summary.json",
     expected_server_name: str = EXPECTED_SERVER_NAME,
     expected_document_root: Path = EXPECTED_DOCUMENT_ROOT,
+    expected_fpm_socket: str = EXPECTED_FPM_SOCKET,
     expected_executable_uid: int = 0,
     expected_executable_gid: int = 0,
     command_runner: CommandRunner = subprocess.run,
@@ -672,6 +924,7 @@ def capture_nginx_identity(
         config_text,
         expected_server_name=expected_server_name,
         expected_document_root=expected_document_root,
+        expected_fpm_socket=expected_fpm_socket,
     )
     summary = {
         "artifact": NGINX_IDENTITY_ARTIFACT,
@@ -712,7 +965,7 @@ def capture_nginx_identity(
 
 def describe() -> dict[str, Any]:
     return {
-        "artifact": "buy-dtf-environment-controls-v1",
+        "artifact": "buy-dtf-environment-controls-v2",
         "fpm_probe_artifact": FPM_OPCACHE_ARTIFACT,
         "fpm_sapi": EXPECTED_FPM_SAPI,
         "opcache_directives": list(OPCACHE_DIRECTIVES),
@@ -720,6 +973,9 @@ def describe() -> dict[str, Any]:
         "nginx_identity_artifact": NGINX_IDENTITY_ARTIFACT,
         "nginx_server_name": EXPECTED_SERVER_NAME,
         "nginx_document_root": str(EXPECTED_DOCUMENT_ROOT),
+        "nginx_fpm_socket": EXPECTED_FPM_SOCKET,
+        "nginx_index_request_uri": EXPECTED_INDEX_REQUEST_URI,
+        "nginx_script_filename": str(EXPECTED_SCRIPT_FILENAME),
         "nginx_capture_privilege_boundary": "sudo-noninteractive-exact-nginx-T",
         "raw_capture_mode": oct(RAW_CAPTURE_MODE),
     }

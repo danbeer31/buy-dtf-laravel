@@ -3,32 +3,32 @@
   "cache_busters": {
     "count": 9,
     "sha256_values": [
-      "c06f728e3220e03ab3eab787958c156bfdcb45d72c9177c60eb09827db9812f6",
-      "4cce2a0630dd6fbfd4214b8ca87c861f3780a9b03ef14a716ea54dc0164ab01e",
-      "7e08f895f97bb4705b161519156769e3a44d16dd103c8e70617972c3419c9bea",
-      "8cbf8d613c01d8f143cc6f505075f17418a8df01ee10c281dd2b9f7e4b1647f1",
-      "01026c609561a00b211934dd4e4b52d4f869557ae401c40dbd052fac71817670",
-      "0e6294f54b875fcbd97fa20933df47a661f4a5782fc0572132ab1bbda3091a4a",
-      "c41bfa34138663eefe6c5cd9fc17927f011b4438229f4717c5d10a9e2b5db2f4",
-      "c8ee03900f96d74dcb824f4aecf83dacc8eb245a248e6663e2bde4002fe48af7",
-      "603d322d7b3f57cccb6dd7acab8570f428baee21e06a3d70946bc50101bd5fed"
+      "1f522099ef17aff14c8d1c45a4d63fdf84883155d3dfcef72678ccde6a58185c",
+      "8a4b2b7f3eba163249cecd4e5dcebb4a71bf77d04ff4bb8320f348ac3dc95afa",
+      "e9887eca93e69bbf2e957d658dbdbdfd492d6fb92092f9358d2c78e85f24338c",
+      "11cffa9ec8c8f6b08c4019b3aabfd543ea0e2247465816635e4a244d2b02b896",
+      "57ac39e64f8121a1ef3c262cc0a5e72b2fdd0aaec2bec4f53d2782cd0465db78",
+      "50accd127f91163c19b09790bb35f99e4506c75d71976f2d22d647dc75fa96e4",
+      "8aafb51339f29cf3b4bde6a16fbcb69a59fa4af2d77572fcd39ed2e26e770b55",
+      "1321cc5faf7a9cca15160747d07ed6181fc7edc37c4a5ef306481da2ce786485",
+      "225d5e1917786c817c362d715d97d15275c0cc090d13c92be2a5cdc50d6889be"
     ],
     "unique": true
   },
-  "canonical_sha256": "b9beaa5105142e678e425bd21a5fc7201ccb6b7e7301cef654683903645d5516",
+  "canonical_sha256": "264c2c6d25ed2ccffd4ea7f40925d7788f182a42399b1fa2336cb57b53c82704",
   "daemon_configuration": {
-    "fpm_config_sha256": "397c15502de25bf5c6b04cd5190d4dfbe785167689ad1d3c5a2eafff25c47aab",
+    "fpm_config_sha256": "554f3c6f525abfdf7c979b5228d637ebd1d2b6888486d10373e87819b369d4aa",
     "fpm_configuration_check": {
-      "argv_sha256": "f9ae23b5924a97c257dcb4b2ed33058ef67384e1365bb8cc55378e919724f099",
+      "argv_sha256": "3a2a46911464a90f1f00721f05b5998c714c519bfe5eb3cf40313a6611996d05",
       "exit_status": 0,
-      "stderr_sha256": "7bc35db2f71ae2878e1e40b5b7c573705d4500f08fc53e4146a3594ff328e7d4",
+      "stderr_sha256": "0be72733a24f51dffcbf661b4ab6e52254263090b0f957cd8d2227673739bb48",
       "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
-    "nginx_config_sha256": "b6abad4f24d618fb62a1cbc2127a9ea7e68267533d8d945e72bbdb05085b557c",
+    "nginx_config_sha256": "b8866157aa3869286ab662851d84f9f395909293d8898551ada1d56c23196df1",
     "nginx_configuration_check": {
-      "argv_sha256": "796753a48630a545dc74cfcf39bf6a9aad4b6ccaca43f0c1bff660b476af4500",
+      "argv_sha256": "cd99f5d8ba42c48feb80b8638391ff991949042c9092749c1eeea219d5da99a3",
       "exit_status": 0,
-      "stderr_sha256": "1ddc28a32f07c3dd77802aad787d891cb989fbe0fc85738c8220ec51e6344fa8",
+      "stderr_sha256": "5e73a74e28a4f0f113df486b85029bbcc427f7f6dd57926a124ab7df2c1ece75",
       "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     "origin_and_public_ports_distinct": true,
@@ -42,8 +42,8 @@
     "sentinel": "BUYDTF_DEPENDENCY_MAINTENANCE_STATIC_V2",
     "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
   },
-  "gate_helper_sha256": "ae542dbe387406d5b0e0d379f074251d30e93d066f330c1badb16b11caf776bc",
-  "generated_at_utc": "2026-10-03T17:06:44.728089Z",
+  "gate_helper_sha256": "b93c08f58a08333120369c1cc75c60631d621c3a8099ca3967065721c45679f5",
+  "generated_at_utc": "2026-10-03T18:57:25.369095Z",
   "local_executables": {
     "nginx": {
       "bytes": 1314136,
@@ -109,13 +109,13 @@
       "bytes": 1205,
       "mode": 384,
       "name": "nginx-access.log",
-      "sha256": "83f516adb99fa7f659af7de93ea002bef7b7a30c58d75b9e1e6de05850d67cc5"
+      "sha256": "bc91b9932d97a5899cc4b77698dbdbf34a1fe67c17b33314d37ca9e94e9829d4"
     },
     {
       "bytes": 442,
       "mode": 384,
       "name": "nginx-error.log",
-      "sha256": "b301a0ea5ee2450099fcdbb77fbf2e8e58fefb98c0e2a64ea7a82c42f3a159e0"
+      "sha256": "81aed52ad9d73df9cf13ea0a551653f8eaceb67e13e3e804ef7b7f8f8371d444"
     },
     {
       "bytes": 0,
@@ -124,16 +124,16 @@
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
-      "bytes": 2748,
+      "bytes": 2881,
       "mode": 384,
       "name": "nginx.conf",
-      "sha256": "b6abad4f24d618fb62a1cbc2127a9ea7e68267533d8d945e72bbdb05085b557c"
+      "sha256": "b8866157aa3869286ab662851d84f9f395909293d8898551ada1d56c23196df1"
     },
     {
-      "bytes": 568,
+      "bytes": 587,
       "mode": 384,
       "name": "php-fpm-error.log",
-      "sha256": "6fa2bc7eff876970a4463209b8442dbc56858deadc0a744b52af25903eda666b"
+      "sha256": "7de42d56bb2fad9a6e2800cf90425a9262ada7822e133db9d1e60dbf3d137783"
     },
     {
       "bytes": 0,
@@ -142,10 +142,10 @@
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
-      "bytes": 809,
+      "bytes": 885,
       "mode": 384,
       "name": "php-fpm.conf",
-      "sha256": "397c15502de25bf5c6b04cd5190d4dfbe785167689ad1d3c5a2eafff25c47aab"
+      "sha256": "554f3c6f525abfdf7c979b5228d637ebd1d2b6888486d10373e87819b369d4aa"
     },
     {
       "bytes": 526,
@@ -157,7 +157,7 @@
       "bytes": 364,
       "mode": 384,
       "name": "probe-01-ready.headers.raw",
-      "sha256": "abc84b3ce708faee645f6d8017f58cef33790000a3edef53d2d1d6628f20522b"
+      "sha256": "01b876dd7a7ade90f810a26ba5fcb5f5d3272a59e85b13d6fe41a535fd5b1949"
     },
     {
       "bytes": 526,
@@ -169,7 +169,7 @@
       "bytes": 364,
       "mode": 384,
       "name": "probe-02-warm-original.headers.raw",
-      "sha256": "cd4184466ec2d040eeaaf81b5b5f62a3b3f4cd3346fcafe162bfc6ba653d1b88"
+      "sha256": "e12e199a0c0c8f2368def79aa2369f698b9a573495c6758b2f67eca2bb74a943"
     },
     {
       "bytes": 526,
@@ -181,55 +181,55 @@
       "bytes": 364,
       "mode": 384,
       "name": "probe-03-immediate-after-gate.headers.raw",
-      "sha256": "8d37c97e056b023fa7a94da3ec53f3d6d4f05e07e69ea17c604ce666d61343d0"
+      "sha256": "b05aff7dfb09f3a250a029eda56eb7410a78cec1ceaed810ceb98966636e4117"
     },
     {
       "bytes": 64,
       "mode": 384,
       "name": "probe-04-gate-origin-1.body.raw",
-      "sha256": "d1e2b70a0c177e3fd6c9e4af2e2f5149a009777434bdcd3116a9c55682c2a868"
+      "sha256": "5a32f92d01e56e8df3c24bd285663bbfdb353c455832e219d1597b01478b2dd5"
     },
     {
       "bytes": 490,
       "mode": 384,
       "name": "probe-04-gate-origin-1.headers.raw",
-      "sha256": "8cfa07d1a6a711e028ad73d3d9679c490b5a42a25de280743bdae3ee1013c698"
+      "sha256": "e138f6f346fc9fdbb780c57e3531f56e628e9022dfd9c843dc4872e5dc35ba23"
     },
     {
       "bytes": 64,
       "mode": 384,
       "name": "probe-05-gate-origin-2.body.raw",
-      "sha256": "22828c434bc9cb19139b61d3fa446cbdebbc28b3770175cc34626fe795db7fde"
+      "sha256": "fbc38c357fa63f3fb680565313a144ffa3458e5fbb01c3f3275113eec0337ba4"
     },
     {
       "bytes": 490,
       "mode": 384,
       "name": "probe-05-gate-origin-2.headers.raw",
-      "sha256": "eea82490078f21cfe03d3f564d29ff5b34ff8a3f71300b8441589c25be737d0e"
+      "sha256": "e213a34274aa5f7e5631183f4757afdea3e343e9ceb8f537a93c0ada3a72e318"
     },
     {
       "bytes": 64,
       "mode": 384,
       "name": "probe-06-gate-public.body.raw",
-      "sha256": "13e232ccaa058100e53a926677c1e9955f3f1aef74773dee935cac3d2388a2df"
+      "sha256": "aff5f343baffcd10a1e99fdfe31e1d977d907a9d7edd28b525a87f932cd648b2"
     },
     {
       "bytes": 490,
       "mode": 384,
       "name": "probe-06-gate-public.headers.raw",
-      "sha256": "61a05db33fbd3966d2f769aa370e3d21c00d06550448e3a4753272d5687879c5"
+      "sha256": "e5337038185f886465cc7bb3f8eebc1ed812ca452bd70c9399f3c07b007d5058"
     },
     {
       "bytes": 64,
       "mode": 384,
       "name": "probe-07-immediate-after-original.body.raw",
-      "sha256": "fba527bd4efb45fb100ff1798a315e560b71e61bbbee83478876bd68cc50c06d"
+      "sha256": "1d6a0a98b808fa3f73ecc74604d92bb7b588ea9801ee78a2eb0f78826ab1352b"
     },
     {
       "bytes": 490,
       "mode": 384,
       "name": "probe-07-immediate-after-original.headers.raw",
-      "sha256": "2a6328193712368a1e8d9236858850b895ccf35b9d407c7fa21d8773c4c1d06e"
+      "sha256": "0bf98f54f2eb0ec4f9ce187c1cb9c51c01186dd48ac0054814889c8c196e3db2"
     },
     {
       "bytes": 526,
@@ -241,7 +241,7 @@
       "bytes": 364,
       "mode": 384,
       "name": "probe-08-final-origin.headers.raw",
-      "sha256": "3eebb33df30eb50ec9fa57767b8b3e8f5beb8569c5cf9523dc35851b87c1ea84"
+      "sha256": "6e3df5a78a1509f81cc6fbe443cc16cb2fd5ba17bb0bd81e58edbe3adad42d23"
     },
     {
       "bytes": 526,
@@ -253,7 +253,7 @@
       "bytes": 364,
       "mode": 384,
       "name": "probe-09-final-public.headers.raw",
-      "sha256": "4536f29364cb59e916ef5fbb22c2ea17a9e6c9b38c7c0662d33ac0b02ec3ab20"
+      "sha256": "1320fff8c5dbcfd1af86704a6062189e463547f1d8b7509904e3a273826528d6"
     }
   ],
   "production_accessed": false,
@@ -278,10 +278,10 @@
           "x-buydtf-opcache-rehearsal-nonce",
           "x-buydtf-opcache-rehearsal-route"
         ],
-        "headers_sha256": "3eebb33df30eb50ec9fa57767b8b3e8f5beb8569c5cf9523dc35851b87c1ea84",
+        "headers_sha256": "6e3df5a78a1509f81cc6fbe443cc16cb2fd5ba17bb0bd81e58edbe3adad42d23",
         "label": "probe-08-final-origin",
         "nonce_bound": true,
-        "nonce_sha256": "c8ee03900f96d74dcb824f4aecf83dacc8eb245a248e6663e2bde4002fe48af7",
+        "nonce_sha256": "1321cc5faf7a9cca15160747d07ed6181fc7edc37c4a5ef306481da2ce786485",
         "original_sentinel_verified": true,
         "route": "local_origin_nginx_fpm",
         "route_bound": true,
@@ -304,10 +304,10 @@
           "x-buydtf-opcache-rehearsal-nonce",
           "x-buydtf-opcache-rehearsal-route"
         ],
-        "headers_sha256": "4536f29364cb59e916ef5fbb22c2ea17a9e6c9b38c7c0662d33ac0b02ec3ab20",
+        "headers_sha256": "1320fff8c5dbcfd1af86704a6062189e463547f1d8b7509904e3a273826528d6",
         "label": "probe-09-final-public",
         "nonce_bound": true,
-        "nonce_sha256": "603d322d7b3f57cccb6dd7acab8570f428baee21e06a3d70946bc50101bd5fed",
+        "nonce_sha256": "225d5e1917786c817c362d715d97d15275c0cc090d13c92be2a5cdc50d6889be",
         "original_sentinel_verified": true,
         "route": "local_public_nginx_proxy",
         "route_bound": true,
@@ -333,7 +333,7 @@
     "gate_probes": [
       {
         "body_bytes": 64,
-        "body_sha256": "d1e2b70a0c177e3fd6c9e4af2e2f5149a009777434bdcd3116a9c55682c2a868",
+        "body_sha256": "5a32f92d01e56e8df3c24bd285663bbfdb353c455832e219d1597b01478b2dd5",
         "gate_header_verified": true,
         "gate_probe_header_verified": true,
         "gate_sentinel_verified": true,
@@ -351,10 +351,10 @@
           "x-buydtf-opcache-rehearsal-nonce",
           "x-buydtf-opcache-rehearsal-route"
         ],
-        "headers_sha256": "8cfa07d1a6a711e028ad73d3d9679c490b5a42a25de280743bdae3ee1013c698",
+        "headers_sha256": "e138f6f346fc9fdbb780c57e3531f56e628e9022dfd9c843dc4872e5dc35ba23",
         "label": "probe-04-gate-origin-1",
         "nonce_bound": true,
-        "nonce_sha256": "8cbf8d613c01d8f143cc6f505075f17418a8df01ee10c281dd2b9f7e4b1647f1",
+        "nonce_sha256": "11cffa9ec8c8f6b08c4019b3aabfd543ea0e2247465816635e4a244d2b02b896",
         "original_sentinel_verified": false,
         "route": "local_origin_nginx_fpm",
         "route_bound": true,
@@ -362,7 +362,7 @@
       },
       {
         "body_bytes": 64,
-        "body_sha256": "22828c434bc9cb19139b61d3fa446cbdebbc28b3770175cc34626fe795db7fde",
+        "body_sha256": "fbc38c357fa63f3fb680565313a144ffa3458e5fbb01c3f3275113eec0337ba4",
         "gate_header_verified": true,
         "gate_probe_header_verified": true,
         "gate_sentinel_verified": true,
@@ -380,10 +380,10 @@
           "x-buydtf-opcache-rehearsal-nonce",
           "x-buydtf-opcache-rehearsal-route"
         ],
-        "headers_sha256": "eea82490078f21cfe03d3f564d29ff5b34ff8a3f71300b8441589c25be737d0e",
+        "headers_sha256": "e213a34274aa5f7e5631183f4757afdea3e343e9ceb8f537a93c0ada3a72e318",
         "label": "probe-05-gate-origin-2",
         "nonce_bound": true,
-        "nonce_sha256": "01026c609561a00b211934dd4e4b52d4f869557ae401c40dbd052fac71817670",
+        "nonce_sha256": "57ac39e64f8121a1ef3c262cc0a5e72b2fdd0aaec2bec4f53d2782cd0465db78",
         "original_sentinel_verified": false,
         "route": "local_origin_nginx_fpm",
         "route_bound": true,
@@ -391,7 +391,7 @@
       },
       {
         "body_bytes": 64,
-        "body_sha256": "13e232ccaa058100e53a926677c1e9955f3f1aef74773dee935cac3d2388a2df",
+        "body_sha256": "aff5f343baffcd10a1e99fdfe31e1d977d907a9d7edd28b525a87f932cd648b2",
         "gate_header_verified": true,
         "gate_probe_header_verified": true,
         "gate_sentinel_verified": true,
@@ -409,10 +409,10 @@
           "x-buydtf-opcache-rehearsal-nonce",
           "x-buydtf-opcache-rehearsal-route"
         ],
-        "headers_sha256": "61a05db33fbd3966d2f769aa370e3d21c00d06550448e3a4753272d5687879c5",
+        "headers_sha256": "e5337038185f886465cc7bb3f8eebc1ed812ca452bd70c9399f3c07b007d5058",
         "label": "probe-06-gate-public",
         "nonce_bound": true,
-        "nonce_sha256": "0e6294f54b875fcbd97fa20933df47a661f4a5782fc0572132ab1bbda3091a4a",
+        "nonce_sha256": "50accd127f91163c19b09790bb35f99e4506c75d71976f2d22d647dc75fa96e4",
         "original_sentinel_verified": false,
         "route": "local_public_nginx_proxy",
         "route_bound": true,
@@ -421,11 +421,11 @@
     ],
     "gate_revalidation_wait": {
       "configured_wait_seconds": 11,
-      "earliest_probe_at_utc": "2026-10-03T17:06:36.508572Z",
-      "elapsed_monotonic_ns": 11017566301,
-      "elapsed_seconds": 11.017566301,
-      "end_monotonic_ns": 48434735961148,
-      "ended_at_utc": "2026-10-03T17:06:36.526139Z",
+      "earliest_probe_at_utc": "2026-10-03T18:57:16.778922Z",
+      "elapsed_monotonic_ns": 11001819286,
+      "elapsed_seconds": 11.001819286,
+      "end_monotonic_ns": 55639517977842,
+      "ended_at_utc": "2026-10-03T18:57:14.296188Z",
       "identity_after": {
         "bytes": 582,
         "gid": 1000,
@@ -440,12 +440,12 @@
         "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4",
         "uid": 1000
       },
-      "start_monotonic_ns": 48423718394847,
-      "started_at_utc": "2026-10-03T17:06:25.508572Z"
+      "start_monotonic_ns": 55628516158556,
+      "started_at_utc": "2026-10-03T18:57:05.778922Z"
     },
     "immediate_stale_gate_after_original_restore": {
       "body_bytes": 64,
-      "body_sha256": "fba527bd4efb45fb100ff1798a315e560b71e61bbbee83478876bd68cc50c06d",
+      "body_sha256": "1d6a0a98b808fa3f73ecc74604d92bb7b588ea9801ee78a2eb0f78826ab1352b",
       "gate_header_verified": true,
       "gate_probe_header_verified": true,
       "gate_sentinel_verified": true,
@@ -463,10 +463,10 @@
         "x-buydtf-opcache-rehearsal-nonce",
         "x-buydtf-opcache-rehearsal-route"
       ],
-      "headers_sha256": "2a6328193712368a1e8d9236858850b895ccf35b9d407c7fa21d8773c4c1d06e",
+      "headers_sha256": "0bf98f54f2eb0ec4f9ce187c1cb9c51c01186dd48ac0054814889c8c196e3db2",
       "label": "probe-07-immediate-after-original",
       "nonce_bound": true,
-      "nonce_sha256": "c41bfa34138663eefe6c5cd9fc17927f011b4438229f4717c5d10a9e2b5db2f4",
+      "nonce_sha256": "8aafb51339f29cf3b4bde6a16fbcb69a59fa4af2d77572fcd39ed2e26e770b55",
       "original_sentinel_verified": false,
       "route": "local_origin_nginx_fpm",
       "route_bound": true,
@@ -489,10 +489,10 @@
         "x-buydtf-opcache-rehearsal-nonce",
         "x-buydtf-opcache-rehearsal-route"
       ],
-      "headers_sha256": "8d37c97e056b023fa7a94da3ec53f3d6d4f05e07e69ea17c604ce666d61343d0",
+      "headers_sha256": "b05aff7dfb09f3a250a029eda56eb7410a78cec1ceaed810ceb98966636e4117",
       "label": "probe-03-immediate-after-gate",
       "nonce_bound": true,
-      "nonce_sha256": "7e08f895f97bb4705b161519156769e3a44d16dd103c8e70617972c3419c9bea",
+      "nonce_sha256": "e9887eca93e69bbf2e957d658dbdbdfd492d6fb92092f9358d2c78e85f24338c",
       "original_sentinel_verified": true,
       "route": "local_origin_nginx_fpm",
       "route_bound": true,
@@ -516,11 +516,11 @@
     },
     "original_revalidation_wait": {
       "configured_wait_seconds": 11,
-      "earliest_probe_at_utc": "2026-10-03T17:06:47.570000Z",
-      "elapsed_monotonic_ns": 11004391865,
-      "elapsed_seconds": 11.004391865,
-      "end_monotonic_ns": 48445784214300,
-      "ended_at_utc": "2026-10-03T17:06:44.706335Z",
+      "earliest_probe_at_utc": "2026-10-03T18:57:25.343807Z",
+      "elapsed_monotonic_ns": 11003444675,
+      "elapsed_seconds": 11.003444675,
+      "end_monotonic_ns": 55650569043350,
+      "ended_at_utc": "2026-10-03T18:57:25.347252Z",
       "identity_after": {
         "bytes": 1687,
         "gid": 1000,
@@ -535,8 +535,8 @@
         "sha256": "76ed38352484c1d99a4d9d1f9239ac51cd590a18410eb11ac9ed1afbe1ba5d40",
         "uid": 1000
       },
-      "start_monotonic_ns": 48434779822435,
-      "started_at_utc": "2026-10-03T17:06:36.570000Z"
+      "start_monotonic_ns": 55639565598675,
+      "started_at_utc": "2026-10-03T18:57:14.343807Z"
     },
     "warm_original": {
       "body_bytes": 526,
@@ -555,10 +555,10 @@
         "x-buydtf-opcache-rehearsal-nonce",
         "x-buydtf-opcache-rehearsal-route"
       ],
-      "headers_sha256": "cd4184466ec2d040eeaaf81b5b5f62a3b3f4cd3346fcafe162bfc6ba653d1b88",
+      "headers_sha256": "e12e199a0c0c8f2368def79aa2369f698b9a573495c6758b2f67eca2bb74a943",
       "label": "probe-02-warm-original",
       "nonce_bound": true,
-      "nonce_sha256": "4cce2a0630dd6fbfd4214b8ca87c861f3780a9b03ef14a716ea54dc0164ab01e",
+      "nonce_sha256": "8a4b2b7f3eba163249cecd4e5dcebb4a71bf77d04ff4bb8320f348ac3dc95afa",
       "original_sentinel_verified": true,
       "route": "local_origin_nginx_fpm",
       "route_bound": true,

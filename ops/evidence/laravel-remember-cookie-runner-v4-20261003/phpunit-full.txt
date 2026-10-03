@@ -6,22 +6,22 @@
   ✓ that true is true                                                    0.01s  
 
    PASS  Tests\Unit\GangSheetPricingServiceTest
-  ✓ non 22x96 uses fixed price
+  ✓ non 22x96 uses fixed price                                           0.01s  
   ✓ 22x96 tiers are applied
   ✓ invalid size throws
   ✓ supported sizes preserve their print dimensions and base prices
 
    PASS  Tests\Unit\Jobs\ProcessStripePayoutWebhookTest
-  ✓ missing event is a no op                                             0.18s  
-  ✓ already processed event is a no op                                   0.04s  
+  ✓ missing event is a no op                                             0.16s  
+  ✓ already processed event is a no op                                   0.02s  
   ✓ paid payout syncs transfer and marks event processed                 0.03s  
   ✓ failed payout does not create qbo transfer and marks event processe… 0.02s  
   ✓ stripe sync exception propagates and leaves event unprocessed        0.02s  
-  ✓ qbo exception propagates and leaves event unprocessed                0.02s  
-  ✓ malformed payout payload is a no op and remains unprocessed          0.02s  
+  ✓ qbo exception propagates and leaves event unprocessed                0.03s  
+  ✓ malformed payout payload is a no op and remains unprocessed          0.03s  
 
    PASS  Tests\Unit\NameNumberServiceTest
-  ✓ render retries a transient server failure                            0.35s  
+  ✓ render retries a transient server failure                            0.34s  
   ✓ render does not retry a validation failure                           0.03s  
 
    PASS  Tests\Unit\QboAdminReadCircuitBreakerTest
@@ -58,65 +58,65 @@ Dropbox refresh success. New token starting with: dropbox-ac, length: 28
   ✓ qbo refresh and api requests keep their expected guzzle shape        0.05s  
   ✓ shippo shipment request keeps authentication and json payload shape  0.02s  
   ✓ dropbox oauth exchange and refresh remain form encoded and persist…  0.03s  
-  ✓ dropbox service upload stream keeps the actual spatie guzzle contra… 0.03s  
+  ✓ dropbox service upload stream keeps the actual spatie guzzle contra… 0.02s  
   ✓ name number renderer keeps token header and normalized json payload  0.02s  
   ✓ name number font upload keeps multipart contract and cleans up temp… 0.02s  
 
    PASS  Tests\Feature\Api\IncomingOrderAuthenticationTest
-  ✓ invalid hmac is rejected before remote image fetch                   0.08s  
+  ✓ invalid hmac is rejected before remote image fetch                   0.07s  
   ✓ valid hmac converts a local data uri into an ordered image           0.04s  
   ✓ valid hmac passes authentication without remote image fetch          0.02s  
 
    PASS  Tests\Feature\Auth\AuthenticationTest
-  ✓ login screen can be rendered                                         0.05s  
+  ✓ login screen can be rendered                                         0.06s  
   ✓ users can authenticate using the login screen                        0.04s  
   ✓ users can not authenticate with invalid password                     0.03s  
   ✓ users can logout                                                     0.02s  
-  ✓ stale remember cookie for a missing user falls through as a guest    0.02s  
-  ✓ valid remember cookie authenticates the matching user                0.02s  
+  ✓ stale remember cookie for a missing user falls through as a guest    0.03s  
+  ✓ valid remember cookie authenticates the matching user                0.03s  
 
    PASS  Tests\Feature\Auth\EmailVerificationTest
-  ✓ email verification screen can be rendered                            0.06s  
+  ✓ email verification screen can be rendered                            0.05s  
   ✓ email can be verified                                                0.04s  
   ✓ email is not verified with invalid hash                              0.03s  
 
    PASS  Tests\Feature\Auth\PasswordConfirmationTest
   ✓ confirm password screen can be rendered                              0.04s  
-  ✓ password can be confirmed                                            0.03s  
-  ✓ password is not confirmed with invalid password                      0.23s  
+  ✓ password can be confirmed                                            0.02s  
+  ✓ password is not confirmed with invalid password                      0.24s  
 
    PASS  Tests\Feature\Auth\PasswordResetTest
-  ✓ reset password link screen can be rendered                           0.05s  
-  ✓ reset password link can be requested                                 0.25s  
-  ✓ reset password screen can be rendered                                0.27s  
-  ✓ password can be reset with valid token                               0.23s  
+  ✓ reset password link screen can be rendered                           0.04s  
+  ✓ reset password link can be requested                                 0.24s  
+  ✓ reset password screen can be rendered                                0.26s  
+  ✓ password can be reset with valid token                               0.25s  
 
    PASS  Tests\Feature\Auth\PasswordUpdateTest
   ✓ password can be updated                                              0.05s  
-  ✓ correct password must be provided to update password                 0.03s  
+  ✓ correct password must be provided to update password                 0.02s  
 
    PASS  Tests\Feature\Auth\RegistrationTest
-  ✓ registration screen can be rendered                                  0.07s  
-  ✓ new users can register                                               0.10s  
+  ✓ registration screen can be rendered                                  0.06s  
+  ✓ new users can register                                               0.09s  
 
    PASS  Tests\Feature\Cart\UploadAttachmentTest
   ✓ png upload uses processed pixel dimensions and attaches to an isola… 0.01s  
 
    PASS  Tests\Feature\Cart\UploadPreflightTest
-  ✓ supported upload metadata is accepted and scoped to the users busin… 0.03s  
+  ✓ supported upload metadata is accepted and scoped to the users busin… 0.04s  
   ✓ upload metadata rejects unsupported file types                       0.02s  
-  ✓ upload metadata rejects files over fifty megabytes                   0.02s  
+  ✓ upload metadata rejects files over fifty megabytes                   0.03s  
   ✓ upload metadata requires name size and mime                          0.02s  
 
    PASS  Tests\Feature\Checkout\InvoiceCheckoutTest
-  ✓ invoice checkout completes locally when qbo creation fails           0.07s  
+  ✓ invoice checkout completes locally when qbo creation fails           0.06s  
   ✓ customer cannot complete another business invoice                    0.03s  
 
    PASS  Tests\Feature\Checkout\StripeCardCheckoutTest
   ✓ starting card payment creates the expected intent and persists tota… 0.07s  
   ✓ non succeeded card payment does not mark the order paid              0.03s  
   ✓ succeeded card payment records payment order metrics and qbo result… 0.05s  
-  ✓ replaying a succeeded completion does not duplicate local or qbo re… 0.06s  
+  ✓ replaying a succeeded completion does not duplicate local or qbo re… 0.05s  
 
    PASS  Tests\Feature\ExampleTest
   ✓ the application returns a successful response                        0.05s  
@@ -127,59 +127,59 @@ Dropbox refresh success. New token starting with: dropbox-ac, length: 28
   ✓ external side effect drivers and credentials are forced safe         0.02s  
 
    PASS  Tests\Feature\Mail\OrderStatusMailRenderingTest
-  ✓ production markdown mail renders as a valid mime message without ou… 0.08s  
   ✓ production markdown mail renders as a valid mime message without ou… 0.05s  
-  ✓ production markdown mail renders as a valid mime message without ou… 0.06s  
-  ✓ production markdown mail renders as a valid mime message without ou… 0.05s  
-  ✓ production markdown mail renders as a valid mime message without ou… 0.05s  
+  ✓ production markdown mail renders as a valid mime message without ou… 0.04s  
   ✓ production markdown mail renders as a valid mime message without ou… 0.03s  
-  ✓ production markdown mail renders as a valid mime message without ou… 0.05s  
+  ✓ production markdown mail renders as a valid mime message without ou… 0.03s  
+  ✓ production markdown mail renders as a valid mime message without ou… 0.03s  
+  ✓ production markdown mail renders as a valid mime message without ou… 0.04s  
+  ✓ production markdown mail renders as a valid mime message without ou… 0.03s  
 
    PASS  Tests\Feature\Mail\ResendMailTransportCompatibilityTest
-  ✓ rendered order mail is handed to resend without credentials or netw… 0.07s  
+  ✓ rendered order mail is handed to resend without credentials or netw… 0.06s  
 
    PASS  Tests\Feature\Migrations\StripePayoutEntryNotesMigrationTest
-  ✓ additive correction repairs the observed notes write failure         0.04s  
-  ✓ correction refuses a different active connection without touching e… 0.05s  
-  ✓ pretend mode emits only the expected additive column statement       0.03s  
+  ✓ additive correction repairs the observed notes write failure         0.03s  
+  ✓ correction refuses a different active connection without touching e… 0.03s  
+  ✓ pretend mode emits only the expected additive column statement       0.02s  
 
    PASS  Tests\Feature\Production\OrdinaryImageHandoffTest
-  ✓ ordinary duplicate group handoff builds one job and never contacts…  0.03s  
+  ✓ ordinary duplicate group handoff builds one job and never contacts…  0.01s  
 addToProduction call: {"image_id":1}
 
    PASS  Tests\Feature\Production\PricingAndHandoffTest
-  ✓ gang sheet price uses the quantity tier and is persisted             0.05s  
-  ✓ locked admin price overrides calculated pricing                      0.03s  
-  ✓ gang sheet cannot enter the automated production handoff             0.05s  
+  ✓ gang sheet price uses the quantity tier and is persisted             0.03s  
+  ✓ locked admin price overrides calculated pricing                      0.02s  
+  ✓ gang sheet cannot enter the automated production handoff             0.03s  
 
    PASS  Tests\Feature\ProfileTest
-  ✓ profile page is displayed                                            0.10s  
-  ✓ profile information can be updated                                   0.06s  
+  ✓ profile page is displayed                                            0.06s  
+  ✓ profile information can be updated                                   0.03s  
   ✓ email verification status is unchanged when the email address is un… 0.05s  
-  ✓ user can delete their account                                        0.03s  
-  ✓ correct password must be provided to delete account                  0.04s  
+  ✓ user can delete their account                                        0.10s  
+  ✓ correct password must be provided to delete account                  0.03s  
 
    PASS  Tests\Feature\SchedulerRegistrationTest
-  ✓ payout and reconciliation commands have expected frequencies         0.07s  
+  ✓ payout and reconciliation commands have expected frequencies         0.05s  
 
    PASS  Tests\Feature\Webhooks\ShippoWebhookTest
   ✓ tracking update changes status and sends expected email with data s… 0.04s  
   ✓ tracking update changes status and sends expected email with data s… 0.03s  
-  ✓ tracking update changes status and sends expected email with data s… 0.02s  
-  ✓ repeated same status does not send duplicate email                   0.02s  
+  ✓ tracking update changes status and sends expected email with data s… 0.03s  
+  ✓ repeated same status does not send duplicate email                   0.03s  
   ✓ out of order transit event currently regresses delivered order       0.03s  
-  ✓ missing tracking number is rejected without email                    0.03s  
+  ✓ missing tracking number is rejected without email                    0.02s  
   ✓ unknown tracking number returns not found without email              0.02s  
   ✓ unhandled event is ignored without changing order or sending email   0.02s  
 
    PASS  Tests\Feature\Webhooks\StripeWebhookTest
-  ✓ valid payout signature records event and queues work without outbou… 0.07s  
-  ✓ rotation fallback secret is accepted                                 0.04s  
-  ✓ invalid signature is rejected without recording or queueing          0.05s  
-  ✓ stale signature is rejected without recording or queueing            0.04s  
+  ✓ valid payout signature records event and queues work without outbou… 0.06s  
+  ✓ rotation fallback secret is accepted                                 0.03s  
+  ✓ invalid signature is rejected without recording or queueing          0.04s  
+  ✓ stale signature is rejected without recording or queueing            0.02s  
   ✓ sequential duplicate is acknowledged without a second record or job  0.03s  
   ✓ balance available event is marked processed without queueing work    0.03s  
 
   Tests:    110 passed (718 assertions)
-  Duration: 6.17s
+  Duration: 5.59s
 

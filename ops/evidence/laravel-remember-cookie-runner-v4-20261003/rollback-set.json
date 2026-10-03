@@ -10,7 +10,7 @@
   "retained_partial_release_modification": false,
   "retained_v3_release_modified": false,
   "rollback_identity_source": "accepted failed-cutover evidence; no v4 production re-probe",
-  "runner_sha256": "e2d735c9c9c86c8bd38be3085b3372a2d2079ada9866d87487e8aa486dfc79f0",
+  "runner_sha256": "464bd6a28c8bed84c90176d42bc88d22eea5977c2698d5cddb7fe3eca50f9558",
   "source_manifest_sha256": "3909bdc2303b5c578135859c847f311cd84b827e62ac4e5dbce3d2297f6da71f",
   "status": "frozen-for-independent-review",
   "vendor_manifest": {
