@@ -76,8 +76,8 @@ def main() -> int:
     args = parse_arguments()
     project = args.project.resolve(strict=True)
     output = args.output_dir.resolve(strict=True)
-    if output.name != "laravel-remember-cookie-runner-v3-20261002" or output.is_symlink():
-        raise RuntimeError("Platform evidence directory is not the reviewed v3 evidence root.")
+    if output.name != "laravel-remember-cookie-runner-v4-20261003" or output.is_symlink():
+        raise RuntimeError("Platform evidence directory is not the reviewed v4 evidence root.")
     for path in (args.php, args.php_archive, args.composer, project / "composer.lock"):
         if path.is_symlink() or not path.is_file():
             raise RuntimeError(f"Required platform input is not a regular file: {path}")
@@ -180,7 +180,7 @@ def main() -> int:
         raise RuntimeError(f"PHP 8.2.30 platform check failed: {platform.returncode}")
 
     receipt = {
-        "artifact": "buy-dtf-laravel-remember-cookie-php-platform-v3",
+        "artifact": "buy-dtf-laravel-remember-cookie-php-platform-v4",
         "status": "pass",
         "verifier_sha256": sha256_file(Path(__file__).resolve(strict=True)),
         "runner_sha256": sha256_file(Path(runner.__file__).resolve(strict=True)),

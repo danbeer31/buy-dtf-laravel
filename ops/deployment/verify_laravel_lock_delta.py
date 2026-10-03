@@ -60,7 +60,7 @@ def main() -> int:
     args = parse_arguments()
     repository = args.repository.resolve(strict=True)
     output_parent = args.output.parent.resolve(strict=True)
-    if output_parent.name != "laravel-remember-cookie-runner-v3-20261002":
+    if output_parent.name != "laravel-remember-cookie-runner-v4-20261003":
         raise RuntimeError("Lock-delta receipt target is outside the reviewed evidence root.")
     git = shutil.which("git.exe") or shutil.which("git")
     if git is None:
@@ -113,7 +113,7 @@ def main() -> int:
     if old_laravel.get("version") != "v12.69.0" or new_laravel.get("version") != "v12.69.1":
         raise RuntimeError("Laravel lock versions are not the exact reviewed pair.")
     receipt = {
-        "artifact": "buy-dtf-laravel-remember-cookie-lock-delta-v3",
+        "artifact": "buy-dtf-laravel-remember-cookie-lock-delta-v4",
         "status": "pass",
         "verifier_sha256": sha256_bytes(Path(__file__).resolve(strict=True).read_bytes()),
         "historical_lock_transition_commit": LOCK_TRANSITION_COMMIT,

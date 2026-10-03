@@ -13,6 +13,7 @@ from contextlib import contextmanager
 import ctypes
 import fcntl
 import hashlib
+import ipaddress
 import json
 import os
 from pathlib import Path
@@ -34,13 +35,14 @@ if str(DEPLOYMENT_MODULE_DIRECTORY) not in sys.path:
 
 import laravel_dependency_database_envelope as database_envelope
 import laravel_dependency_gate as dependency_gate
+import laravel_nginx_identity as environment_controls
 import laravel_log_delta as laravel_log_delta
 
 
 APP_ROOT = Path("/var/www/buy-dtf")
 PRIVATE_OPERATIONS_ROOT = APP_ROOT / "storage/app/private/operations"
-RELEASE_ROOT = PRIVATE_OPERATIONS_ROOT / "laravel-remember-cookie-v3-releases"
-ROLLBACK_ROOT = PRIVATE_OPERATIONS_ROOT / "laravel-remember-cookie-v3-rollbacks"
+RELEASE_ROOT = PRIVATE_OPERATIONS_ROOT / "laravel-remember-cookie-v4-releases"
+ROLLBACK_ROOT = PRIVATE_OPERATIONS_ROOT / "laravel-remember-cookie-v4-rollbacks"
 DEPLOYMENT_LOCK = APP_ROOT / "storage/framework/dependency-deployment.lock"
 FPM_SOCKET = Path("/run/php/php8.2-fpm.sock")
 LARAVEL_MAINTENANCE_FILE = APP_ROOT / "storage/framework/down"
@@ -63,10 +65,26 @@ EXPECTED_APP_DEBUG = False
 EXPECTED_PHP_VERSION = "8.2.30"
 RUNTIME_HELPER_SHA256 = "7cd804545f9e09d096d348924021047e0a7b1b6ecf3a1b783fd015aef24c48d2"
 DATABASE_ENVELOPE_VALIDATOR_SHA256 = "e3aa9109fcc6a6c8725f07665f27fc28a242447861b5b6c2a8d614a5a0a805b3"
-GATE_HELPER_SHA256 = "1269a277e931dee346293bed4ea0f6d029cf9ded7810127a0ef547289ce51f80"
+GATE_HELPER_SHA256 = "ae542dbe387406d5b0e0d379f074251d30e93d066f330c1badb16b11caf776bc"
 LOG_PARSER_SHA256 = "b91ac879b9559e229e18b7613fa4c570cee54016fbadc2e306925c0a71bcf179"
+FPM_OPCACHE_PROBE_SHA256 = "b8b34f87d45a0c000cc0df7917496631320cfbdcca1ff44bc41741ce0d569262"
+NGINX_IDENTITY_HELPER_SHA256 = "4beb1fd5e4fabb8d74d2de50b8c96f452ecb6de242ed411c7c0a97304037d192"
+RETIRED_CONTROLS_SHA256 = "622655e74dea16699cd4ffb714460a934ce2aa1abee1f130cdd7b1228a0e2163"
+RETIRED_RUNNER_SHA256S = frozenset(
+    {
+        "2cae23d816e358c91ce512da4b3db3ee4e7fdff268c51afddafb0995b2feef9e",
+        "a7657bbfea760be186301503c567042f76739c2954fffbfc76f31c9f4eefede5",
+        "97cb4e8d702b7ceb1b9efde26dba93e6e0f4a833bb55650843fed1c0746f0307",
+    }
+)
+RETIRED_GATE_HELPER_SHA256S = frozenset(
+    {"1269a277e931dee346293bed4ea0f6d029cf9ded7810127a0ef547289ce51f80"}
+)
+RETIRED_RELEASE_RECEIPT_SHA256S = frozenset(
+    {"ec16a6d017847401ee51a923afe9391a94a82f906f68e69db496db6f617f3b21"}
+)
 HANDOFF_FILENAME = "HANDOFF.md"
-HANDOFF_SHA256 = "305127ee8dc6c578ea8a8a1901a455b2e18378c481c8c726b3b120917e62a984"
+HANDOFF_SHA256 = "8ee888883bf2330c7a5c7d70efe48244122b600067ba030976a53cbe0009e4c1"
 ARTIFACT_REVIEW_STATUS = "review-only; not staged or deployed"
 
 EXPECTED_SOURCE_MANIFEST = {
@@ -161,15 +179,15 @@ NEW_PACKAGE_VERSIONS = {
     "league/flysystem": "3.35.3",
     "league/flysystem-local": "3.35.3",
 }
-STAGE_APPROVAL_TOKEN = f"STAGE-BUYDTF-LARAVEL-REMEMBER-V3-{CANDIDATE_LOCK_SHA256[:16]}"
-CUTOVER_APPROVAL_TOKEN = f"DEPLOY-BUYDTF-LARAVEL-REMEMBER-V3-{CANDIDATE_LOCK_SHA256[:16]}"
-RECOVERY_APPROVAL_TOKEN = f"RECOVER-BUYDTF-LARAVEL-REMEMBER-V3-{EXPECTED_LIVE_LOCK_SHA256[:16]}"
+STAGE_APPROVAL_TOKEN = f"STAGE-BUYDTF-LARAVEL-REMEMBER-V4-{CANDIDATE_LOCK_SHA256[:16]}"
+CUTOVER_APPROVAL_TOKEN = f"DEPLOY-BUYDTF-LARAVEL-REMEMBER-V4-{CANDIDATE_LOCK_SHA256[:16]}"
+RECOVERY_APPROVAL_TOKEN = f"RECOVER-BUYDTF-LARAVEL-REMEMBER-V4-{EXPECTED_LIVE_LOCK_SHA256[:16]}"
 FINALIZE_MONITOR_APPROVAL_TOKEN = (
-    f"FINALIZE-BUYDTF-LARAVEL-REMEMBER-V3-{CANDIDATE_LOCK_SHA256[:16]}"
+    f"FINALIZE-BUYDTF-LARAVEL-REMEMBER-V4-{CANDIDATE_LOCK_SHA256[:16]}"
 )
 
 DRAIN_SECONDS = 65
-OPCACHE_WAIT_SECONDS = 5
+DEPENDENCY_CACHE_SETTLE_SECONDS = 5
 OPCACHE_SECOND_PROBE_DELAY_SECONDS = 3
 MONITOR_SECONDS = 30 * 60
 MONITOR_INTERVAL_SECONDS = 60
@@ -417,6 +435,16 @@ def atomic_install_bytes(path: Path, content: bytes, metadata: dict[str, Any]) -
         temporary.unlink(missing_ok=True)
 
 
+def closed_control_environment() -> dict[str, str]:
+    """Return the fixed environment for read-only production control commands."""
+
+    return {
+        "LANG": "C.UTF-8",
+        "LC_ALL": "C.UTF-8",
+        "PATH": "/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+    }
+
+
 def run(
     command: list[str],
     *,
@@ -424,16 +452,21 @@ def run(
     timeout: int = 300,
     env: dict[str, str] | None = None,
 ) -> subprocess.CompletedProcess[str]:
-    completed = subprocess.run(
-        command,
-        cwd=cwd,
-        env=env,
-        text=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        timeout=timeout,
-        check=False,
-    )
+    try:
+        completed = subprocess.run(
+            command,
+            cwd=cwd,
+            env=closed_control_environment() if env is None else env,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=timeout,
+            check=False,
+        )
+    except (OSError, subprocess.TimeoutExpired) as exception:
+        raise DeploymentError(
+            f"Command execution failed at {Path(command[0]).name}."
+        ) from exception
     if completed.returncode != 0:
         raise DeploymentError(
             f"Command failed at {Path(command[0]).name} (exit {completed.returncode})."
@@ -944,12 +977,15 @@ def http_status(url: str, *, cache_buster: bool = False) -> int:
     completed = run(
         [
             "/usr/bin/curl",
+            "--disable",
             "--silent",
             "--show-error",
+            "--noproxy",
+            "*",
             "--output",
             "/dev/null",
             "--write-out",
-            "%{http_code}",
+            "%{http_code}\n%{remote_ip}\n%{remote_port}\n",
             "--header",
             "Cache-Control: no-cache, no-store",
             "--header",
@@ -964,9 +1000,17 @@ def http_status(url: str, *, cache_buster: bool = False) -> int:
         ],
         cwd=APP_ROOT,
         timeout=15,
+        env=closed_control_environment(),
     )
     try:
-        return int(completed.stdout)
+        fields = completed.stdout.strip().splitlines()
+        if len(fields) != 3 or not fields[0].isdigit() or not fields[2].isdigit():
+            raise ValueError
+        remote_ip = ipaddress.ip_address(fields[1])
+        remote_port = int(fields[2])
+        if not remote_ip.is_global or remote_port != 443:
+            raise ValueError
+        return int(fields[0])
     except ValueError as exception:
         raise DeploymentError(f"Invalid HTTP status returned for {url}.") from exception
 
@@ -1011,6 +1055,7 @@ def runtime_probe(helper: Path) -> dict[str, Any]:
         ["/usr/bin/php", str(helper), str(APP_ROOT)],
         cwd=APP_ROOT,
         timeout=60,
+        env=closed_control_environment(),
     )
     try:
         payload = json.loads(completed.stdout)
@@ -1056,6 +1101,345 @@ def database_envelope_stable_identity(summary: dict[str, Any]) -> dict[str, Any]
 def require_log_parser() -> Path:
     module_path = Path(str(laravel_log_delta.__file__)).resolve(strict=True)
     return require_regular_file(module_path, LOG_PARSER_SHA256)
+
+
+def require_fpm_opcache_probe() -> Path:
+    probe = Path(__file__).resolve().with_name("laravel_fpm_opcache_probe.php")
+    return require_regular_file(probe, FPM_OPCACHE_PROBE_SHA256)
+
+
+def require_nginx_identity_helper() -> Path:
+    helper = Path(str(environment_controls.__file__)).resolve(strict=True)
+    return require_regular_file(helper, NGINX_IDENTITY_HELPER_SHA256)
+
+
+def require_retired_controls_registry() -> dict[str, Any]:
+    path = Path(__file__).resolve().with_name(
+        "laravel_remember_cookie_retired_controls.json"
+    )
+    require_regular_file(path, RETIRED_CONTROLS_SHA256)
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as exception:
+        raise DeploymentError("Retired-controls registry is invalid UTF-8 JSON.") from exception
+    if (
+        not isinstance(payload, dict)
+        or payload.get("artifact")
+        != "buy-dtf-laravel-remember-cookie-retired-controls-v1"
+        or payload.get("status") != "permanent-no-go"
+        or payload.get("deployment_eligible") is not False
+    ):
+        raise DeploymentError("Retired-controls registry has an unexpected identity.")
+    controls = payload.get("retired_controls")
+    if not isinstance(controls, list):
+        raise DeploymentError("Retired-controls registry has no control inventory.")
+    by_kind: dict[str, set[str]] = {}
+    for control in controls:
+        if not isinstance(control, dict) or control.get("permanent_no_go") is not True:
+            raise DeploymentError("Retired-controls registry contains an eligible control.")
+        kind = control.get("kind")
+        digest = control.get("sha256")
+        if not isinstance(kind, str) or not isinstance(digest, str):
+            raise DeploymentError("Retired-controls registry contains a malformed entry.")
+        by_kind.setdefault(kind, set()).add(digest)
+    if not RETIRED_RUNNER_SHA256S.issubset(by_kind.get("runner", set())):
+        raise DeploymentError("Retired runner inventory is incomplete.")
+    if not RETIRED_GATE_HELPER_SHA256S.issubset(
+        by_kind.get("static_gate_helper", set())
+    ):
+        raise DeploymentError("Retired gate-helper inventory is incomplete.")
+    if not RETIRED_RELEASE_RECEIPT_SHA256S.issubset(
+        by_kind.get("release_receipt", set())
+    ):
+        raise DeploymentError("Retired release-receipt inventory is incomplete.")
+    current_runner_sha256 = sha256_file(Path(__file__).resolve())
+    current_gate_helper_sha256 = sha256_file(Path(str(dependency_gate.__file__)).resolve())
+    if current_runner_sha256 in by_kind.get("runner", set()):
+        raise DeploymentError("The running dependency control is permanently retired.")
+    if current_gate_helper_sha256 in by_kind.get("static_gate_helper", set()):
+        raise DeploymentError("The loaded static-gate helper is permanently retired.")
+    candidate = payload.get(
+        "accepted_candidate_identities_remain_valid_for_a_new_v4_build"
+    )
+    if not isinstance(candidate, dict) or (
+        candidate.get("composer_lock_sha256") != CANDIDATE_LOCK_SHA256
+        or candidate.get("vendor_sha256")
+        != EXPECTED_CANDIDATE_VENDOR_MANIFEST["sha256"]
+        or candidate.get("bootstrap_cache_sha256")
+        != EXPECTED_CANDIDATE_CACHE_IDENTITY["manifest"]["sha256"]
+        or candidate.get("runtime_source_cas_sha256")
+        != EXPECTED_SOURCE_MANIFEST_SHA256
+    ):
+        raise DeploymentError("Retired-controls registry changed the accepted candidate.")
+    return {
+        "artifact": payload["artifact"],
+        "path": str(path),
+        "sha256": RETIRED_CONTROLS_SHA256,
+        "status": payload["status"],
+    }
+
+
+def fpm_fastcgi_environment(script_filename: Path, script_name: str) -> dict[str, str]:
+    """Build a closed FastCGI parameter set with no inherited ini overrides."""
+
+    script_filename = script_filename.resolve(strict=True)
+    if not script_name.startswith("/") or "\x00" in script_name:
+        raise DeploymentError("PHP-FPM probe script name is invalid.")
+    return {
+        "DOCUMENT_ROOT": str(APP_ROOT / "public"),
+        "GATEWAY_INTERFACE": "CGI/1.1",
+        "HTTPS": "on",
+        "QUERY_STRING": "",
+        "REDIRECT_STATUS": "200",
+        "REMOTE_ADDR": "127.0.0.1",
+        "REQUEST_METHOD": "GET",
+        "REQUEST_URI": script_name,
+        "SCRIPT_FILENAME": str(script_filename),
+        "SCRIPT_NAME": script_name,
+        "SERVER_NAME": "buy-dtf.com",
+        "SERVER_PORT": "443",
+        "SERVER_PROTOCOL": "HTTP/1.1",
+    }
+
+
+def probe_fpm_opcache() -> dict[str, Any]:
+    probe = require_fpm_opcache_probe()
+    require_nginx_identity_helper()
+    if not FPM_SOCKET.is_socket():
+        raise DeploymentError("The reviewed PHP-FPM socket is unavailable.")
+    environment = fpm_fastcgi_environment(
+        probe,
+        "/internal-opcache-probe.php",
+    )
+    completed = run(
+        ["/usr/bin/cgi-fcgi", "-bind", "-connect", str(FPM_SOCKET)],
+        cwd=APP_ROOT,
+        timeout=30,
+        env=environment,
+    )
+    output = completed.stdout.replace("\r\n", "\n")
+    if "\n\n" not in output:
+        raise DeploymentError("PHP-FPM OPcache probe returned no CGI body.")
+    headers, body = output.split("\n\n", 1)
+    if "status: 5" in headers.lower():
+        raise DeploymentError("PHP-FPM OPcache probe returned a server error.")
+    try:
+        payload = json.loads(body)
+        validated = environment_controls.validate_fpm_opcache_payload(payload)
+        policy = dependency_gate.derive_opcache_revalidation_policy(validated)
+    except (
+        json.JSONDecodeError,
+        environment_controls.EnvironmentControlError,
+        dependency_gate.GateError,
+    ) as exception:
+        raise DeploymentError(f"PHP-FPM OPcache envelope is invalid: {exception}") from exception
+    if validated.get("php_version") != EXPECTED_PHP_VERSION:
+        raise DeploymentError("PHP-FPM OPcache probe loaded an unexpected PHP version.")
+    return {
+        "artifact": "buy-dtf-php-fpm-opcache-envelope-v4",
+        "status": "pass",
+        "probe_helper_sha256": FPM_OPCACHE_PROBE_SHA256,
+        "environment_helper_sha256": NGINX_IDENTITY_HELPER_SHA256,
+        "probe": validated,
+        "policy": policy,
+    }
+
+
+def validate_frozen_fpm_opcache_record(expected: Any) -> dict[str, Any]:
+    """Validate a receipt-bound FPM envelope without requiring FPM to be reachable."""
+
+    if not isinstance(expected, dict):
+        raise DeploymentError("Durable state has no frozen PHP-FPM OPcache envelope.")
+    if set(expected) != {
+        "artifact",
+        "status",
+        "probe_helper_sha256",
+        "environment_helper_sha256",
+        "probe",
+        "policy",
+    }:
+        raise DeploymentError("Frozen PHP-FPM OPcache envelope has an unexpected shape.")
+    if (
+        expected.get("artifact") != "buy-dtf-php-fpm-opcache-envelope-v4"
+        or expected.get("status") != "pass"
+        or expected.get("probe_helper_sha256") != FPM_OPCACHE_PROBE_SHA256
+        or expected.get("environment_helper_sha256") != NGINX_IDENTITY_HELPER_SHA256
+    ):
+        raise DeploymentError("Frozen PHP-FPM OPcache envelope identity differs.")
+    try:
+        validated_probe = environment_controls.validate_fpm_opcache_payload(
+            expected.get("probe")
+        )
+        derived_policy = dependency_gate.derive_opcache_revalidation_policy(validated_probe)
+    except (
+        environment_controls.EnvironmentControlError,
+        dependency_gate.GateError,
+    ) as exception:
+        raise DeploymentError(
+            f"Frozen PHP-FPM OPcache envelope is invalid: {exception}"
+        ) from exception
+    if validated_probe.get("php_version") != EXPECTED_PHP_VERSION:
+        raise DeploymentError("Frozen PHP-FPM OPcache envelope has an unexpected PHP version.")
+    if expected.get("policy") != derived_policy:
+        raise DeploymentError("Frozen PHP-FPM OPcache policy differs from its probe values.")
+    return expected
+
+
+def require_frozen_fpm_opcache(expected: Any) -> dict[str, Any]:
+    """Re-read PHP-FPM and require the exact staged/cutover OPcache envelope."""
+
+    frozen = validate_frozen_fpm_opcache_record(expected)
+    current = probe_fpm_opcache()
+    if current != frozen:
+        raise DeploymentError(
+            "PHP-FPM OPcache settings differ from the frozen reviewed envelope; "
+            "front-controller mutation is prohibited."
+        )
+    return current
+
+
+def dependency_cache_settle_seconds(state: dict[str, Any]) -> int:
+    frozen = state.get("fpm_opcache")
+    if not isinstance(frozen, dict) or not isinstance(frozen.get("policy"), dict):
+        raise DeploymentError("Durable state has no dependency OPcache settle policy.")
+    try:
+        dependency_gate.validate_opcache_revalidation_policy(frozen["policy"])
+    except dependency_gate.GateError as exception:
+        raise DeploymentError(f"Dependency OPcache settle policy is invalid: {exception}") from exception
+    return max(
+        DEPENDENCY_CACHE_SETTLE_SECONDS,
+        int(frozen["policy"]["minimum_wait_seconds"]),
+    )
+
+
+def validate_nginx_stable_identity(identity: Any) -> dict[str, Any]:
+    if not isinstance(identity, dict):
+        raise DeploymentError("Release receipt has no effective nginx identity.")
+    document_root = identity.get("document_root_identity")
+    sudo_identity = identity.get("sudo_executable_identity")
+    nginx_identity = identity.get("nginx_executable_identity")
+    executable_identities = (
+        (sudo_identity, "/usr/bin/sudo", identity.get("sudo_executable_sha256")),
+        (nginx_identity, "/usr/sbin/nginx", identity.get("nginx_executable_sha256")),
+    )
+    metadata_valid = all(
+        isinstance(metadata, dict)
+        and metadata.get("path") == expected_path
+        and metadata.get("sha256") == expected_sha256
+        and metadata.get("uid") == 0
+        and metadata.get("gid") == 0
+        and isinstance(metadata.get("bytes"), int)
+        and metadata["bytes"] > 0
+        and isinstance(metadata.get("mode"), int)
+        and metadata["mode"] & 0o022 == 0
+        for metadata, expected_path, expected_sha256 in executable_identities
+    )
+    if (
+        identity.get("artifact") != environment_controls.NGINX_IDENTITY_ARTIFACT
+        or identity.get("privilege_boundary") != "sudo-noninteractive-exact-nginx-T"
+        or identity.get("sudo_executable") != "/usr/bin/sudo"
+        or not re.fullmatch(r"[a-f0-9]{64}", str(identity.get("sudo_executable_sha256", "")))
+        or identity.get("nginx_executable") != "/usr/sbin/nginx"
+        or not isinstance(identity.get("nginx_executable"), str)
+        or not re.fullmatch(r"[a-f0-9]{64}", str(identity.get("nginx_executable_sha256", "")))
+        or not re.fullmatch(r"[a-f0-9]{64}", str(identity.get("command_argv_sha256", "")))
+        or not isinstance(identity.get("nginx_version"), str)
+        or not identity["nginx_version"]
+        or not re.fullmatch(r"[a-f0-9]{64}", str(identity.get("nginx_version_argv_sha256", "")))
+        or not re.fullmatch(r"[a-f0-9]{64}", str(identity.get("nginx_version_output_sha256", "")))
+        or not metadata_valid
+        or not re.fullmatch(r"[a-f0-9]{64}", str(identity.get("effective_config_sha256", "")))
+        or not isinstance(document_root, dict)
+        or document_root.get("matching_tls_server_count") != 1
+        or document_root.get("server_name") != environment_controls.EXPECTED_SERVER_NAME
+        or document_root.get("resolved_document_root")
+        != str(environment_controls.EXPECTED_DOCUMENT_ROOT)
+        or document_root.get("origin_probe_address") != "127.0.0.1:443"
+        or document_root.get("origin_loopback_compatible") is not True
+    ):
+        raise DeploymentError("Effective nginx identity differs from the reviewed document root.")
+    return identity
+
+
+def nginx_stable_identity(capture: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "artifact": capture.get("artifact"),
+        "privilege_boundary": capture.get("privilege_boundary"),
+        "sudo_executable": capture.get("sudo_executable"),
+        "sudo_executable_sha256": capture.get("sudo_executable_sha256"),
+        "sudo_executable_identity": capture.get("sudo_executable_identity"),
+        "nginx_executable": capture.get("nginx_executable"),
+        "nginx_executable_sha256": capture.get("nginx_executable_sha256"),
+        "nginx_executable_identity": capture.get("nginx_executable_identity"),
+        "nginx_version": capture.get("nginx_version"),
+        "nginx_version_argv_sha256": capture.get("nginx_version_argv_sha256"),
+        "nginx_version_output_sha256": capture.get("nginx_version_output_sha256"),
+        "command_argv_sha256": capture.get("command_argv_sha256"),
+        "effective_config_sha256": capture.get("effective_config_sha256"),
+        "document_root_identity": capture.get("document_root_identity"),
+    }
+
+
+def capture_nginx_environment(
+    evidence_directory: Path,
+    operation: str,
+) -> dict[str, Any]:
+    require_nginx_identity_helper()
+    try:
+        capture = environment_controls.capture_nginx_identity(
+            evidence_directory,
+            raw_filename=f"{operation}-nginx-effective-config.private.txt",
+            summary_filename=f"{operation}-nginx-document-root-summary.json",
+        )
+    except environment_controls.EnvironmentControlError as exception:
+        raise DeploymentError(f"Effective nginx document-root proof failed: {exception}") from exception
+    return {
+        "capture": capture,
+        "stable_identity": nginx_stable_identity(capture),
+    }
+
+
+def validate_nginx_capture_summary(
+    item: Any,
+    *,
+    expected_path: Path,
+    expected_identity: dict[str, Any],
+) -> dict[str, Any]:
+    """Revalidate a private nginx summary and its bound raw effective config."""
+
+    if not isinstance(item, dict) or item.get("classification") != "review-safe":
+        raise DeploymentError("Nginx summary capture is missing or malformed.")
+    summary_path = require_regular_file(
+        Path(str(item.get("path", ""))),
+        str(item.get("sha256", "")),
+    )
+    if summary_path != expected_path or path_metadata(summary_path).get("mode") != 0o600:
+        raise DeploymentError("Nginx summary is outside its private fixed evidence path.")
+    try:
+        summary = json.loads(summary_path.read_text(encoding="utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as exception:
+        raise DeploymentError("Nginx summary is invalid UTF-8 JSON.") from exception
+    if (
+        not isinstance(summary, dict)
+        or summary.get("status") != "pass"
+        or nginx_stable_identity(summary) != expected_identity
+        or summary.get("configuration_changed") is not False
+        or summary.get("service_reloaded_or_restarted") is not False
+    ):
+        raise DeploymentError("Nginx summary does not prove the reviewed read-only identity.")
+    raw = summary.get("raw_capture")
+    if not isinstance(raw, dict) or raw.get("classification") != "private-do-not-commit":
+        raise DeploymentError("Nginx summary has no private raw-config binding.")
+    raw_path = require_regular_file(
+        Path(str(raw.get("path", ""))),
+        str(raw.get("sha256", "")),
+    )
+    expected_raw = expected_path.with_name(
+        expected_path.name.replace("-nginx-document-root-summary.json", "-nginx-effective-config.private.txt")
+    )
+    if raw_path != expected_raw or path_metadata(raw_path).get("mode") != 0o600:
+        raise DeploymentError("Raw nginx configuration is outside private fixed evidence.")
+    return summary
 
 
 def normalize_package_version(value: Any) -> str:
@@ -1128,6 +1512,8 @@ def validate_toolchain() -> None:
         "/usr/bin/curl",
         "/usr/bin/php",
         "/usr/bin/ss",
+        "/usr/bin/sudo",
+        "/usr/sbin/nginx",
         "/usr/local/bin/composer",
     ):
         if not Path(executable).is_file() or not os.access(executable, os.X_OK):
@@ -1158,7 +1544,9 @@ def assert_production_baseline(
 ) -> dict[str, Any]:
     if os.geteuid() == 0:
         raise DeploymentError("Refusing to run application deployment as root.")
+    retired_controls = require_retired_controls_registry()
     validate_toolchain()
+    fpm_opcache = probe_fpm_opcache()
     app_root = require_real_directory(APP_ROOT)
     metadata = app_root.stat()
     if metadata.st_uid != EXPECTED_APP_UID or metadata.st_gid != EXPECTED_APP_GID:
@@ -1195,6 +1583,8 @@ def assert_production_baseline(
             "sha256": expected_front_controller_sha256,
             "metadata": front_controller_metadata,
         },
+        "fpm_opcache": fpm_opcache,
+        "retired_controls": retired_controls,
     }
 
 
@@ -1293,7 +1683,7 @@ def production_preflight(
     validate_runtime_baseline(runtime, expected_versions=OLD_PACKAGE_VERSIONS)
     database_summary = validate_database_envelope(runtime, pre_source=True)
     return {
-        "artifact": "buy-dtf-laravel-remember-cookie-production-preflight-v3",
+        "artifact": "buy-dtf-laravel-remember-cookie-production-preflight-v4",
         "handoff": {"filename": HANDOFF_FILENAME, "sha256": HANDOFF_SHA256},
         "cutover_requires_separate_independent_review": True,
         "status": "pass",
@@ -1303,6 +1693,10 @@ def production_preflight(
         "database_envelope_validator_sha256": DATABASE_ENVELOPE_VALIDATOR_SHA256,
         "gate_helper_sha256": GATE_HELPER_SHA256,
         "log_parser_sha256": LOG_PARSER_SHA256,
+        "fpm_opcache_probe_sha256": FPM_OPCACHE_PROBE_SHA256,
+        "nginx_identity_helper_sha256": NGINX_IDENTITY_HELPER_SHA256,
+        "retired_controls": baseline["retired_controls"],
+        "fpm_opcache": baseline["fpm_opcache"],
         "database_envelope": database_summary,
         "live_composer_json_sha256": sha256_file(APP_ROOT / "composer.json"),
         "live_lock_sha256": sha256_file(APP_ROOT / "composer.lock"),
@@ -1382,6 +1776,8 @@ def stage_release(candidate_lock: Path, approval_token: str, helper: Path) -> Pa
         "vendor": preflight["vendor_manifest"],
         "cache": preflight["cache_identity"],
         "front_controller": preflight["front_controller"],
+        "fpm_opcache": preflight["fpm_opcache"],
+        "retired_controls": preflight["retired_controls"],
     }
     before_health = preflight["health"]
     before_runtime = preflight["runtime"]
@@ -1399,6 +1795,7 @@ def stage_release(candidate_lock: Path, approval_token: str, helper: Path) -> Pa
     composer_home.mkdir(mode=0o700)
     (release / ".home").mkdir(mode=0o700)
     environment = safe_environment(composer_home)
+    nginx_before = capture_nginx_environment(release, "restricted-stage-before-build")
 
     shadow_source = copy_runtime_shadow(APP_ROOT, shadow)
     atomic_copy(candidate_lock, shadow / "composer.lock", 0o600)
@@ -1559,8 +1956,11 @@ def stage_release(candidate_lock: Path, approval_token: str, helper: Path) -> Pa
             "changed during candidate construction."
         )
     post_candidate_health = health_snapshot()
+    nginx_after = capture_nginx_environment(release, "restricted-stage-after-build")
+    if nginx_after["stable_identity"] != nginx_before["stable_identity"]:
+        raise DeploymentError("Effective nginx identity changed during candidate construction.")
     database_receipt = {
-        "artifact": "buy-dtf-laravel-remember-cookie-database-envelope-v3",
+        "artifact": "buy-dtf-laravel-remember-cookie-database-envelope-v4",
         "status": "pass",
         "policy": "pre_source_exactly_zero",
         "checked_at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
@@ -1577,7 +1977,7 @@ def stage_release(candidate_lock: Path, approval_token: str, helper: Path) -> Pa
     atomic_json(database_receipt_path, database_receipt)
 
     receipt = {
-        "artifact": "buy-dtf-laravel-remember-cookie-release-v3",
+        "artifact": "buy-dtf-laravel-remember-cookie-release-v4",
         "status": "staged",
         "handoff": {"filename": HANDOFF_FILENAME, "sha256": HANDOFF_SHA256},
         "cutover_requires_separate_independent_review": True,
@@ -1599,6 +1999,13 @@ def stage_release(candidate_lock: Path, approval_token: str, helper: Path) -> Pa
         "route_count": len(route_payload),
         "front_controller": baseline["front_controller"],
         "maintenance_gate_sha256": MAINTENANCE_GATE_SHA256,
+        "fpm_opcache": baseline["fpm_opcache"],
+        "nginx_identity": nginx_after["stable_identity"],
+        "nginx_stage_captures": {
+            "before_build": nginx_before["capture"]["summary_capture"],
+            "after_build": nginx_after["capture"]["summary_capture"],
+        },
+        "retired_controls": baseline["retired_controls"],
         "command_receipts": command_receipts,
         "production_preflight": preflight,
         "database_envelope_receipt": {
@@ -1616,6 +2023,9 @@ def stage_release(candidate_lock: Path, approval_token: str, helper: Path) -> Pa
         "database_envelope_validator_sha256": DATABASE_ENVELOPE_VALIDATOR_SHA256,
         "gate_helper_sha256": GATE_HELPER_SHA256,
         "log_parser_sha256": LOG_PARSER_SHA256,
+        "fpm_opcache_probe_sha256": FPM_OPCACHE_PROBE_SHA256,
+        "nginx_identity_helper_sha256": NGINX_IDENTITY_HELPER_SHA256,
+        "retired_controls_sha256": RETIRED_CONTROLS_SHA256,
         "versions": NEW_PACKAGE_VERSIONS,
         "no_dev": True,
     }
@@ -1627,6 +2037,9 @@ def stage_release(candidate_lock: Path, approval_token: str, helper: Path) -> Pa
 
 
 def load_approved_release(receipt_path: Path, approved_sha256: str) -> tuple[dict[str, Any], Path]:
+    if approved_sha256 in RETIRED_RELEASE_RECEIPT_SHA256S:
+        raise DeploymentError("The supplied release receipt is permanently retired and ineligible.")
+    retired_controls = require_retired_controls_registry()
     release_root = ensure_private_operations_root(RELEASE_ROOT, create=False)
     receipt_path = require_regular_file(receipt_path, approved_sha256)
     if not is_relative_to(receipt_path, release_root):
@@ -1636,12 +2049,18 @@ def load_approved_release(receipt_path: Path, approved_sha256: str) -> tuple[dic
     except json.JSONDecodeError as exception:
         raise DeploymentError("Release receipt is invalid JSON.") from exception
     if (
-        receipt.get("artifact") != "buy-dtf-laravel-remember-cookie-release-v3"
+        receipt.get("artifact") != "buy-dtf-laravel-remember-cookie-release-v4"
         or receipt.get("status") != "staged"
     ):
         raise DeploymentError("Release receipt is not an approved staged release.")
     if receipt.get("handoff") != {"filename": HANDOFF_FILENAME, "sha256": HANDOFF_SHA256}:
         raise DeploymentError("Release receipt references a different review handoff.")
+    release_directory = require_real_directory(
+        Path(str(receipt.get("release_path", ""))),
+        within=release_root,
+    )
+    if release_directory != receipt_path.parent:
+        raise DeploymentError("Release receipt path binding differs from its release directory.")
     if receipt.get("cutover_requires_separate_independent_review") is not True:
         raise DeploymentError("Release receipt does not preserve the independent-review boundary.")
     if receipt.get("candidate_lock_sha256") != CANDIDATE_LOCK_SHA256:
@@ -1675,6 +2094,44 @@ def load_approved_release(receipt_path: Path, approved_sha256: str) -> tuple[dic
         raise DeploymentError("Release receipt has no final shadow-source CAS proof.")
     if receipt.get("candidate_cache_identity") != EXPECTED_CANDIDATE_CACHE_IDENTITY:
         raise DeploymentError("Release receipt references a different candidate bootstrap cache.")
+    if receipt.get("retired_controls") != retired_controls:
+        raise DeploymentError("Release receipt is not bound to the current retired-control registry.")
+    if (
+        receipt.get("fpm_opcache_probe_sha256") != FPM_OPCACHE_PROBE_SHA256
+        or receipt.get("nginx_identity_helper_sha256") != NGINX_IDENTITY_HELPER_SHA256
+        or receipt.get("retired_controls_sha256") != RETIRED_CONTROLS_SHA256
+    ):
+        raise DeploymentError("Release receipt references different v4 environment controls.")
+    fpm_opcache = receipt.get("fpm_opcache")
+    if not isinstance(fpm_opcache, dict):
+        raise DeploymentError("Release receipt has no frozen PHP-FPM OPcache envelope.")
+    try:
+        dependency_gate.validate_opcache_revalidation_policy(fpm_opcache.get("policy", {}))
+    except dependency_gate.GateError as exception:
+        raise DeploymentError(f"Release OPcache policy is invalid: {exception}") from exception
+    nginx_identity = validate_nginx_stable_identity(receipt.get("nginx_identity"))
+    nginx_stage_captures = receipt.get("nginx_stage_captures")
+    if not isinstance(nginx_stage_captures, dict) or set(nginx_stage_captures) != {
+        "before_build",
+        "after_build",
+    }:
+        raise DeploymentError("Release receipt has no complete staged nginx evidence.")
+    validate_nginx_capture_summary(
+        nginx_stage_captures["before_build"],
+        expected_path=(
+            receipt_path.parent
+            / "restricted-stage-before-build-nginx-document-root-summary.json"
+        ),
+        expected_identity=nginx_identity,
+    )
+    validate_nginx_capture_summary(
+        nginx_stage_captures["after_build"],
+        expected_path=(
+            receipt_path.parent
+            / "restricted-stage-after-build-nginx-document-root-summary.json"
+        ),
+        expected_identity=nginx_identity,
+    )
     preflight = receipt.get("production_preflight")
     if (
         not isinstance(preflight, dict)
@@ -1685,6 +2142,10 @@ def load_approved_release(receipt_path: Path, approved_sha256: str) -> tuple[dic
         != DATABASE_ENVELOPE_VALIDATOR_SHA256
         or preflight.get("gate_helper_sha256") != GATE_HELPER_SHA256
         or preflight.get("log_parser_sha256") != LOG_PARSER_SHA256
+        or preflight.get("fpm_opcache_probe_sha256") != FPM_OPCACHE_PROBE_SHA256
+        or preflight.get("nginx_identity_helper_sha256") != NGINX_IDENTITY_HELPER_SHA256
+        or preflight.get("retired_controls") != retired_controls
+        or preflight.get("fpm_opcache") != fpm_opcache
         or receipt.get("database_envelope_validator_sha256")
         != DATABASE_ENVELOPE_VALIDATOR_SHA256
         or receipt.get("gate_helper_sha256") != GATE_HELPER_SHA256
@@ -1721,7 +2182,7 @@ def load_approved_release(receipt_path: Path, approved_sha256: str) -> tuple[dic
     if (
         not isinstance(database_receipt, dict)
         or database_receipt.get("artifact")
-        != "buy-dtf-laravel-remember-cookie-database-envelope-v3"
+        != "buy-dtf-laravel-remember-cookie-database-envelope-v4"
         or database_receipt.get("status") != "pass"
         or database_receipt.get("runtime_helper_sha256") != RUNTIME_HELPER_SHA256
         or database_receipt.get("validator_sha256")
@@ -1735,6 +2196,8 @@ def load_approved_release(receipt_path: Path, approved_sha256: str) -> tuple[dic
         raise DeploymentError("Database-envelope receipt does not prove the reviewed state.")
     shadow = Path(str(receipt.get("shadow_path", "")))
     shadow = require_real_directory(shadow, within=release_root)
+    if shadow != receipt_path.parent / "shadow":
+        raise DeploymentError("Release shadow path differs from its fixed release directory.")
     if source_manifest(shadow) != EXPECTED_SOURCE_MANIFEST:
         raise DeploymentError("Staged source differs from the approved CAS manifest.")
     require_regular_file(shadow / "composer.lock", CANDIDATE_LOCK_SHA256)
@@ -1749,6 +2212,8 @@ def load_approved_release(receipt_path: Path, approved_sha256: str) -> tuple[dic
     require_candidate_cache(shadow / "bootstrap/cache", candidate_cache)
     if receipt.get("maintenance_gate_sha256") != MAINTENANCE_GATE_SHA256:
         raise DeploymentError("Release receipt references a different static maintenance gate.")
+    if validate_nginx_stable_identity(receipt.get("nginx_identity")) != nginx_identity:
+        raise DeploymentError("Release nginx identity is internally inconsistent.")
     if receipt.get("no_dev") is not True:
         raise DeploymentError("Release receipt does not prove a no-dev dependency install.")
     return receipt, shadow
@@ -1785,7 +2250,12 @@ def require_gate_helper() -> Path:
     return require_regular_file(module_path, GATE_HELPER_SHA256)
 
 
-def gate_context(state: dict[str, Any], state_path: Path) -> dependency_gate.GateContext:
+def gate_context(
+    state: dict[str, Any],
+    state_path: Path,
+    *,
+    allow_frozen_policy_for_exact_existing_gate: bool = False,
+) -> dependency_gate.GateContext:
     backup_value = state.get("front_controller_backup")
     backup_sha256 = state.get("front_controller_backup_sha256")
     if not isinstance(backup_value, str) or not isinstance(backup_sha256, str):
@@ -1794,6 +2264,41 @@ def gate_context(state: dict[str, Any], state_path: Path) -> dependency_gate.Gat
     backup = require_regular_file(Path(backup_value), backup_sha256)
     if backup != state_directory / "public-index.before.php":
         raise DeploymentError("Front-controller backup differs from the durable state path.")
+    frozen_opcache = state.get("fpm_opcache")
+    assert isinstance(frozen_opcache, dict)
+    policy = frozen_opcache.get("policy")
+    if not isinstance(policy, dict):
+        raise DeploymentError("Durable state has no frozen OPcache revalidation policy.")
+    try:
+        require_frozen_fpm_opcache(frozen_opcache)
+    except DeploymentError as exception:
+        live = dependency_gate.file_identity(FRONT_CONTROLLER)
+        if (
+            not allow_frozen_policy_for_exact_existing_gate
+            or live.get("sha256") != MAINTENANCE_GATE_SHA256
+            or live.get("metadata")
+            != dependency_gate.reviewed_front_controller_metadata()
+        ):
+            raise
+        try:
+            dependency_gate.validate_opcache_revalidation_policy(policy)
+        except dependency_gate.GateError as policy_exception:
+            raise DeploymentError(
+                "Frozen OPcache policy is invalid during emergency containment."
+            ) from policy_exception
+        history = state.setdefault("emergency_existing_gate_opcache_fallbacks", [])
+        if not isinstance(history, list):
+            raise DeploymentError("Emergency OPcache fallback history is invalid.")
+        history.append(
+            {
+                "status": "exact_existing_gate_retained_with_frozen_policy",
+                "failure_class": type(exception).__name__,
+                "failure_message_sha256": sha256_bytes(str(exception).encode("utf-8")),
+                "front_controller": live,
+                "policy": policy,
+            }
+        )
+        write_state(state_path, state)
     return dependency_gate.GateContext(
         application_root=APP_ROOT,
         front_controller=FRONT_CONTROLLER,
@@ -1801,6 +2306,7 @@ def gate_context(state: dict[str, Any], state_path: Path) -> dependency_gate.Gat
         evidence_directory=state_directory,
         original_backup=backup,
         original_sha256=backup_sha256,
+        opcache_policy=policy,
     )
 
 
@@ -1813,10 +2319,43 @@ def _next_gate_operation(state: dict[str, Any], reason: str) -> str:
     return f"{reason}-{len(history) + 1:04d}"
 
 
-def _gate_origin_probe(state_directory: Path, operation: str) -> dict[str, Any]:
+def require_current_nginx_for_gate(
+    state: dict[str, Any],
+    state_path: Path,
+    operation: str,
+) -> dict[str, Any]:
+    expected = validate_nginx_stable_identity(state.get("nginx_identity"))
+    captured = capture_nginx_environment(
+        state_path.parent.resolve(strict=True),
+        f"{operation}-pre-gate",
+    )
+    if captured["stable_identity"] != expected:
+        raise DeploymentError(
+            "Effective nginx server block or document root drifted before gate installation."
+        )
+    history = state.setdefault("nginx_pre_gate_captures", [])
+    if not isinstance(history, list):
+        raise DeploymentError("Durable nginx pre-gate capture history is invalid.")
+    entry = {
+        "operation": operation,
+        "identity": captured["stable_identity"],
+        "summary_capture": captured["capture"]["summary_capture"],
+    }
+    history.append(entry)
+    write_state(state_path, state)
+    return entry
+
+
+def _gate_origin_probe(
+    state_directory: Path,
+    operation: str,
+    ordinal: int,
+) -> dict[str, Any]:
+    if ordinal not in {1, 2}:
+        raise DeploymentError("Direct-origin probe ordinal is invalid.")
     return dependency_gate.gate_origin_probe(
         evidence_directory=state_directory,
-        operation=operation,
+        operation=f"{operation}-origin-{ordinal}",
         public_url=MAINTENANCE_PROBE_URL,
         cwd=APP_ROOT,
     )
@@ -1825,7 +2364,7 @@ def _gate_origin_probe(state_directory: Path, operation: str) -> dict[str, Any]:
 def _gate_public_probe(state_directory: Path, operation: str) -> dict[str, Any]:
     return dependency_gate.gate_public_probe(
         evidence_directory=state_directory,
-        operation=operation,
+        operation=f"{operation}-public-1",
         public_url=MAINTENANCE_PROBE_URL,
         cwd=APP_ROOT,
     )
@@ -1839,14 +2378,19 @@ def install_static_gate(
     fault_injector: Callable[[str], None] | None = None,
 ) -> dict[str, Any]:
     require_gate_helper()
-    context = gate_context(state, state_path)
     operation = _next_gate_operation(state, reason)
+    require_current_nginx_for_gate(state, state_path, operation)
+    context = gate_context(state, state_path)
     try:
         evidence = dependency_gate.install_static_gate(
             context=context,
             state=state,
             operation=operation,
-            origin_probe=lambda: _gate_origin_probe(context.evidence_directory, operation),
+            origin_probe=lambda ordinal: _gate_origin_probe(
+                context.evidence_directory,
+                operation,
+                ordinal,
+            ),
             public_probe=lambda: _gate_public_probe(context.evidence_directory, operation),
             restored_health_probe=health_snapshot,
             fault_injector=fault_injector,
@@ -1865,19 +2409,69 @@ def establish_rollback_gate(
     reason: str,
 ) -> dict[str, Any]:
     require_gate_helper()
-    context = gate_context(state, state_path)
     operation = _next_gate_operation(state, reason)
+    context = gate_context(
+        state,
+        state_path,
+        allow_frozen_policy_for_exact_existing_gate=True,
+    )
     try:
-        return dependency_gate.establish_rollback_containment(
+        containment = dependency_gate.establish_rollback_containment(
             context=context,
             state=state,
             operation=operation,
-            origin_probe=lambda: _gate_origin_probe(context.evidence_directory, operation),
+            origin_probe=lambda ordinal: _gate_origin_probe(
+                context.evidence_directory,
+                operation,
+                ordinal,
+            ),
             public_probe=lambda: _gate_public_probe(context.evidence_directory, operation),
             restored_health_probe=health_snapshot,
         )
     except dependency_gate.GateError as exception:
         raise DeploymentError(str(exception)) from exception
+    # After dependency mutation, exact local containment and its OPcache wait
+    # take precedence over a fresh route capture.  A capture failure is durable
+    # evidence, leaves the gate installed, and cannot block boot-independent
+    # rollback.
+    containment["nginx_route_verification"] = record_emergency_nginx_verification(
+        state,
+        state_path,
+        operation,
+    )
+    return containment
+
+
+def record_emergency_nginx_verification(
+    state: dict[str, Any],
+    state_path: Path,
+    operation: str,
+) -> dict[str, Any]:
+    try:
+        capture = require_current_nginx_for_gate(state, state_path, operation)
+        result: dict[str, Any] = {
+            "status": "pass",
+            "route_verified": True,
+            "capture": capture,
+        }
+    except Exception as exception:
+        result = {
+            "status": "unavailable_fail_closed",
+            "route_verified": False,
+            "failure_class": type(exception).__name__,
+            "failure_message_sha256": sha256_bytes(str(exception).encode("utf-8")),
+            "exact_gate_retained": True,
+            "rollback_may_continue_boot_independently": True,
+        }
+    receipt_path = state_path.parent / f"{operation}-emergency-nginx-verification.json"
+    receipt_sha256 = dependency_gate.write_new_json(receipt_path, result)
+    result["receipt"] = {"path": str(receipt_path), "sha256": receipt_sha256}
+    history = state.setdefault("emergency_nginx_verifications", [])
+    if not isinstance(history, list):
+        raise DeploymentError("Emergency nginx verification history is invalid.")
+    history.append(result)
+    write_state(state_path, state)
+    return result
 
 
 def restore_front_controller(
@@ -1887,7 +2481,11 @@ def restore_front_controller(
     reason: str = "dependency_rollback_reopen",
 ) -> dict[str, Any]:
     require_gate_helper()
-    context = gate_context(state, state_path)
+    context = gate_context(
+        state,
+        state_path,
+        allow_frozen_policy_for_exact_existing_gate=True,
+    )
     operation = _next_gate_operation(state, reason)
     receipt_name = f"{operation}-exact-original-restoration-receipt.json"
     try:
@@ -1899,7 +2497,6 @@ def restore_front_controller(
         )
     except dependency_gate.GateError as exception:
         raise DeploymentError(str(exception)) from exception
-    time.sleep(OPCACHE_WAIT_SECONDS)
     return receipt
 
 
@@ -1913,12 +2510,19 @@ def restore_pre_mutation_failure(
     if dependency_gate.dependency_mutation_has_started(state):
         raise DeploymentError("Pre-mutation restoration was requested after mutation began.")
     live = dependency_gate.file_identity(FRONT_CONTROLLER)
-    if live["sha256"] == EXPECTED_FRONT_CONTROLLER_SHA256 and (
-        live["metadata"] == dependency_gate.reviewed_front_controller_metadata()
-    ):
+    history = state.get("front_controller_transitions", [])
+    if not isinstance(history, list):
+        raise DeploymentError("Front-controller transition history is invalid during cleanup.")
+    if not history and live == {
+        "path": str(FRONT_CONTROLLER.resolve(strict=True)),
+        "sha256": EXPECTED_FRONT_CONTROLLER_SHA256,
+        "bytes": live["bytes"],
+        "metadata": dependency_gate.reviewed_front_controller_metadata(),
+    }:
         restoration: dict[str, Any] = {
-            "status": "already_restored",
+            "status": "untouched_original_no_transition",
             "restored": live,
+            "opcache_wait_required": False,
         }
     else:
         restoration = restore_front_controller(
@@ -1928,7 +2532,7 @@ def restore_pre_mutation_failure(
         )
     health = health_snapshot()
     receipt = {
-        "artifact": "buy-dtf-laravel-remember-cookie-pre-mutation-restoration-v3",
+        "artifact": "buy-dtf-laravel-remember-cookie-pre-mutation-restoration-v4",
         "status": "pass",
         "at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "failure_class": type(exception).__name__,
@@ -1967,9 +2571,11 @@ def reassert_and_record_gate(
     history = state.setdefault("gate_reassertions", [])
     if not isinstance(history, list):
         raise DeploymentError("Static-gate reassertion history is invalid.")
+    if evidence.get("http_verified") is not True:
+        raise DeploymentError("Static-gate operation did not return explicit HTTP verification.")
     history.append(evidence)
     state["gate_active"] = True
-    state["gate_verified"] = bool(evidence.get("http_verified", True))
+    state["gate_verified"] = True
     if status is not None:
         state["status"] = status
     write_state(state_path, state)
@@ -1989,12 +2595,73 @@ def contain_cutover_failure(
         restore_pre_mutation_failure(state, state_path, exception)
         return False
 
-    containment = establish_rollback_gate(
-        state,
-        state_path,
-        "cutover_failure",
-    )
+    state["status"] = "failed_dependency_containment_pending"
+    state["containment_pending"] = True
+    state["gate_verified"] = False
+    write_state(state_path, state)
+    try:
+        containment = establish_rollback_gate(
+            state,
+            state_path,
+            "cutover_failure",
+        )
+    except (DeploymentError, dependency_gate.GateError) as containment_exception:
+        try:
+            live_identity: dict[str, Any] = dependency_gate.file_identity(FRONT_CONTROLLER)
+        except dependency_gate.GateError as identity_exception:
+            live_identity = {
+                "status": "unavailable",
+                "failure_class": type(identity_exception).__name__,
+                "failure_message_sha256": sha256_bytes(
+                    str(identity_exception).encode("utf-8")
+                ),
+            }
+        exact_gate_live = (
+            live_identity.get("sha256") == MAINTENANCE_GATE_SHA256
+            and live_identity.get("metadata")
+            == dependency_gate.reviewed_front_controller_metadata()
+        )
+        reload_required = any(
+            marker in str(containment_exception)
+            for marker in ("OPcache", "PHP-FPM", "FPM")
+        )
+        failure_receipt = {
+            "artifact": "buy-dtf-laravel-remember-cookie-containment-failure-v4",
+            "status": "manual_review_required",
+            "at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "dependency_mutation_started": True,
+            "exact_reviewed_gate_live": exact_gate_live,
+            "live_front_controller": live_identity,
+            "original_failure_class": type(exception).__name__,
+            "original_failure_message_sha256": sha256_bytes(str(exception).encode("utf-8")),
+            "containment_failure_class": type(containment_exception).__name__,
+            "containment_failure_message_sha256": sha256_bytes(
+                str(containment_exception).encode("utf-8")
+            ),
+            "separately_reviewed_fpm_reload_plan_required": reload_required,
+            "automatic_retry_permitted": False,
+        }
+        receipt_path = state_path.parent / "dependency-containment-failure-receipt.json"
+        receipt_sha256 = dependency_gate.write_new_json(receipt_path, failure_receipt)
+        state["containment_pending"] = False
+        state["containment_failure_receipt"] = {
+            "path": str(receipt_path),
+            "sha256": receipt_sha256,
+        }
+        state["containment_active"] = exact_gate_live
+        state["gate_active"] = exact_gate_live
+        state["status"] = (
+            "failed_dependency_exact_gate_retained_manual_review_required"
+            if exact_gate_live
+            else "failed_dependency_gate_install_blocked_manual_review_required"
+        )
+        write_state(state_path, state)
+        raise DeploymentError(
+            "Dependency failure containment could not be completed; durable state requires "
+            "independent review before any recovery action."
+        ) from containment_exception
     state["cutover_failure_containment"] = containment
+    state["containment_pending"] = False
     state["status"] = "failed_dependency_rollback_required"
     state["gate_active"] = True
     state["gate_verified"] = bool(containment.get("http_verified"))
@@ -2009,15 +2676,29 @@ def contain_rollback_failure(
 ) -> None:
     """Retain the exact gate locally even when HTTP paths or Laravel are broken."""
 
-    context = gate_context(state, state_path)
     operation = _next_gate_operation(state, "rollback_failure")
     try:
+        context = gate_context(
+            state,
+            state_path,
+            allow_frozen_policy_for_exact_existing_gate=True,
+        )
         containment = dependency_gate.retain_static_gate_exact(
             context=context,
             state=state,
             operation=operation,
         )
-    except dependency_gate.GateError as gate_exception:
+    except (DeploymentError, dependency_gate.GateError) as gate_exception:
+        try:
+            live_identity: dict[str, Any] = dependency_gate.file_identity(FRONT_CONTROLLER)
+        except dependency_gate.GateError as identity_exception:
+            live_identity = {
+                "status": "unavailable",
+                "failure_class": type(identity_exception).__name__,
+                "failure_message_sha256": sha256_bytes(
+                    str(identity_exception).encode("utf-8")
+                ),
+            }
         state["gate_active"] = None
         state["gate_verified"] = False
         state["rollback_failure_class"] = type(exception).__name__
@@ -2028,11 +2709,17 @@ def contain_rollback_failure(
         state["gate_failure_message_sha256"] = sha256_bytes(
             str(gate_exception).encode("utf-8")
         )
+        state["rollback_failure_live_front_controller"] = live_identity
         state["status"] = "rollback_failed_static_gate_identity_unavailable"
         write_state(state_path, state)
         raise DeploymentError(
             "Rollback failed and exact local static-gate containment could not be established."
         ) from gate_exception
+    containment["nginx_route_verification"] = record_emergency_nginx_verification(
+        state,
+        state_path,
+        operation,
+    )
     state["rollback_failure_class"] = type(exception).__name__
     state["rollback_failure_message_sha256"] = sha256_bytes(
         str(exception).encode("utf-8")
@@ -2083,17 +2770,9 @@ echo json_encode($payload, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES);
 '''.encode("utf-8")
     atomic_write(probe, source, 0o640)
     os.chown(probe, -1, 33)
-    environment = dict(os.environ)
-    environment.update(
-        {
-            "SCRIPT_FILENAME": str(probe),
-            "SCRIPT_NAME": "/internal-dependency-probe.php",
-            "REQUEST_METHOD": "GET",
-            "REQUEST_URI": "/internal-dependency-probe.php",
-            "REDIRECT_STATUS": "200",
-            "SERVER_PROTOCOL": "HTTP/1.1",
-            "GATEWAY_INTERFACE": "CGI/1.1",
-        }
+    environment = fpm_fastcgi_environment(
+        probe,
+        "/internal-dependency-probe.php",
     )
     try:
         completed = run(
@@ -2167,6 +2846,8 @@ def validate_rollback_state_paths(state: dict[str, Any], state_path: Path) -> No
     receipt_sha256 = state.get("release_receipt_sha256")
     if not isinstance(receipt_value, str) or not isinstance(receipt_sha256, str):
         raise DeploymentError("Rollback state has no approved release receipt.")
+    if receipt_sha256 in RETIRED_RELEASE_RECEIPT_SHA256S:
+        raise DeploymentError("Rollback state references a permanently retired release receipt.")
     receipt_path = require_regular_file(Path(receipt_value), receipt_sha256)
     if not is_relative_to(receipt_path, release_root):
         raise DeploymentError("Rollback release receipt is outside the fixed release root.")
@@ -2174,10 +2855,10 @@ def validate_rollback_state_paths(state: dict[str, Any], state_path: Path) -> No
         receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
     except json.JSONDecodeError as exception:
         raise DeploymentError("Rollback release receipt is invalid JSON.") from exception
-    if receipt.get("artifact") != "buy-dtf-laravel-remember-cookie-release-v3":
+    if receipt.get("artifact") != "buy-dtf-laravel-remember-cookie-release-v4":
         raise DeploymentError("Rollback release receipt has an unexpected artifact identity.")
     if receipt.get("status") != "staged":
-        raise DeploymentError("Rollback release receipt is not a staged v3 release.")
+        raise DeploymentError("Rollback release receipt is not a staged v4 release.")
     if receipt.get("handoff") != {"filename": HANDOFF_FILENAME, "sha256": HANDOFF_SHA256}:
         raise DeploymentError("Rollback release receipt references a different review handoff.")
     shadow = require_real_directory(Path(str(receipt.get("shadow_path", ""))), within=release_root)
@@ -2194,6 +2875,9 @@ def validate_rollback_state_paths(state: dict[str, Any], state_path: Path) -> No
         != DATABASE_ENVELOPE_VALIDATOR_SHA256
         or state.get("gate_helper_sha256") != GATE_HELPER_SHA256
         or state.get("log_parser_sha256") != LOG_PARSER_SHA256
+        or state.get("fpm_opcache_probe_sha256") != FPM_OPCACHE_PROBE_SHA256
+        or state.get("nginx_identity_helper_sha256") != NGINX_IDENTITY_HELPER_SHA256
+        or state.get("retired_controls_sha256") != RETIRED_CONTROLS_SHA256
     ):
         raise DeploymentError("Rollback state references different reviewed control helpers.")
     if (
@@ -2201,6 +2885,9 @@ def validate_rollback_state_paths(state: dict[str, Any], state_path: Path) -> No
         != DATABASE_ENVELOPE_VALIDATOR_SHA256
         or receipt.get("gate_helper_sha256") != GATE_HELPER_SHA256
         or receipt.get("log_parser_sha256") != LOG_PARSER_SHA256
+        or receipt.get("fpm_opcache_probe_sha256") != FPM_OPCACHE_PROBE_SHA256
+        or receipt.get("nginx_identity_helper_sha256") != NGINX_IDENTITY_HELPER_SHA256
+        or receipt.get("retired_controls_sha256") != RETIRED_CONTROLS_SHA256
     ):
         raise DeploymentError("Rollback receipt references different reviewed control helpers.")
     if receipt.get("candidate_lock_sha256") != CANDIDATE_LOCK_SHA256:
@@ -2240,6 +2927,45 @@ def validate_rollback_state_paths(state: dict[str, Any], state_path: Path) -> No
         },
     }:
         raise DeploymentError("Rollback receipt references a different front controller.")
+    retired_controls = require_retired_controls_registry()
+    if (
+        state.get("retired_controls") != retired_controls
+        or receipt.get("retired_controls") != retired_controls
+    ):
+        raise DeploymentError("Rollback state changed the permanent retired-control registry.")
+    if state.get("fpm_opcache") != receipt.get("fpm_opcache"):
+        raise DeploymentError("Rollback state changed the frozen PHP-FPM OPcache envelope.")
+    validate_frozen_fpm_opcache_record(state.get("fpm_opcache"))
+    state_nginx = validate_nginx_stable_identity(state.get("nginx_identity"))
+    if state_nginx != validate_nginx_stable_identity(receipt.get("nginx_identity")):
+        raise DeploymentError("Rollback state changed the effective nginx identity.")
+    nginx_capture = state.get("nginx_pre_gate_capture")
+    validate_nginx_capture_summary(
+        nginx_capture,
+        expected_path=(
+            state_directory / "cutover-pre-gate-nginx-document-root-summary.json"
+        ),
+        expected_identity=state_nginx,
+    )
+    gate_captures = state.get("nginx_pre_gate_captures", [])
+    if not isinstance(gate_captures, list):
+        raise DeploymentError("Rollback nginx pre-gate capture history is invalid.")
+    for item in gate_captures:
+        if not isinstance(item, dict) or not isinstance(item.get("operation"), str):
+            raise DeploymentError("Rollback nginx pre-gate capture entry is invalid.")
+        operation = item["operation"]
+        if not re.fullmatch(r"[a-z0-9]+(?:[_-][a-z0-9]+)*", operation):
+            raise DeploymentError("Rollback nginx pre-gate operation identity is invalid.")
+        if item.get("identity") != state_nginx:
+            raise DeploymentError("Rollback nginx pre-gate identity drifted.")
+        validate_nginx_capture_summary(
+            item.get("summary_capture"),
+            expected_path=(
+                state_directory
+                / f"{operation}-pre-gate-nginx-document-root-summary.json"
+            ),
+            expected_identity=state_nginx,
+        )
     receipt_preflight = receipt.get("production_preflight")
     if not isinstance(receipt_preflight, dict):
         raise DeploymentError("Rollback receipt has no production preflight.")
@@ -2399,7 +3125,11 @@ def rollback_from_state(
         state["database_envelope_after_rollback_dependencies"] = rollback_database
         write_state(state_path, state)
         inject("after_rollback_runtime")
-        time.sleep(OPCACHE_WAIT_SECONDS)
+        state["rollback_dependency_opcache_settle_seconds"] = (
+            dependency_cache_settle_seconds(state)
+        )
+        write_state(state_path, state)
+        time.sleep(state["rollback_dependency_opcache_settle_seconds"])
         first = fpm_probe(OLD_PACKAGE_VERSIONS)
         time.sleep(OPCACHE_SECOND_PROBE_DELAY_SECONDS)
         second = fpm_probe(OLD_PACKAGE_VERSIONS)
@@ -2466,6 +3196,10 @@ def cutover(
         raise DeploymentError("Release receipt rollback cache differs from current production.")
     if receipt.get("front_controller") != baseline["front_controller"]:
         raise DeploymentError("Release receipt front controller differs from current production.")
+    if receipt.get("fpm_opcache") != baseline["fpm_opcache"]:
+        raise DeploymentError("Release PHP-FPM OPcache envelope differs from current production.")
+    if receipt.get("retired_controls") != baseline["retired_controls"]:
+        raise DeploymentError("Release retired-control registry differs from current production.")
     if scoped_processes():
         raise DeploymentError("A scoped Artisan/payout process is active.")
     before_health = health_snapshot()
@@ -2483,6 +3217,14 @@ def cutover(
     rollback_directory = rollback_root / f"{CANDIDATE_LOCK_SHA256[:12]}-{timestamp}"
     rollback_directory.mkdir(mode=0o700)
     state_path = rollback_directory / "deployment-state.json"
+    nginx_cutover = capture_nginx_environment(
+        rollback_directory,
+        "cutover-pre-gate",
+    )
+    if nginx_cutover["stable_identity"] != receipt.get("nginx_identity"):
+        raise DeploymentError(
+            "Effective nginx server block or document root differs from the staged receipt."
+        )
     old_lock_backup = rollback_directory / "composer.lock.before"
     atomic_copy(APP_ROOT / "composer.lock", old_lock_backup, 0o600)
     cache_backup = rollback_directory / "bootstrap-cache-before"
@@ -2494,7 +3236,7 @@ def cutover(
     require_regular_file(front_controller_backup, EXPECTED_FRONT_CONTROLLER_SHA256)
 
     state: dict[str, Any] = {
-        "artifact": "buy-dtf-laravel-remember-cookie-cutover-v3",
+        "artifact": "buy-dtf-laravel-remember-cookie-cutover-v4",
         "handoff": {"filename": HANDOFF_FILENAME, "sha256": HANDOFF_SHA256},
         "status": "preparing",
         "started_at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
@@ -2505,6 +3247,13 @@ def cutover(
         "database_envelope_validator_sha256": DATABASE_ENVELOPE_VALIDATOR_SHA256,
         "gate_helper_sha256": GATE_HELPER_SHA256,
         "log_parser_sha256": LOG_PARSER_SHA256,
+        "fpm_opcache_probe_sha256": FPM_OPCACHE_PROBE_SHA256,
+        "nginx_identity_helper_sha256": NGINX_IDENTITY_HELPER_SHA256,
+        "retired_controls_sha256": RETIRED_CONTROLS_SHA256,
+        "retired_controls": baseline["retired_controls"],
+        "fpm_opcache": baseline["fpm_opcache"],
+        "nginx_identity": nginx_cutover["stable_identity"],
+        "nginx_pre_gate_capture": nginx_cutover["capture"]["summary_capture"],
         "database_envelope_receipt": receipt["database_envelope_receipt"],
         "database_envelope_staged": receipt["database_envelope"],
         "database_envelope_before_cutover": before_database,
@@ -2641,7 +3390,7 @@ def cutover(
                 "Production database envelope drifted immediately before dependency mutation."
             )
         database_gate_receipt = {
-            "artifact": "buy-dtf-laravel-remember-cookie-gated-database-envelope-v3",
+            "artifact": "buy-dtf-laravel-remember-cookie-gated-database-envelope-v4",
             "status": "pass",
             "phase": "immediately_before_dependency_mutation",
             "checked_at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
@@ -2753,7 +3502,11 @@ def cutover(
         if sha256_file(APP_ROOT / "composer.lock") != CANDIDATE_LOCK_SHA256:
             raise DeploymentError("Live composer.lock differs from the approved candidate.")
 
-        time.sleep(OPCACHE_WAIT_SECONDS)
+        state["candidate_dependency_opcache_settle_seconds"] = (
+            dependency_cache_settle_seconds(state)
+        )
+        write_state(state_path, state)
+        time.sleep(state["candidate_dependency_opcache_settle_seconds"])
         first_probe = fpm_probe(NEW_PACKAGE_VERSIONS)
         time.sleep(OPCACHE_SECOND_PROBE_DELAY_SECONDS)
         second_probe = fpm_probe(NEW_PACKAGE_VERSIONS)
@@ -2779,6 +3532,7 @@ def cutover(
                 "at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
                 "health": health_snapshot(),
                 "runtime": runtime_probe(helper),
+                "fpm_opcache": require_frozen_fpm_opcache(state.get("fpm_opcache")),
             }
             validate_runtime_baseline(
                 sample["runtime"], expected_versions=NEW_PACKAGE_VERSIONS
@@ -2803,6 +3557,9 @@ def cutover(
 
         final_monitor_health = health_snapshot()
         final_monitor_runtime = runtime_probe(helper)
+        final_monitor_fpm_opcache = require_frozen_fpm_opcache(
+            state.get("fpm_opcache")
+        )
         validate_runtime_baseline(
             final_monitor_runtime,
             expected_versions=NEW_PACKAGE_VERSIONS,
@@ -2819,6 +3576,7 @@ def cutover(
             "health": final_monitor_health,
             "runtime": final_monitor_runtime,
             "database_envelope": final_monitor_database,
+            "fpm_opcache": final_monitor_fpm_opcache,
         }
         monitor_samples.append(final_sample)
         state["monitor_samples"] = monitor_samples
@@ -2853,7 +3611,7 @@ def cutover(
         monitor_samples_sha256 = dependency_gate.write_new_json(
             monitor_samples_path,
             {
-                "artifact": "buy-dtf-laravel-remember-cookie-monitor-samples-v3",
+                "artifact": "buy-dtf-laravel-remember-cookie-monitor-samples-v4",
                 "classification": "private-do-not-commit",
                 "status": "pass",
                 "samples": monitor_samples,
@@ -2863,7 +3621,7 @@ def cutover(
         database_monitor_sha256 = dependency_gate.write_new_json(
             database_monitor_path,
             {
-                "artifact": "buy-dtf-laravel-remember-cookie-database-monitor-v3",
+                "artifact": "buy-dtf-laravel-remember-cookie-database-monitor-v4",
                 "status": "pass",
                 "policy": "pre_source_exactly_zero",
                 "runtime_helper_sha256": RUNTIME_HELPER_SHA256,
@@ -3178,7 +3936,7 @@ def load_pending_monitor_state(state_path: Path) -> tuple[dict[str, Any], Path]:
         state = json.loads(state_path.read_text(encoding="utf-8"))
     except (UnicodeDecodeError, json.JSONDecodeError) as exception:
         raise DeploymentError("Monitor state is invalid JSON.") from exception
-    if state.get("artifact") != "buy-dtf-laravel-remember-cookie-cutover-v3":
+    if state.get("artifact") != "buy-dtf-laravel-remember-cookie-cutover-v4":
         raise DeploymentError("Monitor state has an unexpected artifact identity.")
     if state.get("handoff") != {"filename": HANDOFF_FILENAME, "sha256": HANDOFF_SHA256}:
         raise DeploymentError("Monitor state references a different review handoff.")
@@ -3284,7 +4042,7 @@ def load_pending_monitor_state(state_path: Path) -> tuple[dict[str, Any], Path]:
     if (
         not isinstance(monitor_receipt, dict)
         or monitor_receipt.get("artifact")
-        != "buy-dtf-laravel-remember-cookie-monitor-samples-v3"
+        != "buy-dtf-laravel-remember-cookie-monitor-samples-v4"
         or monitor_receipt.get("classification") != "private-do-not-commit"
         or monitor_receipt.get("status") != "pass"
         or monitor_receipt.get("samples") != state.get("monitor_samples")
@@ -3293,7 +4051,7 @@ def load_pending_monitor_state(state_path: Path) -> tuple[dict[str, Any], Path]:
     if (
         not isinstance(database_receipt, dict)
         or database_receipt.get("artifact")
-        != "buy-dtf-laravel-remember-cookie-database-monitor-v3"
+        != "buy-dtf-laravel-remember-cookie-database-monitor-v4"
         or database_receipt.get("status") != "pass"
         or database_receipt.get("policy") != "pre_source_exactly_zero"
         or database_receipt.get("runtime_helper_sha256") != RUNTIME_HELPER_SHA256
@@ -3413,6 +4171,7 @@ def verify_live_candidate_after_monitor(
     )
     candidate_cache = cache_identity(APP_ROOT / "bootstrap/cache")
     runtime = runtime_probe(helper)
+    fpm_opcache = require_frozen_fpm_opcache(state.get("fpm_opcache"))
     validate_runtime_baseline(runtime, expected_versions=NEW_PACKAGE_VERSIONS)
     database = validate_database_envelope(runtime, pre_source=True)
     if database != state.get("database_envelope_before_cutover"):
@@ -3444,6 +4203,7 @@ def verify_live_candidate_after_monitor(
         "application_autoload_identity": autoload,
         "candidate_cache_identity": candidate_cache,
         "runtime": runtime,
+        "fpm_opcache": fpm_opcache,
         "database_envelope": database,
         "health": health,
         "fpm_probes": [first_fpm, second_fpm],
@@ -3515,6 +4275,8 @@ def verify_recovered_old_live_state(
     """Verify the complete old dependency and database envelope after recovery."""
 
     baseline = assert_production_baseline(helper)
+    if baseline.get("fpm_opcache") != state.get("fpm_opcache"):
+        raise DeploymentError("PHP-FPM OPcache envelope drifted during recovery verification.")
     runtime = runtime_probe(helper)
     validate_runtime_baseline(runtime, expected_versions=OLD_PACKAGE_VERSIONS)
     database = validate_database_envelope(runtime, pre_source=True)
@@ -3550,7 +4312,7 @@ def recover(state_path: Path, approval_token: str, helper: Path) -> None:
         state = json.loads(state_path.read_text(encoding="utf-8"))
     except json.JSONDecodeError as exception:
         raise DeploymentError("Recovery state is invalid JSON.") from exception
-    if state.get("artifact") != "buy-dtf-laravel-remember-cookie-cutover-v3":
+    if state.get("artifact") != "buy-dtf-laravel-remember-cookie-cutover-v4":
         raise DeploymentError("Recovery state has an unexpected artifact identity.")
     if state.get("handoff") != {"filename": HANDOFF_FILENAME, "sha256": HANDOFF_SHA256}:
         raise DeploymentError("Recovery state references a different review handoff.")
@@ -3573,7 +4335,11 @@ def recover(state_path: Path, approval_token: str, helper: Path) -> None:
     }:
         raise DeploymentError("Recovery state has invalid front-controller metadata.")
     validate_rollback_state_paths(state, state_path)
-    context = gate_context(state, state_path)
+    context = gate_context(
+        state,
+        state_path,
+        allow_frozen_policy_for_exact_existing_gate=True,
+    )
     try:
         decision = dependency_gate.recovery_decision(
             context=context,
@@ -3609,6 +4375,12 @@ def recover(state_path: Path, approval_token: str, helper: Path) -> None:
         state["gate_verified"] = False
         write_state(state_path, state)
         return
+    restoration = restore_front_controller(
+        state,
+        state_path,
+        reason="explicit_noop_recovery_original_barrier",
+    )
+    state["explicit_recovery_original_barrier"] = restoration
     state["explicit_recovery_verification"] = verify_recovered_old_live_state(
         state,
         helper,
@@ -3623,7 +4395,7 @@ def rehearse(parent: Path) -> dict[str, Any]:
         tempfile.mkdtemp(prefix="buy-dtf-laravel-remember-cookie-rehearsal-", dir=parent)
     )
     results: dict[str, Any] = {
-        "artifact": "buy-dtf-laravel-remember-cookie-atomic-exchange-rehearsal-v3",
+        "artifact": "buy-dtf-laravel-remember-cookie-atomic-exchange-rehearsal-v4",
         "artifact_review_status": ARTIFACT_REVIEW_STATUS,
         "handoff": {"filename": HANDOFF_FILENAME, "sha256": HANDOFF_SHA256},
         "script_sha256": sha256_file(Path(__file__).resolve()),
@@ -4050,7 +4822,7 @@ def describe() -> None:
     print(
         json.dumps(
             {
-                "artifact": "buy-dtf-laravel-remember-cookie-dependency-review-v3",
+                "artifact": "buy-dtf-laravel-remember-cookie-dependency-review-v4",
                 "artifact_review_status": ARTIFACT_REVIEW_STATUS,
                 "handoff": {"filename": HANDOFF_FILENAME, "sha256": HANDOFF_SHA256},
                 "application_root": str(APP_ROOT),
@@ -4081,6 +4853,16 @@ def describe() -> None:
                 ),
                 "gate_helper_sha256": GATE_HELPER_SHA256,
                 "log_parser_sha256": LOG_PARSER_SHA256,
+                "fpm_opcache_probe_sha256": FPM_OPCACHE_PROBE_SHA256,
+                "nginx_identity_helper_sha256": NGINX_IDENTITY_HELPER_SHA256,
+                "retired_controls_sha256": RETIRED_CONTROLS_SHA256,
+                "permanently_retired_runner_sha256s": sorted(RETIRED_RUNNER_SHA256S),
+                "permanently_retired_gate_helper_sha256s": sorted(
+                    RETIRED_GATE_HELPER_SHA256S
+                ),
+                "permanently_retired_release_receipt_sha256s": sorted(
+                    RETIRED_RELEASE_RECEIPT_SHA256S
+                ),
                 "database_envelope": {
                     "schema_sha256": database_envelope.EXPECTED_SCHEMA_SHA256,
                     "migration_ledger_rows": database_envelope.EXPECTED_LEDGER_ROW_COUNT,
@@ -4105,7 +4887,28 @@ def describe() -> None:
                     "skipped for the frozen identical identities"
                 ),
                 "static_maintenance_gate_sha256": MAINTENANCE_GATE_SHA256,
-                "static_gate_verification_routes": ["direct_origin", "public_cloudflare"],
+                "static_gate_verification_routes": [
+                    "direct_origin_unique_probe_1",
+                    "direct_origin_unique_probe_2",
+                    "public_cloudflare_unique_probe",
+                ],
+                "static_gate_probe_nonce_bound_to_header_and_body": True,
+                "static_gate_raw_http_headers": "private-mode-0600-do-not-commit",
+                "static_gate_review_headers": "cookie-values-redacted",
+                "fpm_opcache_policy": {
+                    "sapi": "fpm-fcgi",
+                    "timestamp_validation_required": True,
+                    "directives": list(dependency_gate.OPCACHE_DIRECTIVE_NAMES),
+                    "minimum_wait_seconds": dependency_gate.MINIMUM_REVALIDATION_WAIT_SECONDS,
+                    "formula": (
+                        "max(5, 2 * revalidate_freq + file_update_protection + 1)"
+                    ),
+                    "clock": "monotonic",
+                    "cli_opcache_invalidate_used": False,
+                },
+                "nginx_document_root_required": str(
+                    environment_controls.EXPECTED_DOCUMENT_ROOT
+                ),
                 "durable_gate_transition_history": True,
                 "laravel_log_delta": {
                     "rotation_safe": True,

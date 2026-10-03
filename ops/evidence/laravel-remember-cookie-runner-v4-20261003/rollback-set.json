@@ -1,0 +1,22 @@
+{
+  "accepted_failed_stage_evidence_commit": "ac959e0fbf6ad9c6ae71531dbeb09ae2b9309917",
+  "artifact": "buy-dtf-laravel-remember-cookie-rollback-set-v4",
+  "cache_manifest_sha256": "468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9",
+  "composer_lock_sha256": "22af12c7e58fcfe809735dbf9955b2d22a264e9e7345cefd74398e36bf2773b9",
+  "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
+  "laravel_version": "12.69.0",
+  "preparation_boundary_incident_read_only_access": true,
+  "production_mutation_during_preparation": false,
+  "retained_partial_release_modification": false,
+  "retained_v3_release_modified": false,
+  "rollback_identity_source": "accepted failed-cutover evidence; no v4 production re-probe",
+  "runner_sha256": "e2d735c9c9c86c8bd38be3085b3372a2d2079ada9866d87487e8aa486dfc79f0",
+  "source_manifest_sha256": "3909bdc2303b5c578135859c847f311cd84b827e62ac4e5dbce3d2297f6da71f",
+  "status": "frozen-for-independent-review",
+  "vendor_manifest": {
+    "bytes": 26453056,
+    "directories": 925,
+    "files": 6460,
+    "sha256": "7399949f857da190c5ff07b89c85e8fba8a6f681695e20a462862be591b698ed"
+  }
+}

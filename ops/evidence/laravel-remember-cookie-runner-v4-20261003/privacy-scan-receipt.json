@@ -1,0 +1,86 @@
+{
+    "artifact":  "buy-dtf-laravel-remember-cookie-privacy-scan-v4",
+    "generated_at_utc":  "2026-10-03T17:31:12Z",
+    "status":  "pass",
+    "files_scanned":  91,
+    "integrity_indexes_generated_after_scan":  [
+                                                   "evidence-manifest.json",
+                                                   "SHA256SUMS"
+                                               ],
+    "production_raw_headers_scanned_or_committed":  false,
+    "production_cookie_values_committed":  false,
+    "raw_http_evidence_committed":  false,
+    "raw_private_evidence_filenames":  [
+
+                                       ],
+    "evidence_sensitive_value_findings":  0,
+    "unexpected_sensitive_findings":  0,
+    "synthetic_fixture_findings":  [
+                                       {
+                                           "path":  "ops/deployment/test_laravel_dependency_gate.py",
+                                           "line":  646,
+                                           "kind":  "cookie_assignment",
+                                           "line_sha256":  "e54232da4e70ee9f2b3e575710f5401305553b9ea8bd0daaf74346970a571391",
+                                           "classification":  "synthetic-test-fixture"
+                                       },
+                                       {
+                                           "path":  "ops/deployment/test_laravel_dependency_gate.py",
+                                           "line":  646,
+                                           "kind":  "raw_cookie_header",
+                                           "line_sha256":  "e54232da4e70ee9f2b3e575710f5401305553b9ea8bd0daaf74346970a571391",
+                                           "classification":  "synthetic-test-fixture"
+                                       },
+                                       {
+                                           "path":  "ops/deployment/test_laravel_dependency_gate.py",
+                                           "line":  647,
+                                           "kind":  "cookie_assignment",
+                                           "line_sha256":  "2932422f5e1b133c3de65138197f8010da25c2ebb45c607ce0014a1e1c4da5f7",
+                                           "classification":  "synthetic-test-fixture"
+                                       },
+                                       {
+                                           "path":  "ops/deployment/test_laravel_dependency_gate.py",
+                                           "line":  647,
+                                           "kind":  "raw_cookie_header",
+                                           "line_sha256":  "2932422f5e1b133c3de65138197f8010da25c2ebb45c607ce0014a1e1c4da5f7",
+                                           "classification":  "synthetic-test-fixture"
+                                       },
+                                       {
+                                           "path":  "ops/deployment/test_laravel_environment_controls.py",
+                                           "line":  143,
+                                           "kind":  "synthetic_secret_marker",
+                                           "line_sha256":  "87e6a8288dfd0826e69130b0097fedfb819d499e1ca520d34dfadf400341f470",
+                                           "classification":  "synthetic-test-fixture"
+                                       },
+                                       {
+                                           "path":  "ops/deployment/test_laravel_environment_controls.py",
+                                           "line":  325,
+                                           "kind":  "synthetic_secret_marker",
+                                           "line_sha256":  "3b207d362f538088804548bbec4d44920de62fd857e5867c608b579168d5aa34",
+                                           "classification":  "synthetic-test-fixture"
+                                       },
+                                       {
+                                           "path":  "ops/deployment/test_laravel_environment_controls.py",
+                                           "line":  327,
+                                           "kind":  "synthetic_secret_marker",
+                                           "line_sha256":  "b5ad9b237b9f96c27b7a30ece80405cb85a9621bb73539da5eb98128c674c7da",
+                                           "classification":  "synthetic-test-fixture"
+                                       }
+                                   ],
+    "synthetic_fixture_finding_count":  7,
+    "synthetic_fixture_allowlist":  [
+                                        "ops/deployment/test_laravel_dependency_gate.py",
+                                        "ops/deployment/test_laravel_environment_controls.py"
+                                    ],
+    "checks":  {
+                   "cookie_assignments_outside_synthetic_tests":  0,
+                   "raw_cookie_header_values_outside_synthetic_tests":  0,
+                   "authorization_header_values":  0,
+                   "private_key_markers":  0,
+                   "secret_fixture_marker_in_evidence":  0,
+                   "cookie_or_raw_header_filenames":  0,
+                   "utf8_decode_errors":  0
+               },
+    "raw_local_rehearsal_evidence":  "temporary local mode-0600 files only; not copied into Git",
+    "production_accessed_by_scan":  false,
+    "preparation_boundary_incident_recorded_separately":  true
+}

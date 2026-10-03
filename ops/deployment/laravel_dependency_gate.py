@@ -4,16 +4,20 @@
 This module deliberately has no production entry point.  Callers supply every
 path, probe, health check, and mutation-state predicate.  The implementation
 is derived from the independently reviewed incoming-order gate transition and
-keeps the same gate bytes, owner, group, and mode.
+keeps its durable transition, owner, group, and mode controls.  V4 gate bytes
+add a per-install nonce so every HTTP probe can prove route-specific freshness.
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime, timezone
 import hashlib
+import ipaddress
 import json
 import os
 from pathlib import Path
+import re
 import secrets
 import stat
 import subprocess
@@ -30,19 +34,34 @@ EXPECTED_FRONT_CONTROLLER_MODE = 0o644
 
 MAINTENANCE_GATE_HEADER_NAME = "X-BuyDTF-Dependency-Maintenance"
 MAINTENANCE_GATE_HEADER_VALUE = "static-v2"
+MAINTENANCE_GATE_PROBE_HEADER_NAME = "X-BuyDTF-Dependency-Probe"
 MAINTENANCE_GATE_SENTINEL = "BUYDTF_DEPENDENCY_MAINTENANCE_STATIC_V2"
-MAINTENANCE_GATE_BYTES = f"""<?php
+MAINTENANCE_GATE_BYTES = fr"""<?php
 declare(strict_types=1);
 
+$opsGateProbe = $_GET['ops_gate'] ?? '';
+if (!is_string($opsGateProbe) || preg_match('/\A[a-f0-9]{{24}}\z/D', $opsGateProbe) !== 1) {{
+    $opsGateProbe = 'invalid';
+}}
 http_response_code(503);
 header('Content-Type: text/plain; charset=UTF-8');
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Pragma: no-cache');
 header('Retry-After: 120');
 header('{MAINTENANCE_GATE_HEADER_NAME}: {MAINTENANCE_GATE_HEADER_VALUE}');
-echo '{MAINTENANCE_GATE_SENTINEL}';
+header('{MAINTENANCE_GATE_PROBE_HEADER_NAME}: ' . $opsGateProbe);
+echo '{MAINTENANCE_GATE_SENTINEL}' . "\n" . $opsGateProbe;
 """.encode("utf-8")
-EXPECTED_GATE_SHA256 = "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+EXPECTED_GATE_SHA256 = "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+
+MINIMUM_REVALIDATION_WAIT_SECONDS = 5
+REVALIDATION_SAFETY_MARGIN_SECONDS = 1
+OPCACHE_DIRECTIVE_NAMES = (
+    "opcache.enable",
+    "opcache.validate_timestamps",
+    "opcache.revalidate_freq",
+    "opcache.file_update_protection",
+)
 
 ORIGIN_ROUTE = "origin_loopback"
 PUBLIC_ROUTE = "public_cloudflare"
@@ -51,6 +70,7 @@ TRANSITION_PHASES = frozenset(
         "replacement_pending",
         "installed",
         "installed_reconciled_from_live_identity",
+        "revalidation_wait_complete",
         "verified",
         "original_already_present",
         "exact_original_verified",
@@ -61,6 +81,7 @@ GATE_PRESENT_PHASES = frozenset(
     {
         "installed",
         "installed_reconciled_from_live_identity",
+        "revalidation_wait_complete",
         "verified",
         "containment_retained",
     }
@@ -85,9 +106,13 @@ class GateInterruption(BaseException):
 
 
 Probe = Callable[[], dict[str, Any]]
+NumberedProbe = Callable[[int], dict[str, Any]]
 HealthProbe = Callable[[], dict[str, Any]]
 MutationPredicate = Callable[[dict[str, Any]], bool]
 FaultInjector = Callable[[str], None]
+Sleep = Callable[[float], None]
+MonotonicClock = Callable[[], int]
+WallClock = Callable[[], float]
 
 
 @dataclass(frozen=True)
@@ -98,10 +123,18 @@ class GateContext:
     evidence_directory: Path
     original_backup: Path
     original_sha256: str
+    opcache_policy: dict[str, Any]
+    sleep: Sleep = time.sleep
+    monotonic_ns: MonotonicClock = time.monotonic_ns
+    wall_clock: WallClock = time.time
 
 
 def utc_now() -> str:
     return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+
+
+def utc_from_epoch(epoch: float) -> str:
+    return datetime.fromtimestamp(epoch, tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
 
 
 def canonical_bytes(payload: Any) -> bytes:
@@ -116,6 +149,129 @@ def sha256_bytes(value: bytes) -> str:
 
 if sha256_bytes(MAINTENANCE_GATE_BYTES) != EXPECTED_GATE_SHA256:
     raise RuntimeError("Embedded static-gate bytes differ from the reviewed identity.")
+
+
+def _normalized_directive(
+    probe: dict[str, Any],
+    name: str,
+) -> bool | int:
+    directives = probe.get("directives")
+    if not isinstance(directives, dict) or set(directives) != set(OPCACHE_DIRECTIVE_NAMES):
+        raise GateError("PHP-FPM OPcache probe has an incomplete directive set.")
+    entry = directives.get(name)
+    if not isinstance(entry, dict) or set(entry) != {"normalized", "raw"}:
+        raise GateError(f"PHP-FPM OPcache directive is malformed: {name}")
+    normalized = entry.get("normalized")
+    if name in {"opcache.enable", "opcache.validate_timestamps"}:
+        if type(normalized) is not bool:
+            raise GateError(f"PHP-FPM OPcache boolean directive is invalid: {name}")
+    elif type(normalized) is not int or normalized < 0:
+        raise GateError(f"PHP-FPM OPcache interval directive is invalid: {name}")
+    return normalized
+
+
+def derive_opcache_revalidation_policy(probe: dict[str, Any]) -> dict[str, Any]:
+    """Validate an FPM-SAPI probe and derive the only reviewed wait policy."""
+
+    if probe.get("artifact") != "buy-dtf-php-fpm-opcache-probe-v1":
+        raise GateError("PHP-FPM OPcache probe has an unexpected artifact identity.")
+    if probe.get("sapi") != "fpm-fcgi":
+        raise GateError("OPcache settings must be read through the PHP-FPM SAPI.")
+    php_version = probe.get("php_version")
+    if not isinstance(php_version, str) or not php_version:
+        raise GateError("PHP-FPM OPcache probe has no PHP version identity.")
+
+    enabled = _normalized_directive(probe, "opcache.enable")
+    validate_timestamps = _normalized_directive(
+        probe,
+        "opcache.validate_timestamps",
+    )
+    revalidate_frequency = _normalized_directive(probe, "opcache.revalidate_freq")
+    file_update_protection = _normalized_directive(
+        probe,
+        "opcache.file_update_protection",
+    )
+    configuration = probe.get("opcache_configuration_directives")
+    expected_configuration = {
+        name: probe["directives"][name]["normalized"] for name in OPCACHE_DIRECTIVE_NAMES
+    }
+    if configuration != expected_configuration:
+        raise GateError("PHP-FPM ini values differ from its OPcache configuration values.")
+    if enabled is not True:
+        raise GateError("PHP-FPM OPcache must be enabled for this reviewed deployment flow.")
+    if validate_timestamps is not True:
+        raise GateError(
+            "PHP-FPM opcache.validate_timestamps must be enabled; a separately reviewed "
+            "PHP-FPM reload plan is required."
+        )
+
+    assert type(revalidate_frequency) is int
+    assert type(file_update_protection) is int
+    complete_interval = revalidate_frequency + file_update_protection
+    second_revalidation_window = revalidate_frequency
+    configured_wait = max(
+        MINIMUM_REVALIDATION_WAIT_SECONDS,
+        complete_interval
+        + second_revalidation_window
+        + REVALIDATION_SAFETY_MARGIN_SECONDS,
+    )
+    policy = {
+        "artifact": "buy-dtf-php-fpm-opcache-revalidation-policy-v1",
+        "php_version": php_version,
+        "sapi": "fpm-fcgi",
+        "opcache_enable": enabled,
+        "validate_timestamps": validate_timestamps,
+        "revalidate_freq_seconds": revalidate_frequency,
+        "file_update_protection_seconds": file_update_protection,
+        "complete_revalidation_interval_seconds": complete_interval,
+        "second_revalidation_window_seconds": second_revalidation_window,
+        "minimum_wait_seconds": configured_wait,
+        "minimum_floor_seconds": MINIMUM_REVALIDATION_WAIT_SECONDS,
+        "safety_margin_seconds": REVALIDATION_SAFETY_MARGIN_SECONDS,
+        "formula": "max(5, 2 * revalidate_freq + file_update_protection + 1)",
+    }
+    validate_opcache_revalidation_policy(policy)
+    return policy
+
+
+def validate_opcache_revalidation_policy(policy: dict[str, Any]) -> None:
+    if policy.get("artifact") != "buy-dtf-php-fpm-opcache-revalidation-policy-v1":
+        raise GateError("OPcache revalidation policy has an unexpected artifact identity.")
+    if policy.get("sapi") != "fpm-fcgi" or policy.get("opcache_enable") is not True:
+        raise GateError("OPcache revalidation policy is not bound to enabled PHP-FPM OPcache.")
+    if policy.get("validate_timestamps") is not True:
+        raise GateError(
+            "OPcache timestamp validation is disabled; a separately reviewed PHP-FPM "
+            "reload plan is required."
+        )
+    numeric_fields = (
+        "revalidate_freq_seconds",
+        "file_update_protection_seconds",
+        "complete_revalidation_interval_seconds",
+        "second_revalidation_window_seconds",
+        "minimum_wait_seconds",
+        "minimum_floor_seconds",
+        "safety_margin_seconds",
+    )
+    if any(type(policy.get(field)) is not int or policy[field] < 0 for field in numeric_fields):
+        raise GateError("OPcache revalidation policy contains an invalid interval.")
+    complete = policy["revalidate_freq_seconds"] + policy["file_update_protection_seconds"]
+    second_window = policy["revalidate_freq_seconds"]
+    expected_wait = max(
+        MINIMUM_REVALIDATION_WAIT_SECONDS,
+        complete + second_window + REVALIDATION_SAFETY_MARGIN_SECONDS,
+    )
+    if (
+        policy["complete_revalidation_interval_seconds"] != complete
+        or policy["second_revalidation_window_seconds"] != second_window
+        or policy["minimum_wait_seconds"] != expected_wait
+        or policy["minimum_wait_seconds"] <= complete
+        or policy["minimum_floor_seconds"] != MINIMUM_REVALIDATION_WAIT_SECONDS
+        or policy["safety_margin_seconds"] != REVALIDATION_SAFETY_MARGIN_SECONDS
+        or policy.get("formula")
+        != "max(5, 2 * revalidate_freq + file_update_protection + 1)"
+    ):
+        raise GateError("OPcache revalidation policy does not safely exceed the interval.")
 
 
 def _is_relative_to(path: Path, parent: Path) -> bool:
@@ -158,6 +314,7 @@ def initial_gate_state() -> dict[str, Any]:
     """Return the durable fields a new dependency rollback state must bind."""
     return {
         "front_controller_transitions": [],
+        "front_controller_revalidation_waits": [],
         "static_gate_active": False,
         "containment_active": False,
         "containment_requested": False,
@@ -233,6 +390,7 @@ def require_regular_file(path: Path, expected_sha256: str | None = None) -> Path
 
 
 def _validate_context(context: GateContext, *, require_backup: bool = True) -> None:
+    validate_opcache_revalidation_policy(context.opcache_policy)
     application_root = require_real_directory(context.application_root)
     front_parent = require_real_directory(context.front_controller.parent, within=application_root)
     if front_parent != context.front_controller.parent.resolve(strict=True):
@@ -369,6 +527,153 @@ def _inject(fault_injector: FaultInjector | None, stage: str) -> None:
         fault_injector(stage)
 
 
+def wait_for_front_controller_revalidation(
+    *,
+    context: GateContext,
+    state: dict[str, Any],
+    operation: str,
+    target_sha256: str,
+    target_metadata: dict[str, Any],
+    fault_injector: FaultInjector | None = None,
+) -> dict[str, Any]:
+    """Wait a complete FPM OPcache interval after a durable file transition."""
+
+    _validate_context(context)
+    validate_opcache_revalidation_policy(context.opcache_policy)
+    before = file_identity(context.front_controller)
+    if before["sha256"] != target_sha256 or before["metadata"] != target_metadata:
+        raise GateError("Front-controller identity is wrong before OPcache revalidation wait.")
+
+    waits = state.setdefault("front_controller_revalidation_waits", [])
+    if not isinstance(waits, list):
+        raise GateError("Front-controller OPcache wait history is invalid.")
+    configured_wait = int(context.opcache_policy["minimum_wait_seconds"])
+    wait_ns = configured_wait * 1_000_000_000
+    start_monotonic_ns = context.monotonic_ns()
+    if type(start_monotonic_ns) is not int or start_monotonic_ns < 0:
+        raise GateError("Monotonic clock returned an invalid start value.")
+    start_wall_epoch = context.wall_clock()
+    deadline_ns = start_monotonic_ns + wait_ns
+    wait_record: dict[str, Any] = {
+        "sequence": len(waits) + 1,
+        "operation": operation,
+        "status": "waiting",
+        "target_sha256": target_sha256,
+        "target_metadata": target_metadata,
+        "configured_wait_seconds": configured_wait,
+        "complete_revalidation_interval_seconds": context.opcache_policy[
+            "complete_revalidation_interval_seconds"
+        ],
+        "policy": context.opcache_policy,
+        "started_at_utc": utc_from_epoch(start_wall_epoch),
+        "start_monotonic_ns": start_monotonic_ns,
+        "deadline_monotonic_ns": deadline_ns,
+        "earliest_allowed_probe_at_utc": utc_from_epoch(
+            start_wall_epoch + configured_wait
+        ),
+        "identity_before": before,
+    }
+    waits.append(wait_record)
+    state["front_controller_revalidation_wait"] = wait_record
+    write_state(context.state_path, state)
+    append_event(
+        context.evidence_directory,
+        "front_controller_revalidation_wait_started",
+        {
+            "operation": operation,
+            "sequence": wait_record["sequence"],
+            "configured_wait_seconds": configured_wait,
+        },
+    )
+    _inject(fault_injector, "after_revalidation_wait_started")
+
+    previous_ns = start_monotonic_ns
+    while True:
+        current_ns = context.monotonic_ns()
+        if current_ns >= deadline_ns:
+            break
+        remaining_seconds = (deadline_ns - current_ns) / 1_000_000_000
+        context.sleep(remaining_seconds)
+        next_ns = context.monotonic_ns()
+        if next_ns <= previous_ns:
+            raise GateError("Monotonic clock did not advance during OPcache wait.")
+        previous_ns = next_ns
+    _inject(fault_injector, "after_revalidation_sleep")
+
+    end_monotonic_ns = context.monotonic_ns()
+    if end_monotonic_ns < deadline_ns:
+        raise GateError("OPcache revalidation wait ended before its monotonic deadline.")
+    after = file_identity(context.front_controller)
+    if after["sha256"] != target_sha256 or after["metadata"] != target_metadata:
+        raise GateError("Front-controller identity drifted during OPcache revalidation wait.")
+    _inject(fault_injector, "after_revalidation_identity_verified")
+
+    end_wall_epoch = context.wall_clock()
+    completion = {
+        "status": "complete",
+        "ended_at_utc": utc_from_epoch(end_wall_epoch),
+        "end_monotonic_ns": end_monotonic_ns,
+        "elapsed_monotonic_ns": end_monotonic_ns - start_monotonic_ns,
+        "elapsed_monotonic_seconds": (
+            end_monotonic_ns - start_monotonic_ns
+        )
+        / 1_000_000_000,
+        "identity_after": after,
+    }
+    _inject(fault_injector, "after_revalidation_elapsed_before_receipt")
+
+    # The sequence keeps an orphaned, already-fsynced receipt from colliding
+    # with a fresh full wait that repeats the same operation during recovery.
+    receipt_path = (
+        context.evidence_directory
+        / (
+            f"{operation}-opcache-revalidation-wait-"
+            f"{wait_record['sequence']:04d}-receipt.json"
+        )
+    )
+    receipt = {
+        "artifact": "buy-dtf-front-controller-opcache-revalidation-wait-v1",
+        **wait_record,
+        **completion,
+    }
+    receipt_sha256 = write_new_json(receipt_path, receipt)
+    _inject(fault_injector, "after_revalidation_receipt_created")
+
+    # A wait is not durably complete until its fsynced receipt can be linked in
+    # the same atomic state write.  Until this point recovery sees `waiting` and
+    # starts a fresh complete interval, even if this process already slept.
+    wait_record.update(completion)
+    wait_record["receipt"] = {
+        "path": str(receipt_path),
+        "sha256": receipt_sha256,
+    }
+    write_state(context.state_path, state)
+    record_front_controller_transition(
+        context=context,
+        state=state,
+        operation=operation,
+        phase="revalidation_wait_complete",
+        details={
+            "identity": after,
+            "target_sha256": target_sha256,
+            "target_metadata": target_metadata,
+            "wait_receipt": wait_record["receipt"],
+        },
+    )
+    append_event(
+        context.evidence_directory,
+        "front_controller_revalidation_wait_complete",
+        {
+            "operation": operation,
+            "sequence": wait_record["sequence"],
+            "elapsed_monotonic_ns": wait_record["elapsed_monotonic_ns"],
+            "receipt_sha256": receipt_sha256,
+        },
+    )
+    _inject(fault_injector, "after_revalidation_wait_complete")
+    return {**wait_record, "path": str(receipt_path), "receipt_sha256": receipt_sha256}
+
+
 def atomic_front_controller_replace(
     *,
     context: GateContext,
@@ -445,7 +750,20 @@ def atomic_front_controller_replace(
             },
         )
         _inject(fault_injector, "after_installed")
-        return {"before": current, "prepared": prepared, "installed": installed}
+        revalidation_wait = wait_for_front_controller_revalidation(
+            context=context,
+            state=state,
+            operation=operation,
+            target_sha256=replacement_sha256,
+            target_metadata=metadata,
+            fault_injector=fault_injector,
+        )
+        return {
+            "before": current,
+            "prepared": prepared,
+            "installed": installed,
+            "revalidation_wait": revalidation_wait,
+        }
     finally:
         temporary.unlink(missing_ok=True)
 
@@ -463,6 +781,7 @@ def restore_front_controller_exact(
     metadata = reviewed_front_controller_metadata()
     before = file_identity(context.front_controller)
     replacement: dict[str, Any] | None = None
+    revalidation_wait: dict[str, Any]
     if before["sha256"] == context.original_sha256 and before["metadata"] == metadata:
         record_front_controller_transition(
             context=context,
@@ -476,6 +795,14 @@ def restore_front_controller_exact(
             },
         )
         _inject(fault_injector, "after_original_already_present")
+        revalidation_wait = wait_for_front_controller_revalidation(
+            context=context,
+            state=state,
+            operation=operation,
+            target_sha256=context.original_sha256,
+            target_metadata=metadata,
+            fault_injector=fault_injector,
+        )
     else:
         replacement = atomic_front_controller_replace(
             context=context,
@@ -486,6 +813,7 @@ def restore_front_controller_exact(
             allowed_current_sha256={context.original_sha256, EXPECTED_GATE_SHA256},
             fault_injector=fault_injector,
         )
+        revalidation_wait = replacement["revalidation_wait"]
 
     restored = file_identity(context.front_controller)
     if restored["sha256"] != context.original_sha256 or restored["metadata"] != metadata:
@@ -514,6 +842,7 @@ def restore_front_controller_exact(
         "operation": operation,
         "before": before,
         "replacement": replacement,
+        "revalidation_wait": revalidation_wait,
         "restored": restored,
         "exact_original_restored": True,
     }
@@ -532,6 +861,10 @@ def gate_probe_passed(result: dict[str, Any], expected_route: str) -> bool:
         and result.get("status") == 503
         and result.get("header_verified") is True
         and result.get("sentinel_verified") is True
+        and result.get("cache_buster_verified") is True
+        and result.get("route_identity_verified") is True
+        and re_full_sha256(str(result.get("cache_buster_sha256", "")))
+        and re_full_sha256(str(result.get("request_url_sha256", "")))
     )
 
 
@@ -560,6 +893,7 @@ def retain_static_gate_exact(
     if before["sha256"] not in {context.original_sha256, EXPECTED_GATE_SHA256}:
         raise GateError("Containment found unknown front-controller bytes and refused overwrite.")
     replacement: dict[str, Any] | None = None
+    revalidation_wait: dict[str, Any]
     if before["sha256"] != EXPECTED_GATE_SHA256 or before["metadata"] != metadata:
         replacement = atomic_front_controller_replace(
             context=context,
@@ -568,6 +902,30 @@ def retain_static_gate_exact(
             replacement_bytes=MAINTENANCE_GATE_BYTES,
             replacement_sha256=EXPECTED_GATE_SHA256,
             allowed_current_sha256={context.original_sha256, EXPECTED_GATE_SHA256},
+            fault_injector=fault_injector,
+        )
+        revalidation_wait = replacement["revalidation_wait"]
+    else:
+        record_front_controller_transition(
+            context=context,
+            state=state,
+            operation=operation,
+            phase="installed_reconciled_from_live_identity",
+            details={
+                "identity": before,
+                "previous_transition": state.get("front_controller_transition"),
+                "target_sha256": EXPECTED_GATE_SHA256,
+                "target_metadata": metadata,
+            },
+        )
+        _inject(fault_injector, "after_installed_reconciled")
+        revalidation_wait = wait_for_front_controller_revalidation(
+            context=context,
+            state=state,
+            operation=operation,
+            target_sha256=EXPECTED_GATE_SHA256,
+            target_metadata=metadata,
+            fault_injector=fault_injector,
         )
     final = file_identity(context.front_controller)
     if final["sha256"] != EXPECTED_GATE_SHA256 or final["metadata"] != metadata:
@@ -598,6 +956,7 @@ def retain_static_gate_exact(
         "mutation_started": mutation_started(state),
         "before": before,
         "replacement": replacement,
+        "revalidation_wait": revalidation_wait,
         "final": final,
         "exact_gate_retained": True,
         "original_restoration_performed": False,
@@ -612,7 +971,7 @@ def install_static_gate(
     context: GateContext,
     state: dict[str, Any],
     operation: str,
-    origin_probe: Probe,
+    origin_probe: NumberedProbe,
     public_probe: Probe,
     restored_health_probe: HealthProbe,
     mutation_started: MutationPredicate = dependency_mutation_has_started,
@@ -623,8 +982,9 @@ def install_static_gate(
     metadata = reviewed_front_controller_metadata()
     initial = file_identity(context.front_controller)
     replacement: dict[str, Any] | None = None
+    revalidation_wait: dict[str, Any] | None = None
     reconciled_from_live_identity = False
-    origin_result: dict[str, Any] | None = None
+    origin_results: list[dict[str, Any]] = []
     public_result: dict[str, Any] | None = None
     try:
         if initial["sha256"] == context.original_sha256:
@@ -639,6 +999,7 @@ def install_static_gate(
                 allowed_current_sha256={context.original_sha256},
                 fault_injector=fault_injector,
             )
+            revalidation_wait = replacement["revalidation_wait"]
         elif initial["sha256"] == EXPECTED_GATE_SHA256:
             if initial["metadata"] != metadata:
                 raise GateError("Live static gate has incorrect owner or mode.")
@@ -656,6 +1017,14 @@ def install_static_gate(
                 },
             )
             _inject(fault_injector, "after_installed_reconciled")
+            revalidation_wait = wait_for_front_controller_revalidation(
+                context=context,
+                state=state,
+                operation=operation,
+                target_sha256=EXPECTED_GATE_SHA256,
+                target_metadata=metadata,
+                fault_injector=fault_injector,
+            )
         else:
             raise GateError("Static gate refuses unknown front-controller bytes.")
 
@@ -665,11 +1034,25 @@ def install_static_gate(
         write_state(context.state_path, state)
         _inject(fault_injector, "after_gate_state_persisted")
 
-        origin_result = origin_probe()
-        if not gate_probe_passed(origin_result, ORIGIN_ROUTE):
-            raise GateError(
-                "The local/origin static-gate probe did not return the reviewed 503 response."
-            )
+        pre_origin_identity = file_identity(context.front_controller)
+        if (
+            pre_origin_identity["sha256"] != EXPECTED_GATE_SHA256
+            or pre_origin_identity["metadata"] != metadata
+        ):
+            raise GateError("Static-gate identity changed before direct-origin verification.")
+        for ordinal in (1, 2):
+            before_origin = file_identity(context.front_controller)
+            if before_origin != pre_origin_identity:
+                raise GateError("Static-gate identity changed between direct-origin probes.")
+            origin_result = origin_probe(ordinal)
+            if not gate_probe_passed(origin_result, ORIGIN_ROUTE):
+                raise GateError(
+                    "A local/origin static-gate probe did not return the reviewed 503 response."
+                )
+            origin_results.append(origin_result)
+            _inject(fault_injector, f"after_origin_{ordinal}_verified")
+        if len({result.get("cache_buster_sha256") for result in origin_results}) != 2:
+            raise GateError("Direct-origin static-gate probes reused a cache buster.")
         _inject(fault_injector, "after_origin_verified")
 
         public_result = public_probe()
@@ -678,6 +1061,11 @@ def install_static_gate(
                 "The public Cloudflare static-gate probe did not return the reviewed 503 response."
             )
         _inject(fault_injector, "after_public_verified")
+        request_identities = {
+            result.get("cache_buster_sha256") for result in [*origin_results, public_result]
+        }
+        if None in request_identities or len(request_identities) != 3:
+            raise GateError("Static-gate routes did not use three unique cache busters.")
 
         verified = file_identity(context.front_controller)
         if verified["sha256"] != EXPECTED_GATE_SHA256 or verified["metadata"] != metadata:
@@ -689,7 +1077,8 @@ def install_static_gate(
             phase="verified",
             details={
                 "identity": verified,
-                "origin_probe": origin_result,
+                "pre_origin_identity": pre_origin_identity,
+                "origin_probes": origin_results,
                 "public_probe": public_result,
                 "target_sha256": EXPECTED_GATE_SHA256,
                 "target_metadata": metadata,
@@ -697,15 +1086,40 @@ def install_static_gate(
         )
         state["gate_verified"] = True
         write_state(context.state_path, state)
+        verification_receipt = {
+            "artifact": "buy-dtf-static-gate-verification-v4",
+            "status": "pass",
+            "generated_at_utc": utc_now(),
+            "operation": operation,
+            "gate_sha256": EXPECTED_GATE_SHA256,
+            "gate_metadata": metadata,
+            "opcache_revalidation_wait": revalidation_wait,
+            "pre_origin_identity": pre_origin_identity,
+            "origin_probes": origin_results,
+            "public_probe": public_result,
+            "verified_identity": verified,
+        }
+        verification_path = (
+            context.evidence_directory / f"{operation}-gate-verification-receipt.json"
+        )
+        verification_sha256 = write_new_json(verification_path, verification_receipt)
+        state["gate_verification_receipt"] = {
+            "path": str(verification_path),
+            "sha256": verification_sha256,
+        }
+        write_state(context.state_path, state)
         _inject(fault_injector, "after_verified")
         return {
+            "http_verified": True,
             "sha256": EXPECTED_GATE_SHA256,
             "metadata": metadata,
             "initial": initial,
             "replacement": replacement,
+            "opcache_revalidation_wait": revalidation_wait,
             "reconciled_from_live_identity": reconciled_from_live_identity,
-            "origin_probe": origin_result,
+            "origin_probes": origin_results,
             "public_probe": public_result,
+            "verification_receipt": state["gate_verification_receipt"],
         }
     except Exception as exception:
         live_after_failure = file_identity(context.front_controller)
@@ -733,7 +1147,7 @@ def install_static_gate(
                 "mutation_started": True,
                 "initial": initial,
                 "live_after_failure": live_after_failure,
-                "origin_probe": origin_result,
+                "origin_probes": origin_results,
                 "public_probe": public_result,
                 "containment_receipt": {
                     "path": containment["path"],
@@ -759,7 +1173,7 @@ def install_static_gate(
                 "mutation_started": False,
                 "initial": initial,
                 "live_after_failure": live_after_failure,
-                "origin_probe": origin_result,
+                "origin_probes": origin_results,
                 "public_probe": public_result,
                 "restoration_receipt": {
                     "path": restoration["path"],
@@ -811,7 +1225,7 @@ def establish_rollback_containment(
     context: GateContext,
     state: dict[str, Any],
     operation: str,
-    origin_probe: Probe,
+    origin_probe: NumberedProbe,
     public_probe: Probe,
     restored_health_probe: HealthProbe,
     mutation_started: MutationPredicate = dependency_mutation_has_started,
@@ -895,12 +1309,17 @@ def validate_transition_history(
     state: dict[str, Any],
 ) -> tuple[list[dict[str, Any]], dict[str, Any] | None]:
     history = state.get("front_controller_transitions", [])
+    waits = state.get("front_controller_revalidation_waits", [])
     latest = state.get("front_controller_transition")
     if not isinstance(history, list):
         raise GateError("Recovery found invalid front-controller transition history.")
+    if not isinstance(waits, list):
+        raise GateError("Recovery found invalid OPcache revalidation wait history.")
     if not history:
         if latest is not None:
             raise GateError("Recovery found a latest transition without transition history.")
+        if waits:
+            raise GateError("Recovery found OPcache waits without a file transition.")
         return history, None
     if not isinstance(latest, dict) or latest != history[-1]:
         raise GateError("Recovery found inconsistent durable front-controller state.")
@@ -925,6 +1344,35 @@ def validate_transition_history(
         target_metadata = transition["details"].get("target_metadata")
         if target_metadata != reviewed_front_controller_metadata():
             raise GateError("Recovery transition has unreviewed target metadata.")
+    for sequence, wait in enumerate(waits, start=1):
+        if not isinstance(wait, dict) or wait.get("sequence") != sequence:
+            raise GateError("Recovery found a non-contiguous OPcache wait history.")
+        if wait.get("status") not in {"waiting", "complete"}:
+            raise GateError("Recovery found an invalid OPcache wait status.")
+        if wait.get("target_sha256") not in {
+            context.original_sha256,
+            EXPECTED_GATE_SHA256,
+        }:
+            raise GateError("Recovery found an unknown OPcache wait target.")
+        if wait.get("target_metadata") != reviewed_front_controller_metadata():
+            raise GateError("Recovery found unreviewed OPcache wait metadata.")
+        if wait.get("policy") != context.opcache_policy:
+            raise GateError("Recovery OPcache wait policy differs from the frozen policy.")
+        if wait.get("status") == "complete":
+            if (
+                type(wait.get("elapsed_monotonic_ns")) is not int
+                or wait["elapsed_monotonic_ns"]
+                < int(context.opcache_policy["minimum_wait_seconds"])
+                * 1_000_000_000
+            ):
+                raise GateError("Recovery found an incomplete recorded OPcache wait.")
+            receipt = wait.get("receipt")
+            if (
+                not isinstance(receipt, dict)
+                or not isinstance(receipt.get("path"), str)
+                or not re_full_sha256(str(receipt.get("sha256", "")))
+            ):
+                raise GateError("Recovery found a completed wait without a receipt.")
     return history, latest
 
 
@@ -992,16 +1440,76 @@ def front_controller_recovery_required(
     )["recovery_required"]
 
 
-def _probe_url(public_url: str) -> tuple[str, str]:
+def _probe_url(public_url: str) -> tuple[str, str, str]:
     parsed = urlsplit(public_url)
     if parsed.scheme != "https" or not parsed.hostname:
         raise GateError("Static-gate probe URL must be an absolute HTTPS URL.")
     query = parse_qsl(parsed.query, keep_blank_values=True)
-    query.append(("ops_gate", secrets.token_hex(12)))
+    cache_buster = secrets.token_hex(12)
+    query.append(("ops_gate", cache_buster))
     return (
         urlunsplit((parsed.scheme, parsed.netloc, parsed.path or "/", urlencode(query), "")),
         parsed.hostname,
+        cache_buster,
     )
+
+
+def redact_http_headers(header_text: str) -> tuple[str, list[str], int]:
+    """Return review-safe headers with every Cookie value removed."""
+
+    redacted: list[str] = []
+    names: list[str] = []
+    cookie_count = 0
+    sensitive_continuation = False
+    for line in header_text.replace("\r\n", "\n").split("\n"):
+        if not line:
+            redacted.append("")
+            sensitive_continuation = False
+            continue
+        if line.startswith((" ", "\t")):
+            if sensitive_continuation:
+                redacted.append(" <redacted-cookie-continuation>")
+            else:
+                redacted.append(line)
+            continue
+        if ":" not in line:
+            redacted.append(line)
+            sensitive_continuation = False
+            continue
+        name, value = line.split(":", 1)
+        normalized = name.strip().lower()
+        names.append(normalized)
+        sensitive_continuation = normalized in {"cookie", "set-cookie"}
+        if sensitive_continuation:
+            cookie_count += 1
+            redacted.append(f"{name}: <redacted-cookie-value>")
+        else:
+            redacted.append(f"{name}:{value}")
+    return "\n".join(redacted), sorted(set(names)), cookie_count
+
+
+def parse_final_http_header_block(header_text: str) -> dict[str, list[str]]:
+    """Return exact values from curl's final response header block."""
+
+    normalized = header_text.replace("\r\n", "\n")
+    blocks = [block for block in normalized.split("\n\n") if block.strip()]
+    if not blocks:
+        raise GateError("Static-gate HTTP evidence has no response header block.")
+    final_lines = blocks[-1].split("\n")
+    if not final_lines or not final_lines[0].startswith("HTTP/"):
+        raise GateError("Static-gate final response header block has no status line.")
+    values: dict[str, list[str]] = {}
+    for line in final_lines[1:]:
+        if not line:
+            continue
+        if line.startswith((" ", "\t")) or ":" not in line:
+            raise GateError("Static-gate final response contains an invalid header line.")
+        name, value = line.split(":", 1)
+        normalized_name = name.strip().lower()
+        if not normalized_name:
+            raise GateError("Static-gate final response contains an empty header name.")
+        values.setdefault(normalized_name, []).append(value.strip())
+    return values
 
 
 def gate_http_probe(
@@ -1023,13 +1531,20 @@ def gate_http_probe(
     suffix = "origin" if origin_loopback else "public"
     headers = directory / f"{operation}.{suffix}.headers.txt"
     body = directory / f"{operation}.{suffix}.body.txt"
-    if any(path.exists() or path.is_symlink() for path in (headers, body)):
+    redacted_headers = directory / f"{operation}.{suffix}.headers.redacted.txt"
+    if any(path.exists() or path.is_symlink() for path in (headers, body, redacted_headers)):
         raise GateError("Refusing to overwrite existing static-gate HTTP evidence.")
-    url, hostname = _probe_url(public_url)
+    for path in (headers, body):
+        descriptor = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        try:
+            os.fchmod(descriptor, 0o600)
+            os.fsync(descriptor)
+        finally:
+            os.close(descriptor)
+    fsync_directory(directory)
+    url, hostname, cache_buster = _probe_url(public_url)
     routing_arguments = (
         [
-            "--noproxy",
-            "*",
             "--insecure",
             "--resolve",
             f"{hostname}:443:{origin_address}",
@@ -1039,14 +1554,17 @@ def gate_http_probe(
     )
     command = [
         str(curl_path),
+        "--disable",
         "--silent",
         "--show-error",
+        "--noproxy",
+        "*",
         "--dump-header",
         str(headers),
         "--output",
         str(body),
         "--write-out",
-        "%{http_code}",
+        "%{http_code}\n%{remote_ip}\n%{remote_port}\n",
         "--header",
         "Cache-Control: no-cache, no-store",
         "--header",
@@ -1060,15 +1578,19 @@ def gate_http_probe(
         *routing_arguments,
         url,
     ]
-    completed = subprocess.run(
-        command,
-        cwd=cwd,
-        text=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        timeout=20,
-        check=False,
-    )
+    try:
+        completed = subprocess.run(
+            command,
+            cwd=cwd,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=20,
+            check=False,
+            env={"LANG": "C", "LC_ALL": "C"},
+        )
+    except (OSError, subprocess.TimeoutExpired) as exception:
+        raise GateError("Static-gate HTTP probe execution failed.") from exception
     for path in (headers, body):
         if path.is_symlink() or not path.is_file():
             raise GateError("Static-gate HTTP probe did not create regular evidence files.")
@@ -1076,24 +1598,84 @@ def gate_http_probe(
         with path.open("rb") as handle:
             os.fsync(handle.fileno())
     fsync_directory(directory)
-    status_text = completed.stdout.strip()
-    if completed.returncode != 0 or not status_text.isdigit():
+    connection_fields = completed.stdout.strip().splitlines()
+    if (
+        completed.returncode != 0
+        or len(connection_fields) != 3
+        or not connection_fields[0].isdigit()
+        or not connection_fields[2].isdigit()
+    ):
         raise GateError("Static-gate HTTP probe failed.")
+    status_text, remote_ip_text, remote_port_text = connection_fields
     try:
-        header_text = headers.read_text("utf-8").lower()
+        remote_ip = ipaddress.ip_address(remote_ip_text)
+    except ValueError as exception:
+        raise GateError("Static-gate HTTP probe returned an invalid peer address.") from exception
+    remote_port = int(remote_port_text)
+    try:
+        raw_header_text = headers.read_text("utf-8")
         body_text = body.read_text("utf-8")
     except UnicodeDecodeError as exception:
         raise GateError("Static-gate HTTP evidence is not valid UTF-8.") from exception
+    final_headers = parse_final_http_header_block(raw_header_text)
+    redacted_text, header_names, cookie_header_count = redact_http_headers(
+        raw_header_text
+    )
+    atomic_write(redacted_headers, redacted_text.encode("utf-8"), 0o600)
+    gate_header_values = final_headers.get(MAINTENANCE_GATE_HEADER_NAME.lower(), [])
+    probe_header_values = final_headers.get(
+        MAINTENANCE_GATE_PROBE_HEADER_NAME.lower(),
+        [],
+    )
+    cloudflare_ray_values = final_headers.get("cf-ray", [])
+    server_values = final_headers.get("server", [])
+    cloudflare_route_verified = (
+        len(cloudflare_ray_values) == 1
+        and re.fullmatch(r"[A-Za-z0-9]+-[A-Za-z0-9]+", cloudflare_ray_values[0])
+        is not None
+        and len(server_values) == 1
+        and server_values[0].strip().lower() == "cloudflare"
+    )
+    if origin_loopback:
+        route_identity_verified = remote_ip == ipaddress.ip_address(origin_address)
+    else:
+        route_identity_verified = remote_ip.is_global and cloudflare_route_verified
+    route_identity_verified = route_identity_verified and remote_port == 443
+    expected_body = f"{MAINTENANCE_GATE_SENTINEL}\n{cache_buster}"
+    cache_buster_header = probe_header_values == [cache_buster]
+    cache_buster_body = body_text == expected_body
+    identities = {
+        "raw_headers": file_identity(headers),
+        "raw_body": file_identity(body),
+        "redacted_headers": file_identity(redacted_headers),
+    }
+    if any(identity["metadata"]["mode"] != 0o600 for identity in identities.values()):
+        raise GateError("Static-gate HTTP evidence is not private mode 0600.")
     return {
         "route": route,
+        "routing_mode": "direct_origin_resolve" if origin_loopback else "public_dns",
+        "remote_ip": str(remote_ip),
+        "remote_port": remote_port,
+        "route_identity_verified": route_identity_verified,
+        "cloudflare_route_verified": cloudflare_route_verified,
         "status": int(status_text),
         "header_verified": (
-            f"{MAINTENANCE_GATE_HEADER_NAME}: {MAINTENANCE_GATE_HEADER_VALUE}".lower()
-            in header_text
+            gate_header_values == [MAINTENANCE_GATE_HEADER_VALUE]
         ),
-        "sentinel_verified": MAINTENANCE_GATE_SENTINEL in body_text,
-        "headers_sha256": file_identity(headers)["sha256"],
-        "body_sha256": file_identity(body)["sha256"],
+        "sentinel_verified": body_text == expected_body,
+        "cache_buster_verified": cache_buster_header and cache_buster_body,
+        "cache_buster_sha256": sha256_bytes(cache_buster.encode("ascii")),
+        "request_url_sha256": sha256_bytes(url.encode("utf-8")),
+        "headers_sha256": identities["raw_headers"]["sha256"],
+        "body_sha256": identities["raw_body"]["sha256"],
+        "redacted_headers_sha256": identities["redacted_headers"]["sha256"],
+        "raw_headers_mode": identities["raw_headers"]["metadata"]["mode"],
+        "raw_body_mode": identities["raw_body"]["metadata"]["mode"],
+        "redacted_headers_mode": identities["redacted_headers"]["metadata"]["mode"],
+        "redacted_headers_path": str(redacted_headers),
+        "response_header_names": header_names,
+        "cookie_header_count": cookie_header_count,
+        "raw_http_evidence_classification": "private-mode-0600-do-not-commit",
         "curl_exit_status": completed.returncode,
         "stderr_sha256": sha256_bytes(completed.stderr.encode("utf-8")),
     }
@@ -1109,14 +1691,27 @@ def gate_public_probe(**kwargs: Any) -> dict[str, Any]:
 
 def describe() -> dict[str, Any]:
     return {
-        "artifact": "buy-dtf-laravel-dependency-static-gate-v3",
+        "artifact": "buy-dtf-laravel-dependency-static-gate-v4",
         "gate_sha256": EXPECTED_GATE_SHA256,
         "gate_metadata": reviewed_front_controller_metadata(),
         "origin_route": ORIGIN_ROUTE,
+        "independent_origin_probe_count": 2,
         "public_route": PUBLIC_ROUTE,
+        "unique_cache_buster_per_probe": True,
+        "probe_nonce_bound_in_header_and_body": True,
+        "raw_http_evidence_mode": "0600",
+        "cookie_values_redacted_from_review_derivative": True,
         "transition_phases": sorted(TRANSITION_PHASES),
         "dependency_mutation_fields": list(DEPENDENCY_MUTATION_FIELDS),
         "initial_state": initial_gate_state(),
+        "opcache_directives": list(OPCACHE_DIRECTIVE_NAMES),
+        "opcache_revalidation_formula": (
+            "max(5, 2 * revalidate_freq + file_update_protection + 1)"
+        ),
+        "opcache_wait_uses_monotonic_clock": True,
+        "opcache_wait_after_durable_installed_transition": True,
+        "timestamp_validation_required": True,
+        "cli_opcache_invalidation_used": False,
         "recovery_uses_actual_identity_and_history": True,
         "pre_mutation_failure": "restore_original_receipt_and_health",
         "post_mutation_failure": "retain_exact_gate_and_continue_bootless_rollback",

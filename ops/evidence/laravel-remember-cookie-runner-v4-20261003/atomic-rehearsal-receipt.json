@@ -1,0 +1,141 @@
+{
+  "application_autoload_sha256": "342f417d353f8742f116898d307c34a2677e0a1cb0f814f3e8088f0bb2be1a91",
+  "artifact": "buy-dtf-laravel-remember-cookie-atomic-exchange-rehearsal-v4",
+  "artifact_review_status": "review-only; not staged or deployed",
+  "candidate_cache_identity": {
+    "entries": {
+      "packages.php": {
+        "bytes": 415,
+        "gid": 33,
+        "kind": "file",
+        "mode": 436,
+        "sha256": "21da8f9ed19687e708cc7bc5cc59394c6fcdf9b9deadf617ae70526f815a1db0",
+        "uid": 1000
+      },
+      "services.php": {
+        "bytes": 21353,
+        "gid": 33,
+        "kind": "file",
+        "mode": 436,
+        "sha256": "1f7623b2b4ffd2c4099fb34ad86fc96c1479e27bf81b1b0ba328c988cc4ffcb5",
+        "uid": 1000
+      }
+    },
+    "manifest": {
+      "bytes": 21768,
+      "directories": 0,
+      "files": 2,
+      "sha256": "468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9"
+    },
+    "root_metadata": {
+      "gid": 33,
+      "kind": "directory",
+      "mode": 1533,
+      "uid": 1000
+    }
+  },
+  "candidate_lock_sha256": "77055fc8acf891496b0b356bb034d7935c04989a3751f52b788ecd1b7999206d",
+  "candidate_vendor_executable_allowlist_sha256": "551df886bc842a49ea87d8d9bb0cfe3478e3cc5eeea841c83409e8349d120154",
+  "candidate_vendor_manifest": {
+    "bytes": 26481661,
+    "directories": 925,
+    "files": 6460,
+    "sha256": "7df0a101ceb0386b72ec4cfc71f2be8576fc5a5d4b777d11c05e5b7f1ed770d8"
+  },
+  "candidate_vendor_metadata_sha256": "db8aba0a4f49d0cecaeaac0b5b742c5f94b1a514a8d4452c361cb61e2dbacf0d",
+  "cutover_transitions": [
+    "after_gate_install",
+    "after_vendor_exchange",
+    "after_cache_exchange",
+    "after_lock_replacement",
+    "after_candidate_runtime",
+    "after_candidate_fpm_probes",
+    "after_candidate_gate_open",
+    "after_candidate_health"
+  ],
+  "filesystem_device": 2096,
+  "handoff": {
+    "filename": "HANDOFF.md",
+    "sha256": "8ee888883bf2330c7a5c7d70efe48244122b600067ba030976a53cbe0009e4c1"
+  },
+  "live_lock_sha256": "22af12c7e58fcfe809735dbf9955b2d22a264e9e7345cefd74398e36bf2773b9",
+  "maintenance_gate_sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4",
+  "retained_cache_identity": {
+    "entries": {
+      "packages.php": {
+        "bytes": 415,
+        "gid": 33,
+        "kind": "file",
+        "mode": 436,
+        "sha256": "21da8f9ed19687e708cc7bc5cc59394c6fcdf9b9deadf617ae70526f815a1db0",
+        "uid": 1000
+      },
+      "services.php": {
+        "bytes": 21353,
+        "gid": 33,
+        "kind": "file",
+        "mode": 436,
+        "sha256": "1f7623b2b4ffd2c4099fb34ad86fc96c1479e27bf81b1b0ba328c988cc4ffcb5",
+        "uid": 1000
+      }
+    },
+    "manifest": {
+      "bytes": 21768,
+      "directories": 0,
+      "files": 2,
+      "sha256": "468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9"
+    },
+    "root_metadata": {
+      "gid": 33,
+      "kind": "directory",
+      "mode": 1533,
+      "uid": 1000
+    }
+  },
+  "retained_vendor_manifest": {
+    "bytes": 26453056,
+    "directories": 925,
+    "files": 6460,
+    "sha256": "7399949f857da190c5ff07b89c85e8fba8a6f681695e20a462862be591b698ed"
+  },
+  "rollback_transitions": [
+    "after_rollback_gate_install",
+    "after_rollback_vendor",
+    "after_rollback_cache",
+    "after_rollback_lock",
+    "after_rollback_runtime",
+    "after_rollback_fpm_probes",
+    "after_rollback_gate_open",
+    "after_rollback_health"
+  ],
+  "scenario_count": 25,
+  "scenarios": {
+    "automatic_recovery_while_laravel_cannot_boot": "pass",
+    "candidate_owner_drift_fails_closed": "pass",
+    "completely_unbootable_candidate_auto_rollback": "pass",
+    "failure_between_cache_and_lock_replacement": "pass",
+    "failure_between_vendor_and_cache_exchange": "pass",
+    "identical_cache_recovery_is_idempotent": "pass",
+    "interruption_after_cache_exchange": "pass",
+    "interruption_after_candidate_fpm_probes": "pass",
+    "interruption_after_candidate_gate_open": "pass",
+    "interruption_after_candidate_health": "pass",
+    "interruption_after_candidate_runtime": "pass",
+    "interruption_after_gate_install": "pass",
+    "interruption_after_lock_replacement": "pass",
+    "interruption_after_vendor_exchange": "pass",
+    "recovery_interruption_after_rollback_cache": "pass",
+    "recovery_interruption_after_rollback_fpm_probes": "pass",
+    "recovery_interruption_after_rollback_gate_install": "pass",
+    "recovery_interruption_after_rollback_gate_open": "pass",
+    "recovery_interruption_after_rollback_health": "pass",
+    "recovery_interruption_after_rollback_lock": "pass",
+    "recovery_interruption_after_rollback_runtime": "pass",
+    "recovery_interruption_after_rollback_vendor": "pass",
+    "rollback_health_failure_reinstalls_static_gate": "pass",
+    "stale_dev_provider_cache_replaced_before_boot": "pass",
+    "stale_gate_state_is_reasserted": "pass"
+  },
+  "script_sha256": "e2d735c9c9c86c8bd38be3085b3372a2d2079ada9866d87487e8aa486dfc79f0",
+  "status": "pass"
+}

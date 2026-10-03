@@ -1,0 +1,21 @@
+{
+    "artifact":  "buy-dtf-laravel-remember-cookie-frontend-validation-v4",
+    "generated_at_utc":  "2026-10-03T17:19:51Z",
+    "status":  "pass",
+    "production_accessed":  false,
+    "source_or_configuration_changed":  false,
+    "node_version":  "v24.19.0",
+    "npm_version":  "11.17.0",
+    "package_json_sha256":  "145de6438b70d2b29d2ae0e8cdc8116b838abd15d3fc19e6438bc1480e43626e",
+    "package_lock_sha256":  "376421fb004150985d0f9e5f83f21d97ee1bf89c0b280d5634d445bbeca03f49",
+    "npm_ci":  {
+                   "exit_code":  0,
+                   "log":  "npm-ci.txt",
+                   "log_sha256":  "c3f745406fc433d12b32eb6c8e661783457b575dbdd4d20b1a9f0bd08e5e4d82"
+               },
+    "npm_build":  {
+                      "exit_code":  0,
+                      "log":  "npm-build.txt",
+                      "log_sha256":  "048ab09638c099b7a65e56488ffa5f9ec2ab89bbbfccd531b657c960164dc8cb"
+                  }
+}

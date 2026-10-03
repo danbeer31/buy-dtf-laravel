@@ -1,0 +1,109 @@
+{
+  "artifact": "buy-dtf-laravel-remember-cookie-artifact-identities-v4",
+  "base_reviewed_commit": "e7c839947a5bdf49776dd184926a28d0756196ae",
+  "branch": "fix/laravel-12.69.1-remember-cookie-v4-20261003",
+  "code": {
+    "build_comparator": {
+      "path": "ops/deployment/compare_laravel_candidate_builds.py",
+      "sha256": "8baea976371c237b39bf966dff13a3731cf09fa352e3daf7374bf3bfcb922933"
+    },
+    "candidate_builder": {
+      "path": "ops/deployment/build_laravel_remember_cookie_candidate.py",
+      "sha256": "9c1d3266834969c23fbfc453635032af5bf7a66491956833354de3c9e6013d97"
+    },
+    "database_envelope_validator": {
+      "path": "ops/deployment/laravel_dependency_database_envelope.py",
+      "sha256": "e3aa9109fcc6a6c8725f07665f27fc28a242447861b5b6c2a8d614a5a0a805b3"
+    },
+    "fpm_opcache_probe": {
+      "path": "ops/deployment/laravel_fpm_opcache_probe.php",
+      "sha256": "b8b34f87d45a0c000cc0df7917496631320cfbdcca1ff44bc41741ce0d569262"
+    },
+    "gate_rehearsal": {
+      "path": "ops/deployment/rehearse_laravel_dependency_gate.py",
+      "sha256": "5faa69641d11d392cb1c860d94e676025b30a8196455087d05fa3c7023c38d25"
+    },
+    "lock_delta_verifier": {
+      "path": "ops/deployment/verify_laravel_lock_delta.py",
+      "sha256": "9bc2aa0965c5d3528e67f51d7b566d711ad7c799e87887cec4c43e662d184e28"
+    },
+    "log_parser": {
+      "path": "ops/deployment/laravel_log_delta.py",
+      "sha256": "b91ac879b9559e229e18b7613fa4c570cee54016fbadc2e306925c0a71bcf179"
+    },
+    "nginx_identity_helper": {
+      "path": "ops/deployment/laravel_nginx_identity.py",
+      "sha256": "4beb1fd5e4fabb8d74d2de50b8c96f452ecb6de242ed411c7c0a97304037d192"
+    },
+    "opcache_rehearsal": {
+      "path": "ops/deployment/rehearse_laravel_dependency_opcache.py",
+      "sha256": "293978264e6fb655868df7c04b7e3199cdd1e536e8f34627de79764a32c21ab5"
+    },
+    "php_8230_verifier": {
+      "path": "ops/deployment/verify_php_8230_platform.py",
+      "sha256": "e75a6b400f6c59bebf074be4a8e0c63c0aa14cbd9844264be67eb13014b65550"
+    },
+    "retired_controls_registry": {
+      "path": "ops/deployment/laravel_remember_cookie_retired_controls.json",
+      "sha256": "622655e74dea16699cd4ffb714460a934ce2aa1abee1f130cdd7b1228a0e2163"
+    },
+    "runner": {
+      "path": "ops/deployment/laravel_remember_cookie_dependency_deploy.py",
+      "sha256": "e2d735c9c9c86c8bd38be3085b3372a2d2079ada9866d87487e8aa486dfc79f0"
+    },
+    "runtime_helper": {
+      "path": "ops/deployment/laravel_remember_cookie_runtime_probe.php",
+      "sha256": "7cd804545f9e09d096d348924021047e0a7b1b6ecf3a1b783fd015aef24c48d2"
+    },
+    "static_gate_helper": {
+      "path": "ops/deployment/laravel_dependency_gate.py",
+      "sha256": "ae542dbe387406d5b0e0d379f074251d30e93d066f330c1badb16b11caf776bc"
+    }
+  },
+  "database": {
+    "migration_ledger_rows": 21,
+    "migration_ledger_sha256": "f1140209ad897fbdba506d87329f9e4481ccfa5aff7fb6a423e6ec7a0dbe5f53",
+    "schema_sha256": "5485779bdcf0ea3a4372410ef76cd0bc418d1f6400128868606e901b8e9e85da"
+  },
+  "dependency": {
+    "application_autoload_sha256": "342f417d353f8742f116898d307c34a2677e0a1cb0f814f3e8088f0bb2be1a91",
+    "candidate_cache_sha256": "468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9",
+    "candidate_lock_sha256": "77055fc8acf891496b0b356bb034d7935c04989a3751f52b788ecd1b7999206d",
+    "candidate_vendor_sha256": "7df0a101ceb0386b72ec4cfc71f2be8576fc5a5d4b777d11c05e5b7f1ed770d8",
+    "executable_allowlist_sha256": "551df886bc842a49ea87d8d9bb0cfe3478e3cc5eeea841c83409e8349d120154",
+    "live_rollback_lock_sha256": "22af12c7e58fcfe809735dbf9955b2d22a264e9e7345cefd74398e36bf2773b9",
+    "live_rollback_vendor_sha256": "7399949f857da190c5ff07b89c85e8fba8a6f681695e20a462862be591b698ed",
+    "source_cas_sha256": "3909bdc2303b5c578135859c847f311cd84b827e62ac4e5dbce3d2297f6da71f",
+    "vendor_complete_inventory_sha256": "c646726893e4d74b42343218f891409e925541d9bf8ab0563ff98a9c998b8fd5",
+    "vendor_ownership_mode_sha256": "db8aba0a4f49d0cecaeaac0b5b742c5f94b1a514a8d4452c361cb61e2dbacf0d"
+  },
+  "generated_at_utc": "2026-10-03T17:22:38Z",
+  "handoff_sha256": "8ee888883bf2330c7a5c7d70efe48244122b600067ba030976a53cbe0009e4c1",
+  "permanent_retirements": {
+    "gate_helper_sha256s": [
+      "1269a277e931dee346293bed4ea0f6d029cf9ded7810127a0ef547289ce51f80"
+    ],
+    "release_receipt_sha256s": [
+      "ec16a6d017847401ee51a923afe9391a94a82f906f68e69db496db6f617f3b21"
+    ],
+    "runner_sha256s": [
+      "2cae23d816e358c91ce512da4b3db3ee4e7fdff268c51afddafb0995b2feef9e",
+      "a7657bbfea760be186301503c567042f76739c2954fffbfc76f31c9f4eefede5",
+      "97cb4e8d702b7ceb1b9efde26dba93e6e0f4a833bb55650843fed1c0746f0307"
+    ]
+  },
+  "preparation_boundary": {
+    "authorized": false,
+    "captured_configuration_or_application_data": false,
+    "detail_receipt": "root-cause-receipt.json",
+    "detail_receipt_sha256": "e377fc7a7f9cdcd47bcc0b2d1ba6859babc3820153d6f175764fb15dd63256ea",
+    "eligible_as_stage_evidence": false,
+    "production_accessed": true,
+    "production_mutation": false,
+    "read_only_sessions": 4
+  },
+  "redacted_56_entry_fixture_sha256": "d8bf0641949f96ac39240e92f0b5545c4ac5fb6a8fbfa4af2fe2f6029dd27f53",
+  "stage_or_deployment_performed": false,
+  "static_gate_sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4",
+  "status": "frozen-for-independent-review"
+}

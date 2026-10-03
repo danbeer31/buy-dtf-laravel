@@ -1,0 +1,28 @@
+Python syntax:
+PASS ops/deployment/atomic_dependency_deploy.py
+PASS ops/deployment/build_laravel_remember_cookie_candidate.py
+PASS ops/deployment/compare_laravel_candidate_builds.py
+PASS ops/deployment/laravel_dependency_database_envelope.py
+PASS ops/deployment/laravel_dependency_gate.py
+PASS ops/deployment/laravel_log_delta.py
+PASS ops/deployment/laravel_nginx_identity.py
+PASS ops/deployment/laravel_remember_cookie_dependency_deploy.py
+PASS ops/deployment/payout_notes_correction.py
+PASS ops/deployment/rehearse_laravel_dependency_gate.py
+PASS ops/deployment/rehearse_laravel_dependency_opcache.py
+PASS ops/deployment/test_laravel_dependency_database_envelope.py
+PASS ops/deployment/test_laravel_dependency_gate.py
+PASS ops/deployment/test_laravel_dependency_opcache_rehearsal.py
+PASS ops/deployment/test_laravel_environment_controls.py
+PASS ops/deployment/test_laravel_log_delta.py
+PASS ops/deployment/test_laravel_remember_cookie_dependency_runner.py
+PASS ops/deployment/test_laravel_remember_cookie_v3_controls.py
+PASS ops/deployment/verify_laravel_lock_delta.py
+PASS ops/deployment/verify_php_8230_platform.py
+PHP syntax:
+No syntax errors detected in ops/deployment/dependency_runtime_probe.php
+No syntax errors detected in ops/deployment/laravel_fpm_opcache_probe.php
+No syntax errors detected in ops/deployment/laravel_remember_cookie_runtime_probe.php
+No syntax errors detected in ops/deployment/payout_notes_runtime.php
+JSON syntax:
+PASS ops/deployment/laravel_remember_cookie_retired_controls.json

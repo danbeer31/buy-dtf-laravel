@@ -17,6 +17,11 @@ ops/evidence/laravel-remember-cookie-runner-v3-20261002/**/*.stdout binary
 ops/evidence/laravel-remember-cookie-runner-v3-20261002/**/*.stderr binary
 ops/evidence/laravel-remember-cookie-runner-v3-20261002/**/*.txt binary
 ops/evidence/laravel-remember-cookie-runner-v3-20261002/**/*.jsonl binary
+ops/evidence/laravel-remember-cookie-runner-v4-20261003/** -text
+ops/evidence/laravel-remember-cookie-runner-v4-20261003/**/*.stdout binary
+ops/evidence/laravel-remember-cookie-runner-v4-20261003/**/*.stderr binary
+ops/evidence/laravel-remember-cookie-runner-v4-20261003/**/*.txt binary
+ops/evidence/laravel-remember-cookie-runner-v4-20261003/**/*.jsonl binary
 
 /.github export-ignore
 CHANGELOG.md export-ignore

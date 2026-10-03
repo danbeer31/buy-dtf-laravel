@@ -1,0 +1,87 @@
+{
+  "application": {
+    "full_suite": {
+      "assertions": 718,
+      "sha256": "b1fa24f968dcae8f9773bd35100793a0f386973554f67f69cc8c83402f1e7160",
+      "tests": 110
+    },
+    "remember_cookie": {
+      "assertions": 10,
+      "sha256": "48dec0fd4625e8aa4f7dc9296385d0e9970243cd143ad4daab27f52ddbd7c823",
+      "tests": 2
+    }
+  },
+  "artifact": "buy-dtf-laravel-remember-cookie-complete-test-results-v4",
+  "build_validation": {
+    "build_a_status": "pass",
+    "build_b_status": "pass",
+    "locked_no_dev_advisories": 0,
+    "php_8_2_30_platform": "pass",
+    "routes_each": 178,
+    "two_build_comparison": "pass"
+  },
+  "classification": "local-validation; preparation boundary incident separately disclosed",
+  "frontend": {
+    "npm_build_exit_code": 0,
+    "npm_ci_exit_code": 0,
+    "receipt": "frontend-validation-receipt.json",
+    "receipt_sha256": "5f1d496119eff9d084bbc9c27a84b83cb027d118ff211a6419b53c31418b06d1"
+  },
+  "generated_at_utc": "2026-10-03T17:22:38Z",
+  "preparation_production_accessed": true,
+  "production_mutation": false,
+  "rehearsals": {
+    "atomic_cutover_rollback_recovery_scenarios": 25,
+    "atomic_receipt_sha256": "321320d93c5f41c96f522977b892a1165964a9dec9eb9a3036e0eaef4b6699ed",
+    "gate_receipt_sha256": "afae804d5737be4764f006874b7b93fa8caf79fb8d0dc3542f0d27ad8171bbf2",
+    "gate_transition_scenarios": 28,
+    "production_like_opcache": {
+      "final_runs": 3,
+      "immediate_stale_gate_after_restore_reproduced": true,
+      "immediate_stale_original_reproduced": true,
+      "local_php_fpm_version": "8.3.6",
+      "primary_receipt_sha256": "e5af0fe207c410b3aea2ec2cc5864acd4346fc31462530a35d53f13a455359d8",
+      "repeatability_receipt_sha256": "d1c3af8b62ee08f86277ccb773e349ff90f41102a235fa3ec0772976c6baf486",
+      "reviewed_wait_seconds": 11
+    },
+    "shared_monotonic_waits": 48,
+    "uid33_gate_readability": {
+      "egid": 33,
+      "euid": 33,
+      "gate_sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4",
+      "mode_0600_negative_control": true,
+      "status": "pass"
+    }
+  },
+  "runner_controls": {
+    "discovered_tests": 114,
+    "modules": {
+      "database_envelope": 9,
+      "dependency_runner": 23,
+      "environment_controls": 16,
+      "gate": 24,
+      "independent_review_controls": 11,
+      "log_parser": 22,
+      "opcache_rehearsal": 9
+    },
+    "root_suite": {
+      "passed": 112,
+      "sha256": "682e49bd4bf417e92cb49e0375251859cd087951c36fcb97f3f65d7dcc62880f",
+      "skipped_uid1000_specific": 2,
+      "tests": 114
+    },
+    "uid1000_suite": {
+      "passed": 111,
+      "sha256": "ac130cbe574b74c7ecb42480204378a39156955f96073273516b340ce0142893",
+      "skipped_root_only": 3,
+      "tests": 114
+    }
+  },
+  "stage_or_deployment_performed": false,
+  "status": "pass",
+  "syntax": {
+    "sha256": "2fcc22ce2d1cae60b3c49b33845c98d2fe9562b2434794c30a31dcdfc0e81248",
+    "status": "pass"
+  },
+  "validation_production_accessed": false
+}

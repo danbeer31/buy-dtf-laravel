@@ -1,0 +1,499 @@
+{
+  "artifact": "buy-dtf-laravel-remember-cookie-evidence-manifest-v4",
+  "base_commit": "e7c839947a5bdf49776dd184926a28d0756196ae",
+  "branch": "fix/laravel-12.69.1-remember-cookie-v4-20261003",
+  "file_count_excluding_manifest_and_sha256sums": 74,
+  "files": [
+    {
+      "bytes": 7936,
+      "classification": "review-document",
+      "path": "HANDOFF.md",
+      "sha256": "8ee888883bf2330c7a5c7d70efe48244122b600067ba030976a53cbe0009e4c1"
+    },
+    {
+      "bytes": 9691,
+      "classification": "review-document",
+      "path": "README.md",
+      "sha256": "e864e49044dd70a6779bbf5cfeddff6cf93a6b73affe4c2599de017b866f44b5"
+    },
+    {
+      "bytes": 8026,
+      "classification": "review-document",
+      "path": "ROOT_CAUSE.md",
+      "sha256": "c0cc1153269518836673d836137245811b531b0062eb15cb4b0e464827d167ec"
+    },
+    {
+      "bytes": 4708,
+      "classification": "review-document",
+      "path": "VALIDATION.md",
+      "sha256": "cb158184eafb483080035f2de7d73d09fd8405c46229bdebcf65d4485d15ba53"
+    },
+    {
+      "bytes": 5393,
+      "classification": "receipt-or-manifest",
+      "path": "artifact-identities.json",
+      "sha256": "e8830a0f3c74f0b7a7295e31b787748854d0f33a1d9286694ec0b16c48a778d7"
+    },
+    {
+      "bytes": 4973,
+      "classification": "receipt-or-manifest",
+      "path": "atomic-rehearsal-receipt.json",
+      "sha256": "321320d93c5f41c96f522977b892a1165964a9dec9eb9a3036e0eaef4b6699ed"
+    },
+    {
+      "bytes": 85,
+      "classification": "build-log",
+      "path": "build-a-logs/composer-audit.stderr",
+      "sha256": "405be96fa53ca39ceaa2d4c24864712d6bba7677367e5c036473dfbf1e177c29"
+    },
+    {
+      "bytes": 46,
+      "classification": "build-log",
+      "path": "build-a-logs/composer-audit.stdout",
+      "sha256": "e464a6f19a008d852b61fd0966a47b663d20d70ccfba0b30edd6483a787f15f5"
+    },
+    {
+      "bytes": 85,
+      "classification": "build-log",
+      "path": "build-a-logs/composer-dump-autoload.stderr",
+      "sha256": "405be96fa53ca39ceaa2d4c24864712d6bba7677367e5c036473dfbf1e177c29"
+    },
+    {
+      "bytes": 95,
+      "classification": "build-log",
+      "path": "build-a-logs/composer-dump-autoload.stdout",
+      "sha256": "4b67c368bb0370bd36f0a332107a621fffe1db8c010d9760e4a18efe16313058"
+    },
+    {
+      "bytes": 9065,
+      "classification": "build-log",
+      "path": "build-a-logs/composer-install.stderr",
+      "sha256": "3e00d0f3eea408e237106c588732690d4ed9c5610890b28891af4a922213af57"
+    },
+    {
+      "bytes": 0,
+      "classification": "build-log",
+      "path": "build-a-logs/composer-install.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 155,
+      "classification": "build-log",
+      "path": "build-a-logs/composer-platform.stderr",
+      "sha256": "50eb805af63be40353a1584949817baa5d622d92a2c094fbcd47a0dc62f8385b"
+    },
+    {
+      "bytes": 1264,
+      "classification": "build-log",
+      "path": "build-a-logs/composer-platform.stdout",
+      "sha256": "d2cd5b74dec8db1076279b5e764fdea9132e1162ee7212038a509f934ce4f34b"
+    },
+    {
+      "bytes": 85,
+      "classification": "build-log",
+      "path": "build-a-logs/composer-validate.stderr",
+      "sha256": "405be96fa53ca39ceaa2d4c24864712d6bba7677367e5c036473dfbf1e177c29"
+    },
+    {
+      "bytes": 25,
+      "classification": "build-log",
+      "path": "build-a-logs/composer-validate.stdout",
+      "sha256": "43add299dc97ecbd90ec2dc456ef5a0bd824bb9abdae2a3d7cdb520e21f8e86d"
+    },
+    {
+      "bytes": 0,
+      "classification": "build-log",
+      "path": "build-a-logs/package-discovery.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 273,
+      "classification": "build-log",
+      "path": "build-a-logs/package-discovery.stdout",
+      "sha256": "1306c598a02c1f6569bca56d18f0b5710b08dbab9e8d5636f9655701c917188f"
+    },
+    {
+      "bytes": 0,
+      "classification": "build-log",
+      "path": "build-a-logs/route-discovery.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 38320,
+      "classification": "build-log",
+      "path": "build-a-logs/route-discovery.stdout",
+      "sha256": "cf18de6815e951980f6c83d466572a8c39eb6162abb86412593b3c72bb831dc0"
+    },
+    {
+      "bytes": 0,
+      "classification": "build-log",
+      "path": "build-a-logs/uid33-vendor-read-only.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 197,
+      "classification": "build-log",
+      "path": "build-a-logs/uid33-vendor-read-only.stdout",
+      "sha256": "5c172d0d657f189bba4a516fcae8241b958f90b9cf7f80c3d5baaeb039120fc9"
+    },
+    {
+      "bytes": 8105,
+      "classification": "receipt-or-manifest",
+      "path": "build-a.json",
+      "sha256": "6eaaf4826db1bef6eb52b3fd98d7d71b1fe5124b3358a99ce4b972cd71277060"
+    },
+    {
+      "bytes": 85,
+      "classification": "build-log",
+      "path": "build-b-logs/composer-audit.stderr",
+      "sha256": "405be96fa53ca39ceaa2d4c24864712d6bba7677367e5c036473dfbf1e177c29"
+    },
+    {
+      "bytes": 46,
+      "classification": "build-log",
+      "path": "build-b-logs/composer-audit.stdout",
+      "sha256": "e464a6f19a008d852b61fd0966a47b663d20d70ccfba0b30edd6483a787f15f5"
+    },
+    {
+      "bytes": 85,
+      "classification": "build-log",
+      "path": "build-b-logs/composer-dump-autoload.stderr",
+      "sha256": "405be96fa53ca39ceaa2d4c24864712d6bba7677367e5c036473dfbf1e177c29"
+    },
+    {
+      "bytes": 95,
+      "classification": "build-log",
+      "path": "build-b-logs/composer-dump-autoload.stdout",
+      "sha256": "4b67c368bb0370bd36f0a332107a621fffe1db8c010d9760e4a18efe16313058"
+    },
+    {
+      "bytes": 9369,
+      "classification": "build-log",
+      "path": "build-b-logs/composer-install.stderr",
+      "sha256": "953ac2ab3106f18b2a5a25ee4a3776bc7afac8f7c0bb81618ee89a2ab8af704a"
+    },
+    {
+      "bytes": 0,
+      "classification": "build-log",
+      "path": "build-b-logs/composer-install.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 155,
+      "classification": "build-log",
+      "path": "build-b-logs/composer-platform.stderr",
+      "sha256": "50eb805af63be40353a1584949817baa5d622d92a2c094fbcd47a0dc62f8385b"
+    },
+    {
+      "bytes": 1264,
+      "classification": "build-log",
+      "path": "build-b-logs/composer-platform.stdout",
+      "sha256": "d2cd5b74dec8db1076279b5e764fdea9132e1162ee7212038a509f934ce4f34b"
+    },
+    {
+      "bytes": 85,
+      "classification": "build-log",
+      "path": "build-b-logs/composer-validate.stderr",
+      "sha256": "405be96fa53ca39ceaa2d4c24864712d6bba7677367e5c036473dfbf1e177c29"
+    },
+    {
+      "bytes": 25,
+      "classification": "build-log",
+      "path": "build-b-logs/composer-validate.stdout",
+      "sha256": "43add299dc97ecbd90ec2dc456ef5a0bd824bb9abdae2a3d7cdb520e21f8e86d"
+    },
+    {
+      "bytes": 0,
+      "classification": "build-log",
+      "path": "build-b-logs/package-discovery.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 273,
+      "classification": "build-log",
+      "path": "build-b-logs/package-discovery.stdout",
+      "sha256": "1306c598a02c1f6569bca56d18f0b5710b08dbab9e8d5636f9655701c917188f"
+    },
+    {
+      "bytes": 0,
+      "classification": "build-log",
+      "path": "build-b-logs/route-discovery.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 38320,
+      "classification": "build-log",
+      "path": "build-b-logs/route-discovery.stdout",
+      "sha256": "cf18de6815e951980f6c83d466572a8c39eb6162abb86412593b3c72bb831dc0"
+    },
+    {
+      "bytes": 0,
+      "classification": "build-log",
+      "path": "build-b-logs/uid33-vendor-read-only.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 197,
+      "classification": "build-log",
+      "path": "build-b-logs/uid33-vendor-read-only.stdout",
+      "sha256": "5c172d0d657f189bba4a516fcae8241b958f90b9cf7f80c3d5baaeb039120fc9"
+    },
+    {
+      "bytes": 8094,
+      "classification": "receipt-or-manifest",
+      "path": "build-b.json",
+      "sha256": "4a7d7dc5e20e94cda96b4b9ec7ba4175748fb48b54209d6f03166fcb9d1ed01c"
+    },
+    {
+      "bytes": 3113,
+      "classification": "receipt-or-manifest",
+      "path": "database-envelope-validation-receipt.json",
+      "sha256": "f843199040f4e18c2e2d53b33e859e7daad19e1e13e27a7972b29a309963703f"
+    },
+    {
+      "bytes": 1766,
+      "classification": "receipt-or-manifest",
+      "path": "environment-controls-validation-receipt.json",
+      "sha256": "d829f0690cce4e9658a1803a969cee04933bb4878d79a0862e9b9d2f320d906d"
+    },
+    {
+      "bytes": 932,
+      "classification": "receipt-or-manifest",
+      "path": "frontend-validation-receipt.json",
+      "sha256": "5f1d496119eff9d084bbc9c27a84b83cb027d118ff211a6419b53c31418b06d1"
+    },
+    {
+      "bytes": 147283,
+      "classification": "receipt-or-manifest",
+      "path": "gate-transition-rehearsal-receipt.json",
+      "sha256": "afae804d5737be4764f006874b7b93fa8caf79fb8d0dc3542f0d27ad8171bbf2"
+    },
+    {
+      "bytes": 888,
+      "classification": "receipt-or-manifest",
+      "path": "lock-delta.json",
+      "sha256": "2156dbc4199db2b838e12913c1e9d772dc3475f9fe4676a2f68f057992d03a19"
+    },
+    {
+      "bytes": 4018,
+      "classification": "receipt-or-manifest",
+      "path": "log-parser-validation-receipt.json",
+      "sha256": "4c1d2453e46d30c295d1a55ee2feadf05deea7083868352008be5d04854718af"
+    },
+    {
+      "bytes": 24164,
+      "classification": "validation-log",
+      "path": "npm-build.txt",
+      "sha256": "048ab09638c099b7a65e56488ffa5f9ec2ab89bbbfccd531b657c960164dc8cb"
+    },
+    {
+      "bytes": 1436,
+      "classification": "validation-log",
+      "path": "npm-ci.txt",
+      "sha256": "c3f745406fc433d12b32eb6c8e661783457b575dbdd4d20b1a9f0bd08e5e4d82"
+    },
+    {
+      "bytes": 19454,
+      "classification": "receipt-or-manifest",
+      "path": "opcache-production-like-rehearsal-receipt.json",
+      "sha256": "e5af0fe207c410b3aea2ec2cc5864acd4346fc31462530a35d53f13a455359d8"
+    },
+    {
+      "bytes": 19454,
+      "classification": "receipt-or-manifest",
+      "path": "opcache-production-like-rehearsal-repeat-1.json",
+      "sha256": "cc61e72542c2b798eca0de3afc88bb6de0cd88f6e7c2a5e54591e10c355e62c6"
+    },
+    {
+      "bytes": 19454,
+      "classification": "receipt-or-manifest",
+      "path": "opcache-production-like-rehearsal-repeat-2.json",
+      "sha256": "20c56ea9adfa736654483ab9948f664400aa75769f437bfdc1d875824f57a651"
+    },
+    {
+      "bytes": 4581,
+      "classification": "receipt-or-manifest",
+      "path": "opcache-rehearsal-repeatability.json",
+      "sha256": "d1c3af8b62ee08f86277ccb773e349ff90f41102a235fa3ec0772976c6baf486"
+    },
+    {
+      "bytes": 162,
+      "classification": "validation-log",
+      "path": "php-8.2.30-ini.txt",
+      "sha256": "7c54db08eb1e2e3eace1d9dc8cb1c5308960d656339898acfeac4260f6725403"
+    },
+    {
+      "bytes": 247,
+      "classification": "validation-log",
+      "path": "php-8.2.30-modules.txt",
+      "sha256": "9cfcb4a1e707f0f19d517dd83eaadd844a19dbea47cbf50835c7f51730438486"
+    },
+    {
+      "bytes": 4173,
+      "classification": "receipt-or-manifest",
+      "path": "php-8.2.30-platform-receipt.json",
+      "sha256": "19855bc41a90d6ed459d1975dbb8833ab19cf61ff654d8f2562d714c17822b6c"
+    },
+    {
+      "bytes": 71,
+      "classification": "validation-log",
+      "path": "php-8.2.30-platform.stderr",
+      "sha256": "63871553cd792a777ff916c8d57fb5c503e5c62403caaa30ef73b27fe1f53897"
+    },
+    {
+      "bytes": 2653,
+      "classification": "validation-log",
+      "path": "php-8.2.30-platform.stdout",
+      "sha256": "f62d09fb6290ee219b3b9379541f2c2f7267a93b850d3b8e4aa449b416c343be"
+    },
+    {
+      "bytes": 9,
+      "classification": "validation-log",
+      "path": "php-8.2.30-version.txt",
+      "sha256": "24786bdc66d5d0cfc767f23e162190b5cbf5a93adb95db7a994c50929998df9f"
+    },
+    {
+      "bytes": 10962,
+      "classification": "validation-log",
+      "path": "phpunit-full.txt",
+      "sha256": "b1fa24f968dcae8f9773bd35100793a0f386973554f67f69cc8c83402f1e7160"
+    },
+    {
+      "bytes": 13316,
+      "classification": "receipt-or-manifest",
+      "path": "preparation-scope-verification.json",
+      "sha256": "e486f840aa15370dd5c4b446b174aca9f9fbd7bcd442627ce2ad54e62078f6b3"
+    },
+    {
+      "bytes": 5490,
+      "classification": "receipt-or-manifest",
+      "path": "privacy-scan-receipt.json",
+      "sha256": "a5861b5377d3d2121544091655c2bfa83c4fe3fce529c3d00bb3d83e1fc1f770"
+    },
+    {
+      "bytes": 271,
+      "classification": "validation-log",
+      "path": "remember-cookie-regression.txt",
+      "sha256": "48dec0fd4625e8aa4f7dc9296385d0e9970243cd143ad4daab27f52ddbd7c823"
+    },
+    {
+      "bytes": 1169,
+      "classification": "receipt-or-manifest",
+      "path": "rollback-set.json",
+      "sha256": "bac8f1ee7cd229460563f8a22b147a2a2819e5850b948499d3553dfc75598beb"
+    },
+    {
+      "bytes": 6802,
+      "classification": "receipt-or-manifest",
+      "path": "root-cause-receipt.json",
+      "sha256": "e377fc7a7f9cdcd47bcc0b2d1ba6859babc3820153d6f175764fb15dd63256ea"
+    },
+    {
+      "bytes": 8002,
+      "classification": "receipt-or-manifest",
+      "path": "runner-describe.json",
+      "sha256": "6986cbf1374052126dc136dd5950d1ce068b3880a58866dc8f8ec0c58264de52"
+    },
+    {
+      "bytes": 22473,
+      "classification": "validation-log",
+      "path": "runner-unit-tests-root.txt",
+      "sha256": "682e49bd4bf417e92cb49e0375251859cd087951c36fcb97f3f65d7dcc62880f"
+    },
+    {
+      "bytes": 22501,
+      "classification": "validation-log",
+      "path": "runner-unit-tests-uid1000.txt",
+      "sha256": "ac130cbe574b74c7ecb42480204378a39156955f96073273516b340ce0142893"
+    },
+    {
+      "bytes": 1512,
+      "classification": "validation-log",
+      "path": "syntax-validation.txt",
+      "sha256": "2fcc22ce2d1cae60b3c49b33845c98d2fe9562b2434794c30a31dcdfc0e81248"
+    },
+    {
+      "bytes": 2970,
+      "classification": "receipt-or-manifest",
+      "path": "test-results.json",
+      "sha256": "20ba7461b4ad44940cb8d58a97eab7ec6dc0c56ffaaf7a5156e0eda5bf7a1e68"
+    },
+    {
+      "bytes": 559,
+      "classification": "validation-log",
+      "path": "transparency-prefreeze-verification.txt",
+      "sha256": "86d076162ad3b4cfe49e766e0fc31a4fb6f377550809bd84b8a4d51f1750be34"
+    },
+    {
+      "bytes": 1794,
+      "classification": "receipt-or-manifest",
+      "path": "two-build-comparison.json",
+      "sha256": "f81fd96b2b28657898cf629f3cf044d58820b5209721fa4b259640b9a328836d"
+    },
+    {
+      "bytes": 1386597,
+      "classification": "complete-inventory",
+      "path": "vendor-inventory-a.jsonl",
+      "sha256": "c646726893e4d74b42343218f891409e925541d9bf8ab0563ff98a9c998b8fd5"
+    },
+    {
+      "bytes": 1386597,
+      "classification": "complete-inventory",
+      "path": "vendor-inventory-b.jsonl",
+      "sha256": "c646726893e4d74b42343218f891409e925541d9bf8ab0563ff98a9c998b8fd5"
+    },
+    {
+      "bytes": 1421,
+      "classification": "receipt-or-manifest",
+      "path": "vendor-mode-ownership-policy.json",
+      "sha256": "dce7ff9dc45f36f450ebac60291b3a0ad0bc12c8efb818c9fb2cf5a1c601b224"
+    }
+  ],
+  "fpm_opcache_probe_sha256": "b8b34f87d45a0c000cc0df7917496631320cfbdcca1ff44bc41741ce0d569262",
+  "gate_helper_sha256": "ae542dbe387406d5b0e0d379f074251d30e93d066f330c1badb16b11caf776bc",
+  "generated_at_utc": "2026-10-03T17:42:42Z",
+  "handoff_sha256": "8ee888883bf2330c7a5c7d70efe48244122b600067ba030976a53cbe0009e4c1",
+  "nginx_identity_helper_sha256": "4beb1fd5e4fabb8d74d2de50b8c96f452ecb6de242ed411c7c0a97304037d192",
+  "package_generation": "v4",
+  "preparation_boundary": {
+    "authorized": false,
+    "eligible_as_stage_evidence": false,
+    "production_accessed": true,
+    "production_mutation": false,
+    "read_only_sessions": 4
+  },
+  "raw_production_http_evidence_in_package": false,
+  "receipt_protocol_note": "The production-like OPcache receipt artifact suffix v1 identifies its receipt schema, not the deployment generation.",
+  "required_files": [
+    "HANDOFF.md",
+    "ROOT_CAUSE.md",
+    "root-cause-receipt.json",
+    "artifact-identities.json",
+    "runner-describe.json",
+    "build-a.json",
+    "build-b.json",
+    "two-build-comparison.json",
+    "php-8.2.30-platform-receipt.json",
+    "opcache-production-like-rehearsal-receipt.json",
+    "opcache-production-like-rehearsal-repeat-1.json",
+    "opcache-production-like-rehearsal-repeat-2.json",
+    "opcache-rehearsal-repeatability.json",
+    "gate-transition-rehearsal-receipt.json",
+    "atomic-rehearsal-receipt.json",
+    "database-envelope-validation-receipt.json",
+    "log-parser-validation-receipt.json",
+    "environment-controls-validation-receipt.json",
+    "frontend-validation-receipt.json",
+    "privacy-scan-receipt.json",
+    "preparation-scope-verification.json",
+    "test-results.json",
+    "rollback-set.json",
+    "vendor-mode-ownership-policy.json",
+    "transparency-prefreeze-verification.txt"
+  ],
+  "runner_sha256": "e2d735c9c9c86c8bd38be3085b3372a2d2079ada9866d87487e8aa486dfc79f0",
+  "schema_version": 1,
+  "stage_or_deployment_performed": false,
+  "status": "pass",
+  "total_bytes_excluding_manifest_and_sha256sums": 3282914
+}

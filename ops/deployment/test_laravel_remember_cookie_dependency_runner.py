@@ -31,10 +31,17 @@ class LaravelRememberCookieDependencyRunnerTest(unittest.TestCase):
         self.assertEqual(RUNNER.NEW_PACKAGE_VERSIONS, RUNNER.locked_package_versions(lock))
         self.assertEqual("12.69.0", RUNNER.OLD_PACKAGE_VERSIONS["laravel/framework"])
 
-    def test_v3_candidate_identity_is_fully_pinned(self) -> None:
+    def test_v4_candidate_identity_is_fully_pinned(self) -> None:
         self.assertEqual(
-            "305127ee8dc6c578ea8a8a1901a455b2e18378c481c8c726b3b120917e62a984",
+            "8ee888883bf2330c7a5c7d70efe48244122b600067ba030976a53cbe0009e4c1",
             RUNNER.HANDOFF_SHA256,
+        )
+        self.assertEqual(
+            RUNNER.HANDOFF_SHA256,
+            self.sha256(
+                ROOT
+                / "ops/evidence/laravel-remember-cookie-runner-v4-20261003/HANDOFF.md"
+            ),
         )
         self.assertEqual(
             {
@@ -65,16 +72,473 @@ class LaravelRememberCookieDependencyRunnerTest(unittest.TestCase):
             RUNNER.EXPECTED_CANDIDATE_CACHE_IDENTITY["manifest"]["sha256"],
         )
 
-    def test_describe_is_review_only_v3_and_preserves_scope_boundaries(self) -> None:
+    def test_every_reviewed_helper_hash_matches_its_exact_bytes(self) -> None:
+        deployment = ROOT / "ops/deployment"
+        bindings = {
+            "laravel_remember_cookie_runtime_probe.php": RUNNER.RUNTIME_HELPER_SHA256,
+            "laravel_dependency_database_envelope.py": RUNNER.DATABASE_ENVELOPE_VALIDATOR_SHA256,
+            "laravel_dependency_gate.py": RUNNER.GATE_HELPER_SHA256,
+            "laravel_log_delta.py": RUNNER.LOG_PARSER_SHA256,
+            "laravel_fpm_opcache_probe.php": RUNNER.FPM_OPCACHE_PROBE_SHA256,
+            "laravel_nginx_identity.py": RUNNER.NGINX_IDENTITY_HELPER_SHA256,
+            "laravel_remember_cookie_retired_controls.json": RUNNER.RETIRED_CONTROLS_SHA256,
+        }
+        for name, expected in bindings.items():
+            with self.subTest(name=name):
+                self.assertEqual(expected, self.sha256(deployment / name))
+
+    def test_emergency_containment_precedes_nginx_capture_and_survives_capture_failure(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="buy-dtf-emergency-nginx-") as directory:
+            state_path = Path(directory) / "deployment-state.json"
+            state: dict[str, object] = {}
+            order: list[str] = []
+
+            def contained(**_kwargs):
+                order.append("gate")
+                return {"status": "verified", "http_verified": True}
+
+            def nginx_failure(*_args, **_kwargs):
+                order.append("nginx")
+                raise RUNNER.DeploymentError("injected nginx capture failure")
+
+            with patch.object(RUNNER, "require_gate_helper"), patch.object(
+                RUNNER, "gate_context", return_value=object()
+            ) as gate_context_mock, patch.object(
+                RUNNER.dependency_gate,
+                "establish_rollback_containment",
+                side_effect=contained,
+            ), patch.object(
+                RUNNER,
+                "require_current_nginx_for_gate",
+                side_effect=nginx_failure,
+            ):
+                result = RUNNER.establish_rollback_gate(
+                    state,
+                    state_path,
+                    "cutover_failure",
+                )
+
+            self.assertEqual(["gate", "nginx"], order)
+            gate_context_mock.assert_called_once_with(
+                state,
+                state_path,
+                allow_frozen_policy_for_exact_existing_gate=True,
+            )
+            self.assertEqual(
+                "unavailable_fail_closed",
+                result["nginx_route_verification"]["status"],
+            )
+            self.assertTrue(
+                result["nginx_route_verification"][
+                    "rollback_may_continue_boot_independently"
+                ]
+            )
+            self.assertTrue(
+                (Path(directory) / "cutover_failure-0001-emergency-nginx-verification.json").is_file()
+            )
+
+    def test_rollback_failure_retains_gate_before_unavailable_nginx_proof(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="buy-dtf-rollback-nginx-") as directory:
+            state_path = Path(directory) / "deployment-state.json"
+            state: dict[str, object] = {}
+            order: list[str] = []
+
+            def retained(**_kwargs):
+                order.append("gate")
+                return {"status": "retained"}
+
+            def nginx_failure(*_args, **_kwargs):
+                order.append("nginx")
+                raise RUNNER.DeploymentError("injected nginx capture failure")
+
+            with patch.object(RUNNER, "require_gate_helper"), patch.object(
+                RUNNER, "gate_context", return_value=object()
+            ) as gate_context_mock, patch.object(
+                RUNNER.dependency_gate,
+                "retain_static_gate_exact",
+                side_effect=retained,
+            ), patch.object(
+                RUNNER,
+                "require_current_nginx_for_gate",
+                side_effect=nginx_failure,
+            ):
+                RUNNER.contain_rollback_failure(
+                    state,
+                    state_path,
+                    RUNNER.DeploymentError("injected rollback failure"),
+                )
+
+            self.assertEqual(["gate", "nginx"], order)
+            gate_context_mock.assert_called_once_with(
+                state,
+                state_path,
+                allow_frozen_policy_for_exact_existing_gate=True,
+            )
+            self.assertEqual("rollback_failed_static_gate_retained", state["status"])
+            containment = state["rollback_failure_containment"]
+            self.assertEqual(
+                "unavailable_fail_closed",
+                containment["nginx_route_verification"]["status"],
+            )
+
+    def test_initial_gate_install_requires_current_fpm_policy(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="buy-dtf-initial-gate-policy-") as directory:
+            state_path = Path(directory) / "deployment-state.json"
+            state: dict[str, object] = {}
+            context = object()
+            with patch.object(RUNNER, "require_gate_helper"), patch.object(
+                RUNNER,
+                "require_current_nginx_for_gate",
+            ), patch.object(
+                RUNNER,
+                "gate_context",
+                return_value=context,
+            ) as gate_context_mock, patch.object(
+                RUNNER.dependency_gate,
+                "install_static_gate",
+                return_value={"status": "verified", "http_verified": True},
+            ):
+                RUNNER.install_static_gate(state, state_path, "cutover_entry")
+            gate_context_mock.assert_called_once_with(state, state_path)
+
+    def test_exact_existing_gate_can_use_frozen_policy_for_emergency_restoration(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="buy-dtf-emergency-frozen-policy-") as directory:
+            root = Path(directory)
+            state_path = root / "deployment-state.json"
+            backup = root / "public-index.before.php"
+            front_controller = root / "index.php"
+            original = b"<?php echo 'original';\n"
+            gate = b"<?php echo 'reviewed-gate';\n"
+            backup.write_bytes(original)
+            front_controller.write_bytes(gate)
+            os.chmod(backup, 0o600)
+            os.chmod(front_controller, 0o644)
+            fpm_opcache = self.valid_fpm_opcache_envelope()
+            policy = fpm_opcache["policy"]
+            state: dict[str, object] = {
+                "front_controller_backup": str(backup),
+                "front_controller_backup_sha256": hashlib.sha256(original).hexdigest(),
+                "fpm_opcache": fpm_opcache,
+            }
+            RUNNER.write_state(state_path, state)
+            metadata = {
+                "kind": "file",
+                "mode": 0o644,
+                "uid": front_controller.stat().st_uid,
+                "gid": front_controller.stat().st_gid,
+            }
+            def timed_out_fpm_probe():
+                RUNNER.run(
+                    ["/usr/bin/cgi-fcgi", "-bind", "-connect", "/tmp/fpm.sock"],
+                    cwd=root,
+                    timeout=1,
+                )
+
+            with patch.object(RUNNER, "FRONT_CONTROLLER", front_controller), patch.object(
+                RUNNER,
+                "MAINTENANCE_GATE_SHA256",
+                hashlib.sha256(gate).hexdigest(),
+            ), patch.object(
+                RUNNER,
+                "probe_fpm_opcache",
+                side_effect=timed_out_fpm_probe,
+            ), patch.object(
+                RUNNER.subprocess,
+                "run",
+                side_effect=RUNNER.subprocess.TimeoutExpired("cgi-fcgi", 1),
+            ), patch.object(
+                RUNNER.dependency_gate,
+                "reviewed_front_controller_metadata",
+                return_value=metadata,
+            ):
+                context = RUNNER.gate_context(
+                    state,
+                    state_path,
+                    allow_frozen_policy_for_exact_existing_gate=True,
+                )
+                self.assertEqual(policy, context.opcache_policy)
+                self.assertEqual(
+                    "exact_existing_gate_retained_with_frozen_policy",
+                    state["emergency_existing_gate_opcache_fallbacks"][0]["status"],
+                )
+                front_controller.write_bytes(original)
+                os.chmod(front_controller, 0o644)
+                with self.assertRaisesRegex(RUNNER.DeploymentError, "Command execution failed"):
+                    RUNNER.gate_context(
+                        state,
+                        state_path,
+                        allow_frozen_policy_for_exact_existing_gate=True,
+                    )
+                front_controller.write_bytes(b"<?php echo 'unknown';\n")
+                os.chmod(front_controller, 0o644)
+                with self.assertRaisesRegex(RUNNER.DeploymentError, "Command execution failed"):
+                    RUNNER.gate_context(
+                        state,
+                        state_path,
+                        allow_frozen_policy_for_exact_existing_gate=True,
+                    )
+
+    def test_structural_fpm_record_validation_does_not_require_live_fpm(self) -> None:
+        frozen = self.valid_fpm_opcache_envelope()
+        with patch.object(
+            RUNNER,
+            "probe_fpm_opcache",
+            side_effect=RUNNER.DeploymentError("FPM unavailable"),
+        ):
+            self.assertIs(frozen, RUNNER.validate_frozen_fpm_opcache_record(frozen))
+            with self.assertRaisesRegex(RUNNER.DeploymentError, "FPM unavailable"):
+                RUNNER.require_frozen_fpm_opcache(frozen)
+        validation_source = inspect.getsource(RUNNER.validate_rollback_state_paths)
+        self.assertIn("validate_frozen_fpm_opcache_record", validation_source)
+        self.assertNotIn("require_frozen_fpm_opcache(", validation_source)
+
+    def test_both_fpm_probes_use_closed_fastcgi_environments(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="buy-dtf-fpm-env-") as directory:
+            root = Path(directory)
+            (root / "public").mkdir(parents=True)
+            (root / "storage/framework").mkdir(parents=True)
+            opcache_probe = root / "opcache-probe.php"
+            opcache_probe.write_text("<?php\n", encoding="utf-8")
+            socket = unittest.mock.MagicMock()
+            socket.is_socket.return_value = True
+            captured_environments: list[dict[str, str]] = []
+
+            def completed_with(payload: dict[str, object]):
+                return type(
+                    "Completed",
+                    (),
+                    {
+                        "stdout": (
+                            "Content-Type: application/json\r\n\r\n"
+                            + json.dumps(payload, sort_keys=True)
+                        )
+                    },
+                )()
+
+            def opcache_run(*_args, **kwargs):
+                captured_environments.append(dict(kwargs["env"]))
+                return completed_with(self.valid_fpm_opcache_envelope()["probe"])
+
+            runtime_payload = {
+                "laravel_version": RUNNER.OLD_PACKAGE_VERSIONS["laravel/framework"],
+                "guzzle_version": RUNNER.OLD_PACKAGE_VERSIONS["guzzlehttp/guzzle"],
+                "package_versions": RUNNER.OLD_PACKAGE_VERSIONS,
+                "package_install_paths": {
+                    package: str(root / "vendor" / package)
+                    for package in RUNNER.OLD_PACKAGE_VERSIONS
+                },
+                "php_version": RUNNER.EXPECTED_PHP_VERSION,
+                "php_extensions": ["Core"],
+                "laravel_path": str(
+                    root / "vendor/laravel/framework/src/Illuminate/Foundation/Application.php"
+                ),
+                "guzzle_path": str(root / "vendor/guzzlehttp/guzzle/src/Client.php"),
+            }
+
+            def runtime_run(*_args, **kwargs):
+                captured_environments.append(dict(kwargs["env"]))
+                return completed_with(runtime_payload)
+
+            hostile = {
+                "PHP_VALUE": "auto_prepend_file=/tmp/hostile.php",
+                "PHP_ADMIN_VALUE": "opcache.validate_timestamps=0",
+                "HTTP_COOKIE": "secret=value",
+                "LD_PRELOAD": "/tmp/hostile.so",
+            }
+            with patch.dict(os.environ, hostile, clear=False), patch.object(
+                RUNNER,
+                "APP_ROOT",
+                root,
+            ), patch.object(
+                RUNNER,
+                "FPM_SOCKET",
+                socket,
+            ), patch.object(
+                RUNNER,
+                "require_fpm_opcache_probe",
+                return_value=opcache_probe,
+            ), patch.object(
+                RUNNER,
+                "require_nginx_identity_helper",
+            ), patch.object(
+                RUNNER,
+                "run",
+                side_effect=opcache_run,
+            ):
+                RUNNER.probe_fpm_opcache()
+
+            with patch.dict(os.environ, hostile, clear=False), patch.object(
+                RUNNER,
+                "APP_ROOT",
+                root,
+            ), patch.object(
+                RUNNER,
+                "FPM_SOCKET",
+                socket,
+            ), patch.object(
+                RUNNER.os,
+                "chown",
+            ), patch.object(
+                RUNNER,
+                "run",
+                side_effect=runtime_run,
+            ):
+                RUNNER.fpm_probe(RUNNER.OLD_PACKAGE_VERSIONS)
+
+            self.assertEqual(2, len(captured_environments))
+            expected_keys = {
+                "DOCUMENT_ROOT",
+                "GATEWAY_INTERFACE",
+                "HTTPS",
+                "QUERY_STRING",
+                "REDIRECT_STATUS",
+                "REMOTE_ADDR",
+                "REQUEST_METHOD",
+                "REQUEST_URI",
+                "SCRIPT_FILENAME",
+                "SCRIPT_NAME",
+                "SERVER_NAME",
+                "SERVER_PORT",
+                "SERVER_PROTOCOL",
+            }
+            for environment in captured_environments:
+                self.assertEqual(expected_keys, set(environment))
+                self.assertTrue(hostile.keys().isdisjoint(environment))
+
+    def test_public_health_and_runtime_probes_use_closed_environments(self) -> None:
+        hostile = {
+            "APP_ENV": "hostile",
+            "DB_CONNECTION": "hostile",
+            "DB_DATABASE": "hostile",
+            "PHP_VALUE": "auto_prepend_file=/tmp/hostile.php",
+            "PHPRC": "/tmp/hostile.ini",
+            "PHP_INI_SCAN_DIR": "/tmp/hostile-conf.d",
+            "LD_PRELOAD": "/tmp/hostile.so",
+            "HOME": "/tmp/hostile-home",
+            "CURL_HOME": "/tmp/hostile-curl-home",
+            "HTTPS_PROXY": "http://127.0.0.1:9999",
+            "ALL_PROXY": "http://127.0.0.1:9998",
+        }
+        calls: list[tuple[list[str], dict[str, str]]] = []
+
+        def fake_run(command, **kwargs):
+            calls.append((list(command), dict(kwargs["env"])))
+            if command[0] == "/usr/bin/curl":
+                return type("Completed", (), {"stdout": "200\n104.16.0.1\n443\n"})()
+            return type("Completed", (), {"stdout": "{}"})()
+
+        helper = Path("/tmp/reviewed-runtime-helper.php")
+        with patch.dict(os.environ, hostile, clear=False), patch.object(
+            RUNNER,
+            "run",
+            side_effect=fake_run,
+        ):
+            self.assertEqual(200, RUNNER.http_status("https://buy-dtf.com/", cache_buster=True))
+            self.assertEqual({}, RUNNER.runtime_probe(helper))
+
+        expected_environment = RUNNER.closed_control_environment()
+        self.assertEqual(2, len(calls))
+        for _command, environment in calls:
+            self.assertEqual(expected_environment, environment)
+            self.assertTrue(hostile.keys().isdisjoint(environment))
+        curl_command = calls[0][0]
+        self.assertEqual("--disable", curl_command[1])
+        self.assertIn("--noproxy", curl_command)
+        with patch.object(
+            RUNNER,
+            "run",
+            return_value=type(
+                "Completed",
+                (),
+                {"stdout": "200\n127.0.0.1\n443\n"},
+            )(),
+        ):
+            with self.assertRaisesRegex(RUNNER.DeploymentError, "Invalid HTTP status"):
+                RUNNER.http_status("https://buy-dtf.com/")
+
+    def test_post_mutation_unsafe_gate_install_records_durable_manual_stop(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="buy-dtf-containment-stop-") as directory:
+            root = Path(directory)
+            state_path = root / "deployment-state.json"
+            state: dict[str, object] = {"dependency_mutation_started": True}
+            original_identity = {
+                "path": str(root / "index.php"),
+                "sha256": RUNNER.EXPECTED_FRONT_CONTROLLER_SHA256,
+                "bytes": 100,
+                "metadata": RUNNER.dependency_gate.reviewed_front_controller_metadata(),
+            }
+            with patch.object(
+                RUNNER,
+                "establish_rollback_gate",
+                side_effect=RUNNER.DeploymentError(
+                    "PHP-FPM OPcache settings cannot guarantee revalidation"
+                ),
+            ), patch.object(
+                RUNNER.dependency_gate,
+                "file_identity",
+                return_value=original_identity,
+            ):
+                with self.assertRaisesRegex(RUNNER.DeploymentError, "durable state"):
+                    RUNNER.contain_cutover_failure(
+                        state,
+                        state_path,
+                        RUNNER.DeploymentError("candidate failure"),
+                    )
+            persisted = json.loads(state_path.read_text(encoding="utf-8"))
+            self.assertEqual(
+                "failed_dependency_gate_install_blocked_manual_review_required",
+                persisted["status"],
+            )
+            self.assertFalse(persisted["containment_pending"])
+            receipt_path = Path(persisted["containment_failure_receipt"]["path"])
+            receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+            self.assertTrue(receipt["separately_reviewed_fpm_reload_plan_required"])
+            self.assertFalse(receipt["exact_reviewed_gate_live"])
+
+    def test_rollback_failure_records_context_rejection(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="buy-dtf-rollback-context-stop-") as directory:
+            state_path = Path(directory) / "deployment-state.json"
+            state: dict[str, object] = {}
+            with patch.object(
+                RUNNER,
+                "gate_context",
+                side_effect=RUNNER.DeploymentError("injected context rejection"),
+            ), patch.object(
+                RUNNER.dependency_gate,
+                "file_identity",
+                side_effect=RUNNER.dependency_gate.GateError("identity unavailable"),
+            ):
+                with self.assertRaisesRegex(RUNNER.DeploymentError, "could not be established"):
+                    RUNNER.contain_rollback_failure(
+                        state,
+                        state_path,
+                        RUNNER.DeploymentError("rollback failure"),
+                    )
+            persisted = json.loads(state_path.read_text(encoding="utf-8"))
+            self.assertEqual(
+                "rollback_failed_static_gate_identity_unavailable",
+                persisted["status"],
+            )
+            self.assertEqual(
+                "unavailable",
+                persisted["rollback_failure_live_front_controller"]["status"],
+            )
+
+    def test_describe_is_review_only_v4_and_preserves_scope_boundaries(self) -> None:
         output = io.StringIO()
         with redirect_stdout(output):
             RUNNER.describe()
         payload = json.loads(output.getvalue())
-        self.assertEqual("buy-dtf-laravel-remember-cookie-dependency-review-v3", payload["artifact"])
+        self.assertEqual("buy-dtf-laravel-remember-cookie-dependency-review-v4", payload["artifact"])
         self.assertEqual("review-only; not staged or deployed", payload["artifact_review_status"])
         self.assertEqual("proxy", payload["composer_bin_compat"])
         self.assertEqual(178, payload["expected_route_count"])
-        self.assertIn("laravel-remember-cookie-v3-releases", payload["release_root"])
+        self.assertIn("laravel-remember-cookie-v4-releases", payload["release_root"])
+        self.assertEqual(3, len(payload["static_gate_verification_routes"]))
+        self.assertTrue(payload["static_gate_probe_nonce_bound_to_header_and_body"])
+        self.assertEqual("monotonic", payload["fpm_opcache_policy"]["clock"])
+        self.assertTrue(payload["fpm_opcache_policy"]["timestamp_validation_required"])
+        self.assertEqual("/var/www/buy-dtf/public", payload["nginx_document_root_required"])
         self.assertNotEqual(
             RUNNER.STAGE_APPROVAL_TOKEN,
             "STAGE-BUYDTF-LARAVEL-REMEMBER-77055fc8acf89149",
@@ -202,7 +666,7 @@ class LaravelRememberCookieDependencyRunnerTest(unittest.TestCase):
             app_root = Path(directory) / "app"
             operations = app_root / "storage/app/private/operations"
             operations.mkdir(parents=True)
-            release_root = operations / "laravel-remember-cookie-v3-releases"
+            release_root = operations / "laravel-remember-cookie-v4-releases"
             with patch.object(RUNNER, "APP_ROOT", app_root), patch.object(
                 RUNNER, "PRIVATE_OPERATIONS_ROOT", operations
             ), patch.object(RUNNER, "EXPECTED_APP_UID", os.getuid()), patch.object(
@@ -242,6 +706,10 @@ class LaravelRememberCookieDependencyRunnerTest(unittest.TestCase):
                         expected_versions=RUNNER.OLD_PACKAGE_VERSIONS,
                     )
 
+    @unittest.skipUnless(
+        hasattr(os, "geteuid") and os.geteuid() == 0,
+        "atomic metadata-drift rehearsal requires root on a safe local tree",
+    )
     def test_atomic_rehearsal_exercises_cutover_rollback_and_recovery_failures(self) -> None:
         with tempfile.TemporaryDirectory(prefix="buy-dtf-remember-runner-test-") as directory:
             result = RUNNER.rehearse(Path(directory))
@@ -253,6 +721,93 @@ class LaravelRememberCookieDependencyRunnerTest(unittest.TestCase):
         self.assertIn("recovery_interruption_after_rollback_lock", result["scenarios"])
         self.assertIn("identical_cache_recovery_is_idempotent", result["scenarios"])
         self.assertIn("candidate_owner_drift_fails_closed", result["scenarios"])
+
+    def test_permanent_retirements_and_retired_receipt_rejection(self) -> None:
+        registry_path = ROOT / "ops/deployment/laravel_remember_cookie_retired_controls.json"
+        self.assertEqual(RUNNER.RETIRED_CONTROLS_SHA256, self.sha256(registry_path))
+        registry = json.loads(registry_path.read_text(encoding="utf-8"))
+        indexed = {
+            (item["kind"], item["sha256"])
+            for item in registry["retired_controls"]
+        }
+        for digest in RUNNER.RETIRED_RUNNER_SHA256S:
+            self.assertIn(("runner", digest), indexed)
+        for digest in RUNNER.RETIRED_GATE_HELPER_SHA256S:
+            self.assertIn(("static_gate_helper", digest), indexed)
+        for digest in RUNNER.RETIRED_RELEASE_RECEIPT_SHA256S:
+            self.assertIn(("release_receipt", digest), indexed)
+            with self.assertRaisesRegex(RUNNER.DeploymentError, "permanently retired"):
+                RUNNER.load_approved_release(Path("/path/that/must/not/be/read"), digest)
+
+    def test_dependency_settle_uses_the_frozen_calculated_policy(self) -> None:
+        state = {
+            "fpm_opcache": {
+                "policy": {
+                    "artifact": "buy-dtf-php-fpm-opcache-revalidation-policy-v1",
+                    "php_version": "8.2.30",
+                    "sapi": "fpm-fcgi",
+                    "opcache_enable": True,
+                    "validate_timestamps": True,
+                    "revalidate_freq_seconds": 12,
+                    "file_update_protection_seconds": 3,
+                    "complete_revalidation_interval_seconds": 15,
+                    "second_revalidation_window_seconds": 12,
+                    "minimum_wait_seconds": 28,
+                    "minimum_floor_seconds": 5,
+                    "safety_margin_seconds": 1,
+                    "formula": (
+                        "max(5, 2 * revalidate_freq + file_update_protection + 1)"
+                    ),
+                }
+            }
+        }
+        self.assertEqual(28, RUNNER.dependency_cache_settle_seconds(state))
+
+    def test_pre_gate_failure_with_untouched_original_does_not_retry_unsafe_gate_context(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="buy-dtf-untouched-original-") as directory:
+            root = Path(directory)
+            front_controller = root / "index.php"
+            original = b"<?php echo 'original';\n"
+            front_controller.write_bytes(original)
+            os.chmod(front_controller, 0o644)
+            state_path = root / "deployment-state.json"
+            state = {
+                **RUNNER.dependency_gate.initial_gate_state(),
+                "dependency_mutation_started": False,
+            }
+            with patch.object(RUNNER, "FRONT_CONTROLLER", front_controller), patch.object(
+                RUNNER, "EXPECTED_FRONT_CONTROLLER_SHA256", hashlib.sha256(original).hexdigest()
+            ), patch.object(
+                RUNNER.dependency_gate,
+                "reviewed_front_controller_metadata",
+                return_value={
+                    "kind": "file",
+                    "mode": 0o644,
+                    "uid": os.getuid(),
+                    "gid": os.getgid(),
+                },
+            ), patch.object(
+                RUNNER, "health_snapshot", return_value={"status": "pass"}
+            ), patch.object(
+                RUNNER,
+                "restore_front_controller",
+                side_effect=AssertionError("untouched original must not enter gate context"),
+            ):
+                RUNNER.restore_pre_mutation_failure(
+                    state,
+                    state_path,
+                    RUNNER.DeploymentError("unsafe FPM envelope"),
+                )
+            receipt = json.loads(
+                (root / "pre-mutation-failure-restoration-receipt.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+            self.assertEqual(
+                "untouched_original_no_transition",
+                receipt["restoration"]["status"],
+            )
+            self.assertFalse(receipt["restoration"]["opcache_wait_required"])
 
     @staticmethod
     def sha256(path: Path) -> str:
@@ -283,6 +838,35 @@ class LaravelRememberCookieDependencyRunnerTest(unittest.TestCase):
             "guzzle_version": "7.15.2",
             "laravel_class_path": "/var/www/buy-dtf/vendor/laravel/framework/Application.php",
             "guzzle_class_path": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle/Client.php",
+        }
+
+    @staticmethod
+    def valid_fpm_opcache_envelope() -> dict[str, object]:
+        normalized = {
+            "opcache.enable": True,
+            "opcache.validate_timestamps": True,
+            "opcache.revalidate_freq": 2,
+            "opcache.file_update_protection": 2,
+        }
+        directives = {
+            name: {"raw": "1" if isinstance(value, bool) else str(value), "normalized": value}
+            for name, value in normalized.items()
+        }
+        probe = {
+            "artifact": RUNNER.environment_controls.FPM_OPCACHE_ARTIFACT,
+            "sapi": RUNNER.environment_controls.EXPECTED_FPM_SAPI,
+            "php_version": RUNNER.EXPECTED_PHP_VERSION,
+            "directives": directives,
+            "opcache_configuration_directives": normalized,
+        }
+        policy = RUNNER.dependency_gate.derive_opcache_revalidation_policy(probe)
+        return {
+            "artifact": "buy-dtf-php-fpm-opcache-envelope-v4",
+            "status": "pass",
+            "probe_helper_sha256": RUNNER.FPM_OPCACHE_PROBE_SHA256,
+            "environment_helper_sha256": RUNNER.NGINX_IDENTITY_HELPER_SHA256,
+            "probe": probe,
+            "policy": policy,
         }
 
 

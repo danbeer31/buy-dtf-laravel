@@ -1,0 +1,116 @@
+{
+  "artifact": "buy-dtf-laravel-dependency-opcache-repeatability-v4",
+  "classification": "local-loopback-only-redacted-summary",
+  "development_observation": {
+    "failure": "Reviewed gate did not return HTTP 503.",
+    "failure_error_text_sha256": "30e2050723c35bbc9dafeb744973dfab70b9f71e7d57d7bf6bbf3a6a7db54338",
+    "production_accessed": false,
+    "raw_http_evidence_committed": false,
+    "redacted_failure_probe_sha256": "17db7ecb52c1596e75b4f7aa0e6beea53eac53d9855d8465c5f088a03875e857",
+    "resolution": "The reviewed formula now provides two complete timestamp-revalidation opportunities plus file-update protection and a one-second integer-clock margin; the final formal run and two repeats passed.",
+    "scope": "local disposable nginx/PHP-FPM rehearsal only",
+    "status": "resolved-before-freeze",
+    "superseded_formula": "max(5, revalidate_freq + file_update_protection + 1)",
+    "superseded_formula_failure_count": 2,
+    "superseded_formula_pass_count": 2,
+    "superseded_wait_seconds": 7,
+    "timing_result": "flaky: the same seven-second policy both passed and returned a stale original response in isolated local runs"
+  },
+  "formula": "max(5, 2 * revalidate_freq + file_update_protection + 1)",
+  "generated_at_utc": "2026-10-03T17:17:51Z",
+  "network_scope": "127.0.0.1 disposable listeners only",
+  "package_generation": "v4",
+  "production_accessed": false,
+  "protocol_schema": "buy-dtf-laravel-dependency-opcache-rehearsal-v1",
+  "run_count": 3,
+  "runs": [
+    {
+      "all_private_evidence_mode_0600": true,
+      "final_original_statuses": [
+        200,
+        200
+      ],
+      "gate_probe_routes": [
+        "local_origin_nginx_fpm",
+        "local_origin_nginx_fpm",
+        "local_public_nginx_proxy"
+      ],
+      "gate_probe_statuses": [
+        503,
+        503,
+        503
+      ],
+      "gate_wait_elapsed_monotonic_ns": 11000746605,
+      "immediate_stale_gate_status": 503,
+      "immediate_stale_original_status": 200,
+      "label": "review-receipt",
+      "minimum_wait_seconds": 11,
+      "original_wait_elapsed_monotonic_ns": 11004665216,
+      "receipt_canonical_sha256": "42aa70a7247105a1acf022c37d73677e4172554c19426acd5e91b83aea1ca83b",
+      "receipt_sha256": "e5af0fe207c410b3aea2ec2cc5864acd4346fc31462530a35d53f13a455359d8",
+      "stable_invariant_sha256": "1f3b87d64b32c8d1f96b75b538c5f59a5c9ab39dca9753e6884c6dd395cbf014",
+      "status": "pass",
+      "unique_cache_busters": true
+    },
+    {
+      "all_private_evidence_mode_0600": true,
+      "final_original_statuses": [
+        200,
+        200
+      ],
+      "gate_probe_routes": [
+        "local_origin_nginx_fpm",
+        "local_origin_nginx_fpm",
+        "local_public_nginx_proxy"
+      ],
+      "gate_probe_statuses": [
+        503,
+        503,
+        503
+      ],
+      "gate_wait_elapsed_monotonic_ns": 11000351411,
+      "immediate_stale_gate_status": 503,
+      "immediate_stale_original_status": 200,
+      "label": "repeat-1",
+      "minimum_wait_seconds": 11,
+      "original_wait_elapsed_monotonic_ns": 11003364487,
+      "receipt_canonical_sha256": "0a4546a76e25c1e17059761749dbf358b4646865e4621698c6a9d562fa7ac081",
+      "receipt_sha256": "cc61e72542c2b798eca0de3afc88bb6de0cd88f6e7c2a5e54591e10c355e62c6",
+      "stable_invariant_sha256": "1f3b87d64b32c8d1f96b75b538c5f59a5c9ab39dca9753e6884c6dd395cbf014",
+      "status": "pass",
+      "unique_cache_busters": true
+    },
+    {
+      "all_private_evidence_mode_0600": true,
+      "final_original_statuses": [
+        200,
+        200
+      ],
+      "gate_probe_routes": [
+        "local_origin_nginx_fpm",
+        "local_origin_nginx_fpm",
+        "local_public_nginx_proxy"
+      ],
+      "gate_probe_statuses": [
+        503,
+        503,
+        503
+      ],
+      "gate_wait_elapsed_monotonic_ns": 11017566301,
+      "immediate_stale_gate_status": 503,
+      "immediate_stale_original_status": 200,
+      "label": "repeat-2",
+      "minimum_wait_seconds": 11,
+      "original_wait_elapsed_monotonic_ns": 11004391865,
+      "receipt_canonical_sha256": "b9beaa5105142e678e425bd21a5fc7201ccb6b7e7301cef654683903645d5516",
+      "receipt_sha256": "20c56ea9adfa736654483ab9948f664400aa75769f437bfdc1d875824f57a651",
+      "stable_invariant_sha256": "1f3b87d64b32c8d1f96b75b538c5f59a5c9ab39dca9753e6884c6dd395cbf014",
+      "status": "pass",
+      "unique_cache_busters": true
+    }
+  ],
+  "stable_invariant_sha256": "1f3b87d64b32c8d1f96b75b538c5f59a5c9ab39dca9753e6884c6dd395cbf014",
+  "stable_invariants_identical": true,
+  "status": "pass",
+  "system_services_changed": false
+}

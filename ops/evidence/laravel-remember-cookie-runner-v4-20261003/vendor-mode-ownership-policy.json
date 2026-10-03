@@ -1,0 +1,40 @@
+{
+  "artifact": "buy-dtf-laravel-remember-cookie-vendor-policy-v4",
+  "complete_inventory_sha256": "c646726893e4d74b42343218f891409e925541d9bf8ab0563ff98a9c998b8fd5",
+  "directory_count_excluding_root": 925,
+  "directory_mode_octal": "0775",
+  "executable_allowlist_sha256": "551df886bc842a49ea87d8d9bb0cfe3478e3cc5eeea841c83409e8349d120154",
+  "executable_file_count": 10,
+  "executable_file_mode_octal": "0775",
+  "executable_paths": [
+    "bin/carbon",
+    "bin/patch-type-declarations",
+    "bin/php-parse",
+    "bin/psysh",
+    "bin/var-dump-server",
+    "nesbot/carbon/bin/carbon",
+    "nikic/php-parser/bin/php-parse",
+    "psy/psysh/bin/psysh",
+    "symfony/error-handler/Resources/bin/patch-type-declarations",
+    "symfony/var-dumper/Resources/bin/var-dump-server"
+  ],
+  "file_count": 6460,
+  "hard_linked_file_count": 0,
+  "ordinary_file_count": 6450,
+  "ordinary_file_mode_octal": "0664",
+  "owner_gid": 1000,
+  "owner_uid": 1000,
+  "ownership_mode_sha256": "db8aba0a4f49d0cecaeaac0b5b742c5f94b1a514a8d4452c361cb61e2dbacf0d",
+  "reproduced_by": [
+    "build-a.json",
+    "build-b.json",
+    "two-build-comparison.json"
+  ],
+  "root_mode_octal": "0775",
+  "special_file_count": 0,
+  "status": "frozen-for-independent-review",
+  "symlink_count": 0,
+  "total_file_bytes": 26481661,
+  "vendor_manifest_sha256": "7df0a101ceb0386b72ec4cfc71f2be8576fc5a5d4b777d11c05e5b7f1ed770d8",
+  "windows_bin_proxy_count": 0
+}

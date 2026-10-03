@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+from dataclasses import replace
 import hashlib
 import json
 import os
@@ -20,6 +21,52 @@ import laravel_dependency_gate as gate  # noqa: E402
 
 
 ORIGINAL_BYTES = b"<?php echo 'reviewed-original-application';\n"
+
+
+def reviewed_fpm_probe(
+    *,
+    validate_timestamps: bool = True,
+    revalidate_freq: int = 2,
+    file_update_protection: int = 2,
+) -> dict[str, Any]:
+    normalized: dict[str, bool | int] = {
+        "opcache.enable": True,
+        "opcache.validate_timestamps": validate_timestamps,
+        "opcache.revalidate_freq": revalidate_freq,
+        "opcache.file_update_protection": file_update_protection,
+    }
+    return {
+        "artifact": "buy-dtf-php-fpm-opcache-probe-v1",
+        "sapi": "fpm-fcgi",
+        "php_version": "8.2.30",
+        "directives": {
+            name: {"raw": str(int(value)), "normalized": value}
+            for name, value in normalized.items()
+        },
+        "opcache_configuration_directives": normalized,
+    }
+
+
+class FakeClock:
+    """Advance the monotonic clock only when the reviewed primitive sleeps."""
+
+    def __init__(self) -> None:
+        self.initial_ns = 40_000_000_000
+        self.nanoseconds = self.initial_ns
+        self.initial_wall_epoch = 1_700_000_000.0
+        self.sleep_calls: list[float] = []
+
+    def monotonic_ns(self) -> int:
+        return self.nanoseconds
+
+    def wall_clock(self) -> float:
+        return self.initial_wall_epoch + (
+            self.nanoseconds - self.initial_ns
+        ) / 1_000_000_000
+
+    def sleep(self, seconds: float) -> None:
+        self.sleep_calls.append(seconds)
+        self.nanoseconds += round(seconds * 1_000_000_000)
 
 
 def require(condition: bool, message: str) -> None:
@@ -42,6 +89,7 @@ def command_identity(
 def separate_web_identity_probe(
     front_controller: Path,
     route: str,
+    cache_buster: str,
 ) -> dict[str, Any]:
     reader_code = (
         "import hashlib,json,os,pathlib,sys;"
@@ -79,6 +127,9 @@ def separate_web_identity_probe(
         f"--regid={gate.EXPECTED_WEB_GID}",
         "--clear-groups",
         "/usr/bin/php",
+        "-r",
+        '$_GET["ops_gate"]=$argv[1]; include $argv[2];',
+        cache_buster,
         str(front_controller),
     ]
     php = subprocess.run(
@@ -94,11 +145,18 @@ def separate_web_identity_probe(
         gate.MAINTENANCE_GATE_SENTINEL in php.stdout,
         "The UID/GID 33 PHP process did not execute the reviewed gate bytes.",
     )
+    require(cache_buster in php.stdout, "The gate did not echo the route-specific nonce.")
     return {
         "route": route,
         "status": 503,
         "header_verified": True,
         "sentinel_verified": True,
+        "cache_buster_verified": True,
+        "route_identity_verified": True,
+        "cache_buster_sha256": gate.sha256_bytes(cache_buster.encode("ascii")),
+        "request_url_sha256": gate.sha256_bytes(
+            f"https://buy-dtf.com/?ops_gate={cache_buster}".encode("ascii")
+        ),
         "reader": payload,
         "reader_command": command_identity(reader_command, reader),
         "php_command": command_identity(php_command, php),
@@ -172,6 +230,8 @@ def fixture(rehearsal_root: Path, name: str) -> dict[str, Any]:
         "rollback_complete": False,
     }
     gate.write_state(state_path, state)
+    clock = FakeClock()
+    opcache_policy = gate.derive_opcache_revalidation_policy(reviewed_fpm_probe())
     context = gate.GateContext(
         application_root=application,
         front_controller=front_controller,
@@ -179,6 +239,10 @@ def fixture(rehearsal_root: Path, name: str) -> dict[str, Any]:
         evidence_directory=evidence,
         original_backup=backup,
         original_sha256=original_sha256,
+        opcache_policy=opcache_policy,
+        sleep=clock.sleep,
+        monotonic_ns=clock.monotonic_ns,
+        wall_clock=clock.wall_clock,
     )
     return {
         "name": name,
@@ -189,6 +253,8 @@ def fixture(rehearsal_root: Path, name: str) -> dict[str, Any]:
         "state": state,
         "context": context,
         "original_sha256": original_sha256,
+        "clock": clock,
+        "opcache_policy": opcache_policy,
     }
 
 
@@ -229,6 +295,18 @@ def scenario_receipt(item: dict[str, Any], details: dict[str, Any]) -> dict[str,
             }
             for transition in state.get("front_controller_transitions", [])
         ],
+        "durable_revalidation_waits": [
+            {
+                "sequence": wait["sequence"],
+                "operation": wait["operation"],
+                "status": wait["status"],
+                "configured_wait_seconds": wait["configured_wait_seconds"],
+                "elapsed_monotonic_ns": wait.get("elapsed_monotonic_ns"),
+                "identity_before_sha256": wait["identity_before"]["sha256"],
+                "identity_after_sha256": wait.get("identity_after", {}).get("sha256"),
+            }
+            for wait in state.get("front_controller_revalidation_waits", [])
+        ],
         "final_durable_state": {
             key: state.get(key)
             for key in (
@@ -255,12 +333,17 @@ def healthy_original(item: dict[str, Any]) -> dict[str, Any]:
     return {"application_healthy": True, "front_controller": identity}
 
 
-def valid_probe(item: dict[str, Any], route: str) -> dict[str, Any]:
-    return separate_web_identity_probe(item["front_controller"], route)
+def valid_probe(item: dict[str, Any], route: str, probe_identity: str) -> dict[str, Any]:
+    cache_buster = gate.sha256_bytes(
+        f"{item['name']}:{route}:{probe_identity}".encode("utf-8")
+    )[:24]
+    return separate_web_identity_probe(item["front_controller"], route, cache_buster)
 
 
-def bad_probe(item: dict[str, Any], route: str, status: int) -> dict[str, Any]:
-    result = valid_probe(item, route)
+def bad_probe(
+    item: dict[str, Any], route: str, status: int, probe_identity: str
+) -> dict[str, Any]:
+    result = valid_probe(item, route, probe_identity)
     result["status"] = status
     result["header_verified"] = False
     result["sentinel_verified"] = False
@@ -271,7 +354,7 @@ def install(
     item: dict[str, Any],
     operation: str,
     *,
-    origin_probe: Callable[[], dict[str, Any]] | None = None,
+    origin_probe: Callable[[int], dict[str, Any]] | None = None,
     public_probe: Callable[[], dict[str, Any]] | None = None,
     fault_injector: gate.FaultInjector | None = None,
 ) -> dict[str, Any]:
@@ -279,8 +362,14 @@ def install(
         context=item["context"],
         state=item["state"],
         operation=operation,
-        origin_probe=origin_probe or (lambda: valid_probe(item, gate.ORIGIN_ROUTE)),
-        public_probe=public_probe or (lambda: valid_probe(item, gate.PUBLIC_ROUTE)),
+        origin_probe=origin_probe
+        or (
+            lambda ordinal: valid_probe(
+                item, gate.ORIGIN_ROUTE, f"{operation}-origin-{ordinal}"
+            )
+        ),
+        public_probe=public_probe
+        or (lambda: valid_probe(item, gate.PUBLIC_ROUTE, f"{operation}-public")),
         restored_health_probe=lambda: healthy_original(item),
         fault_injector=fault_injector,
     )
@@ -363,16 +452,17 @@ def run_rehearsal(parent: Path) -> dict[str, Any]:
         require(Path(executable).is_file(), f"Required executable is absent: {executable}")
     parent = gate.require_real_directory(parent)
     rehearsal_root = Path(
-        tempfile.mkdtemp(prefix="buy-dtf-laravel-dependency-gate-v3-", dir=parent)
+        tempfile.mkdtemp(prefix="buy-dtf-laravel-dependency-gate-v4-", dir=parent)
     )
     os.chmod(rehearsal_root, 0o755)
     previous_umask = os.umask(0o077)
     result: dict[str, Any] = {
-        "artifact": "buy-dtf-laravel-dependency-static-gate-rehearsal-v3",
+        "artifact": "buy-dtf-laravel-dependency-static-gate-rehearsal-v4",
         "gate_module_sha256": hashlib.sha256(Path(gate.__file__).read_bytes()).hexdigest(),
         "rehearsal_script_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         "gate_sha256": gate.EXPECTED_GATE_SHA256,
         "gate_metadata": gate.reviewed_front_controller_metadata(),
+        "opcache_policy": gate.derive_opcache_revalidation_policy(reviewed_fpm_probe()),
         "umask": "0077",
         "runner_identity": {"euid": os.geteuid(), "egid": os.getegid()},
         "web_identity": {"euid": gate.EXPECTED_WEB_UID, "egid": gate.EXPECTED_WEB_GID},
@@ -390,9 +480,85 @@ def run_rehearsal(parent: Path) -> dict[str, Any]:
         result["scenarios"][item["name"]] = scenario_receipt(
             item,
             {
-                "origin_reader": installed["origin_probe"]["reader"],
+                "origin_readers": [
+                    probe["reader"] for probe in installed["origin_probes"]
+                ],
                 "public_reader": installed["public_probe"]["reader"],
                 "restore_receipt_sha256": restored["receipt_sha256"],
+            },
+        )
+
+        item = fixture(rehearsal_root, "timestamp-validation-disabled-rejected")
+        invalid_policy = dict(item["opcache_policy"])
+        invalid_policy["validate_timestamps"] = False
+        invalid_context = replace(item["context"], opcache_policy=invalid_policy)
+        failure = expect_gate_error(
+            lambda: gate.install_static_gate(
+                context=invalid_context,
+                state=item["state"],
+                operation="disabled-timestamps-gate",
+                origin_probe=lambda ordinal: valid_probe(
+                    item, gate.ORIGIN_ROUTE, f"disabled-origin-{ordinal}"
+                ),
+                public_probe=lambda: valid_probe(
+                    item, gate.PUBLIC_ROUTE, "disabled-public"
+                ),
+                restored_health_probe=lambda: healthy_original(item),
+            )
+        )
+        require(
+            gate.file_identity(item["front_controller"])["sha256"]
+            == item["original_sha256"],
+            "Disabled timestamp validation changed the front controller.",
+        )
+        require(
+            gate.load_state(item["context"].state_path)["front_controller_transitions"]
+            == [],
+            "Disabled timestamp validation reached a durable transition.",
+        )
+        result["scenarios"][item["name"]] = scenario_receipt(
+            item,
+            {
+                "expected_failure_sha256": failure,
+                "rejected_before_mutation": True,
+            },
+        )
+
+        item = fixture(rehearsal_root, "v3-immediate-probe-regression")
+        first_probe_monotonic_ns: list[int] = []
+
+        def delayed_origin(ordinal: int) -> dict[str, Any]:
+            first_probe_monotonic_ns.append(item["clock"].monotonic_ns())
+            require(
+                sum(item["clock"].sleep_calls)
+                >= item["opcache_policy"]["minimum_wait_seconds"],
+                "The origin probe ran before the reviewed revalidation delay.",
+            )
+            durable = gate.load_state(item["context"].state_path)
+            require(
+                durable["front_controller_transition"]["phase"]
+                == "revalidation_wait_complete",
+                "The origin probe ran before the durable wait-complete transition.",
+            )
+            return valid_probe(
+                item, gate.ORIGIN_ROUTE, f"delayed-origin-{ordinal}"
+            )
+
+        installed = install(
+            item,
+            "v3-regression-gate",
+            origin_probe=delayed_origin,
+        )
+        restored = restore(item, "v3-regression-original-restore")
+        result["scenarios"][item["name"]] = scenario_receipt(
+            item,
+            {
+                "first_probe_monotonic_ns": first_probe_monotonic_ns,
+                "gate_wait_receipt_sha256": installed[
+                    "opcache_revalidation_wait"
+                ]["receipt_sha256"],
+                "restore_receipt_sha256": restored["receipt_sha256"],
+                "would_fail_v3_without_shared_wait": True,
             },
         )
 
@@ -420,7 +586,12 @@ def run_rehearsal(parent: Path) -> dict[str, Any]:
             lambda: install(
                 item,
                 "origin-failure-gate",
-                origin_probe=lambda: bad_probe(item, gate.ORIGIN_ROUTE, 500),
+                origin_probe=lambda ordinal: bad_probe(
+                    item,
+                    gate.ORIGIN_ROUTE,
+                    500,
+                    f"origin-failure-{ordinal}",
+                ),
             )
         )
         assert_pre_mutation_failure(item)
@@ -433,7 +604,9 @@ def run_rehearsal(parent: Path) -> dict[str, Any]:
             lambda: install(
                 item,
                 "public-failure-gate",
-                public_probe=lambda: bad_probe(item, gate.PUBLIC_ROUTE, 522),
+                public_probe=lambda: bad_probe(
+                    item, gate.PUBLIC_ROUTE, 522, "public-failure"
+                ),
             )
         )
         assert_pre_mutation_failure(item)
@@ -531,14 +704,35 @@ def run_rehearsal(parent: Path) -> dict[str, Any]:
             item["state"]["dependency_mutation_started"] = True
             gate.write_state(item["context"].state_path, item["state"])
             origin_probe = (
-                (lambda item=item: bad_probe(item, gate.ORIGIN_ROUTE, 500))
+                (
+                    lambda ordinal, item=item: bad_probe(
+                        item,
+                        gate.ORIGIN_ROUTE,
+                        500,
+                        f"post-mutation-failed-origin-{ordinal}",
+                    )
+                )
                 if failed_route == gate.ORIGIN_ROUTE
-                else (lambda item=item: valid_probe(item, gate.ORIGIN_ROUTE))
+                else (
+                    lambda ordinal, item=item: valid_probe(
+                        item,
+                        gate.ORIGIN_ROUTE,
+                        f"post-mutation-valid-origin-{ordinal}",
+                    )
+                )
             )
             public_probe = (
-                (lambda item=item: bad_probe(item, gate.PUBLIC_ROUTE, 522))
+                (
+                    lambda item=item: bad_probe(
+                        item, gate.PUBLIC_ROUTE, 522, "post-mutation-failed-public"
+                    )
+                )
                 if failed_route == gate.PUBLIC_ROUTE
-                else (lambda item=item: valid_probe(item, gate.PUBLIC_ROUTE))
+                else (
+                    lambda item=item: valid_probe(
+                        item, gate.PUBLIC_ROUTE, "post-mutation-valid-public"
+                    )
+                )
             )
             containment = gate.establish_rollback_containment(
                 context=item["context"],
@@ -671,12 +865,31 @@ def run_rehearsal(parent: Path) -> dict[str, Any]:
             all(receipt["final_is_original"] for receipt in safe_scenarios),
             "A rehearsal scenario did not finish on the exact original front controller.",
         )
+        complete_waits = [
+            wait
+            for receipt in result["scenarios"].values()
+            for wait in receipt["durable_revalidation_waits"]
+        ]
+        require(complete_waits, "The rehearsal produced no OPcache waits.")
+        require(
+            all(
+                wait["status"] == "complete"
+                and wait["elapsed_monotonic_ns"]
+                >= wait["configured_wait_seconds"] * 1_000_000_000
+                and wait["identity_before_sha256"] == wait["identity_after_sha256"]
+                for wait in complete_waits
+            ),
+            "A shared OPcache wait was incomplete, short, or crossed an identity change.",
+        )
         result["scenario_count"] = len(result["scenarios"])
         result["status"] = "pass"
         result["all_reopenable_scenarios_restored_exact_original"] = True
         result["unknown_bytes_rejected_without_overwrite"] = True
         result["origin_and_public_routes_separately_verified"] = True
         result["post_mutation_probe_failure_rollback_permitted_under_exact_gate"] = True
+        result["shared_monotonic_revalidation_waits_verified"] = len(complete_waits)
+        result["v3_immediate_probe_regression_blocked"] = True
+        result["timestamp_validation_disabled_rejected_before_mutation"] = True
         result["canonical_sha256"] = gate.sha256_bytes(gate.canonical_bytes(result))
         return result
     finally:
@@ -685,7 +898,7 @@ def run_rehearsal(parent: Path) -> dict[str, Any]:
         resolved_rehearsal = rehearsal_root.resolve(strict=True)
         if (
             resolved_rehearsal.parent != resolved_parent
-            or not rehearsal_root.name.startswith("buy-dtf-laravel-dependency-gate-v3-")
+            or not rehearsal_root.name.startswith("buy-dtf-laravel-dependency-gate-v4-")
         ):
             raise gate.GateError("Refusing to remove an unrecognized rehearsal directory.")
         shutil.rmtree(rehearsal_root)

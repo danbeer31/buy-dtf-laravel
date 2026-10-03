@@ -1,0 +1,570 @@
+{
+  "artifact": "buy-dtf-laravel-dependency-opcache-rehearsal-v1",
+  "cache_busters": {
+    "count": 9,
+    "sha256_values": [
+      "0c915ca364b073830b3663dbcb3688bbe38b44cd0990bfd177c5996528a6c814",
+      "904224d850c2b7f553a167b697d19fdbe8284d3ccba7b5d0bc112c855347a3a0",
+      "d2e85e20813040e9b5e63cc2eb913443be278f468bf2427fc9662d062fc21f74",
+      "e423185709a97f86c9f3a28bf7a875c98dbc221c884bf3f43a14ea197bf74cec",
+      "5b1c58274ac0feefcff491ec7ec65e288e579a6fd2b5effa7ff69b421ff75e5e",
+      "ddba9fc82aa5c3f74090981ef1921970e6fd111f0119d01adfdf1184f7ad36fe",
+      "3e94d370b356162cd7de54f5aaaeca90d43532c19964463ddd1bea8ea8685ca4",
+      "7463dedd54590a17fc8bfad407b132f5386d4ad7ccabf200a5dedc35272e941f",
+      "41341e35460f7dffdf064fd83ea5c0bb8c542147784b4b0b30eda8de9699ca0e"
+    ],
+    "unique": true
+  },
+  "canonical_sha256": "0a4546a76e25c1e17059761749dbf358b4646865e4621698c6a9d562fa7ac081",
+  "daemon_configuration": {
+    "fpm_config_sha256": "84ff2af61014712f3311d1cb3e340276e11d5e21c57b8c10a5c3134bc803d2ed",
+    "fpm_configuration_check": {
+      "argv_sha256": "a7acc22bd87b8b51545ba706f080c421ed37d4e67ba6b43d8fc5c73d4b795405",
+      "exit_status": 0,
+      "stderr_sha256": "786246fede1cf2951b40171bb7047d689ec4eac11953548da432aa2a3141e449",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "nginx_config_sha256": "7c9540a6441acd813824e532fe4e87c961b535ef8b5715627eb6c930f610859c",
+    "nginx_configuration_check": {
+      "argv_sha256": "b60b84f570f7bd69c92f09b98a1105915fc685a7b9f4d978556106bfa1c7f686",
+      "exit_status": 0,
+      "stderr_sha256": "94bce75d3ea5a01cd345f97071b063f88ea320901a0020c63e3fb714604efa01",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "origin_and_public_ports_distinct": true,
+    "socket_is_disposable": true,
+    "validation_clock_conditioning_seconds": 5
+  },
+  "gate": {
+    "header_name": "X-BuyDTF-Dependency-Maintenance",
+    "header_value": "static-v2",
+    "probe_header_name": "X-BuyDTF-Dependency-Probe",
+    "sentinel": "BUYDTF_DEPENDENCY_MAINTENANCE_STATIC_V2",
+    "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+  },
+  "gate_helper_sha256": "ae542dbe387406d5b0e0d379f074251d30e93d066f330c1badb16b11caf776bc",
+  "generated_at_utc": "2026-10-03T17:06:19.770940Z",
+  "local_executables": {
+    "nginx": {
+      "bytes": 1314136,
+      "gid": 0,
+      "mode": 493,
+      "sha256": "a24def283d640db0bcad3c81b0630a3444b3079f6c50c956c9bd39330eaca544",
+      "uid": 0
+    },
+    "php_fpm": {
+      "bytes": 5759824,
+      "gid": 0,
+      "mode": 493,
+      "sha256": "6f08c9bdfc867856f258c7acb09066e1f241688be2eae62fdcc707098c514790",
+      "uid": 0
+    }
+  },
+  "loopback_only": true,
+  "opcache_policy": {
+    "artifact": "buy-dtf-php-fpm-opcache-revalidation-policy-v1",
+    "complete_revalidation_interval_seconds": 6,
+    "file_update_protection_seconds": 2,
+    "formula": "max(5, 2 * revalidate_freq + file_update_protection + 1)",
+    "minimum_floor_seconds": 5,
+    "minimum_wait_seconds": 11,
+    "opcache_enable": true,
+    "php_version": "8.3.6",
+    "revalidate_freq_seconds": 4,
+    "safety_margin_seconds": 1,
+    "sapi": "fpm-fcgi",
+    "second_revalidation_window_seconds": 4,
+    "validate_timestamps": true
+  },
+  "original_identity": {
+    "bytes": 1687,
+    "gid": 1000,
+    "mode": 420,
+    "sha256": "76ed38352484c1d99a4d9d1f9239ac51cd590a18410eb11ac9ed1afbe1ba5d40",
+    "uid": 1000
+  },
+  "prerequisites": {
+    "artifact": "buy-dtf-laravel-dependency-opcache-rehearsal-v1-prerequisites",
+    "effective_uid": 0,
+    "local_only": true,
+    "missing": [],
+    "nginx": "/usr/sbin/nginx",
+    "php_fpm": "/usr/sbin/php-fpm8.3",
+    "status": "ready",
+    "web_identity": {
+      "gid": 33,
+      "group": "www-data",
+      "uid": 33,
+      "user": "www-data"
+    }
+  },
+  "private_evidence_manifest": [
+    {
+      "bytes": 1687,
+      "mode": 384,
+      "name": "index.original.php",
+      "sha256": "76ed38352484c1d99a4d9d1f9239ac51cd590a18410eb11ac9ed1afbe1ba5d40"
+    },
+    {
+      "bytes": 1205,
+      "mode": 384,
+      "name": "nginx-access.log",
+      "sha256": "b7d59a4181207978a39f164435a90e100208c92b217c5099ddafd82a43401880"
+    },
+    {
+      "bytes": 442,
+      "mode": 384,
+      "name": "nginx-error.log",
+      "sha256": "57b1aedb73a26d3460f4653093cb4c2fbeabdd4d24ba34977518bc3fdbc75302"
+    },
+    {
+      "bytes": 0,
+      "mode": 384,
+      "name": "nginx-process.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 2748,
+      "mode": 384,
+      "name": "nginx.conf",
+      "sha256": "7c9540a6441acd813824e532fe4e87c961b535ef8b5715627eb6c930f610859c"
+    },
+    {
+      "bytes": 568,
+      "mode": 384,
+      "name": "php-fpm-error.log",
+      "sha256": "3a9366adb2322f87bd709739eb79211051ab5af729701ae510676bf3ba49ce91"
+    },
+    {
+      "bytes": 0,
+      "mode": 384,
+      "name": "php-fpm-process.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 809,
+      "mode": 384,
+      "name": "php-fpm.conf",
+      "sha256": "84ff2af61014712f3311d1cb3e340276e11d5e21c57b8c10a5c3134bc803d2ed"
+    },
+    {
+      "bytes": 526,
+      "mode": 384,
+      "name": "probe-01-ready.body.raw",
+      "sha256": "d66f5a88eb8f0da8c8d450dab277b24e4ca5b876ed9f677c6c4a83ab63c029a5"
+    },
+    {
+      "bytes": 364,
+      "mode": 384,
+      "name": "probe-01-ready.headers.raw",
+      "sha256": "97ae6c4dbd514b58a994fd7b5918f12f22819162c5ca062651ba44ce2b1a1740"
+    },
+    {
+      "bytes": 526,
+      "mode": 384,
+      "name": "probe-02-warm-original.body.raw",
+      "sha256": "d66f5a88eb8f0da8c8d450dab277b24e4ca5b876ed9f677c6c4a83ab63c029a5"
+    },
+    {
+      "bytes": 364,
+      "mode": 384,
+      "name": "probe-02-warm-original.headers.raw",
+      "sha256": "4143440aa5c7ad8836dd2066e4323eb06927ca1b5b7bd7970be9f949d9b3ed57"
+    },
+    {
+      "bytes": 526,
+      "mode": 384,
+      "name": "probe-03-immediate-after-gate.body.raw",
+      "sha256": "d66f5a88eb8f0da8c8d450dab277b24e4ca5b876ed9f677c6c4a83ab63c029a5"
+    },
+    {
+      "bytes": 364,
+      "mode": 384,
+      "name": "probe-03-immediate-after-gate.headers.raw",
+      "sha256": "f29e59921cfeb50a044c7f697e2d07a4434a711252675ffc9fd1559ea86a20d9"
+    },
+    {
+      "bytes": 64,
+      "mode": 384,
+      "name": "probe-04-gate-origin-1.body.raw",
+      "sha256": "b56ad58c9a2adf1cbf3ddc52bdc43dc857a29b0c36af8d2b26f41a9c13f8db4b"
+    },
+    {
+      "bytes": 490,
+      "mode": 384,
+      "name": "probe-04-gate-origin-1.headers.raw",
+      "sha256": "180a8198c0b28d1423398e67b108e6ce8f982232fd64c5e046adde29155c3491"
+    },
+    {
+      "bytes": 64,
+      "mode": 384,
+      "name": "probe-05-gate-origin-2.body.raw",
+      "sha256": "b1b2ad0b0e68c4c8842003e13795d9c06464a62fe15822f0f87ed767590c22e4"
+    },
+    {
+      "bytes": 490,
+      "mode": 384,
+      "name": "probe-05-gate-origin-2.headers.raw",
+      "sha256": "4aeab8272a4d882976aba99b84cefc00a16cd8db7f490ce9ff653f079a92f837"
+    },
+    {
+      "bytes": 64,
+      "mode": 384,
+      "name": "probe-06-gate-public.body.raw",
+      "sha256": "c7579a7585fbcb6a7a6134a8ac752fa9d63e1fce77de80f1cc0fd2ed5d0d0246"
+    },
+    {
+      "bytes": 490,
+      "mode": 384,
+      "name": "probe-06-gate-public.headers.raw",
+      "sha256": "3ea185784a04343dad7b21463cef847dd5b2033d354d28a09abf9abeaf78a3ae"
+    },
+    {
+      "bytes": 64,
+      "mode": 384,
+      "name": "probe-07-immediate-after-original.body.raw",
+      "sha256": "e30bf29d5c96c2d812ea711cf6b5fe4f94ee5204607958be649900da44e707ce"
+    },
+    {
+      "bytes": 490,
+      "mode": 384,
+      "name": "probe-07-immediate-after-original.headers.raw",
+      "sha256": "8d452aaff33adaf5a9286d9cf23907a7d3d9d376fc25d7515def977a74cba645"
+    },
+    {
+      "bytes": 526,
+      "mode": 384,
+      "name": "probe-08-final-origin.body.raw",
+      "sha256": "d66f5a88eb8f0da8c8d450dab277b24e4ca5b876ed9f677c6c4a83ab63c029a5"
+    },
+    {
+      "bytes": 364,
+      "mode": 384,
+      "name": "probe-08-final-origin.headers.raw",
+      "sha256": "99463e072d8c3884a798784d7bbc00a1349e199a5e72b9cd26348195a32d8003"
+    },
+    {
+      "bytes": 526,
+      "mode": 384,
+      "name": "probe-09-final-public.body.raw",
+      "sha256": "d66f5a88eb8f0da8c8d450dab277b24e4ca5b876ed9f677c6c4a83ab63c029a5"
+    },
+    {
+      "bytes": 364,
+      "mode": 384,
+      "name": "probe-09-final-public.headers.raw",
+      "sha256": "a7b0dd5cfd13ddf870fd4a93bc8d9dc3bc138794222b8155f82fbf731f12d8fd"
+    }
+  ],
+  "production_accessed": false,
+  "scope": "local-disposable-nginx-php-fpm-no-service-manager",
+  "script_sha256": "293978264e6fb655868df7c04b7e3199cdd1e536e8f34627de79764a32c21ab5",
+  "sequence": {
+    "final_original_probes": [
+      {
+        "body_bytes": 526,
+        "body_sha256": "d66f5a88eb8f0da8c8d450dab277b24e4ca5b876ed9f677c6c4a83ab63c029a5",
+        "gate_header_verified": false,
+        "gate_probe_header_verified": false,
+        "gate_sentinel_verified": false,
+        "header_names": [
+          "cache-control",
+          "connection",
+          "content-type",
+          "date",
+          "pragma",
+          "server",
+          "transfer-encoding",
+          "x-buydtf-opcache-rehearsal-nonce",
+          "x-buydtf-opcache-rehearsal-route"
+        ],
+        "headers_sha256": "99463e072d8c3884a798784d7bbc00a1349e199a5e72b9cd26348195a32d8003",
+        "label": "probe-08-final-origin",
+        "nonce_bound": true,
+        "nonce_sha256": "7463dedd54590a17fc8bfad407b132f5386d4ad7ccabf200a5dedc35272e941f",
+        "original_sentinel_verified": true,
+        "route": "local_origin_nginx_fpm",
+        "route_bound": true,
+        "status": 200
+      },
+      {
+        "body_bytes": 526,
+        "body_sha256": "d66f5a88eb8f0da8c8d450dab277b24e4ca5b876ed9f677c6c4a83ab63c029a5",
+        "gate_header_verified": false,
+        "gate_probe_header_verified": false,
+        "gate_sentinel_verified": false,
+        "header_names": [
+          "cache-control",
+          "connection",
+          "content-type",
+          "date",
+          "pragma",
+          "server",
+          "transfer-encoding",
+          "x-buydtf-opcache-rehearsal-nonce",
+          "x-buydtf-opcache-rehearsal-route"
+        ],
+        "headers_sha256": "a7b0dd5cfd13ddf870fd4a93bc8d9dc3bc138794222b8155f82fbf731f12d8fd",
+        "label": "probe-09-final-public",
+        "nonce_bound": true,
+        "nonce_sha256": "41341e35460f7dffdf064fd83ea5c0bb8c542147784b4b0b30eda8de9699ca0e",
+        "original_sentinel_verified": true,
+        "route": "local_public_nginx_proxy",
+        "route_bound": true,
+        "status": 200
+      }
+    ],
+    "gate_install": {
+      "before": {
+        "bytes": 1687,
+        "gid": 1000,
+        "mode": 420,
+        "sha256": "76ed38352484c1d99a4d9d1f9239ac51cd590a18410eb11ac9ed1afbe1ba5d40",
+        "uid": 1000
+      },
+      "installed": {
+        "bytes": 582,
+        "gid": 1000,
+        "mode": 420,
+        "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4",
+        "uid": 1000
+      }
+    },
+    "gate_probes": [
+      {
+        "body_bytes": 64,
+        "body_sha256": "b56ad58c9a2adf1cbf3ddc52bdc43dc857a29b0c36af8d2b26f41a9c13f8db4b",
+        "gate_header_verified": true,
+        "gate_probe_header_verified": true,
+        "gate_sentinel_verified": true,
+        "header_names": [
+          "cache-control",
+          "connection",
+          "content-type",
+          "date",
+          "pragma",
+          "retry-after",
+          "server",
+          "transfer-encoding",
+          "x-buydtf-dependency-maintenance",
+          "x-buydtf-dependency-probe",
+          "x-buydtf-opcache-rehearsal-nonce",
+          "x-buydtf-opcache-rehearsal-route"
+        ],
+        "headers_sha256": "180a8198c0b28d1423398e67b108e6ce8f982232fd64c5e046adde29155c3491",
+        "label": "probe-04-gate-origin-1",
+        "nonce_bound": true,
+        "nonce_sha256": "e423185709a97f86c9f3a28bf7a875c98dbc221c884bf3f43a14ea197bf74cec",
+        "original_sentinel_verified": false,
+        "route": "local_origin_nginx_fpm",
+        "route_bound": true,
+        "status": 503
+      },
+      {
+        "body_bytes": 64,
+        "body_sha256": "b1b2ad0b0e68c4c8842003e13795d9c06464a62fe15822f0f87ed767590c22e4",
+        "gate_header_verified": true,
+        "gate_probe_header_verified": true,
+        "gate_sentinel_verified": true,
+        "header_names": [
+          "cache-control",
+          "connection",
+          "content-type",
+          "date",
+          "pragma",
+          "retry-after",
+          "server",
+          "transfer-encoding",
+          "x-buydtf-dependency-maintenance",
+          "x-buydtf-dependency-probe",
+          "x-buydtf-opcache-rehearsal-nonce",
+          "x-buydtf-opcache-rehearsal-route"
+        ],
+        "headers_sha256": "4aeab8272a4d882976aba99b84cefc00a16cd8db7f490ce9ff653f079a92f837",
+        "label": "probe-05-gate-origin-2",
+        "nonce_bound": true,
+        "nonce_sha256": "5b1c58274ac0feefcff491ec7ec65e288e579a6fd2b5effa7ff69b421ff75e5e",
+        "original_sentinel_verified": false,
+        "route": "local_origin_nginx_fpm",
+        "route_bound": true,
+        "status": 503
+      },
+      {
+        "body_bytes": 64,
+        "body_sha256": "c7579a7585fbcb6a7a6134a8ac752fa9d63e1fce77de80f1cc0fd2ed5d0d0246",
+        "gate_header_verified": true,
+        "gate_probe_header_verified": true,
+        "gate_sentinel_verified": true,
+        "header_names": [
+          "cache-control",
+          "connection",
+          "content-type",
+          "date",
+          "pragma",
+          "retry-after",
+          "server",
+          "transfer-encoding",
+          "x-buydtf-dependency-maintenance",
+          "x-buydtf-dependency-probe",
+          "x-buydtf-opcache-rehearsal-nonce",
+          "x-buydtf-opcache-rehearsal-route"
+        ],
+        "headers_sha256": "3ea185784a04343dad7b21463cef847dd5b2033d354d28a09abf9abeaf78a3ae",
+        "label": "probe-06-gate-public",
+        "nonce_bound": true,
+        "nonce_sha256": "ddba9fc82aa5c3f74090981ef1921970e6fd111f0119d01adfdf1184f7ad36fe",
+        "original_sentinel_verified": false,
+        "route": "local_public_nginx_proxy",
+        "route_bound": true,
+        "status": 503
+      }
+    ],
+    "gate_revalidation_wait": {
+      "configured_wait_seconds": 11,
+      "earliest_probe_at_utc": "2026-10-03T17:06:11.634573Z",
+      "elapsed_monotonic_ns": 11000351411,
+      "elapsed_seconds": 11.000351411,
+      "end_monotonic_ns": 48406917105954,
+      "ended_at_utc": "2026-10-03T17:06:08.707283Z",
+      "identity_after": {
+        "bytes": 582,
+        "gid": 1000,
+        "mode": 420,
+        "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4",
+        "uid": 1000
+      },
+      "identity_before": {
+        "bytes": 582,
+        "gid": 1000,
+        "mode": 420,
+        "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4",
+        "uid": 1000
+      },
+      "start_monotonic_ns": 48395916754543,
+      "started_at_utc": "2026-10-03T17:06:00.634573Z"
+    },
+    "immediate_stale_gate_after_original_restore": {
+      "body_bytes": 64,
+      "body_sha256": "e30bf29d5c96c2d812ea711cf6b5fe4f94ee5204607958be649900da44e707ce",
+      "gate_header_verified": true,
+      "gate_probe_header_verified": true,
+      "gate_sentinel_verified": true,
+      "header_names": [
+        "cache-control",
+        "connection",
+        "content-type",
+        "date",
+        "pragma",
+        "retry-after",
+        "server",
+        "transfer-encoding",
+        "x-buydtf-dependency-maintenance",
+        "x-buydtf-dependency-probe",
+        "x-buydtf-opcache-rehearsal-nonce",
+        "x-buydtf-opcache-rehearsal-route"
+      ],
+      "headers_sha256": "8d452aaff33adaf5a9286d9cf23907a7d3d9d376fc25d7515def977a74cba645",
+      "label": "probe-07-immediate-after-original",
+      "nonce_bound": true,
+      "nonce_sha256": "3e94d370b356162cd7de54f5aaaeca90d43532c19964463ddd1bea8ea8685ca4",
+      "original_sentinel_verified": false,
+      "route": "local_origin_nginx_fpm",
+      "route_bound": true,
+      "status": 503
+    },
+    "immediate_stale_original_after_gate_install": {
+      "body_bytes": 526,
+      "body_sha256": "d66f5a88eb8f0da8c8d450dab277b24e4ca5b876ed9f677c6c4a83ab63c029a5",
+      "gate_header_verified": false,
+      "gate_probe_header_verified": false,
+      "gate_sentinel_verified": false,
+      "header_names": [
+        "cache-control",
+        "connection",
+        "content-type",
+        "date",
+        "pragma",
+        "server",
+        "transfer-encoding",
+        "x-buydtf-opcache-rehearsal-nonce",
+        "x-buydtf-opcache-rehearsal-route"
+      ],
+      "headers_sha256": "f29e59921cfeb50a044c7f697e2d07a4434a711252675ffc9fd1559ea86a20d9",
+      "label": "probe-03-immediate-after-gate",
+      "nonce_bound": true,
+      "nonce_sha256": "d2e85e20813040e9b5e63cc2eb913443be278f468bf2427fc9662d062fc21f74",
+      "original_sentinel_verified": true,
+      "route": "local_origin_nginx_fpm",
+      "route_bound": true,
+      "status": 200
+    },
+    "original_restore": {
+      "before": {
+        "bytes": 582,
+        "gid": 1000,
+        "mode": 420,
+        "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4",
+        "uid": 1000
+      },
+      "installed": {
+        "bytes": 1687,
+        "gid": 1000,
+        "mode": 420,
+        "sha256": "76ed38352484c1d99a4d9d1f9239ac51cd590a18410eb11ac9ed1afbe1ba5d40",
+        "uid": 1000
+      }
+    },
+    "original_revalidation_wait": {
+      "configured_wait_seconds": 11,
+      "earliest_probe_at_utc": "2026-10-03T17:06:19.746907Z",
+      "elapsed_monotonic_ns": 11003364487,
+      "elapsed_seconds": 11.003364487,
+      "end_monotonic_ns": 48417960094249,
+      "ended_at_utc": "2026-10-03T17:06:19.750272Z",
+      "identity_after": {
+        "bytes": 1687,
+        "gid": 1000,
+        "mode": 420,
+        "sha256": "76ed38352484c1d99a4d9d1f9239ac51cd590a18410eb11ac9ed1afbe1ba5d40",
+        "uid": 1000
+      },
+      "identity_before": {
+        "bytes": 1687,
+        "gid": 1000,
+        "mode": 420,
+        "sha256": "76ed38352484c1d99a4d9d1f9239ac51cd590a18410eb11ac9ed1afbe1ba5d40",
+        "uid": 1000
+      },
+      "start_monotonic_ns": 48406956729762,
+      "started_at_utc": "2026-10-03T17:06:08.746907Z"
+    },
+    "warm_original": {
+      "body_bytes": 526,
+      "body_sha256": "d66f5a88eb8f0da8c8d450dab277b24e4ca5b876ed9f677c6c4a83ab63c029a5",
+      "gate_header_verified": false,
+      "gate_probe_header_verified": false,
+      "gate_sentinel_verified": false,
+      "header_names": [
+        "cache-control",
+        "connection",
+        "content-type",
+        "date",
+        "pragma",
+        "server",
+        "transfer-encoding",
+        "x-buydtf-opcache-rehearsal-nonce",
+        "x-buydtf-opcache-rehearsal-route"
+      ],
+      "headers_sha256": "4143440aa5c7ad8836dd2066e4323eb06927ca1b5b7bd7970be9f949d9b3ed57",
+      "label": "probe-02-warm-original",
+      "nonce_bound": true,
+      "nonce_sha256": "904224d850c2b7f553a167b697d19fdbe8284d3ccba7b5d0bc112c855347a3a0",
+      "original_sentinel_verified": true,
+      "route": "local_origin_nginx_fpm",
+      "route_bound": true,
+      "status": 200
+    }
+  },
+  "status": "pass",
+  "system_services_changed": false
+}
