@@ -1,3 +1,40 @@
+Nginx include inventory correction for independent re-review
+
+Correction parent: 00d5e896e35035bc9051de25764aade4a97b44cf
+That commit remains unapproved for staging. Its exact verifier's rejection of
+/etc/letsencrypt/options-ssl-nginx.conf was reproduced locally with the approved
+18-file path inventory. The replacement permits only the exact frozen inventory,
+including that one reviewed Let's Encrypt file. It does not permit a directory
+prefix or additional Let's Encrypt files.
+
+The frozen envelope's 18 lexical paths, resolved targets, raw-byte hashes, byte
+counts, UID/GID and modes are individually enforced. The existing capture hash,
+0600 evidence policy, protected lexical/resolved parents, current Dan writability,
+expanded include set, root/FPM socket/SCRIPT_FILENAME and service checks remain.
+The resulting nginx receipt also binds the canonical approved-inventory hash.
+
+Four new tests exercise the actual verifier, environment_identity, preflight_guard,
+production_preflight and stage_release's rejecting path. The approved inventory
+passes. Eighteen drift cases fail at their expected check and prevent release-root
+creation, candidate extraction and copying. Four malformed inventory cases also
+fail closed. These tests use an isolated mapped filesystem, synthetic configuration
+bytes, the exact approved lexical/resolved inventory, simulated Dan access and
+external runtime/service reads. They do not represent a new production capture.
+The old verifier fails the same otherwise-approved fixture; the new verifier passes.
+
+All 86 parser/runner/gate/nginx tests and nine atomic source scenarios were re-run
+with the replacement runner hash. Their receipts are refreshed. Application source,
+dependencies, envelope, parser, shared v4 gate, helper, rendering and build inputs
+are byte-for-byte unchanged. Their accepted validation receipts from the correction
+parent are retained. No production access, staging, gate installation, sudo command,
+permission grant, dependency/source/configuration mutation or service action occurred
+during this correction. Production read-only receipts below are retained from the
+prior preparation; no new production verification is claimed.
+
+CORRECTION_CHANGED_PATHS.txt lists the exact delta from the correction parent.
+CHANGED_PATHS.txt retains the complete package delta from 3db18d1fff3f599299eecd2aae21b9102fc45540.
+Fresh independent review and separate restricted-stage authority remain required.
+
 Transparency source-only replacement prepared for independent review
 
 Local branch: fix/production-alpha-transparency-source-only-v3-20261004
@@ -31,9 +68,9 @@ Runtime source candidate: 2c8268cdfbfd3fc294d17de7ab960ab2e1a7f8faa38acd68935af1
 Eleven-member source CAS before: 0ceca182384a8e68560ec542c0c2c0c695971b8488321ca0899ea7a880d6fd17
 Eleven-member source CAS target: b3379cd90676d8b3214371e17ffd3278cd43ba1885a6223b12998a8b40e5ea27
 Unchanged raw source archive: 3067bca578201a39254d8544b633a04ff6a9e43fc0de2a2783a95ccde9a1bfcd
-Runner: e1f4cc0121c620f6d8bda9fb72e6f3bdc17f7a7f15530024f6b9cea526c9d0fd
+Runner: 25da4ddef0b4eb088cdedadf4848b1286a389760942493717e52d00f02c014df
 Runtime helper: e4f0e1880a877f4f3866e35d7049de936857eeb1d70c3c8a6e229a9c53653f85
-Source gate adapter: 642c7d0cf698ac2b01c9311e066182eabcae29fe7f4ff4e8b681d29cd72f1fb3
+Source gate adapter: 2719da67c6d425e5fa4bef70aade0789aba1deccfaf09f8992c8674883c65c00
 Accepted v4 shared gate helper: b93c08f58a08333120369c1cc75c60631d621c3a8099ca3967065721c45679f5
 FPM SAPI probe: b8b34f87d45a0c000cc0df7917496631320cfbdcca1ff44bc41741ce0d569262
 Nginx identity helper: 1243fea2757aca89f586ec4b322b0d23ee1e19b2d027c21bd6523e71e6e6e8e0
@@ -106,7 +143,7 @@ orphan/unparsed data, exceptions, traces, fatal errors, SQLSTATE, missing classe
 or views and candidate failures, while the reviewed 56 benign diagnostics pass.
 
 Validation:
-- 82 Python parser/runner/adapter/gate tests: pass, zero skips.
+- 86 Python parser/runner/adapter/gate/nginx tests: pass, zero skips.
 - Nine atomic source scenarios: pass, including partial swaps, under-gate metadata
   drift, candidate/opening failures, genuine log errors, schema-preserving
   rollback, post-source FPM timeout with original live, and failed gate HTTP
@@ -211,7 +248,7 @@ authorized. Keep receiver/job-label/retention disabled and artwork hosts empty.
 
 Local reproduction references:
 
-- Run the four Python modules listed in python-validation-receipt.json with
+- Run the five Python modules listed in python-validation-receipt.json with
   Python -B unittest in ops/deployment; use a root-owned disposable WSL /tmp
   location for the actual UID/GID 33 rehearsal, not production paths.
 - rehearse_production_alpha_transparency.py consumes the unchanged 3067bca5...

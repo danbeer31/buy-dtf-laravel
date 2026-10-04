@@ -119,7 +119,7 @@ STAGE_APPROVAL_TOKEN = f"STAGE-BUYDTF-ALPHA-V3-{TARGET_COMMIT[:16]}"
 DEPLOY_APPROVAL_TOKEN = f"DEPLOY-BUYDTF-ALPHA-V3-{TARGET_COMMIT[:16]}"
 RECOVERY_APPROVAL_TOKEN = f"RECOVER-BUYDTF-ALPHA-V3-{TARGET_COMMIT[:16]}"
 
-CONTROL_FILES = {'production_alpha_gate_controls.py': '642c7d0cf698ac2b01c9311e066182eabcae29fe7f4ff4e8b681d29cd72f1fb3', 'production_alpha_dependency_envelope.json': '04850fe3aef14981c92f5b2af373bd136cfb6fead456d86fcab7233acb009fd1', 'laravel_dependency_gate.py': 'b93c08f58a08333120369c1cc75c60631d621c3a8099ca3967065721c45679f5', 'laravel_nginx_identity.py': '1243fea2757aca89f586ec4b322b0d23ee1e19b2d027c21bd6523e71e6e6e8e0', 'laravel_fpm_opcache_probe.php': 'b8b34f87d45a0c000cc0df7917496631320cfbdcca1ff44bc41741ce0d569262'}
+CONTROL_FILES = {'production_alpha_gate_controls.py': '2719da67c6d425e5fa4bef70aade0789aba1deccfaf09f8992c8674883c65c00', 'production_alpha_dependency_envelope.json': '04850fe3aef14981c92f5b2af373bd136cfb6fead456d86fcab7233acb009fd1', 'laravel_dependency_gate.py': 'b93c08f58a08333120369c1cc75c60631d621c3a8099ca3967065721c45679f5', 'laravel_nginx_identity.py': '1243fea2757aca89f586ec4b322b0d23ee1e19b2d027c21bd6523e71e6e6e8e0', 'laravel_fpm_opcache_probe.php': 'b8b34f87d45a0c000cc0df7917496631320cfbdcca1ff44bc41741ce0d569262'}
 
 DRAIN_SECONDS = 65
 OPCACHE_WAIT_SECONDS = 7

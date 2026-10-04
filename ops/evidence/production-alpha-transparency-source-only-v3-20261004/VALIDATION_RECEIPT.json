@@ -18,13 +18,14 @@
     },
     "wsl_php": "8.3.6"
   },
-  "artifacts_sha256": "21a72e2cfd5cec4a187fa88dbcbc03530df3284d6f57ae19763021d1ac47ad10",
+  "artifacts_sha256": "941a34fedf757f2869b345ac38ed7965c2777d21593064d7c3a8be53cd83db6f",
   "candidate_builds": {
     "clean_mirrors": 2,
     "dependency_update_or_install": false,
     "identities_retained": true,
     "routes_each": 178
   },
+  "correction_validation_scope": "complete parser/runner/gate/rollback control suite and nine atomic source rehearsals re-run; unchanged application/dependency/build/render proofs retained byte-for-byte",
   "frontend_full_audit": {
     "critical": 2,
     "high": 14,
@@ -34,29 +35,42 @@
     "total": 19
   },
   "frontend_production_audit_zero": true,
+  "nginx_inventory_correction": {
+    "approved_files": 18,
+    "malformed_inventory_scenarios": 4,
+    "negative_stage_scenarios": 18,
+    "prior_actual_verifier_blocker_reproduced": true,
+    "production_access": false,
+    "receipt_sha256": "d5280b6f892dcbb168dbd6490ccc4673a89b90a39739b985fbbc94656131c333",
+    "status": "pass"
+  },
   "php_lint_paths": 13,
   "php_platform": "8.2.30 pass",
   "production_immutability_receipt_sha256": "00f4c5d9dce7e60872d0601adc965d96fb7c9462075fa302f03323d10cc8ae12",
   "production_stage_or_cutover_performed": false,
   "python": {
     "actual_uid": 0,
-    "elapsed_seconds": 11.168178755004192,
+    "control_sha256": "2719da67c6d425e5fa4bef70aade0789aba1deccfaf09f8992c8674883c65c00",
+    "elapsed_seconds": 15.078703771010623,
     "errors": 0,
     "failures": 0,
     "modules": [
       "test_laravel_log_guard",
       "test_production_alpha_transparency_runner",
       "test_production_alpha_gate_controls",
-      "test_laravel_dependency_gate"
+      "test_laravel_dependency_gate",
+      "test_production_alpha_nginx_inventory"
     ],
-    "runner_sha256": "e1f4cc0121c620f6d8bda9fb72e6f3bdc17f7a7f15530024f6b9cea526c9d0fd",
+    "nginx_inventory_test_sha256": "6902f9b427485ac80ae6f3ed21c5a6bc4624fe939d7109a98196979482df7e25",
+    "runner_sha256": "25da4ddef0b4eb088cdedadf4848b1286a389760942493717e52d00f02c014df",
     "skips": 0,
-    "source_rehearsal_sha256": "fb14b09421dd4a8da0fbfcfbefaa5d0e3f32a0529312d50169d70c39f17b83e7",
+    "source_rehearsal_sha256": "31b612060d85d75b6922da159d06c450fab99b1e1a5874264c6022b0d2757f30",
     "status": "pass",
-    "test_log_sha256": "d0727a69401e4be5411e3f93b100ed19ee76f421c6010a9b01aef90d9791816f",
-    "tests": 82
+    "test_log_sha256": "84129059f093273712462a34473d88350ad2d8e4936894aad76d8bc4403a02f1",
+    "tests": 86
   },
   "raw_customer_data_in_git": false,
   "renderer_runs_identical": 2,
-  "status": "independent_review_ready_with_existing_frontend_development_advisories"
+  "status": "independent_review_ready_with_existing_frontend_development_advisories",
+  "unchanged_application_dependency_render_and_build_validation_from_commit": "00d5e896e35035bc9051de25764aade4a97b44cf"
 }

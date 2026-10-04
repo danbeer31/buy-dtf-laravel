@@ -5,8 +5,8 @@
   "final_receipt_sha256": null,
   "final_state_status": "rolled_back",
   "fpm_checkpoint_receipt": {
-    "path": "/tmp/buy-dtf-alpha-rehearsal-2b0y88si/buy-dtf-alpha-source-swap-failure-3v_2jjf9/rollbacks/b02fce32-20261004T054611Z/fpm-opcache-before-source-mutation-receipt.json",
-    "sha256": "4236bb1f30a7ca63e9cd6ad6aeff9b4a54463a9b3848a98b54a48efe7fc0c27c"
+    "path": "/tmp/buy-dtf-alpha-rehearsal-0yr81asx/buy-dtf-alpha-source-swap-failure-icc1d0yk/rollbacks/b02fce32-20261004T224138Z/fpm-opcache-before-source-mutation-receipt.json",
+    "sha256": "786e7479a0d9941798ce3b705c20259cb3e8e5af9433942d322937f4a5cedcd6"
   },
   "front_controller_mode": "0o644",
   "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
@@ -38,7 +38,7 @@
           "mode": 420,
           "uid": 1000
         },
-        "path": "/tmp/buy-dtf-alpha-rehearsal-2b0y88si/buy-dtf-alpha-source-swap-failure-3v_2jjf9/application/public/index.php",
+        "path": "/tmp/buy-dtf-alpha-rehearsal-0yr81asx/buy-dtf-alpha-source-swap-failure-icc1d0yk/application/public/index.php",
         "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
       },
       "identity_before": {
@@ -49,7 +49,7 @@
           "mode": 420,
           "uid": 1000
         },
-        "path": "/tmp/buy-dtf-alpha-rehearsal-2b0y88si/buy-dtf-alpha-source-swap-failure-3v_2jjf9/application/public/index.php",
+        "path": "/tmp/buy-dtf-alpha-rehearsal-0yr81asx/buy-dtf-alpha-source-swap-failure-icc1d0yk/application/public/index.php",
         "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
       },
       "operation": "cutover-static-gate",
@@ -98,7 +98,7 @@
           "mode": 420,
           "uid": 1000
         },
-        "path": "/tmp/buy-dtf-alpha-rehearsal-2b0y88si/buy-dtf-alpha-source-swap-failure-3v_2jjf9/application/public/index.php",
+        "path": "/tmp/buy-dtf-alpha-rehearsal-0yr81asx/buy-dtf-alpha-source-swap-failure-icc1d0yk/application/public/index.php",
         "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
       },
       "identity_before": {
@@ -109,7 +109,7 @@
           "mode": 420,
           "uid": 1000
         },
-        "path": "/tmp/buy-dtf-alpha-rehearsal-2b0y88si/buy-dtf-alpha-source-swap-failure-3v_2jjf9/application/public/index.php",
+        "path": "/tmp/buy-dtf-alpha-rehearsal-0yr81asx/buy-dtf-alpha-source-swap-failure-icc1d0yk/application/public/index.php",
         "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
       },
       "operation": "rollback-static-gate",
@@ -158,7 +158,7 @@
           "mode": 420,
           "uid": 1000
         },
-        "path": "/tmp/buy-dtf-alpha-rehearsal-2b0y88si/buy-dtf-alpha-source-swap-failure-3v_2jjf9/application/public/index.php",
+        "path": "/tmp/buy-dtf-alpha-rehearsal-0yr81asx/buy-dtf-alpha-source-swap-failure-icc1d0yk/application/public/index.php",
         "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
       },
       "identity_before": {
@@ -169,7 +169,7 @@
           "mode": 420,
           "uid": 1000
         },
-        "path": "/tmp/buy-dtf-alpha-rehearsal-2b0y88si/buy-dtf-alpha-source-swap-failure-3v_2jjf9/application/public/index.php",
+        "path": "/tmp/buy-dtf-alpha-rehearsal-0yr81asx/buy-dtf-alpha-source-swap-failure-icc1d0yk/application/public/index.php",
         "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
       },
       "operation": "rollback-original-front-controller-restore",
@@ -204,8 +204,8 @@
   "post_mutation_fpm_fallback_count": 0,
   "prohibited_command_count": 0,
   "raw_evidence_entries": 26,
-  "raw_evidence_manifest_sha256": "12e2c1d9512addf79728649676bea63a04645a02de7f38f46a20bc98ab1a0701",
-  "raw_state_directory_name": "b02fce32-20261004T054611Z",
+  "raw_evidence_manifest_sha256": "7b41ea93717c528a1e28f4bc27441c14286e7bfd8b49ed527f0035e6c6e17e7f",
+  "raw_state_directory_name": "b02fce32-20261004T224138Z",
   "rollback_complete": true,
   "scenario": "source-swap-failure",
   "schema_state": "installed_schema_source_only_v1",
@@ -214,6 +214,6 @@
   "source_cas_sha256": "0ceca182384a8e68560ec542c0c2c0c695971b8488321ca0899ea7a880d6fd17",
   "source_expectation": "expected-live",
   "source_install_started": true,
-  "state_sha256": "4d07d5c7f5b08c7439434033ced65480d419ebfc3dfa76e934e8108f13cebfe7",
+  "state_sha256": "78d4dd96994da50741faa4e8a7bf896a8487dd0df3483d7570b97934eba3c4ab",
   "status": "pass"
 }

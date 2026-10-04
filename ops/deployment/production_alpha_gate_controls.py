@@ -807,7 +807,24 @@ def verify_read_only_nginx() -> dict[str, Any]:
     """
     envelope = frozen_envelope()
     expected = envelope['nginx']['accepted_stable_identity']
-    capture = require_regular_file(Path(envelope['accepted_nginx_dump_path']), expected['effective_config_sha256'])
+    inventory = envelope['nginx'].get('current_files')
+    if not isinstance(inventory, list) or len(inventory) != 18:
+        raise DeploymentError('Approved nginx include inventory is missing or invalid')
+    approved = {}
+    for record in inventory:
+        if not isinstance(record, dict) or not isinstance(record.get('path'), str):
+            raise DeploymentError('Approved nginx include inventory is invalid')
+        name = record['path']
+        path = Path(name)
+        if not path.is_absolute() or str(path) != name or name in approved:
+            raise DeploymentError('Approved nginx include inventory contains an invalid or duplicate path')
+        approved[name] = record
+    if '/etc/nginx/nginx.conf' not in approved:
+        raise DeploymentError('Approved nginx include inventory is missing its root configuration')
+    try:
+        capture = require_regular_file(Path(envelope['accepted_nginx_dump_path']), expected['effective_config_sha256'])
+    except OSError as error:
+        raise DeploymentError('Accepted nginx evidence is missing or unreadable') from error
     if path_metadata(capture)['mode'] != 0o600:
         raise DeploymentError('Accepted nginx evidence is not private mode 0600')
     raw = capture.read_bytes()
@@ -815,21 +832,32 @@ def verify_read_only_nginx() -> dict[str, Any]:
     names, includes, rebuilt, files = set(), set(), b'', []
     for marker in markers:
         name = marker.group(1).decode('utf-8'); path = Path(name)
-        if not path.is_absolute() or not str(path).startswith('/etc/nginx/'):
+        if name not in approved or name in names:
             raise DeploymentError('Unexpected nginx include path')
-        resolved = path.resolve(strict=True)
-        for protected in [path, resolved, *path.parents, *resolved.parents]:
-            metadata = protected.stat()
-            if metadata.st_uid != 0 or metadata.st_gid != 0 or stat.S_IMODE(metadata.st_mode) & 0o022 or os.access(protected, os.W_OK):
-                raise DeploymentError('Nginx path is no longer administrator-controlled')
-        data = resolved.read_bytes()
+        record = approved[name]
+        try:
+            resolved = path.resolve(strict=True)
+            if str(resolved) != record['resolved_path']:
+                raise DeploymentError('Approved nginx include resolved target differs')
+            for protected in [path, resolved, *path.parents, *resolved.parents]:
+                metadata = protected.stat()
+                if metadata.st_uid != 0 or metadata.st_gid != 0 or stat.S_IMODE(metadata.st_mode) & 0o022 or os.access(protected, os.W_OK):
+                    raise DeploymentError('Nginx path is no longer administrator-controlled')
+            metadata = resolved.stat()
+            if not stat.S_ISREG(metadata.st_mode) or (metadata.st_uid, metadata.st_gid, stat.S_IMODE(metadata.st_mode)) != (record['uid'], record['gid'], int(record['mode'], 8)):
+                raise DeploymentError('Approved nginx include metadata differs')
+            data = resolved.read_bytes()
+        except OSError as error:
+            raise DeploymentError('Approved nginx include is missing or unreadable') from error
+        if len(data) != record['bytes'] or sha256_bytes(data) != record['sha256']:
+            raise DeploymentError('Approved nginx include bytes differ')
         files.append({'path':name,'sha256':sha256_bytes(data),'resolved_path':str(resolved)})
         rebuilt += b'# configuration file ' + marker.group(1) + b':\n' + data + b'\n'; names.add(name)
         for directive in re.finditer(r'(?m)^\s*include\s+([^;\r\n]+);',data.decode('utf-8')):
             pattern = directive.group(1).strip().strip(chr(34)+chr(39))
             if not pattern.startswith('/'): pattern='/etc/nginx/'+pattern
             includes.update(glob.glob(pattern))
-    if len(markers) != 18 or rebuilt != raw or includes != names - {'/etc/nginx/nginx.conf'}:
+    if len(markers) != len(approved) or names != set(approved) or rebuilt != raw or includes != names - {'/etc/nginx/nginx.conf'}:
         raise DeploymentError('Current nginx include bytes/set differ; administrator re-verification required')
     try: route=environment_controls.identify_nginx_document_root(raw.decode('utf-8'))
     except environment_controls.EnvironmentControlError as error: raise DeploymentError(str(error)) from error
@@ -838,7 +866,7 @@ def verify_read_only_nginx() -> dict[str, Any]:
     services = subprocess.run(['/usr/bin/systemctl','show','nginx.service','php8.2-fpm.service','supervisor.service','cron.service','--no-pager','--property=MainPID,NRestarts,ExecMainStartTimestamp,ExecMainStartTimestampMonotonic,Id,LoadState,ActiveState,SubState,ActiveEnterTimestampMonotonic'],stdout=subprocess.PIPE,stderr=subprocess.PIPE,timeout=30,check=False)
     if services.returncode or sha256_bytes(services.stdout) != envelope['services_sha256']:
         raise DeploymentError('Effective service identity changed; administrator re-verification required')
-    return {'status':'pass','method':'accepted_dump_exact_current_bytes_and_includes_unchanged_services','effective_config_sha256':sha256_bytes(raw),'document_root_identity':route,'services_sha256':sha256_bytes(services.stdout),'files':files,'new_administrator_access_required':False}
+    return {'status':'pass','method':'accepted_dump_exact_current_bytes_and_includes_unchanged_services','approved_include_inventory_sha256':sha256_bytes(dependency_gate.canonical_bytes(inventory)),'effective_config_sha256':sha256_bytes(raw),'document_root_identity':route,'services_sha256':sha256_bytes(services.stdout),'files':files,'new_administrator_access_required':False}
 
 
 def require_configuration_identity() -> dict[str, str]:

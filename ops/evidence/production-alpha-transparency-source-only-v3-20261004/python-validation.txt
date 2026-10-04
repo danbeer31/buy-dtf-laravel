@@ -80,8 +80,12 @@ test_unknown_live_bytes_are_rejected_without_overwrite (test_laravel_dependency_
 test_v3_immediate_probe_regression_is_blocked_by_monotonic_wait (test_laravel_dependency_gate.LaravelDependencyGateUnitTest.test_v3_immediate_probe_regression_is_blocked_by_monotonic_wait) ... ok
 test_wait_is_shared_by_install_reassert_containment_restore_and_recovery (test_laravel_dependency_gate.LaravelDependencyGateUnitTest.test_wait_is_shared_by_install_reassert_containment_restore_and_recovery) ... ok
 test_wall_clock_regression_cannot_shorten_monotonic_wait (test_laravel_dependency_gate.LaravelDependencyGateUnitTest.test_wall_clock_regression_cannot_shorten_monotonic_wait) ... ok
+test_approved_inventory_passes_both_real_phase0_paths (test_production_alpha_nginx_inventory.ApprovedNginxInventoryTest.test_approved_inventory_passes_both_real_phase0_paths) ... ok
+test_drift_fails_real_phase0_and_stage_before_release_creation (test_production_alpha_nginx_inventory.ApprovedNginxInventoryTest.test_drift_fails_real_phase0_and_stage_before_release_creation) ... ok
+test_exact_approved_inventory_including_letsencrypt_passes_real_verifier (test_production_alpha_nginx_inventory.ApprovedNginxInventoryTest.test_exact_approved_inventory_including_letsencrypt_passes_real_verifier) ... ok
+test_missing_duplicate_or_changed_inventory_fails_closed (test_production_alpha_nginx_inventory.ApprovedNginxInventoryTest.test_missing_duplicate_or_changed_inventory_fails_closed) ... ok
 
 ----------------------------------------------------------------------
-Ran 82 tests in 11.163s
+Ran 86 tests in 15.071s
 
 OK

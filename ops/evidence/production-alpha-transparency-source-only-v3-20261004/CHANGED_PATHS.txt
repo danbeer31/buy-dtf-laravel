@@ -11,9 +11,11 @@ ops/deployment/rehearse_laravel_dependency_opcache.py
 ops/deployment/rehearse_production_alpha_transparency.py
 ops/deployment/test_laravel_dependency_gate.py
 ops/deployment/test_production_alpha_gate_controls.py
+ops/deployment/test_production_alpha_nginx_inventory.py
 ops/deployment/test_production_alpha_transparency_runner.py
 ops/evidence/production-alpha-transparency-source-only-v3-20261004/APPLICATION_MANIFEST.json
 ops/evidence/production-alpha-transparency-source-only-v3-20261004/CHANGED_PATHS.txt
+ops/evidence/production-alpha-transparency-source-only-v3-20261004/CORRECTION_CHANGED_PATHS.txt
 ops/evidence/production-alpha-transparency-source-only-v3-20261004/EVIDENCE_MANIFEST.json
 ops/evidence/production-alpha-transparency-source-only-v3-20261004/REVIEW_HANDOFF.txt
 ops/evidence/production-alpha-transparency-source-only-v3-20261004/SHA256SUMS
@@ -30,6 +32,7 @@ ops/evidence/production-alpha-transparency-source-only-v3-20261004/database-enve
 ops/evidence/production-alpha-transparency-source-only-v3-20261004/frontend-validation-receipt.json
 ops/evidence/production-alpha-transparency-source-only-v3-20261004/full-application-suite.txt
 ops/evidence/production-alpha-transparency-source-only-v3-20261004/gate-transition-rehearsal.json
+ops/evidence/production-alpha-transparency-source-only-v3-20261004/nginx-inventory-rehearsal-receipt.json
 ops/evidence/production-alpha-transparency-source-only-v3-20261004/npm-build.txt
 ops/evidence/production-alpha-transparency-source-only-v3-20261004/npm-full-audit.json
 ops/evidence/production-alpha-transparency-source-only-v3-20261004/npm-production-audit.json

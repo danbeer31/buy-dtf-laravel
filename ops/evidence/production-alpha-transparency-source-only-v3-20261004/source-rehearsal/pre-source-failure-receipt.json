@@ -35,7 +35,7 @@
           "mode": 420,
           "uid": 1000
         },
-        "path": "/tmp/buy-dtf-alpha-rehearsal-2b0y88si/buy-dtf-alpha-pre-source-failure-zgnxtdm6/application/public/index.php",
+        "path": "/tmp/buy-dtf-alpha-rehearsal-0yr81asx/buy-dtf-alpha-pre-source-failure-290mu67v/application/public/index.php",
         "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
       },
       "identity_before": {
@@ -46,7 +46,7 @@
           "mode": 420,
           "uid": 1000
         },
-        "path": "/tmp/buy-dtf-alpha-rehearsal-2b0y88si/buy-dtf-alpha-pre-source-failure-zgnxtdm6/application/public/index.php",
+        "path": "/tmp/buy-dtf-alpha-rehearsal-0yr81asx/buy-dtf-alpha-pre-source-failure-290mu67v/application/public/index.php",
         "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
       },
       "operation": "cutover-static-gate",
@@ -95,7 +95,7 @@
           "mode": 420,
           "uid": 1000
         },
-        "path": "/tmp/buy-dtf-alpha-rehearsal-2b0y88si/buy-dtf-alpha-pre-source-failure-zgnxtdm6/application/public/index.php",
+        "path": "/tmp/buy-dtf-alpha-rehearsal-0yr81asx/buy-dtf-alpha-pre-source-failure-290mu67v/application/public/index.php",
         "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
       },
       "identity_before": {
@@ -106,7 +106,7 @@
           "mode": 420,
           "uid": 1000
         },
-        "path": "/tmp/buy-dtf-alpha-rehearsal-2b0y88si/buy-dtf-alpha-pre-source-failure-zgnxtdm6/application/public/index.php",
+        "path": "/tmp/buy-dtf-alpha-rehearsal-0yr81asx/buy-dtf-alpha-pre-source-failure-290mu67v/application/public/index.php",
         "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
       },
       "operation": "rollback-static-gate",
@@ -155,7 +155,7 @@
           "mode": 420,
           "uid": 1000
         },
-        "path": "/tmp/buy-dtf-alpha-rehearsal-2b0y88si/buy-dtf-alpha-pre-source-failure-zgnxtdm6/application/public/index.php",
+        "path": "/tmp/buy-dtf-alpha-rehearsal-0yr81asx/buy-dtf-alpha-pre-source-failure-290mu67v/application/public/index.php",
         "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
       },
       "identity_before": {
@@ -166,7 +166,7 @@
           "mode": 420,
           "uid": 1000
         },
-        "path": "/tmp/buy-dtf-alpha-rehearsal-2b0y88si/buy-dtf-alpha-pre-source-failure-zgnxtdm6/application/public/index.php",
+        "path": "/tmp/buy-dtf-alpha-rehearsal-0yr81asx/buy-dtf-alpha-pre-source-failure-290mu67v/application/public/index.php",
         "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
       },
       "operation": "rollback-original-front-controller-restore",
@@ -201,8 +201,8 @@
   "post_mutation_fpm_fallback_count": 0,
   "prohibited_command_count": 0,
   "raw_evidence_entries": 24,
-  "raw_evidence_manifest_sha256": "82a2de571ff32044578d07582ba0ef81f7c69b4e7fb8962cdc50b822b9fcbd27",
-  "raw_state_directory_name": "b02fce32-20261004T054610Z",
+  "raw_evidence_manifest_sha256": "933c3f358e29b4233a2d03bc379494faed08927c186113c3f99f1e0e9c262380",
+  "raw_state_directory_name": "b02fce32-20261004T224136Z",
   "rollback_complete": true,
   "scenario": "pre-source-failure",
   "schema_state": "installed_schema_source_only_v1",
@@ -211,6 +211,6 @@
   "source_cas_sha256": "0ceca182384a8e68560ec542c0c2c0c695971b8488321ca0899ea7a880d6fd17",
   "source_expectation": "expected-live",
   "source_install_started": false,
-  "state_sha256": "853f729b8081991872ab57b84387d5b04cdbd2158622ab7b59949922fd83d97c",
+  "state_sha256": "aa8e0749b5d6fcc0d6de0febbe1f419daf121776cd0920dad009a6fd407f0665",
   "status": "pass"
 }

@@ -15,25 +15,29 @@
     "files": 326,
     "sha256": "3909bdc2303b5c578135859c847f311cd84b827e62ac4e5dbce3d2297f6da71f"
   },
+  "correction_parent_commit": "00d5e896e35035bc9051de25764aade4a97b44cf",
   "fpm_opcache_probe_sha256": "b8b34f87d45a0c000cc0df7917496631320cfbdcca1ff44bc41741ce0d569262",
   "frozen_controls": {
     "laravel_dependency_gate.py": "b93c08f58a08333120369c1cc75c60631d621c3a8099ca3967065721c45679f5",
     "laravel_fpm_opcache_probe.php": "b8b34f87d45a0c000cc0df7917496631320cfbdcca1ff44bc41741ce0d569262",
     "laravel_nginx_identity.py": "1243fea2757aca89f586ec4b322b0d23ee1e19b2d027c21bd6523e71e6e6e8e0",
     "production_alpha_dependency_envelope.json": "04850fe3aef14981c92f5b2af373bd136cfb6fead456d86fcab7233acb009fd1",
-    "production_alpha_gate_controls.py": "642c7d0cf698ac2b01c9311e066182eabcae29fe7f4ff4e8b681d29cd72f1fb3"
+    "production_alpha_gate_controls.py": "2719da67c6d425e5fa4bef70aade0789aba1deccfaf09f8992c8674883c65c00"
   },
   "frozen_envelope_sha256": "04850fe3aef14981c92f5b2af373bd136cfb6fead456d86fcab7233acb009fd1",
+  "nginx_approved_include_inventory_sha256": "4133ef8f575626f0b24e017c4f0320ffce05bb1e1bae71c8a3eca0f4acc1dbf1",
   "nginx_helper_sha256": "1243fea2757aca89f586ec4b322b0d23ee1e19b2d027c21bd6523e71e6e6e8e0",
+  "nginx_inventory_rehearsal_receipt_sha256": "d5280b6f892dcbb168dbd6490ccc4673a89b90a39739b985fbbc94656131c333",
+  "nginx_inventory_test_sha256": "6902f9b427485ac80ae6f3ed21c5a6bc4624fe939d7109a98196979482df7e25",
   "no_dependency_payload_or_customer_artwork_in_source_archive": true,
   "parser_sha256": "4bdec766469e71568631dbcf7408e94696f2fd99c46c18dd58b8374f31a488c8",
   "repository_historical_lock_sha256_not_used_for_build_or_install": "eeac4637272ca2b9aeaa797a4440cfc8b4e31f5a469619c46ebfa5791c701831",
-  "runner_sha256": "e1f4cc0121c620f6d8bda9fb72e6f3bdc17f7a7f15530024f6b9cea526c9d0fd",
+  "runner_sha256": "25da4ddef0b4eb088cdedadf4848b1286a389760942493717e52d00f02c014df",
   "runtime_helper_sha256": "e4f0e1880a877f4f3866e35d7049de936857eeb1d70c3c8a6e229a9c53653f85",
   "scoped_source_cas_after": "b3379cd90676d8b3214371e17ffd3278cd43ba1885a6223b12998a8b40e5ea27",
   "scoped_source_cas_before": "0ceca182384a8e68560ec542c0c2c0c695971b8488321ca0899ea7a880d6fd17",
   "shared_v4_gate_helper_sha256": "b93c08f58a08333120369c1cc75c60631d621c3a8099ca3967065721c45679f5",
-  "source_gate_adapter_sha256": "642c7d0cf698ac2b01c9311e066182eabcae29fe7f4ff4e8b681d29cd72f1fb3",
+  "source_gate_adapter_sha256": "2719da67c6d425e5fa4bef70aade0789aba1deccfaf09f8992c8674883c65c00",
   "source_install_members": [
     {
       "expected_live_bytes": 28229,
@@ -163,5 +167,7 @@
     }
   ],
   "status": "independent_review_required_not_authorized_to_stage",
+  "superseded_nginx_control_sha256": "642c7d0cf698ac2b01c9311e066182eabcae29fe7f4ff4e8b681d29cd72f1fb3",
+  "superseded_unapproved_staging_runner_sha256": "e1f4cc0121c620f6d8bda9fb72e6f3bdc17f7a7f15530024f6b9cea526c9d0fd",
   "unchanged_source_archive_sha256": "3067bca578201a39254d8544b633a04ff6a9e43fc0de2a2783a95ccde9a1bfcd"
 }
