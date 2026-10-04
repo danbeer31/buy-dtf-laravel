@@ -1,0 +1,228 @@
+{
+  "builds": [
+    {
+      "autoload": {
+        "entries": 126,
+        "files": {
+          "autoload_classmap.php": {
+            "entries": 126,
+            "sha256": "5236a6ef5a0803719a2cb9b24d525946342063421aac9c6bec3914f1a9d9d893"
+          },
+          "autoload_static.php": {
+            "entries": 126,
+            "sha256": "1e82d08d78ebc0936284cf10cd7aca90b1753e0b7868627b2dda13bb67e54dc5"
+          }
+        },
+        "sha256": "342f417d353f8742f116898d307c34a2677e0a1cb0f814f3e8088f0bb2be1a91"
+      },
+      "build": "a",
+      "cache": {
+        "bytes": 21768,
+        "directories": 0,
+        "files": 2,
+        "sha256": "468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9"
+      },
+      "commands": {
+        "composer-audit": {
+          "argv": [
+            "/usr/local/bin/composer",
+            "audit",
+            "--locked",
+            "--no-dev",
+            "--format=json",
+            "--no-interaction"
+          ],
+          "exit": 0,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "e464a6f19a008d852b61fd0966a47b663d20d70ccfba0b30edd6483a787f15f5"
+        },
+        "composer-validate": {
+          "argv": [
+            "/usr/local/bin/composer",
+            "validate",
+            "--strict",
+            "--no-check-publish",
+            "--no-interaction"
+          ],
+          "exit": 0,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "43add299dc97ecbd90ec2dc456ef5a0bd824bb9abdae2a3d7cdb520e21f8e86d"
+        },
+        "package-discovery": {
+          "argv": [
+            "/usr/bin/php",
+            "artisan",
+            "package:discover",
+            "--no-ansi"
+          ],
+          "exit": 0,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "1306c598a02c1f6569bca56d18f0b5710b08dbab9e8d5636f9655701c917188f"
+        },
+        "route-discovery": {
+          "argv": [
+            "/usr/bin/php",
+            "artisan",
+            "route:list",
+            "--json",
+            "--no-ansi"
+          ],
+          "exit": 0,
+          "route_count": 178,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "cf18de6815e951980f6c83d466572a8c39eb6162abb86412593b3c72bb831dc0"
+        }
+      },
+      "lock_sha256": "77055fc8acf891496b0b356bb034d7935c04989a3751f52b788ecd1b7999206d",
+      "source": {
+        "files": 327,
+        "sha256": "2c8268cdfbfd3fc294d17de7ab960ab2e1a7f8faa38acd68935af18945f1bc4f"
+      },
+      "vendor": {
+        "directory_mode": 509,
+        "executable_allowlist_sha256": "551df886bc842a49ea87d8d9bb0cfe3478e3cc5eeea841c83409e8349d120154",
+        "executable_file_mode": 509,
+        "executable_files": 10,
+        "gid": 1000,
+        "manifest": {
+          "bytes": 26481661,
+          "directories": 925,
+          "files": 6460,
+          "sha256": "7df0a101ceb0386b72ec4cfc71f2be8576fc5a5d4b777d11c05e5b7f1ed770d8"
+        },
+        "metadata_sha256": "db8aba0a4f49d0cecaeaac0b5b742c5f94b1a514a8d4452c361cb61e2dbacf0d",
+        "ordinary_file_mode": 436,
+        "ordinary_files": 6450,
+        "root_metadata": {
+          "gid": 1000,
+          "kind": "directory",
+          "mode": 509,
+          "uid": 1000
+        },
+        "total_bytes": 26481661,
+        "uid": 1000
+      }
+    },
+    {
+      "autoload": {
+        "entries": 126,
+        "files": {
+          "autoload_classmap.php": {
+            "entries": 126,
+            "sha256": "5236a6ef5a0803719a2cb9b24d525946342063421aac9c6bec3914f1a9d9d893"
+          },
+          "autoload_static.php": {
+            "entries": 126,
+            "sha256": "1e82d08d78ebc0936284cf10cd7aca90b1753e0b7868627b2dda13bb67e54dc5"
+          }
+        },
+        "sha256": "342f417d353f8742f116898d307c34a2677e0a1cb0f814f3e8088f0bb2be1a91"
+      },
+      "build": "b",
+      "cache": {
+        "bytes": 21768,
+        "directories": 0,
+        "files": 2,
+        "sha256": "468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9"
+      },
+      "commands": {
+        "composer-audit": {
+          "argv": [
+            "/usr/local/bin/composer",
+            "audit",
+            "--locked",
+            "--no-dev",
+            "--format=json",
+            "--no-interaction"
+          ],
+          "exit": 0,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "e464a6f19a008d852b61fd0966a47b663d20d70ccfba0b30edd6483a787f15f5"
+        },
+        "composer-validate": {
+          "argv": [
+            "/usr/local/bin/composer",
+            "validate",
+            "--strict",
+            "--no-check-publish",
+            "--no-interaction"
+          ],
+          "exit": 0,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "43add299dc97ecbd90ec2dc456ef5a0bd824bb9abdae2a3d7cdb520e21f8e86d"
+        },
+        "package-discovery": {
+          "argv": [
+            "/usr/bin/php",
+            "artisan",
+            "package:discover",
+            "--no-ansi"
+          ],
+          "exit": 0,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "1306c598a02c1f6569bca56d18f0b5710b08dbab9e8d5636f9655701c917188f"
+        },
+        "route-discovery": {
+          "argv": [
+            "/usr/bin/php",
+            "artisan",
+            "route:list",
+            "--json",
+            "--no-ansi"
+          ],
+          "exit": 0,
+          "route_count": 178,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "cf18de6815e951980f6c83d466572a8c39eb6162abb86412593b3c72bb831dc0"
+        }
+      },
+      "lock_sha256": "77055fc8acf891496b0b356bb034d7935c04989a3751f52b788ecd1b7999206d",
+      "source": {
+        "files": 327,
+        "sha256": "2c8268cdfbfd3fc294d17de7ab960ab2e1a7f8faa38acd68935af18945f1bc4f"
+      },
+      "vendor": {
+        "directory_mode": 509,
+        "executable_allowlist_sha256": "551df886bc842a49ea87d8d9bb0cfe3478e3cc5eeea841c83409e8349d120154",
+        "executable_file_mode": 509,
+        "executable_files": 10,
+        "gid": 1000,
+        "manifest": {
+          "bytes": 26481661,
+          "directories": 925,
+          "files": 6460,
+          "sha256": "7df0a101ceb0386b72ec4cfc71f2be8576fc5a5d4b777d11c05e5b7f1ed770d8"
+        },
+        "metadata_sha256": "db8aba0a4f49d0cecaeaac0b5b742c5f94b1a514a8d4452c361cb61e2dbacf0d",
+        "ordinary_file_mode": 436,
+        "ordinary_files": 6450,
+        "root_metadata": {
+          "gid": 1000,
+          "kind": "directory",
+          "mode": 509,
+          "uid": 1000
+        },
+        "total_bytes": 26481661,
+        "uid": 1000
+      }
+    }
+  ],
+  "dependency_install_or_update_performed": false,
+  "execution_environment": {
+    "APP_ENV": "testing",
+    "CACHE_STORE": "array",
+    "COMPOSER_ALLOW_SUPERUSER": "1",
+    "COMPOSER_ROOT_VERSION": "1.0.0",
+    "DB_CONNECTION": "sqlite",
+    "DB_DATABASE": ":memory:",
+    "FUEL_DB_CONNECTION": "sqlite",
+    "LOG_CHANNEL": "null",
+    "QUEUE_CONNECTION": "sync",
+    "SESSION_DRIVER": "array",
+    "native_php_8_2_30_platform_proof": "php8230-platform-receipt.json",
+    "php_version": "8.3.6",
+    "private_production_configuration_copied": false
+  },
+  "method": "two clean exact accepted runtime mirrors; overlay only reviewed eleven raw-byte source members; retain vendor/lock/cache",
+  "status": "pass"
+}

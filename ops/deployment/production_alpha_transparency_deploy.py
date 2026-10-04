@@ -31,6 +31,9 @@ import time
 from typing import Any, Callable, Iterator
 
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import production_alpha_gate_controls as source_controls
+
 APP_ROOT = Path("/var/www/buy-dtf")
 RELEASE_ROOT = APP_ROOT / "storage/app/private/operations/production-alpha-transparency-releases"
 ROLLBACK_ROOT = APP_ROOT / "storage/app/private/operations/production-alpha-transparency-rollbacks"
@@ -53,8 +56,8 @@ TARGET_SHORT = TARGET_COMMIT[:8]
 HANDOFF_SHA256 = "ba9fd4dcf5fa5854b2e23418e0cd6ed8799874494a0341c726302b92a5acc127"
 RETIRED_ARTIFACT_COMMIT = "c43f39f556d057c99bb01e95ee7ca68658c05232"
 EXPECTED_ARCHIVE_SHA256 = "3067bca578201a39254d8544b633a04ff6a9e43fc0de2a2783a95ccde9a1bfcd"
-EXPECTED_MANIFEST_SHA256 = "01731f42b8b241ebb55a310f55e6bd20d67729c60a37ea126f5c2ce0804ed32d"
-EXPECTED_HELPER_SHA256 = "df1f627ccd2844c888373e9aa135d8e4971ac2900ccce105d3081a04e7b3ad61"
+EXPECTED_MANIFEST_SHA256 = "f7f9c098e48dd5cefafed6708bfad7069880eae5941b2885f0f317214f54027c"
+EXPECTED_HELPER_SHA256 = "e4f0e1880a877f4f3866e35d7049de936857eeb1d70c3c8a6e229a9c53653f85"
 EXPECTED_MIGRATION_SHA256 = "992fbfe8086732e9bde10be89c3f52ddb4fef49edfdec12b744377c2e4181bbf"
 MIGRATION_RELATIVE_PATH = Path(
     "database/migrations/2026_10_01_120000_add_item_meta_to_savedimages_table.php"
@@ -100,25 +103,26 @@ RETIRED_RELEASE_RECEIPT_PATHS = frozenset(
     }
 )
 
-EXPECTED_COMPOSER_LOCK_SHA256 = "22af12c7e58fcfe809735dbf9955b2d22a264e9e7345cefd74398e36bf2773b9"
-EXPECTED_VENDOR_MANIFEST_SHA256 = "7399949f857da190c5ff07b89c85e8fba8a6f681695e20a462862be591b698ed"
+EXPECTED_COMPOSER_LOCK_SHA256 = "77055fc8acf891496b0b356bb034d7935c04989a3751f52b788ecd1b7999206d"
+EXPECTED_VENDOR_MANIFEST_SHA256 = "7df0a101ceb0386b72ec4cfc71f2be8576fc5a5d4b777d11c05e5b7f1ed770d8"
 EXPECTED_CACHE_MANIFEST_SHA256 = "468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9"
 EXPECTED_PACKAGES_SHA256 = "21da8f9ed19687e708cc7bc5cc59394c6fcdf9b9deadf617ae70526f815a1db0"
 EXPECTED_SERVICES_SHA256 = "1f7623b2b4ffd2c4099fb34ad86fc96c1479e27bf81b1b0ba328c988cc4ffcb5"
 EXPECTED_FRONT_CONTROLLER_SHA256 = "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
 
-# The framework repair must be deployed and monitored independently before
-# these historical dependency values are replaced with a fresh production
-# freeze. Until then, stage and deploy modes are deliberately unavailable.
-DEPENDENCY_ENVELOPE_FROZEN = False
-DEPENDENCY_ENVELOPE_STATUS = "pending_post_laravel_12_69_1_production_freeze"
+# Laravel 12.69.1 closeout is accepted. This read-only freeze replaces the
+# historical dependency envelope. Staging and cutover need separate authority.
+DEPENDENCY_ENVELOPE_FROZEN = True
+DEPENDENCY_ENVELOPE_STATUS = "post_laravel_12_69_1_frozen_review_required"
 
-STAGE_APPROVAL_TOKEN = f"STAGE-BUYDTF-ALPHA-{TARGET_COMMIT[:16]}"
-DEPLOY_APPROVAL_TOKEN = f"DEPLOY-BUYDTF-ALPHA-{TARGET_COMMIT[:16]}"
-RECOVERY_APPROVAL_TOKEN = f"RECOVER-BUYDTF-ALPHA-{TARGET_COMMIT[:16]}"
+STAGE_APPROVAL_TOKEN = f"STAGE-BUYDTF-ALPHA-V3-{TARGET_COMMIT[:16]}"
+DEPLOY_APPROVAL_TOKEN = f"DEPLOY-BUYDTF-ALPHA-V3-{TARGET_COMMIT[:16]}"
+RECOVERY_APPROVAL_TOKEN = f"RECOVER-BUYDTF-ALPHA-V3-{TARGET_COMMIT[:16]}"
+
+CONTROL_FILES = {'production_alpha_gate_controls.py': '642c7d0cf698ac2b01c9311e066182eabcae29fe7f4ff4e8b681d29cd72f1fb3', 'production_alpha_dependency_envelope.json': '04850fe3aef14981c92f5b2af373bd136cfb6fead456d86fcab7233acb009fd1', 'laravel_dependency_gate.py': 'b93c08f58a08333120369c1cc75c60631d621c3a8099ca3967065721c45679f5', 'laravel_nginx_identity.py': '1243fea2757aca89f586ec4b322b0d23ee1e19b2d027c21bd6523e71e6e6e8e0', 'laravel_fpm_opcache_probe.php': 'b8b34f87d45a0c000cc0df7917496631320cfbdcca1ff44bc41741ce0d569262'}
 
 DRAIN_SECONDS = 65
-OPCACHE_WAIT_SECONDS = 5
+OPCACHE_WAIT_SECONDS = 7
 MONITOR_SECONDS = 30 * 60
 MONITOR_INTERVAL_SECONDS = 60
 LOG_CONTINUITY_ANCHOR_BYTES = 64 * 1024
@@ -144,21 +148,37 @@ NORMAL_HEALTH_CHECKS: tuple[tuple[str, frozenset[int]], ...] = (
 MAINTENANCE_GATE_HEADER_NAME = "X-BuyDTF-Dependency-Maintenance"
 MAINTENANCE_GATE_HEADER_VALUE = "static-v2"
 MAINTENANCE_GATE_SENTINEL = "BUYDTF_DEPENDENCY_MAINTENANCE_STATIC_V2"
-MAINTENANCE_GATE_BYTES = f"""<?php
-declare(strict_types=1);
-
-http_response_code(503);
-header('Content-Type: text/plain; charset=UTF-8');
-header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
-header('Pragma: no-cache');
-header('Retry-After: 120');
-header('{MAINTENANCE_GATE_HEADER_NAME}: {MAINTENANCE_GATE_HEADER_VALUE}');
-echo '{MAINTENANCE_GATE_SENTINEL}';
-""".encode("utf-8")
-EXPECTED_GATE_SHA256 = "94bc83db8df1d6a18fc74575adbb89d3d9176e58474d951926eff96019c89c03"
+MAINTENANCE_GATE_BYTES = source_controls.dependency_gate.MAINTENANCE_GATE_BYTES
+EXPECTED_GATE_SHA256 = source_controls.dependency_gate.EXPECTED_GATE_SHA256
 
 
-class DeploymentError(RuntimeError):
+def source_gate_context(state, state_path, *, restoration=False, front_controller=None, application_root=None):
+    source_controls.APP_ROOT=application_root or APP_ROOT
+    source_controls.FRONT_CONTROLLER=front_controller or FRONT_CONTROLLER
+    try:
+        if mutation_has_started(state):
+            return source_controls.post_mutation_emergency_gate_context(state,state_path)
+        return source_controls.gate_context(state,state_path,allow_frozen_policy_for_exact_existing_gate=restoration)
+    except source_controls.DeploymentError as error: raise DeploymentError(str(error)) from error
+
+
+def full_source_identity(*, target):
+    try:return source_controls.require_source_identity(APP_ROOT,target=target)
+    except source_controls.DeploymentError as error:raise DeploymentError(str(error)) from error
+
+
+def environment_identity():
+    source_controls.APP_ROOT=APP_ROOT; source_controls.FRONT_CONTROLLER=FRONT_CONTROLLER
+    try:
+        fpm=source_controls.require_frozen_fpm_opcache(source_controls.frozen_envelope()['fpm_opcache'])
+        nginx=source_controls.verify_read_only_nginx()
+        configuration=source_controls.require_configuration_identity()
+    except source_controls.DeploymentError as error:raise DeploymentError(str(error)) from error
+    return {'fpm_opcache':fpm,'nginx':nginx,'configuration_sha256':configuration,'frozen_envelope_sha256':source_controls.ENVELOPE_SHA256}
+
+
+
+class DeploymentError(source_controls.DeploymentError):
     """A reviewed condition failed and the operation must stop closed."""
 
 
@@ -453,7 +473,7 @@ def parse_manifest(path: Path) -> list[dict[str, Any]]:
         raise DeploymentError("The reviewed application manifest has an invalid shape.")
     if document.get("application_target_commit") != TARGET_COMMIT:
         raise DeploymentError("The manifest application target differs from the runner.")
-    if document.get("artifact_status") != "prefreeze_review_only_non_stageable":
+    if document.get("artifact_status") != "frozen_review_only_non_stageable":
         raise DeploymentError("The manifest pre-freeze status differs from the runner.")
     handoff = document.get("current_handoff", {})
     if (
@@ -461,6 +481,8 @@ def parse_manifest(path: Path) -> list[dict[str, Any]]:
         or handoff.get("sha256") != HANDOFF_SHA256
     ):
         raise DeploymentError("The manifest handoff identity differs from the runner.")
+    if document.get("frozen_dependency_envelope_sha256") != source_controls.ENVELOPE_SHA256 or document.get("complete_runtime_source") != {"before":source_controls.frozen_envelope()["source"],"after":source_controls.frozen_envelope()["target_source"]}:
+        raise DeploymentError("Manifest complete runtime/dependency envelope differs")
     envelope = document.get("dependency_envelope", {})
     if (
         envelope.get("status") != DEPENDENCY_ENVELOPE_STATUS
@@ -766,7 +788,7 @@ def runtime_probe(helper: Path, evidence_directory: Path, name: str) -> tuple[di
 
 def validate_runtime_snapshot(payload: dict[str, Any]) -> dict[str, Any]:
     if (
-        payload.get("probe_version") != 2
+        payload.get("probe_version") != 3
         or payload.get("artifact")
         != "buy-dtf-production-alpha-transparency-runtime-probe-v1"
     ):
@@ -776,7 +798,7 @@ def validate_runtime_snapshot(payload: dict[str, Any]) -> dict[str, Any]:
     if payload.get("application_debug") is not False:
         raise DeploymentError("APP_DEBUG is not false.")
     runtime = payload.get("runtime", {})
-    if runtime.get("php_version") != "8.2.30" or runtime.get("laravel_version") != "12.69.0":
+    if runtime.get("php_version") != "8.2.30" or runtime.get("laravel_version") != "12.69.1":
         raise DeploymentError("PHP/Laravel runtime identity differs from the reviewed baseline.")
     if runtime.get("composer_classmap_authoritative") is not False:
         raise DeploymentError("Composer is unexpectedly class-map authoritative.")
@@ -815,9 +837,11 @@ def validate_runtime_snapshot(payload: dict[str, Any]) -> dict[str, Any]:
     required = schema.get("required_tables", {})
     if any(
         required.get(name) is not True
-        for name in ("businesses", "dtforders", "dtfimages", TARGET_TABLE)
+        for name in ("businesses", "dtforders", "dtfimages", TARGET_TABLE, "incoming_order_jobs", "api_asset_records")
     ):
         raise DeploymentError("A required Fuel table is missing.")
+    if any(schema.get("required_table_row_counts",{}).get(name) != 0 for name in ("incoming_order_jobs","api_asset_records")) or ledger.get("incoming_order_entry_count") != 1:
+        raise DeploymentError("Incoming-order installed tables/ledger/counts differ")
     item_meta = schema.get("savedimages_item_meta", {})
     data_columns = item_meta.get("data_columns_without_item_meta")
     data_sha256 = item_meta.get("data_sha256_without_item_meta")
@@ -861,7 +885,7 @@ def validate_runtime_snapshot(payload: dict[str, Any]) -> dict[str, Any]:
     if queue.get("connection") != "sync":
         raise DeploymentError("The queue connection is no longer sync.")
     counts = queue.get("counts", {})
-    if counts.get("jobs") not in (0, None) or counts.get("failed_jobs") not in (0, None):
+    if counts.get("jobs") != 0 or counts.get("failed_jobs") != 0:
         raise DeploymentError("Queued or failed jobs are present.")
     scheduler = payload.get("scheduler", {})
     if (
@@ -970,7 +994,10 @@ def dependency_identity() -> dict[str, Any]:
     cache_names = sorted(path.name for path in (APP_ROOT / "bootstrap/cache").iterdir())
     if cache_names != ["packages.php", "services.php"]:
         raise DeploymentError("Bootstrap cache contains an unreviewed file set.")
+    vendor_policy = source_controls.require_candidate_vendor(APP_ROOT / "vendor")
+    source_controls.require_application_autoload(APP_ROOT)
     vendor = tree_manifest(APP_ROOT / "vendor")
+    source_controls.require_cache_identity(APP_ROOT)
     cache = tree_manifest(APP_ROOT / "bootstrap/cache")
     if vendor["sha256"] != EXPECTED_VENDOR_MANIFEST_SHA256:
         raise DeploymentError("The live vendor tree differs from the successful v2 receipt.")
@@ -979,6 +1006,7 @@ def dependency_identity() -> dict[str, Any]:
     return {
         "composer_lock_sha256": EXPECTED_COMPOSER_LOCK_SHA256,
         "vendor": vendor,
+        "vendor_policy": vendor_policy,
         "bootstrap_cache": cache,
         "packages_sha256": EXPECTED_PACKAGES_SHA256,
         "services_sha256": EXPECTED_SERVICES_SHA256,
@@ -1030,6 +1058,8 @@ def production_preflight(
     conflicts = scoped_processes()
     if conflicts:
         raise DeploymentError("A scoped production process is active.")
+    controls=environment_identity()
+    full_source=full_source_identity(target=require_target_source)
     live_source = live_manifest_snapshot(manifest_rows, target=require_target_source)
     dependencies = dependency_identity()
     runtime, runtime_command = runtime_probe(helper, evidence_directory, f"{prefix}-runtime-probe")
@@ -1054,7 +1084,9 @@ def production_preflight(
         "front_controller_sha256": EXPECTED_FRONT_CONTROLLER_SHA256,
         "front_controller_metadata": front_controller_metadata,
         "dependencies": dependencies,
+        "full_source": full_source,
         "live_source": live_source,
+        "controls": controls,
         "runtime": runtime,
         "runtime_command": runtime_command,
         "health": health,
@@ -1091,6 +1123,8 @@ def preflight_guard(helper: Path, rows: list[dict[str, Any]]) -> dict[str, Any]:
         raise DeploymentError("A production deployment lock is active.")
     if scoped_processes():
         raise DeploymentError("A scoped production process is active.")
+    controls=environment_identity()
+    full_source_identity(target=False)
     source = live_manifest_snapshot(rows, target=False)
     dependencies = dependency_identity()
     runtime = runtime_probe_memory(helper)
@@ -1100,6 +1134,7 @@ def preflight_guard(helper: Path, rows: list[dict[str, Any]]) -> dict[str, Any]:
         "status": "pass",
         "generated_at_utc": utc_now(),
         "source": source,
+        "controls": controls,
         "dependencies": dependencies,
         "runtime": runtime,
         "health": health,
@@ -1392,6 +1427,12 @@ def stage_release(
         atomic_copy(helper, copied_helper)
         atomic_copy(log_guard, copied_log_guard)
         atomic_copy(runner, copied_runner)
+        control_inputs = {}
+        for control_name, control_hash in CONTROL_FILES.items():
+            original_control=require_regular_file(Path(__file__).with_name(control_name),control_hash)
+            destination=inputs/control_name
+            atomic_copy(original_control,destination)
+            control_inputs[control_name]={"path":str(destination),"sha256":control_hash}
 
         preflight = production_preflight(
             helper=copied_helper,
@@ -1443,9 +1484,12 @@ def stage_release(
         installed_schema_receipt_path = evidence / "installed-schema-state-receipt.json"
         atomic_json(installed_schema_receipt_path, installed_schema_receipt)
 
+        full_source_identity(target=False)
         post_source = live_manifest_snapshot(rows, target=False)
         post_dependencies = dependency_identity()
         post_health = health_snapshot()
+        if environment_identity() != preflight["controls"]:
+            raise DeploymentError("FPM/nginx envelope changed during staging")
         if post_source["sha256"] != preflight["live_source"]["sha256"]:
             raise DeploymentError("Live source identity changed during Phase 1.")
         if post_dependencies != preflight["dependencies"]:
@@ -1457,6 +1501,8 @@ def stage_release(
             "generated_at_utc": utc_now(),
             "target_commit": TARGET_COMMIT,
             "release_directory": str(release),
+            "control_inputs": control_inputs,
+            "controls": preflight["controls"],
             "inputs": {
                 "archive": {"path": str(copied_archive), "sha256": sha256_file(copied_archive)},
                 "manifest": {"path": str(copied_manifest), "sha256": sha256_file(copied_manifest)},
@@ -1564,6 +1610,16 @@ def validate_release_receipt(
         raise DeploymentError("Release receipt is not a successful Phase 1 receipt.")
     if receipt.get("target_commit") != TARGET_COMMIT or receipt.get("release_directory") != str(release):
         raise DeploymentError("Release receipt identity differs from the reviewed alpha repair.")
+    for name, digest in CONTROL_FILES.items():
+        item=receipt.get("control_inputs",{}).get(name,{})
+        if item.get("sha256") != digest or Path(item.get("path","")) != release/"inputs"/name:
+            raise DeploymentError("Staged control binding differs")
+        require_regular_file(release/"inputs"/name,digest)
+        require_regular_file(Path(__file__).with_name(name),digest)
+    controls=receipt.get("controls",{})
+    source_controls.validate_frozen_fpm_opcache_record(controls.get("fpm_opcache"))
+    if controls.get("frozen_envelope_sha256") != source_controls.ENVELOPE_SHA256:
+        raise DeploymentError("Staged dependency envelope differs")
     inputs = receipt.get("inputs", {})
     identities = {
         "archive": EXPECTED_ARCHIVE_SHA256,
@@ -1654,36 +1710,6 @@ def write_state(path: Path, state: dict[str, Any]) -> None:
     atomic_json(path, state)
 
 
-def record_front_controller_transition(
-    *,
-    state: dict[str, Any],
-    state_path: Path,
-    state_directory: Path,
-    operation: str,
-    phase: str,
-    front_controller: Path,
-    details: dict[str, Any] | None = None,
-) -> dict[str, Any]:
-    history = state.setdefault("front_controller_transitions", [])
-    if not isinstance(history, list):
-        raise DeploymentError("Front-controller transition history is invalid.")
-    transition = {
-        "sequence": len(history) + 1,
-        "at_utc": utc_now(),
-        "operation": operation,
-        "phase": phase,
-        "front_controller": str(front_controller),
-        "details": details or {},
-    }
-    history.append(transition)
-    state["front_controller_transition"] = transition
-    write_state(state_path, state)
-    append_event(
-        state_directory,
-        f"front_controller_{phase}",
-        {"operation": operation, "sequence": transition["sequence"]},
-    )
-    return transition
 
 
 def write_new_json(path: Path, payload: Any) -> str:
@@ -1741,160 +1767,14 @@ def source_backup(
     }, additions
 
 
-def atomic_front_controller_replace(
-    *,
-    replacement_bytes: bytes,
-    replacement_sha256: str,
-    allowed_current_sha256: set[str],
-    metadata: dict[str, Any],
-    state: dict[str, Any],
-    state_path: Path,
-    state_directory: Path,
-    operation: str,
-    front_controller: Path = FRONT_CONTROLLER,
-    application_root: Path = APP_ROOT,
-    fault_injector: Callable[[str], None] | None = None,
-) -> dict[str, Any]:
-    if sha256_bytes(replacement_bytes) != replacement_sha256:
-        raise DeploymentError("Front-controller replacement bytes differ from their identity.")
-    if metadata != reviewed_front_controller_metadata():
-        raise DeploymentError("Front-controller replacement metadata is not the reviewed identity.")
-
-    current = file_identity(front_controller)
-    if current["sha256"] not in allowed_current_sha256:
-        raise DeploymentError("Front-controller replacement refuses unknown live bytes.")
-    parent = require_real_directory(front_controller.parent, within=application_root)
-    temporary = parent / (
-        f".{front_controller.name}.incoming-{os.getpid()}-{secrets.token_hex(6)}"
-    )
-    descriptor = os.open(temporary, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
-    try:
-        with os.fdopen(descriptor, "wb") as handle:
-            handle.write(replacement_bytes)
-            handle.flush()
-            os.fsync(handle.fileno())
-        os.chown(temporary, int(metadata["uid"]), int(metadata["gid"]))
-        os.chmod(temporary, int(metadata["mode"]))
-        with temporary.open("rb") as handle:
-            os.fsync(handle.fileno())
-        prepared = file_identity(temporary)
-        if (
-            prepared["sha256"] != replacement_sha256
-            or prepared["metadata"] != metadata
-        ):
-            raise DeploymentError(
-                "Prepared front-controller replacement differs from the reviewed bytes or metadata."
-            )
-
-        record_front_controller_transition(
-            state=state,
-            state_path=state_path,
-            state_directory=state_directory,
-            operation=operation,
-            phase="replacement_pending",
-            front_controller=front_controller,
-            details={"before": current, "prepared": prepared},
-        )
-        if fault_injector is not None:
-            fault_injector("before_replacement")
-
-        os.replace(temporary, front_controller)
-        fsync_directory(parent)
-        installed = file_identity(front_controller)
-        if (
-            installed["sha256"] != replacement_sha256
-            or installed["metadata"] != metadata
-        ):
-            raise DeploymentError(
-                "Installed front-controller replacement differs from the reviewed bytes or metadata."
-            )
-        record_front_controller_transition(
-            state=state,
-            state_path=state_path,
-            state_directory=state_directory,
-            operation=operation,
-            phase="installed",
-            front_controller=front_controller,
-            details={"before": current, "installed": installed},
-        )
-        if fault_injector is not None:
-            fault_injector("after_replacement")
-        return {"before": current, "prepared": prepared, "installed": installed}
-    finally:
-        temporary.unlink(missing_ok=True)
 
 
-def restore_front_controller_exact(
-    *,
-    backup: Path,
-    expected_sha256: str,
-    metadata: dict[str, Any],
-    allowed_current_sha256: set[str],
-    state: dict[str, Any],
-    state_path: Path,
-    state_directory: Path,
-    operation: str,
-    receipt_name: str,
-    front_controller: Path = FRONT_CONTROLLER,
-    application_root: Path = APP_ROOT,
-    fault_injector: Callable[[str], None] | None = None,
-) -> dict[str, Any]:
-    backup = require_regular_file(backup, expected_sha256)
-    if metadata != reviewed_front_controller_metadata():
-        raise DeploymentError("Front-controller restoration metadata is not the reviewed identity.")
-    before = file_identity(front_controller)
-    replacement: dict[str, Any] | None = None
-    if before["sha256"] == expected_sha256 and before["metadata"] == metadata:
-        record_front_controller_transition(
-            state=state,
-            state_path=state_path,
-            state_directory=state_directory,
-            operation=operation,
-            phase="original_already_present",
-            front_controller=front_controller,
-            details={"identity": before},
-        )
-    else:
-        replacement = atomic_front_controller_replace(
-            replacement_bytes=backup.read_bytes(),
-            replacement_sha256=expected_sha256,
-            allowed_current_sha256=allowed_current_sha256,
-            metadata=metadata,
-            state=state,
-            state_path=state_path,
-            state_directory=state_directory,
-            operation=operation,
-            front_controller=front_controller,
-            application_root=application_root,
-            fault_injector=fault_injector,
-        )
-    restored = file_identity(front_controller)
-    if restored["sha256"] != expected_sha256 or restored["metadata"] != metadata:
-        raise DeploymentError("Exact original front-controller restoration failed.")
-    record_front_controller_transition(
-        state=state,
-        state_path=state_path,
-        state_directory=state_directory,
-        operation=operation,
-        phase="exact_original_verified",
-        front_controller=front_controller,
-        details={"identity": restored},
-    )
-    state["static_gate_active"] = False
-    state["containment_active"] = False
-    write_state(state_path, state)
-    receipt = {
-        "status": "pass",
-        "generated_at_utc": utc_now(),
-        "operation": operation,
-        "before": before,
-        "replacement": replacement,
-        "restored": restored,
-        "exact_original_restored": True,
-    }
-    receipt_path = state_directory / receipt_name
-    receipt_sha256 = write_new_json(receipt_path, receipt)
-    return {**receipt, "path": str(receipt_path), "receipt_sha256": receipt_sha256}
+def restore_front_controller_exact(*, backup: Path, expected_sha256: str, metadata: dict[str, Any], allowed_current_sha256: set[str], state: dict[str, Any], state_path: Path, state_directory: Path, operation: str, receipt_name: str, front_controller: Path | None = None, application_root: Path | None = None, fault_injector=None) -> dict[str, Any]:
+    if expected_sha256 != EXPECTED_FRONT_CONTROLLER_SHA256 or metadata != reviewed_front_controller_metadata():
+        raise DeploymentError('Original front-controller identity differs')
+    context = source_gate_context(state,state_path,restoration=True,front_controller=front_controller,application_root=application_root)
+    try: return source_controls.dependency_gate.restore_front_controller_exact(context=context,state=state,operation=operation,receipt_name=receipt_name,fault_injector=fault_injector)
+    except source_controls.dependency_gate.GateError as error: raise DeploymentError(str(error)) from error
 
 
 def mutation_has_started(state: dict[str, Any]) -> bool:
@@ -1903,12 +1783,7 @@ def mutation_has_started(state: dict[str, Any]) -> bool:
 
 
 def gate_probe_passed(result: dict[str, Any], expected_route: str) -> bool:
-    return (
-        result.get("route") == expected_route
-        and result.get("status") == 503
-        and result.get("header_verified") is True
-        and result.get("sentinel_verified") is True
-    )
+    return source_controls.dependency_gate.gate_probe_passed(result,expected_route)
 
 
 def capture_health_check(check: Callable[[], dict[str, Any]]) -> dict[str, Any]:
@@ -1923,327 +1798,21 @@ def capture_health_check(check: Callable[[], dict[str, Any]]) -> dict[str, Any]:
         }
 
 
-def retain_static_gate_exact(
-    *,
-    state_directory: Path,
-    name: str,
-    state: dict[str, Any],
-    state_path: Path,
-    original_sha256: str,
-    metadata: dict[str, Any],
-    front_controller: Path = FRONT_CONTROLLER,
-    application_root: Path = APP_ROOT,
-) -> dict[str, Any]:
-    """Fail closed on the exact reviewed gate without relying on Laravel or HTTP."""
-    before = file_identity(front_controller)
-    if before["sha256"] not in {original_sha256, EXPECTED_GATE_SHA256}:
-        raise DeploymentError(
-            "Containment found unknown front-controller bytes and refused overwrite."
-        )
-    replacement: dict[str, Any] | None = None
-    if before["sha256"] != EXPECTED_GATE_SHA256 or before["metadata"] != metadata:
-        replacement = atomic_front_controller_replace(
-            replacement_bytes=MAINTENANCE_GATE_BYTES,
-            replacement_sha256=EXPECTED_GATE_SHA256,
-            allowed_current_sha256={original_sha256, EXPECTED_GATE_SHA256},
-            metadata=metadata,
-            state=state,
-            state_path=state_path,
-            state_directory=state_directory,
-            operation=f"{name}-exact-containment-install",
-            front_controller=front_controller,
-            application_root=application_root,
-        )
-    final = file_identity(front_controller)
-    if final["sha256"] != EXPECTED_GATE_SHA256 or final["metadata"] != metadata:
-        raise DeploymentError("Exact static-gate containment could not be established.")
-    record_front_controller_transition(
-        state=state,
-        state_path=state_path,
-        state_directory=state_directory,
-        operation=name,
-        phase="containment_retained",
-        front_controller=front_controller,
-        details={"identity": final, "mutation_started": mutation_has_started(state)},
-    )
-    state["static_gate_active"] = True
-    state["containment_active"] = True
-    state["status"] = f"{name}_site_gated"
-    write_state(state_path, state)
-    receipt = {
-        "status": "site_gated",
-        "generated_at_utc": utc_now(),
-        "operation": name,
-        "mutation_started": mutation_has_started(state),
-        "before": before,
-        "replacement": replacement,
-        "final": final,
-        "exact_gate_retained": True,
-        "original_restoration_performed": False,
-    }
-    receipt_path = state_directory / f"{name}-containment-receipt.json"
-    receipt_sha256 = write_new_json(receipt_path, receipt)
-    return {**receipt, "path": str(receipt_path), "receipt_sha256": receipt_sha256}
+def retain_static_gate_exact(*, state_directory: Path, name: str, state: dict[str, Any], state_path: Path, original_backup: Path, original_sha256: str = EXPECTED_FRONT_CONTROLLER_SHA256, metadata: dict[str, Any] | None = None, front_controller: Path | None = None, application_root: Path | None = None, fault_injector=None) -> dict[str, Any]:
+    context=source_gate_context(state,state_path,front_controller=front_controller,application_root=application_root)
+    try: return source_controls.dependency_gate.retain_static_gate_exact(context=context,state=state,operation=name,mutation_started=mutation_has_started,fault_injector=fault_injector)
+    except source_controls.dependency_gate.GateError as error:raise DeploymentError(str(error)) from error
 
 
-def install_static_gate(
-    *,
-    state_directory: Path,
-    name: str,
-    state: dict[str, Any],
-    state_path: Path,
-    original_backup: Path,
-    original_sha256: str = EXPECTED_FRONT_CONTROLLER_SHA256,
-    metadata: dict[str, Any] | None = None,
-    front_controller: Path = FRONT_CONTROLLER,
-    application_root: Path = APP_ROOT,
-    origin_probe: Callable[[], dict[str, Any]] | None = None,
-    public_probe: Callable[[], dict[str, Any]] | None = None,
-    restored_health_probe: Callable[[], dict[str, Any]] | None = None,
-    fault_injector: Callable[[str], None] | None = None,
-) -> dict[str, Any]:
-    if sha256_bytes(MAINTENANCE_GATE_BYTES) != EXPECTED_GATE_SHA256:
-        raise DeploymentError("Embedded static gate differs from the reviewed bytes.")
-    reviewed_metadata = metadata or reviewed_front_controller_metadata()
-    if reviewed_metadata != reviewed_front_controller_metadata():
-        raise DeploymentError("Static-gate metadata is not the reviewed owner and mode.")
-    require_regular_file(original_backup, original_sha256)
-    initial = file_identity(front_controller)
-    replacement: dict[str, Any] | None = None
-    reconciled_from_live_identity = False
-    origin_result: dict[str, Any] | None = None
-    public_result: dict[str, Any] | None = None
+def install_static_gate(*, state_directory: Path, name: str, state: dict[str, Any], state_path: Path, original_backup: Path, original_sha256: str = EXPECTED_FRONT_CONTROLLER_SHA256, metadata: dict[str, Any] | None = None, front_controller: Path | None = None, application_root: Path | None = None, origin_probe=None, public_probe=None, restored_health_probe=None, fault_injector=None) -> dict[str, Any]:
+    context=source_gate_context(state,state_path,front_controller=front_controller,application_root=application_root)
     try:
-        if initial["sha256"] == original_sha256:
-            if initial["metadata"] != reviewed_metadata:
-                raise DeploymentError("Original front-controller metadata is not reviewed.")
-            replacement = atomic_front_controller_replace(
-                replacement_bytes=MAINTENANCE_GATE_BYTES,
-                replacement_sha256=EXPECTED_GATE_SHA256,
-                allowed_current_sha256={original_sha256},
-                metadata=reviewed_metadata,
-                state=state,
-                state_path=state_path,
-                state_directory=state_directory,
-                operation=name,
-                front_controller=front_controller,
-                application_root=application_root,
-                fault_injector=fault_injector,
-            )
-        elif initial["sha256"] == EXPECTED_GATE_SHA256:
-            if initial["metadata"] != reviewed_metadata:
-                raise DeploymentError("Live static gate has incorrect owner or mode.")
-            reconciled_from_live_identity = True
-            record_front_controller_transition(
-                state=state,
-                state_path=state_path,
-                state_directory=state_directory,
-                operation=name,
-                phase="installed_reconciled_from_live_identity",
-                front_controller=front_controller,
-                details={
-                    "identity": initial,
-                    "previous_transition": state.get("front_controller_transition"),
-                },
-            )
-        else:
-            raise DeploymentError("Static gate refuses unknown front-controller bytes.")
-
-        state["static_gate_active"] = True
-        state["containment_active"] = True
-        write_state(state_path, state)
-        time.sleep(OPCACHE_WAIT_SECONDS)
-        origin_result = (
-            origin_probe()
-            if origin_probe is not None
-            else gate_origin_probe(state_directory, name)
-        )
-        if not gate_probe_passed(origin_result, "origin_loopback"):
-            raise DeploymentError(
-                "The local/origin static-gate probe did not return the reviewed 503 response."
-            )
-        public_result = (
-            public_probe()
-            if public_probe is not None
-            else gate_public_probe(state_directory, name)
-        )
-        if not gate_probe_passed(public_result, "public_cloudflare"):
-            raise DeploymentError(
-                "The public Cloudflare static-gate probe did not return the reviewed 503 response."
-            )
-        verified = file_identity(front_controller)
-        if (
-            verified["sha256"] != EXPECTED_GATE_SHA256
-            or verified["metadata"] != reviewed_metadata
-        ):
-            raise DeploymentError("Verified static-gate identity changed during HTTP verification.")
-        record_front_controller_transition(
-            state=state,
-            state_path=state_path,
-            state_directory=state_directory,
-            operation=name,
-            phase="verified",
-            front_controller=front_controller,
-            details={
-                "identity": verified,
-                "origin_probe": origin_result,
-                "public_probe": public_result,
-            },
-        )
-        return {
-            "sha256": EXPECTED_GATE_SHA256,
-            "metadata": reviewed_metadata,
-            "initial": initial,
-            "replacement": replacement,
-            "reconciled_from_live_identity": reconciled_from_live_identity,
-            "origin_probe": origin_result,
-            "public_probe": public_result,
-        }
-    except Exception as exception:
-        live_after_failure = file_identity(front_controller)
-        if live_after_failure["sha256"] not in {original_sha256, EXPECTED_GATE_SHA256}:
-            raise DeploymentError(
-                "Static-gate failure left unknown front-controller bytes; refusing overwrite."
-            ) from exception
-        if mutation_has_started(state):
-            containment = retain_static_gate_exact(
-                state_directory=state_directory,
-                name=f"{name}-verification-failure",
-                state=state,
-                state_path=state_path,
-                original_sha256=original_sha256,
-                metadata=reviewed_metadata,
-                front_controller=front_controller,
-                application_root=application_root,
-            )
-            failure_receipt = {
-                "status": "gate_failed_site_gated",
-                "generated_at_utc": utc_now(),
-                "operation": name,
-                "failure_type": type(exception).__name__,
-                "failure_message_sha256": sha256_bytes(str(exception).encode("utf-8")),
-                "mutation_started": True,
-                "initial": initial,
-                "live_after_failure": live_after_failure,
-                "origin_probe": origin_result,
-                "public_probe": public_result,
-                "containment_receipt": {
-                    "path": containment["path"],
-                    "sha256": containment["receipt_sha256"],
-                },
-                "original_restoration_performed": False,
-                "final": file_identity(front_controller),
-            }
-        else:
-            restoration = restore_front_controller_exact(
-                backup=original_backup,
-                expected_sha256=original_sha256,
-                metadata=reviewed_metadata,
-                allowed_current_sha256={original_sha256, EXPECTED_GATE_SHA256},
-                state=state,
-                state_path=state_path,
-                state_directory=state_directory,
-                operation=f"{name}-automatic-original-restore",
-                receipt_name=f"{name}-automatic-original-restore-receipt.json",
-                front_controller=front_controller,
-                application_root=application_root,
-            )
-            restored_health = capture_health_check(restored_health_probe or health_snapshot)
-            failure_receipt = {
-                "status": "gate_failed_original_restored",
-                "generated_at_utc": utc_now(),
-                "operation": name,
-                "failure_type": type(exception).__name__,
-                "failure_message_sha256": sha256_bytes(str(exception).encode("utf-8")),
-                "mutation_started": False,
-                "initial": initial,
-                "live_after_failure": live_after_failure,
-                "origin_probe": origin_result,
-                "public_probe": public_result,
-                "restoration_receipt": {
-                    "path": restoration["path"],
-                    "sha256": restoration["receipt_sha256"],
-                },
-                "post_restoration_health": restored_health,
-                "original_restoration_performed": True,
-                "final": file_identity(front_controller),
-            }
-        failure_path = state_directory / f"{name}-gate-failure-receipt.json"
-        failure_sha256 = write_new_json(failure_path, failure_receipt)
-        state["gate_failure_receipt"] = str(failure_path)
-        if mutation_has_started(state):
-            state["static_gate_active"] = True
-            state["containment_active"] = True
-            state["status"] = f"{name}_failed_site_gated"
-        else:
-            state["static_gate_active"] = False
-            state["containment_active"] = False
-            state["status"] = f"{name}_failed_original_restored"
-        write_state(state_path, state)
-        if mutation_has_started(state):
-            raise DeploymentError(
-                "Static-gate verification failed after mutation began; the exact 0644 "
-                f"gate remains installed (receipt {failure_sha256})."
-            ) from exception
-        raise DeploymentError(
-            "Static-gate installation or verification failed before mutation; the exact "
-            f"original front controller was restored and health recorded (receipt {failure_sha256})."
-        ) from exception
+        return source_controls.dependency_gate.install_static_gate(context=context,state=state,operation=name,origin_probe=lambda number: (origin_probe() if origin_probe else gate_origin_probe(state_directory,f'{name}-{number}')),public_probe=public_probe or (lambda:gate_public_probe(state_directory,name)),restored_health_probe=restored_health_probe or health_snapshot,mutation_started=mutation_has_started,fault_injector=fault_injector)
+    except source_controls.dependency_gate.GateError as error: raise DeploymentError(str(error)) from error
 
 
-def gate_http_probe(
-    state_directory: Path, name: str, *, origin_loopback: bool
-) -> dict[str, Any]:
-    route = "origin" if origin_loopback else "public"
-    headers = state_directory / f"{name}.{route}.headers.txt"
-    body = state_directory / f"{name}.{route}.body.txt"
-    routing_arguments = (
-        [
-            "--noproxy",
-            "*",
-            "--insecure",
-            "--resolve",
-            "buy-dtf.com:443:127.0.0.1",
-        ]
-        if origin_loopback
-        else []
-    )
-    completed = run_command(
-        [
-            "/usr/bin/curl",
-            "--silent",
-            "--show-error",
-            "--dump-header",
-            str(headers),
-            "--output",
-            str(body),
-            "--write-out",
-            "%{http_code}",
-            "--header",
-            "Cache-Control: no-cache, no-store",
-            "--connect-timeout",
-            "5",
-            "--max-time",
-            "15",
-            *routing_arguments,
-            f"https://buy-dtf.com/?ops_gate={secrets.token_hex(12)}",
-        ],
-        cwd=APP_ROOT,
-        timeout=20,
-    )
-    if completed.returncode != 0 or not completed.stdout.isdigit():
-        raise DeploymentError("Static gate HTTP probe failed.")
-    header_text = headers.read_text("utf-8", errors="replace").lower()
-    body_text = body.read_text("utf-8", errors="replace")
-    return {
-        "route": "origin_loopback" if origin_loopback else "public_cloudflare",
-        "status": int(completed.stdout),
-        "header_verified": f"{MAINTENANCE_GATE_HEADER_NAME}: {MAINTENANCE_GATE_HEADER_VALUE}".lower()
-        in header_text,
-        "sentinel_verified": MAINTENANCE_GATE_SENTINEL in body_text,
-        "headers_sha256": sha256_file(headers),
-        "body_sha256": sha256_file(body),
-    }
+def gate_http_probe(state_directory: Path, name: str, *, origin_loopback: bool) -> dict[str, Any]:
+    return source_controls.dependency_gate.gate_http_probe(evidence_directory=state_directory,operation=name,public_url='https://buy-dtf.com/',origin_loopback=origin_loopback,cwd=APP_ROOT)
 
 
 def gate_origin_probe(state_directory: Path, name: str) -> dict[str, Any]:
@@ -2501,18 +2070,8 @@ def candidate_fpm_probe(state_directory: Path, name: str) -> dict[str, Any]:
     probe = probe_directory / "probe.php"
     source = candidate_fpm_probe_source()
     atomic_write(probe, source, 0o644)
-    environment = dict(os.environ)
-    environment.update(
-        {
-            "SCRIPT_FILENAME": str(probe),
-            "SCRIPT_NAME": "/internal-alpha-probe.php",
-            "REQUEST_METHOD": "GET",
-            "REQUEST_URI": "/internal-alpha-probe.php",
-            "REDIRECT_STATUS": "200",
-            "SERVER_PROTOCOL": "HTTP/1.1",
-            "GATEWAY_INTERFACE": "CGI/1.1",
-        }
-    )
+    source_controls.APP_ROOT=APP_ROOT
+    environment=source_controls.fpm_fastcgi_environment(probe,"/internal-alpha-probe.php")
     stdout_path = state_directory / f"{name}.stdout.txt"
     stderr_path = state_directory / f"{name}.stderr.txt"
     try:
@@ -2547,7 +2106,7 @@ def candidate_fpm_probe(state_directory: Path, name: str) -> dict[str, Any]:
         }
         if (
             payload.get("php_version") != "8.2.30"
-            or payload.get("laravel_version") != "12.69.0"
+            or payload.get("laravel_version") != "12.69.1"
             or payload.get("sapi") != "fpm-fcgi"
             or payload.get("alpha_contract")
             != {
@@ -2591,6 +2150,7 @@ def candidate_cli_checks(
     rows: list[dict[str, Any]],
     state_directory: Path,
 ) -> dict[str, Any]:
+    full_source_identity(target=True)
     live = live_manifest_snapshot(rows, target=True)
     lint_results: list[dict[str, Any]] = []
     for row in rows:
@@ -2766,6 +2326,8 @@ def monitor_production(
             "maintenance_active": LARAVEL_MAINTENANCE_FILE.exists(),
             "front_controller_sha256": sha256_file(FRONT_CONTROLLER),
             "source_sha256": live_manifest_snapshot(rows, target=True)["sha256"],
+            "full_source": full_source_identity(target=True),
+            "configuration_sha256": source_controls.require_configuration_identity(),
             "dependencies": dependency_identity(),
             "deployment_lock_held_by_runner": True,
             "laravel_log_continuity": {
@@ -3103,116 +2665,22 @@ def restore_sources(
     return {**receipt, "path": str(path), "receipt_sha256": sha256_file(path)}
 
 
-def front_controller_recovery_required(
-    state: dict[str, Any],
-    *,
-    front_controller: Path = FRONT_CONTROLLER,
-    original_sha256: str = EXPECTED_FRONT_CONTROLLER_SHA256,
-) -> bool:
-    """Decide from live identity and durable mutation state, never a gate boolean."""
-    live = file_identity(front_controller)
-    if live["sha256"] not in {original_sha256, EXPECTED_GATE_SHA256}:
-        raise DeploymentError("Recovery found unknown live front-controller bytes.")
-    history = state.get("front_controller_transitions", [])
-    latest = state.get("front_controller_transition")
-    if not isinstance(history, list):
-        raise DeploymentError("Recovery found invalid front-controller transition history.")
-    if history:
-        if not isinstance(latest, dict) or latest != history[-1]:
-            raise DeploymentError("Recovery found inconsistent durable front-controller state.")
-        phase = latest.get("phase")
-        if not isinstance(phase, str):
-            raise DeploymentError("Recovery found an invalid durable transition phase.")
-    if live["sha256"] == EXPECTED_GATE_SHA256:
-        return True
-    if history and latest["phase"] in {
-        "installed",
-        "installed_reconciled_from_live_identity",
-        "verified",
-        "containment_retained",
-    }:
-        raise DeploymentError(
-            "Durable state says the gate is installed but live identity is the original."
-        )
-    return mutation_has_started(state)
+def front_controller_recovery_required(state: dict[str, Any], *, front_controller: Path | None = None, original_sha256: str = EXPECTED_FRONT_CONTROLLER_SHA256) -> bool:
+    # Decision validation is offline: a failed live FPM must not block rollback.
+    if not state.get('front_controller_backup'):
+        return mutation_has_started(state)
+    path=Path(state['state_directory'])/'state.json'
+    frozen=source_controls.validate_frozen_fpm_opcache_record(state.get('fpm_opcache'))
+    context=source_controls._gate_context_from_frozen_envelope(state,path,frozen)
+    try: return source_controls.dependency_gate.front_controller_recovery_required(context=context,state=state,mutation_started=mutation_has_started)
+    except source_controls.dependency_gate.GateError as error:raise DeploymentError(str(error)) from error
 
 
-def establish_rollback_containment(
-    *,
-    state_directory: Path,
-    name: str,
-    state: dict[str, Any],
-    state_path: Path,
-    original_backup: Path,
-    original_sha256: str = EXPECTED_FRONT_CONTROLLER_SHA256,
-    metadata: dict[str, Any] | None = None,
-    front_controller: Path = FRONT_CONTROLLER,
-    application_root: Path = APP_ROOT,
-    origin_probe: Callable[[], dict[str, Any]] | None = None,
-    public_probe: Callable[[], dict[str, Any]] | None = None,
-    restored_health_probe: Callable[[], dict[str, Any]] | None = None,
-) -> dict[str, Any]:
-    """Explicitly contain rollback before any source or runtime recovery work."""
-    state["containment_requested"] = True
-    state["status"] = f"{name}_establishing_containment"
-    write_state(state_path, state)
-    append_event(
-        state_directory,
-        "rollback_containment_requested",
-        {"operation": name, "mutation_started": mutation_has_started(state)},
-    )
+def establish_rollback_containment(*, state_directory: Path, name: str, state: dict[str, Any], state_path: Path, original_backup: Path, original_sha256: str = EXPECTED_FRONT_CONTROLLER_SHA256, metadata: dict[str, Any] | None = None, front_controller: Path | None = None, application_root: Path | None = None, origin_probe=None, public_probe=None, restored_health_probe=None) -> dict[str, Any]:
+    context=source_gate_context(state,state_path,front_controller=front_controller,application_root=application_root)
     try:
-        gate = install_static_gate(
-            state_directory=state_directory,
-            name=name,
-            state=state,
-            state_path=state_path,
-            original_backup=original_backup,
-            original_sha256=original_sha256,
-            metadata=metadata,
-            front_controller=front_controller,
-            application_root=application_root,
-            origin_probe=origin_probe,
-            public_probe=public_probe,
-            restored_health_probe=restored_health_probe,
-        )
-    except Exception:
-        live = file_identity(front_controller)
-        if mutation_has_started(state):
-            reviewed_metadata = metadata or reviewed_front_controller_metadata()
-            if (
-                live["sha256"] != EXPECTED_GATE_SHA256
-                or live["metadata"] != reviewed_metadata
-                or state.get("static_gate_active") is not True
-                or state.get("containment_active") is not True
-            ):
-                raise DeploymentError(
-                    "Rollback containment failed after mutation and did not retain the exact gate."
-                )
-            state["status"] = f"{name}_verification_failed_site_gated"
-            append_event(
-                state_directory,
-                "rollback_containment_verification_failed_site_gated",
-                {"operation": name, "identity": live},
-            )
-        else:
-            state["status"] = f"{name}_failed_before_mutation_original_restored"
-            append_event(
-                state_directory,
-                "rollback_containment_failed_before_mutation_original_restored",
-                {"operation": name, "identity": live},
-            )
-        write_state(state_path, state)
-        raise
-    state["containment_active"] = True
-    state["status"] = f"{name}_containment_verified"
-    write_state(state_path, state)
-    append_event(
-        state_directory,
-        "rollback_containment_verified",
-        {"operation": name, "identity": file_identity(front_controller)},
-    )
-    return gate
+        return source_controls.dependency_gate.establish_rollback_containment(context=context,state=state,operation=name,origin_probe=lambda number:(origin_probe() if origin_probe else gate_origin_probe(state_directory,f'{name}-{number}')),public_probe=public_probe or (lambda:gate_public_probe(state_directory,name)),restored_health_probe=restored_health_probe or health_snapshot,mutation_started=mutation_has_started)
+    except source_controls.dependency_gate.GateError as error:raise DeploymentError(str(error)) from error
 
 
 def rollback_operation(
@@ -3257,6 +2725,7 @@ def rollback_operation(
             state_directory=state_directory,
             rows=rows,
         )
+        full_source_identity(target=False)
         state["source_rollback_receipt"] = source["path"]
         write_state(state_path, state)
         dependency_identity()
@@ -3275,7 +2744,6 @@ def rollback_operation(
         leave_laravel_maintenance(state_directory, "rollback-artisan-up")
         state["laravel_maintenance_active"] = False
         write_state(state_path, state)
-        time.sleep(OPCACHE_WAIT_SECONDS)
         front_restore = restore_front_controller(
             Path(str(state["front_controller_backup"])),
             state["front_controller_metadata"],
@@ -3431,6 +2899,10 @@ def deploy_release(
             )
             preflight_path = state_directory / "cutover-preflight-receipt.json"
             atomic_json(preflight_path, preflight)
+            if preflight["controls"] != receipt["controls"]:
+                raise DeploymentError("FPM/nginx differs from staged envelope")
+            state["fpm_opcache"]=preflight["controls"]["fpm_opcache"]
+            state["nginx"]=preflight["controls"]["nginx"]
             state["preflight_receipt"] = str(preflight_path)
             state["status"] = "preflight_complete"
             write_state(state_path, state)
@@ -3444,6 +2916,7 @@ def deploy_release(
             atomic_copy(FRONT_CONTROLLER, front_backup, 0o600)
             require_regular_file(front_backup, EXPECTED_FRONT_CONTROLLER_SHA256)
             state["front_controller_backup"] = str(front_backup)
+            state["front_controller_backup_sha256"] = EXPECTED_FRONT_CONTROLLER_SHA256
             state["front_controller_metadata"] = require_exact_metadata(
                 FRONT_CONTROLLER,
                 reviewed_front_controller_metadata(),
@@ -3475,6 +2948,7 @@ def deploy_release(
 
             # Repeat every relevant identity under the gate before source mutation.
             # The installed schema is immutable input: no migration command is allowed.
+            full_source_identity(target=False)
             live_manifest_snapshot(rows, target=False)
             dependency_identity()
             before_repeat, before_repeat_command = runtime_probe(
@@ -3512,6 +2986,9 @@ def deploy_release(
                 key=lambda value: value.count("/"),
             )
             state["created_directories"] = absent_directories
+            if environment_identity() != receipt["controls"]:
+                raise DeploymentError("Under-gate FPM/nginx envelope differs")
+            source_controls.record_fpm_opcache_before_mutation(state,state_path)
             state["source_install_started"] = True
             state["status"] = "installing_source"
             write_state(state_path, state)
@@ -3535,7 +3012,6 @@ def deploy_release(
             state["laravel_maintenance_active"] = False
             state["status"] = "candidate_up_gate_active"
             write_state(state_path, state)
-            time.sleep(OPCACHE_WAIT_SECONDS)
             # Any failure after artisan up is caught below; rollback starts by
             # unconditionally re-entering the static gate.
             front_restore = restore_front_controller(
@@ -3572,7 +3048,7 @@ def deploy_release(
                 evidence_label="final",
             )
             final = {
-                "status": "success",
+                "status": "awaiting_independent_log_review",
                 "generated_at_utc": utc_now(),
                 "target_commit": TARGET_COMMIT,
                 "release_receipt_sha256": release_receipt_sha256,
@@ -3602,11 +3078,11 @@ def deploy_release(
             }
             final_path = state_directory / "final-receipt.json"
             atomic_json(final_path, final)
-            state["status"] = "success"
+            state["status"] = "awaiting_independent_log_review"
             state["final_receipt"] = str(final_path)
             state["finished_at_utc"] = utc_now()
             write_state(state_path, state)
-            append_event(state_directory, "deployment_success")
+            append_event(state_directory, "awaiting_independent_log_review")
             return final_path
         except Exception as exception:
             state["failure_type"] = type(exception).__name__
@@ -3662,13 +3138,13 @@ def recover_state(
 
 def describe() -> dict[str, Any]:
     return {
-        "artifact": "BuyDTF production-alpha transparency source-only deployment runner v2",
+        "artifact": "BuyDTF production-alpha transparency source-only deployment runner v3",
         "target_application_commit": TARGET_COMMIT,
         "artifact_base_commit": ARTIFACT_BASE_COMMIT,
         "review_provenance": {
             "handoff": "buy-dtf-codie-handoff-2026-10-02.md",
             "handoff_sha256": HANDOFF_SHA256,
-            "status": "prefreeze_review_only_non_stageable",
+            "status": "frozen_review_only_non_stageable",
         },
         "application_root": str(APP_ROOT),
         "release_root": str(RELEASE_ROOT),
@@ -3736,7 +3212,7 @@ def describe() -> dict[str, Any]:
         },
         "approval_tokens": {
             "status": (
-                "enabled_for_frozen_envelope"
+                "requires_separate_independent_review_and_authorization"
                 if DEPENDENCY_ENVELOPE_FROZEN
                 else "withheld_pending_post_laravel_12_69_1_freeze"
             ),
@@ -3837,7 +3313,7 @@ def main() -> int:
             print(
                 json.dumps(
                     {
-                        "status": "success",
+                        "status": "awaiting_independent_log_review",
                         "final_receipt": str(receipt),
                         "final_receipt_sha256": sha256_file(receipt),
                     },

@@ -1,0 +1,245 @@
+Transparency source-only replacement prepared for independent review
+
+Local branch: fix/production-alpha-transparency-source-only-v3-20261004
+Base: 3db18d1fff3f599299eecd2aae21b9102fc45540
+Review the local commit supplied in the final handoff. No branch was pushed.
+Status: preparation complete; independent review and fresh staging authorization required.
+No production stage, gate, source/dependency exchange, migration command, migration
+pretend, reversal, database restore, configuration change or service restart occurred.
+No ShopNLTees, retention, customer deletion or customer-artwork change occurred.
+
+The eleven reviewed application members and source archive are unchanged.
+Only operations controls, their tests, Git byte-preservation attributes and review
+evidence changed from the base. CHANGED_PATHS.txt lists every changed path.
+The original pre-freeze commit remains non-stageable with its original false
+DEPENDENCY_ENVELOPE_FROZEN value. The new runner freezes the accepted post-Laravel
+baseline; its manifest still declares stageable=false and deployable=false until
+separate review and explicit execution authority. No new execution authorization
+or staging/deployment token was issued in this preparation.
+
+Frozen identities (complete control hashes are in artifact-identities.json):
+PHP: 8.2.30; Laravel: 12.69.1
+Composer lock: 77055fc8acf891496b0b356bb034d7935c04989a3751f52b788ecd1b7999206d
+Vendor: 7df0a101ceb0386b72ec4cfc71f2be8576fc5a5d4b777d11c05e5b7f1ed770d8
+Vendor UID/GID/mode: db8aba0a4f49d0cecaeaac0b5b742c5f94b1a514a8d4452c361cb61e2dbacf0d
+Complete vendor inventory: c646726893e4d74b42343218f891409e925541d9bf8ab0563ff98a9c998b8fd5
+Executable allowlist: 551df886bc842a49ea87d8d9bb0cfe3478e3cc5eeea841c83409e8349d120154
+Bootstrap cache: 468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9
+Autoload set: 342f417d353f8742f116898d307c34a2677e0a1cb0f814f3e8088f0bb2be1a91 (126 entries in both optimized files)
+Runtime source before: 3909bdc2303b5c578135859c847f311cd84b827e62ac4e5dbce3d2297f6da71f (326 files)
+Runtime source candidate: 2c8268cdfbfd3fc294d17de7ab960ab2e1a7f8faa38acd68935af18945f1bc4f (327 files)
+Eleven-member source CAS before: 0ceca182384a8e68560ec542c0c2c0c695971b8488321ca0899ea7a880d6fd17
+Eleven-member source CAS target: b3379cd90676d8b3214371e17ffd3278cd43ba1885a6223b12998a8b40e5ea27
+Unchanged raw source archive: 3067bca578201a39254d8544b633a04ff6a9e43fc0de2a2783a95ccde9a1bfcd
+Runner: e1f4cc0121c620f6d8bda9fb72e6f3bdc17f7a7f15530024f6b9cea526c9d0fd
+Runtime helper: e4f0e1880a877f4f3866e35d7049de936857eeb1d70c3c8a6e229a9c53653f85
+Source gate adapter: 642c7d0cf698ac2b01c9311e066182eabcae29fe7f4ff4e8b681d29cd72f1fb3
+Accepted v4 shared gate helper: b93c08f58a08333120369c1cc75c60631d621c3a8099ca3967065721c45679f5
+FPM SAPI probe: b8b34f87d45a0c000cc0df7917496631320cfbdcca1ff44bc41741ce0d569262
+Nginx identity helper: 1243fea2757aca89f586ec4b322b0d23ee1e19b2d027c21bd6523e71e6e6e8e0
+Unchanged complete-entry log parser: 4bdec766469e71568631dbcf7408e94696f2fd99c46c18dd58b8374f31a488c8
+Frozen dependency/runtime envelope: 04850fe3aef14981c92f5b2af373bd136cfb6fead456d86fcab7233acb009fd1
+Application manifest: f7f9c098e48dd5cefafed6708bfad7069880eae5941b2885f0f317214f54027c
+
+The repository's historical composer.lock was preserved and is excluded from
+installation. Validation used the accepted live 77055fc8... lock and 7df0a101...
+vendor in isolated mirrors. No Composer install, update, resolution or optimized
+dump was used for the source-only candidate mirrors. PHPUnit's isolated dev
+vendor is test support, not an installation artifact.
+
+Read-only production receipts verified the finalized dependency state
+7f182eeba064bf644e378bc48b94b71356f56b611b845b59134452c225e569e4.
+Before/after verification: 2026-10-04T05:30:36Z / 2026-10-04T05:43:30Z.
+All 18 frozen comparisons passed, including source/raw bytes, dependencies,
+configuration hashes, front controller, schema, ledger, capabilities, queues,
+services, health and nginx. Normal customer row changes are not reverted.
+The exact original front controller remains eba77cba... with 0644 and 1000:1000.
+Schema remains 5485779bdcf0ea3a4372410ef76cd0bc418d1f6400128868606e901b8e9e85da.
+The migration ledger remains 21 rows with SHA-256
+f1140209ad897fbdba506d87329f9e4481ccfa5aff7fb6a423e6ec7a0dbe5f53.
+Both target migrations are recorded once; item_meta is nullable TEXT and all
+existing values remain null. Both incoming-order tables are installed and empty.
+Queues are empty. Receiver, job-label and retention flags remain false; artwork
+hosts remain empty. The live CheckoutController raw-byte baseline is 795 CRLF
+and 102 bare LF, preserved in APPLICATION_MANIFEST.json and raw-source receipts.
+
+The temporary nginx rule was not recreated. Dan's exact noninteractive nginx -T
+command remains denied. Administrator cleanup receipt authority is the user's
+accepted independent verification of SHA-256
+7f87cfe6e864a734a959ad52e13b6e5ba48e4770245f630d9335bb29816991b7;
+its root-private bytes were not read or represented as personally verified.
+Current nginx proof reconstructs all 18 accepted include files byte-for-byte,
+checks the current include expansion and administrator-controlled parent paths,
+and requires the accepted service PIDs/start times. The root is
+/var/www/buy-dtf/public; index.php uses /run/php/php8.2-fpm.sock and resolves
+SCRIPT_FILENAME to /var/www/buy-dtf/public/index.php. No new administrator access
+is needed for the current proof. Drift or an unreadable accepted capture requires
+new administrator verification; the runner does not grant permission or call
+sudo/nginx -T. The accepted read-only FPM probe location is receipt-bound in the
+frozen envelope. If that retained helper becomes unavailable, stage must stop
+before creating a release; a replacement location requires review.
+
+OPcache values: enable=1, validate_timestamps=1, revalidate_freq=2,
+file_update_protection=2. The reviewed minimum is max(5, 2*2+2+1) = 7 seconds.
+Every gate install, reassertion, containment, original restoration and recovery
+uses the byte-identical accepted v4 primitive. Replacement bytes/0644/1000:1000
+are verified before exchange, replacement_pending is durable before os.replace,
+and installed is fsynced before the monotonic wait starts. Receipts bind wall and
+monotonic times, earliest probe time and exact before/after identities. Two
+independent origin nonces and one public Cloudflare nonce must all verify.
+Restoration receives the same full wait. CLI opcache_invalidate is never proof.
+
+Initial gate installation requires a current valid FPM probe. The immediately
+pre-source-mutation FPM checkpoint is separately hashed, private and fsynced.
+Only after source_install_started may unavailable FPM use that exact frozen
+staging/checkpoint envelope for emergency containment. HTTP verification failure
+keeps the exact gate and permits boot-independent source rollback. Malformed,
+missing or tampered frozen state is explicitly rejected. Recovery reconciles
+actual front-controller bytes and durable transition history, not a boolean.
+Raw HTTP headers are 0600 private evidence; review derivatives redact cookie
+values. No raw configuration, production logs, headers or customer rows were
+copied into Git. The 56-entry diagnostic fixture remains redacted and unchanged.
+The source log collector fails closed on rotation, truncation or continuity loss;
+it never skips data. A rotation during a future monitor will require rollback
+and review. Complete-entry parsing rejects severe levels, invalid UTF-8,
+orphan/unparsed data, exceptions, traces, fatal errors, SQLSTATE, missing classes
+or views and candidate failures, while the reviewed 56 benign diagnostics pass.
+
+Validation:
+- 82 Python parser/runner/adapter/gate tests: pass, zero skips.
+- Nine atomic source scenarios: pass, including partial swaps, under-gate metadata
+  drift, candidate/opening failures, genuine log errors, schema-preserving
+  rollback, post-source FPM timeout with original live, and failed gate HTTP
+  verification with rollback continuing. Their clock model is explicit: full
+  seven-second virtual waits. UID/GID 33 gate readability is an actual process.
+- Shared interruption/ownership/restoration/recovery rehearsal: pass under 077.
+- Isolated real nginx/PHP-FPM: reproduced immediate stale 200 after warming the
+  original; full seven-second wait yielded the exact gate. Restoration reproduced
+  stale gate code and then restored healthy original responses after the wait.
+- Two clean source-only candidate mirrors: identical source, lock, vendor,
+  ownership/mode, autoload, complete inventory and cache. Both Composer strict
+  validation and locked --no-dev audits pass, zero advisories. Package discovery
+  passes; both route lists contain 178 routes. Discovery ran only in local
+  shadows; its regenerated cache was checked against accepted contents and
+  normalized to the frozen metadata. Future source installation never rebuilds
+  live bootstrap cache or vendor.
+- Actual UID/GID 33 loads Laravel 12.69.1 and the alpha helper, and cannot create
+  a vendor file. All 7,386 inventory records match the accepted inventory.
+- Native PHP 8.2.30 platform check and all 11 source plus two helper lints: pass.
+- Exact production source mirror suite: 131 tests / 1,500 assertions, pass.
+- Full repository suite on Laravel 12.69.1: 191 tests / 1,959 assertions, pass.
+  Tests run with real WSL PHP 8.3.6 Imagick/GD and isolated SQLite/network guards.
+  The exact PHP 8.2.30 platform proof is separate; no claim is made that WSL's
+  image tests ran on PHP 8.2.30. Test-only factories/assets/schema support are
+  excluded from the source CAS and install archive. Early harness-only failures
+  (omitted source classes, tables, or factories) are retained privately; the final
+  CAS-verified mirror includes the complete accepted source and passes.
+- Stale-cookie guest fallthrough and valid-cookie authentication pass in the
+  exact mirror suite; they retain the accepted dependency repair's test bytes.
+- Two real Imagick/GD render runs yield identical metrics/artifacts. PNG pixels,
+  alpha boundaries, crop bounds, dimensions, aspect ratios and 300-PPI metadata
+  are asserted; all original fixtures are hash-preserved. The synthetic glow
+  reproduction changes buggy 11x11 opaque bounds to reviewed 7x7 bounds. Imagick
+  and GD have equal RGBA hashes. 300 PPI serializes as 11811 pixels/metre, measured
+  299.9994 PPI. comparison.png was visually inspected.
+- npm ci and Vite build pass in a disposable directory; the package lock is
+  unchanged. Production-scope npm audit: zero. Full audit: 19 existing development
+  advisories (1 low, 2 moderate, 14 high, 2 critical), including concurrently and
+  shell-quote. The full audit is included for independent review. No dependency
+  update was authorized or performed. No generated frontend output will be
+  installed by this source-only repair; frozen production assets remain intact.
+
+Future staging, deployment and rollback sequence (not executed):
+
+1. Independently review this commit, every checksum, the full frontend audit and
+   retained dependency/source proofs. Require fresh restricted-stage authority
+   tied to this runner, envelope and immutable 11-member tar archive.
+2. Read-only Phase 0 verifies current lock/vendor/cache/autoload/UID/GID/modes,
+   complete original source CAS and exact raw source bytes, front-controller
+   bytes/metadata, configuration, service state, FPM and nginx route, health,
+   schema/21-row ledger, both incoming tables/migrations, zero item_meta values,
+   empty queues/hosts, disabled capabilities, no maintenance and free locks.
+   Stop before writes on any drift or missing proof; do not recreate sudoers.
+3. Authorized Phase 1 creates a fresh private release, bundles every frozen
+   control and the source archive, extracts only 11 reviewed members, validates
+   raw-byte CAS/metadata plan and PHP lint, and emits schema/source/control/release
+   receipts. Recheck the original production source, dependencies, FPM/nginx,
+   configuration and health after construction. Stop for independent review.
+   Neither a receipt nor this plan grants cutover authority. Retired releases
+   must not be reused, altered, deleted or promoted.
+4. A separately authorized cutover repeats all frozen preflight and release checks,
+   makes private raw-byte backups of the ten replaced files plus front controller,
+   durably installs the reviewed gate, waits seven seconds, verifies both origin
+   responses and the public response, drains runtime, and repeats all source,
+   dependency, configuration and exact installed schema/ledger/zero-metadata
+   checks under the gate. Recheck and fsync the FPM checkpoint immediately before
+   the durable source_install_started boundary. Never invoke migrate/pretend/down
+   migrations, DB restores, dependency resolution/exchange or service reloads.
+5. Atomically install the ten source replacements and one already-installed
+   migration's source file with reviewed metadata. Preserve original artwork and
+   all incoming-order behavior/flags. Keep vendor, lock, cache, configuration and
+   frontend assets exact. Lint/CLI checks and two independent FPM probes must pass.
+   Restore the original front controller through the same recorded full wait,
+   then verify normal health and disabled capability responses.
+6. Monitor for a complete 30 minutes, checking health, source/dependencies,
+   configuration, schema/ledger, empty incoming tables/queues and disabled flags.
+   After source mutation, legitimate item_meta growth is allowed and preserved.
+   Parse the private cumulative complete-entry Laravel delta; continuity failure
+   or a genuine error triggers containment and source rollback. Automated passing
+   monitoring stops at awaiting_independent_log_review. Preserve private evidence
+   and source backups; independent log acceptance/closeout needs separate authority.
+7. Before source mutation, gate verification failure restores exact original bytes
+   and metadata, performs the full wait and verifies normal health. After source
+   mutation, contain with current FPM or the validated emergency checkpoint; keep
+   the exact gate even if HTTP verification fails, then restore original source
+   bytes boot-independently. Remove only the introduced migration source file;
+   the installed schema and 21-row ledger remain intact. Revalidate source CAS,
+   dependencies and schema, restore front controller through the full wait and
+   reopen only after rollback health succeeds. If rollback cannot verify health,
+   retain/reassert the gate and preserve durable state for reviewed recovery.
+   Recovery uses the exact state/receipts and separately authorized recovery action;
+   no manual path exchanges, database restore or source retry is permitted.
+
+The transparency rollback baseline is Laravel 12.69.1 with the current vendor,
+lock and cache, plus the original source bytes. The separately retained Laravel
+12.69.0 rollback dependencies (22af12c7... / 7399949f... / 468c3eadd...) are preserved
+and must not be consumed by transparency rollback. Customer rows and derived
+files are never deleted or restored from a database snapshot.
+
+Independent review is the next gate. Fresh staging and cutover remain separately
+authorized. Keep receiver/job-label/retention disabled and artwork hosts empty.
+
+Local reproduction references:
+
+- Run the four Python modules listed in python-validation-receipt.json with
+  Python -B unittest in ops/deployment; use a root-owned disposable WSL /tmp
+  location for the actual UID/GID 33 rehearsal, not production paths.
+- rehearse_production_alpha_transparency.py consumes the unchanged 3067bca5...
+  archive and exact raw baseline files from the CAS-verified local source mirror.
+- rehearse_laravel_dependency_gate.py and rehearse_laravel_dependency_opcache.py
+  start no system services; the latter uses its own local nginx/FPM processes.
+- Assemble test mirrors from the accepted full 3909bdc2... source mirror, overlay
+  only the eleven APPLICATION_MANIFEST members and verify target CAS 2c8268cd....
+  Test-only dev vendor, factories, public assets and isolated SQLite fixtures are
+  support inputs and must never enter the deployment archive or accepted vendor.
+  Use php vendor/bin/phpunit directly, not Artisan's test command.
+- For rendering, copy render_evidence.php to ops/evidence/<run-name>/ inside an
+  isolated CAS-verified candidate mirror with tests/Fixtures/ImageProcessing.
+  Run PHP there with real Imagick/GD. The script's root calculation assumes that
+  three-level location. Its outputs should match renders/metrics.json; the
+  original fixture hash must remain unchanged. It is not a production entry point.
+- Composer validation/audit/discovery/route commands and their identities appear
+  in source-only-builds.json. Keep COMPOSER_ROOT_VERSION=1.0.0. Do not use the
+  repository's historical lock, resolve dependencies or rebuild live cache.
+- The raw source tar remains privately at storage/app/private/operations/
+  production-alpha-transparency-source-only-package-20261002/
+  production-alpha-transparency-b02fce32.tar. Its SHA-256 is authoritative;
+  verify every exact member byte rather than reconstructing from line-ending
+  normalized live files. No customer artwork is an archive member.
+
+Complete raw-source manifests: runtime-source-before-manifest.json and
+runtime-source-candidate-manifest.json freeze all 326/327 paths, exact byte
+counts, file hashes and PHP raw line-ending counts without exporting contents.
+EVIDENCE_MANIFEST.json binds the changed operations files and review evidence
+plus the unchanged application targets, parser, redacted fixtures and tests.
+SHA256SUMS binds that manifest and every listed regular file.

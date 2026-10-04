@@ -1,0 +1,645 @@
+{
+  "accepted_cleanup_receipt_sha256": "7f87cfe6e864a734a959ad52e13b6e5ba48e4770245f630d9335bb29816991b7",
+  "artifact": "buy-dtf-transparency-post-laravel-read-only-freeze-v1",
+  "autoload": {
+    "entries": 126,
+    "files": {
+      "autoload_classmap.php": {
+        "entries": 126,
+        "sha256": "5236a6ef5a0803719a2cb9b24d525946342063421aac9c6bec3914f1a9d9d893"
+      },
+      "autoload_static.php": {
+        "entries": 126,
+        "sha256": "1e82d08d78ebc0936284cf10cd7aca90b1753e0b7868627b2dda13bb67e54dc5"
+      }
+    },
+    "sha256": "342f417d353f8742f116898d307c34a2677e0a1cb0f814f3e8088f0bb2be1a91"
+  },
+  "cache": {
+    "entries": {
+      "packages.php": {
+        "bytes": 415,
+        "gid": 33,
+        "kind": "file",
+        "mode": 436,
+        "sha256": "21da8f9ed19687e708cc7bc5cc59394c6fcdf9b9deadf617ae70526f815a1db0",
+        "uid": 1000
+      },
+      "services.php": {
+        "bytes": 21353,
+        "gid": 33,
+        "kind": "file",
+        "mode": 436,
+        "sha256": "1f7623b2b4ffd2c4099fb34ad86fc96c1479e27bf81b1b0ba328c988cc4ffcb5",
+        "uid": 1000
+      }
+    },
+    "manifest": {
+      "bytes": 21768,
+      "directories": 0,
+      "files": 2,
+      "sha256": "468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9"
+    },
+    "root_metadata": {
+      "gid": 33,
+      "kind": "directory",
+      "mode": 1533,
+      "uid": 1000
+    }
+  },
+  "cleanup_receipt_authority": "user-accepted independent administrator receipt; root-private bytes not read",
+  "database_envelope": {
+    "capabilities_disabled": true,
+    "database_envelope_version": 1,
+    "incoming_order_definitions_sha256": "aa0a038110dc355ffcd0ed12768c2adb7b0954ecbcc9aeb0fc4ef0efb5d287dc",
+    "incoming_order_row_counts": {
+      "api_asset_records": 0,
+      "incoming_order_jobs": 0
+    },
+    "incoming_order_tables": {
+      "api_asset_records": true,
+      "incoming_order_jobs": true
+    },
+    "item_meta_row_policy": "pre_source_exactly_zero",
+    "migration_ledger": {
+      "incoming_order_entry_count": 1,
+      "incoming_order_migration": "2026_09_27_120000_create_incoming_order_v1_tables",
+      "row_count": 21,
+      "rows_sha256": "f1140209ad897fbdba506d87329f9e4481ccfa5aff7fb6a423e6ec7a0dbe5f53",
+      "target_entry_count": 1,
+      "target_migration": "2026_10_01_120000_add_item_meta_to_savedimages_table"
+    },
+    "queues_empty": true,
+    "savedimages_item_meta": {
+      "definition": {
+        "CHARACTER_SET_NAME": "utf8mb4",
+        "COLLATION_NAME": "utf8mb4_unicode_ci",
+        "COLUMN_DEFAULT": null,
+        "COLUMN_NAME": "item_meta",
+        "COLUMN_TYPE": "text",
+        "EXTRA": "",
+        "GENERATION_EXPRESSION": "",
+        "IS_NULLABLE": "YES",
+        "ORDINAL_POSITION": 12,
+        "TABLE_NAME": "savedimages"
+      },
+      "nonnull_rows": 0
+    },
+    "schema_section_row_counts": {
+      "columns": 411,
+      "key_column_usage": 49,
+      "referential_constraints": 2,
+      "statistics": 76,
+      "table_constraints": 46,
+      "tables": 36
+    },
+    "schema_sha256": "5485779bdcf0ea3a4372410ef76cd0bc418d1f6400128868606e901b8e9e85da",
+    "status": "pass"
+  },
+  "dependency_deployment_state_sha256": "7f182eeba064bf644e378bc48b94b71356f56b611b845b59134452c225e569e4",
+  "dependency_lock_free": true,
+  "fpm_opcache": {
+    "artifact": "buy-dtf-php-fpm-opcache-envelope-v4",
+    "environment_helper_sha256": "1243fea2757aca89f586ec4b322b0d23ee1e19b2d027c21bd6523e71e6e6e8e0",
+    "policy": {
+      "artifact": "buy-dtf-php-fpm-opcache-revalidation-policy-v1",
+      "complete_revalidation_interval_seconds": 4,
+      "file_update_protection_seconds": 2,
+      "formula": "max(5, 2 * revalidate_freq + file_update_protection + 1)",
+      "minimum_floor_seconds": 5,
+      "minimum_wait_seconds": 7,
+      "opcache_enable": true,
+      "php_version": "8.2.30",
+      "revalidate_freq_seconds": 2,
+      "safety_margin_seconds": 1,
+      "sapi": "fpm-fcgi",
+      "second_revalidation_window_seconds": 2,
+      "validate_timestamps": true
+    },
+    "probe": {
+      "artifact": "buy-dtf-php-fpm-opcache-probe-v1",
+      "directives": {
+        "opcache.enable": {
+          "normalized": true,
+          "raw": "1"
+        },
+        "opcache.file_update_protection": {
+          "normalized": 2,
+          "raw": "2"
+        },
+        "opcache.revalidate_freq": {
+          "normalized": 2,
+          "raw": "2"
+        },
+        "opcache.validate_timestamps": {
+          "normalized": true,
+          "raw": "1"
+        }
+      },
+      "opcache_configuration_directives": {
+        "opcache.enable": true,
+        "opcache.file_update_protection": 2,
+        "opcache.revalidate_freq": 2,
+        "opcache.validate_timestamps": true
+      },
+      "php_version": "8.2.30",
+      "sapi": "fpm-fcgi"
+    },
+    "probe_helper_sha256": "b8b34f87d45a0c000cc0df7917496631320cfbdcca1ff44bc41741ce0d569262",
+    "status": "pass"
+  },
+  "front_controller": {
+    "bytes": 543,
+    "metadata": {
+      "gid": 1000,
+      "kind": "file",
+      "mode": 420,
+      "uid": 1000
+    },
+    "path": "/var/www/buy-dtf/public/index.php",
+    "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
+  },
+  "health": {
+    "https://buy-dtf.com/": 200,
+    "https://buy-dtf.com/admin": 302,
+    "https://buy-dtf.com/checkout": 302,
+    "https://buy-dtf.com/login": 200,
+    "https://buy-dtf.com/up": 200
+  },
+  "lock_sha256": "77055fc8acf891496b0b356bb034d7935c04989a3751f52b788ecd1b7999206d",
+  "maintenance_active": false,
+  "nginx": {
+    "accepted_envelope_sha256": "f3a9069976cb28d8f8263263e6ae427aff57d95bf69ffc85c86996f0a6b14467",
+    "accepted_stable_identity": {
+      "artifact": "buy-dtf-nginx-php-route-identity-v2",
+      "command_argv_sha256": "04ec636437add3b5699fd08c9b0436aa695cba62109bb25c6540ebd5bcc16312",
+      "document_root_identity": {
+        "document_root": "/var/www/buy-dtf/public",
+        "listen_directives": [
+          "443 ssl",
+          "[::]:443 ssl"
+        ],
+        "matching_tls_server_count": 1,
+        "origin_loopback_compatible": true,
+        "origin_probe_address": "127.0.0.1:443",
+        "php_index_route": {
+          "fastcgi_pass": "unix:/run/php/php8.2-fpm.sock",
+          "fpm_socket": "/run/php/php8.2-fpm.sock",
+          "location_block_sha256": "7679a35b2126a018482777c861dab3a5d113de1758ff112293c05a9d5eadb939",
+          "location_order": 16,
+          "location_selector": [
+            "~",
+            "\\.php$"
+          ],
+          "request_uri": "/index.php",
+          "resolved_script_filename": "/var/www/buy-dtf/public/index.php",
+          "route_identity_sha256": "06d1662ea1d7c66227ddee107b10aa97bdb67544594e726421caff26a9187eb5",
+          "script_filename_expression": "$document_root$fastcgi_script_name"
+        },
+        "resolved_document_root": "/var/www/buy-dtf/public",
+        "server_block_sha256": "ab10b7949304e82c35dc1060caecfec2ea486f2ddc578f1709358e425ea4c440",
+        "server_name": "buy-dtf.com",
+        "tls": true
+      },
+      "effective_config_sha256": "97270e7f001d71a99c2c905c233306986f2e5f18e9c46f5b8872702886624061",
+      "nginx_executable": "/usr/sbin/nginx",
+      "nginx_executable_identity": {
+        "bytes": 1240552,
+        "gid": 0,
+        "mode": 493,
+        "path": "/usr/sbin/nginx",
+        "sha256": "70c002df0571675ada1eab1562a37c745d10b08d53b37d4a280bb230ed772baf",
+        "uid": 0
+      },
+      "nginx_executable_sha256": "70c002df0571675ada1eab1562a37c745d10b08d53b37d4a280bb230ed772baf",
+      "nginx_version": "1.18.0",
+      "nginx_version_argv_sha256": "e48f149a323a36b545bb14fd29d47243d72e8843c71e094c92ec4a6c160dcb37",
+      "nginx_version_output_sha256": "602f4add5bf21e69113e2a9dbadcd03a1691b60650b763ba73779689ebc56141",
+      "privilege_boundary": "sudo-noninteractive-exact-nginx-T",
+      "sudo_executable": "/usr/bin/sudo",
+      "sudo_executable_identity": {
+        "bytes": 232416,
+        "gid": 0,
+        "mode": 2541,
+        "path": "/usr/bin/sudo",
+        "sha256": "1e000f41739201f030cdc588fbe50d5438570f5386104c9521543824827fb985",
+        "uid": 0
+      },
+      "sudo_executable_sha256": "1e000f41739201f030cdc588fbe50d5438570f5386104c9521543824827fb985"
+    },
+    "current_files": [
+      {
+        "bytes": 1481,
+        "dan_writable": false,
+        "gid": 0,
+        "mode": "0o644",
+        "path": "/etc/nginx/nginx.conf",
+        "resolved_path": "/etc/nginx/nginx.conf",
+        "sha256": "bfbc892bc4b27f6937ed2791c9892749b677da9707d415bfd08146186653fb1b",
+        "uid": 0
+      },
+      {
+        "bytes": 47,
+        "dan_writable": false,
+        "gid": 0,
+        "mode": "0o644",
+        "path": "/etc/nginx/modules-enabled/50-mod-http-geoip2.conf",
+        "resolved_path": "/usr/share/nginx/modules-available/mod-http-geoip2.conf",
+        "sha256": "fcf0f66b8668ce6969314b16c5be6437bb0954b809238617eeb3cb075e084d4b",
+        "uid": 0
+      },
+      {
+        "bytes": 53,
+        "dan_writable": false,
+        "gid": 0,
+        "mode": "0o644",
+        "path": "/etc/nginx/modules-enabled/50-mod-http-image-filter.conf",
+        "resolved_path": "/usr/share/nginx/modules-available/mod-http-image-filter.conf",
+        "sha256": "1c155b881a2ccec0d14a7ea4569d5791e4998aa94ea1efef5080641216774c7f",
+        "uid": 0
+      },
+      {
+        "bytes": 52,
+        "dan_writable": false,
+        "gid": 0,
+        "mode": "0o644",
+        "path": "/etc/nginx/modules-enabled/50-mod-http-xslt-filter.conf",
+        "resolved_path": "/usr/share/nginx/modules-available/mod-http-xslt-filter.conf",
+        "sha256": "9a66703196a121300eb20c4fcbdbffca8ab662793d9b16eac6c10d65cc2733a3",
+        "uid": 0
+      },
+      {
+        "bytes": 40,
+        "dan_writable": false,
+        "gid": 0,
+        "mode": "0o644",
+        "path": "/etc/nginx/modules-enabled/50-mod-mail.conf",
+        "resolved_path": "/usr/share/nginx/modules-available/mod-mail.conf",
+        "sha256": "5e3838f1653ca24c82d0dee5b3db7de73221fbfff8aed8c2fc157fa6252f5f9d",
+        "uid": 0
+      },
+      {
+        "bytes": 42,
+        "dan_writable": false,
+        "gid": 0,
+        "mode": "0o644",
+        "path": "/etc/nginx/modules-enabled/50-mod-stream.conf",
+        "resolved_path": "/usr/share/nginx/modules-available/mod-stream.conf",
+        "sha256": "a1bf6e1e25eedbd7e6f816bd608f0a54adc1f2cdb238580890d03574296b81eb",
+        "uid": 0
+      },
+      {
+        "bytes": 49,
+        "dan_writable": false,
+        "gid": 0,
+        "mode": "0o644",
+        "path": "/etc/nginx/modules-enabled/70-mod-stream-geoip2.conf",
+        "resolved_path": "/usr/share/nginx/modules-available/mod-stream-geoip2.conf",
+        "sha256": "8600573de6c41876bd679b89f4e8f298b19bfa9d51701e348206c92c0747c492",
+        "uid": 0
+      },
+      {
+        "bytes": 3957,
+        "dan_writable": false,
+        "gid": 0,
+        "mode": "0o644",
+        "path": "/etc/nginx/mime.types",
+        "resolved_path": "/etc/nginx/mime.types",
+        "sha256": "632f37cafbdce8ebfba27f7d8264da1ea462880c4961c32354455c8ab722f7c3",
+        "uid": 0
+      },
+      {
+        "bytes": 112,
+        "dan_writable": false,
+        "gid": 0,
+        "mode": "0o644",
+        "path": "/etc/nginx/sites-enabled/00-default-catchall",
+        "resolved_path": "/etc/nginx/sites-available/00-default-catchall",
+        "sha256": "4a9ee11c0ec149c886e4a9d0a08510594b2bb8d53f360b5e5f7021f273aa610a",
+        "uid": 0
+      },
+      {
+        "bytes": 851,
+        "dan_writable": false,
+        "gid": 0,
+        "mode": "0o644",
+        "path": "/etc/nginx/sites-enabled/buy-dtf",
+        "resolved_path": "/etc/nginx/sites-available/buy-dtf",
+        "sha256": "937fabcda584423303ab4925172bd2f28ddbacd232421cb819e8396cb715465d",
+        "uid": 0
+      },
+      {
+        "bytes": 721,
+        "dan_writable": false,
+        "gid": 0,
+        "mode": "0o644",
+        "path": "/etc/letsencrypt/options-ssl-nginx.conf",
+        "resolved_path": "/etc/letsencrypt/options-ssl-nginx.conf",
+        "sha256": "108c4555058a087496a3893aea5d9e1cee0f20a3085d44a52dc1a66522299ac3",
+        "uid": 0
+      },
+      {
+        "bytes": 423,
+        "dan_writable": false,
+        "gid": 0,
+        "mode": "0o644",
+        "path": "/etc/nginx/snippets/fastcgi-php.conf",
+        "resolved_path": "/etc/nginx/snippets/fastcgi-php.conf",
+        "sha256": "a9dd98bf9631d727f0a846a9c7f4fe6193468a714c782df26d5cc9a7756411f2",
+        "uid": 0
+      },
+      {
+        "bytes": 1125,
+        "dan_writable": false,
+        "gid": 0,
+        "mode": "0o644",
+        "path": "/etc/nginx/fastcgi.conf",
+        "resolved_path": "/etc/nginx/fastcgi.conf",
+        "sha256": "dc4a3e6f16eb08000fb4a4ba6aaf9faeb50d55a3eaf152907938632f5b85b3aa",
+        "uid": 0
+      },
+      {
+        "bytes": 1370,
+        "dan_writable": false,
+        "gid": 0,
+        "mode": "0o644",
+        "path": "/etc/nginx/sites-enabled/localschoolgear.com",
+        "resolved_path": "/etc/nginx/sites-available/localschoolgear.com",
+        "sha256": "f6e2e8a99e5b8001852db4fff0a4ace9624ae94ec790339f8464101fbaa87644",
+        "uid": 0
+      },
+      {
+        "bytes": 1279,
+        "dan_writable": false,
+        "gid": 0,
+        "mode": "0o644",
+        "path": "/etc/nginx/sites-enabled/nlcustomtees.com",
+        "resolved_path": "/etc/nginx/sites-available/nlcustomtees.com",
+        "sha256": "723451f3091f334e87387ab818b5b774a85da647b0ceb3ab9ae38b93c270e5b0",
+        "uid": 0
+      },
+      {
+        "bytes": 1611,
+        "dan_writable": false,
+        "gid": 0,
+        "mode": "0o644",
+        "path": "/etc/nginx/sites-enabled/shippo-webhook.shopnltest.com",
+        "resolved_path": "/etc/nginx/shopnltees-shippo-ready-048b1eed-v2/shippo-webhook.ready.conf",
+        "sha256": "8f2a7b25a00a76d5d9a5cdeadc15c0e29d23529a98f6776eeccf7ea6561fbec6",
+        "uid": 0
+      },
+      {
+        "bytes": 1055,
+        "dan_writable": false,
+        "gid": 0,
+        "mode": "0o644",
+        "path": "/etc/nginx/fastcgi_params",
+        "resolved_path": "/etc/nginx/fastcgi_params",
+        "sha256": "4e0945432e68d9d7cac62356766fbea8652790c15a7332a42af1a78877225c32",
+        "uid": 0
+      },
+      {
+        "bytes": 8898,
+        "dan_writable": false,
+        "gid": 0,
+        "mode": "0o644",
+        "path": "/etc/nginx/sites-enabled/shopnltest.com",
+        "resolved_path": "/etc/nginx/sites-available/shopnltest.com",
+        "sha256": "995bb73fe54077e506d04c8e1cfc828dec6f34cfc7a37ae11263420383f0a281",
+        "uid": 0
+      }
+    ],
+    "new_administrator_access_requirement": null,
+    "status": "pass",
+    "verification_method": "accepted effective config plus exact read-only reconstruction of current raw bytes and include set; no sudo or nginx -T invoked"
+  },
+  "noninteractive_nginx_permission_denied": true,
+  "permission_probe_exit_code": 1,
+  "permission_probe_stderr_sha256": "9b3a3b7a78f239c4473bb193476b1a860c91f1c2b4fab9c7639eceea414a60fb",
+  "production_writes": false,
+  "raw_source_identities": [
+    {
+      "bare_lf_count": 748,
+      "bytes": 28229,
+      "crlf_count": 0,
+      "gid": 1000,
+      "mode": "0o664",
+      "path": "app/Helpers/ImageHelper.php",
+      "sha256": "b840aa320764dca8896512422456b39162a079d7428aab78b7ad1c7ec1beb637",
+      "uid": 1000
+    },
+    {
+      "bare_lf_count": 500,
+      "bytes": 17594,
+      "crlf_count": 0,
+      "gid": 1000,
+      "mode": "0o664",
+      "path": "app/Helpers/ProductionHelper.php",
+      "sha256": "fc14a5ff52714f311cc3f2bdcdf3410ade6927505bcc626eccbbc11f129d8f12",
+      "uid": 1000
+    },
+    {
+      "bare_lf_count": 177,
+      "bytes": 14948,
+      "crlf_count": 234,
+      "gid": 1000,
+      "mode": "0o664",
+      "path": "app/Http/Controllers/Admin/OrderImageController.php",
+      "sha256": "49c2925ad3dfb0aeea32f5baf98926a2cc5112ba543d9178c6297273ff6442f1",
+      "uid": 1000
+    },
+    {
+      "bare_lf_count": 865,
+      "bytes": 32079,
+      "crlf_count": 0,
+      "gid": 1000,
+      "mode": "0o664",
+      "path": "app/Http/Controllers/CartController.php",
+      "sha256": "713ae74db4410bb4ca22e5f4f3c77ddef17403004796a9e4418fe14ea7d6696a",
+      "uid": 1000
+    },
+    {
+      "bare_lf_count": 298,
+      "bytes": 9957,
+      "crlf_count": 0,
+      "gid": 1000,
+      "mode": "0o664",
+      "path": "app/Http/Controllers/TeamCustomizationController.php",
+      "sha256": "46c5f4079915e25f3466e0e98305918812376039546f91ed8a9f220737f56fc3",
+      "uid": 1000
+    },
+    {
+      "bare_lf_count": 286,
+      "bytes": 8990,
+      "crlf_count": 0,
+      "gid": 1000,
+      "mode": "0o664",
+      "path": "app/Models/DtfImage.php",
+      "sha256": "14d6245a1ac65babfa6d06152bd9fc6692c9d33c5fe3ba5e2b8efabce728d0c2",
+      "uid": 1000
+    },
+    {
+      "bare_lf_count": 0,
+      "bytes": 1043,
+      "crlf_count": 45,
+      "gid": 1000,
+      "mode": "0o664",
+      "path": "app/Models/SavedImage.php",
+      "sha256": "0282da64284bdddc2ad11ccc48c3f32c8ef0443823bbb4dcbe1d05b7973d12f7",
+      "uid": 1000
+    },
+    {
+      "bare_lf_count": 102,
+      "bytes": 44433,
+      "crlf_count": 795,
+      "gid": 1000,
+      "mode": "0o664",
+      "path": "app/Http/Controllers/Checkout/CheckoutController.php",
+      "sha256": "4b39e9381f728b8b4a0f8a828494827b0e2520ce80d0d36910b44185e6d5c2dd",
+      "uid": 1000
+    },
+    {
+      "bare_lf_count": 0,
+      "bytes": 8299,
+      "crlf_count": 214,
+      "gid": 1000,
+      "mode": "0o664",
+      "path": "app/Services/ShippoService.php",
+      "sha256": "617673b6921ddf209c67534b6c42b13f23771a1d3fdea907f7583f7459e193c7",
+      "uid": 1000
+    },
+    {
+      "bare_lf_count": 0,
+      "bytes": 3385,
+      "crlf_count": 94,
+      "gid": 1000,
+      "mode": "0o664",
+      "path": "app/Http/Controllers/Webhooks/ShippoWebhookController.php",
+      "sha256": "d8d91199bc0ca810204a04b4452cbf460bb939020a8e21b46537736a1bd5acbd",
+      "uid": 1000
+    },
+    {
+      "path": "database/migrations/2026_10_01_120000_add_item_meta_to_savedimages_table.php",
+      "state": "absent"
+    }
+  ],
+  "runtime": {
+    "app_debug": false,
+    "app_environment": "local",
+    "disabled_capabilities": {
+      "incoming_order_allowed_host_count": 0,
+      "incoming_order_job_label_enabled": false,
+      "incoming_order_receiver_enabled": false,
+      "incoming_order_retention_enabled": false
+    },
+    "laravel_version": "12.69.1",
+    "package_install_paths": {
+      "guzzlehttp/guzzle": "/var/www/buy-dtf/vendor/guzzlehttp/guzzle",
+      "laravel/framework": "/var/www/buy-dtf/vendor/laravel/framework",
+      "league/commonmark": "/var/www/buy-dtf/vendor/league/commonmark",
+      "league/flysystem": "/var/www/buy-dtf/vendor/league/flysystem",
+      "league/flysystem-local": "/var/www/buy-dtf/vendor/league/flysystem-local"
+    },
+    "package_versions": {
+      "guzzlehttp/guzzle": "7.15.2",
+      "laravel/framework": "12.69.1",
+      "league/commonmark": "2.10.2",
+      "league/flysystem": "3.35.3",
+      "league/flysystem-local": "3.35.3"
+    },
+    "php_extensions": [
+      "Core",
+      "FFI",
+      "PDO",
+      "Phar",
+      "Reflection",
+      "SPL",
+      "SimpleXML",
+      "Zend OPcache",
+      "bcmath",
+      "calendar",
+      "ctype",
+      "curl",
+      "date",
+      "dom",
+      "exif",
+      "fileinfo",
+      "filter",
+      "ftp",
+      "gd",
+      "gettext",
+      "hash",
+      "iconv",
+      "imagick",
+      "intl",
+      "json",
+      "libxml",
+      "mbstring",
+      "mysqli",
+      "mysqlnd",
+      "openssl",
+      "pcntl",
+      "pcre",
+      "pdo_mysql",
+      "posix",
+      "random",
+      "readline",
+      "session",
+      "shmop",
+      "sockets",
+      "sodium",
+      "standard",
+      "sysvmsg",
+      "sysvsem",
+      "sysvshm",
+      "tokenizer",
+      "xml",
+      "xmlreader",
+      "xmlwriter",
+      "xsl",
+      "zip",
+      "zlib"
+    ],
+    "php_version": "8.2.30",
+    "queue_tables": {
+      "failed_jobs": 0,
+      "jobs": 0
+    }
+  },
+  "scoped_processes": [],
+  "services_sha256": "792e450402ff2220dd3515433bd7b05bb211b592dacb58601122d0310f39a814",
+  "source": {
+    "files": 326,
+    "sha256": "3909bdc2303b5c578135859c847f311cd84b827e62ac4e5dbce3d2297f6da71f"
+  },
+  "static_gate_active": false,
+  "status": "pass",
+  "temporary_nginx_permission_exists": null,
+  "temporary_permission_removal_authority": "accepted independent administrator receipt; unprivileged parent directory lookup may be denied",
+  "transparency_lock_free": true,
+  "vendor": {
+    "directory_mode": 509,
+    "executable_allowlist_sha256": "551df886bc842a49ea87d8d9bb0cfe3478e3cc5eeea841c83409e8349d120154",
+    "executable_file_mode": 509,
+    "executable_files": 10,
+    "gid": 1000,
+    "manifest": {
+      "bytes": 26481661,
+      "directories": 925,
+      "files": 6460,
+      "sha256": "7df0a101ceb0386b72ec4cfc71f2be8576fc5a5d4b777d11c05e5b7f1ed770d8"
+    },
+    "metadata_sha256": "db8aba0a4f49d0cecaeaac0b5b742c5f94b1a514a8d4452c361cb61e2dbacf0d",
+    "ordinary_file_mode": 436,
+    "ordinary_files": 6450,
+    "root_metadata": {
+      "gid": 1000,
+      "kind": "directory",
+      "mode": 509,
+      "uid": 1000
+    },
+    "total_bytes": 26481661,
+    "uid": 1000
+  },
+  "verified_at_utc": "2026-10-04T05:07:58Z"
+}

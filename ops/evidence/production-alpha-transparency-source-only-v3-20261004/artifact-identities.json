@@ -1,0 +1,167 @@
+{
+  "accepted_live_cache_sha256": "468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9",
+  "accepted_live_lock_sha256": "77055fc8acf891496b0b356bb034d7935c04989a3751f52b788ecd1b7999206d",
+  "accepted_live_vendor_sha256": "7df0a101ceb0386b72ec4cfc71f2be8576fc5a5d4b777d11c05e5b7f1ed770d8",
+  "all_eleven_application_target_bytes_preserved": true,
+  "application_manifest_sha256": "f7f9c098e48dd5cefafed6708bfad7069880eae5941b2885f0f317214f54027c",
+  "artifact": "buy-dtf-production-alpha-transparency-source-only-v3-review-package",
+  "base_commit": "3db18d1fff3f599299eecd2aae21b9102fc45540",
+  "branch": "fix/production-alpha-transparency-source-only-v3-20261004",
+  "complete_source_after": {
+    "files": 327,
+    "sha256": "2c8268cdfbfd3fc294d17de7ab960ab2e1a7f8faa38acd68935af18945f1bc4f"
+  },
+  "complete_source_before": {
+    "files": 326,
+    "sha256": "3909bdc2303b5c578135859c847f311cd84b827e62ac4e5dbce3d2297f6da71f"
+  },
+  "fpm_opcache_probe_sha256": "b8b34f87d45a0c000cc0df7917496631320cfbdcca1ff44bc41741ce0d569262",
+  "frozen_controls": {
+    "laravel_dependency_gate.py": "b93c08f58a08333120369c1cc75c60631d621c3a8099ca3967065721c45679f5",
+    "laravel_fpm_opcache_probe.php": "b8b34f87d45a0c000cc0df7917496631320cfbdcca1ff44bc41741ce0d569262",
+    "laravel_nginx_identity.py": "1243fea2757aca89f586ec4b322b0d23ee1e19b2d027c21bd6523e71e6e6e8e0",
+    "production_alpha_dependency_envelope.json": "04850fe3aef14981c92f5b2af373bd136cfb6fead456d86fcab7233acb009fd1",
+    "production_alpha_gate_controls.py": "642c7d0cf698ac2b01c9311e066182eabcae29fe7f4ff4e8b681d29cd72f1fb3"
+  },
+  "frozen_envelope_sha256": "04850fe3aef14981c92f5b2af373bd136cfb6fead456d86fcab7233acb009fd1",
+  "nginx_helper_sha256": "1243fea2757aca89f586ec4b322b0d23ee1e19b2d027c21bd6523e71e6e6e8e0",
+  "no_dependency_payload_or_customer_artwork_in_source_archive": true,
+  "parser_sha256": "4bdec766469e71568631dbcf7408e94696f2fd99c46c18dd58b8374f31a488c8",
+  "repository_historical_lock_sha256_not_used_for_build_or_install": "eeac4637272ca2b9aeaa797a4440cfc8b4e31f5a469619c46ebfa5791c701831",
+  "runner_sha256": "e1f4cc0121c620f6d8bda9fb72e6f3bdc17f7a7f15530024f6b9cea526c9d0fd",
+  "runtime_helper_sha256": "e4f0e1880a877f4f3866e35d7049de936857eeb1d70c3c8a6e229a9c53653f85",
+  "scoped_source_cas_after": "b3379cd90676d8b3214371e17ffd3278cd43ba1885a6223b12998a8b40e5ea27",
+  "scoped_source_cas_before": "0ceca182384a8e68560ec542c0c2c0c695971b8488321ca0899ea7a880d6fd17",
+  "shared_v4_gate_helper_sha256": "b93c08f58a08333120369c1cc75c60631d621c3a8099ca3967065721c45679f5",
+  "source_gate_adapter_sha256": "642c7d0cf698ac2b01c9311e066182eabcae29fe7f4ff4e8b681d29cd72f1fb3",
+  "source_install_members": [
+    {
+      "expected_live_bytes": 28229,
+      "expected_live_sha256": "b840aa320764dca8896512422456b39162a079d7428aab78b7ad1c7ec1beb637",
+      "path": "app/Helpers/ImageHelper.php",
+      "target_bytes": 40050,
+      "target_sha256": "852eeb5843c27c8c8272adb8ebd0940e3961109ade2a727329b0c41f7c2ecede"
+    },
+    {
+      "expected_live_bytes": 17594,
+      "expected_live_sha256": "fc14a5ff52714f311cc3f2bdcdf3410ade6927505bcc626eccbbc11f129d8f12",
+      "path": "app/Helpers/ProductionHelper.php",
+      "target_bytes": 17948,
+      "target_sha256": "8d0a18fcbe6c1297ac5f41c082100d9e6baa9ed4b7252ce5b36994a7c5d551a7"
+    },
+    {
+      "expected_live_bytes": 14948,
+      "expected_live_line_endings": {
+        "crlf_count": 234,
+        "remaining_lf_count": 177
+      },
+      "expected_live_sha256": "49c2925ad3dfb0aeea32f5baf98926a2cc5112ba543d9178c6297273ff6442f1",
+      "normalized_evidence_only": {
+        "algorithm": "replace each CRLF byte pair with one LF byte; make no other byte changes",
+        "authority": "non-authoritative; never use for preflight CAS, backup verification, or rollback verification",
+        "bytes": 14714,
+        "sha256": "06a0011dfbef4c3f4502a5c940e29a6267960360921f6f414fd4f57f1c936af9"
+      },
+      "path": "app/Http/Controllers/Admin/OrderImageController.php",
+      "target_bytes": 15188,
+      "target_sha256": "9567e7950999b7ea9b744e9cd59a8fa9e9563490ad8ce069549a4137c3687bcb"
+    },
+    {
+      "expected_live_bytes": 32079,
+      "expected_live_sha256": "713ae74db4410bb4ca22e5f4f3c77ddef17403004796a9e4418fe14ea7d6696a",
+      "path": "app/Http/Controllers/CartController.php",
+      "target_bytes": 36241,
+      "target_sha256": "deb8a5265bc371c24e358f59d2b12fb81d03d414e29f585f658f7d43b6aca051"
+    },
+    {
+      "expected_live_bytes": 9957,
+      "expected_live_sha256": "46c5f4079915e25f3466e0e98305918812376039546f91ed8a9f220737f56fc3",
+      "path": "app/Http/Controllers/TeamCustomizationController.php",
+      "target_bytes": 11172,
+      "target_sha256": "ffff301f85fd02c0913d5d7f492b5a5f0661088aac8ba1f53973e563e06a89af"
+    },
+    {
+      "expected_live_bytes": 8990,
+      "expected_live_sha256": "14d6245a1ac65babfa6d06152bd9fc6692c9d33c5fe3ba5e2b8efabce728d0c2",
+      "path": "app/Models/DtfImage.php",
+      "target_bytes": 9837,
+      "target_sha256": "9f67088a0a6c760ebccf02a510d72fa0bafa6bf157ddcff712ce74af6b3c55ed"
+    },
+    {
+      "expected_live_bytes": 1043,
+      "expected_live_line_endings": {
+        "crlf_count": 45,
+        "remaining_lf_count": 0
+      },
+      "expected_live_sha256": "0282da64284bdddc2ad11ccc48c3f32c8ef0443823bbb4dcbe1d05b7973d12f7",
+      "normalized_evidence_only": {
+        "algorithm": "replace each CRLF byte pair with one LF byte; make no other byte changes",
+        "authority": "non-authoritative; never use for preflight CAS, backup verification, or rollback verification",
+        "bytes": 998,
+        "sha256": "dd6d7f7b1f1144e77447912c698c06351d30ac85bf1800b1d60dbe149fc00d7e"
+      },
+      "path": "app/Models/SavedImage.php",
+      "target_bytes": 1520,
+      "target_sha256": "41b4ffcfa94ba9648b7c7e717efc1a82da37ed890d0ef31f96b00264b94f1a66"
+    },
+    {
+      "expected_live_bytes": 44433,
+      "expected_live_line_endings": {
+        "crlf_count": 795,
+        "remaining_lf_count": 102
+      },
+      "expected_live_sha256": "4b39e9381f728b8b4a0f8a828494827b0e2520ce80d0d36910b44185e6d5c2dd",
+      "normalized_evidence_only": {
+        "algorithm": "replace each CRLF byte pair with one LF byte; make no other byte changes",
+        "authority": "non-authoritative; never use for preflight CAS, backup verification, or rollback verification",
+        "bytes": 43638,
+        "sha256": "719c3a569b99daddd8cbee6295a4992bb6da582b6ff917cf09d7eda5e33aa3f3"
+      },
+      "path": "app/Http/Controllers/Checkout/CheckoutController.php",
+      "target_bytes": 44572,
+      "target_sha256": "206dfc3c9e80cfe537971f7adee4d9120fe7fd3e6200c0b94d18fa5f4ff5d2b6"
+    },
+    {
+      "expected_live_bytes": 8299,
+      "expected_live_line_endings": {
+        "crlf_count": 214,
+        "remaining_lf_count": 0
+      },
+      "expected_live_sha256": "617673b6921ddf209c67534b6c42b13f23771a1d3fdea907f7583f7459e193c7",
+      "normalized_evidence_only": {
+        "algorithm": "replace each CRLF byte pair with one LF byte; make no other byte changes",
+        "authority": "non-authoritative; never use for preflight CAS, backup verification, or rollback verification",
+        "bytes": 8085,
+        "sha256": "85c12772b004b279d51fb12bde5d684869f18ae8589e934d2e4c57b98a124b28"
+      },
+      "path": "app/Services/ShippoService.php",
+      "target_bytes": 9086,
+      "target_sha256": "0bc3ebff9bf24406559c564ef659784c157573a1cac3b6eb6558022214c468ff"
+    },
+    {
+      "expected_live_bytes": 3385,
+      "expected_live_line_endings": {
+        "crlf_count": 94,
+        "remaining_lf_count": 0
+      },
+      "expected_live_sha256": "d8d91199bc0ca810204a04b4452cbf460bb939020a8e21b46537736a1bd5acbd",
+      "normalized_evidence_only": {
+        "algorithm": "replace each CRLF byte pair with one LF byte; make no other byte changes",
+        "authority": "non-authoritative; never use for preflight CAS, backup verification, or rollback verification",
+        "bytes": 3291,
+        "sha256": "bc30c3c2a562f787ceeb08b5193597eb3cf983ea2c957db6ea736c2fb6460646"
+      },
+      "path": "app/Http/Controllers/Webhooks/ShippoWebhookController.php",
+      "target_bytes": 3538,
+      "target_sha256": "cc82a885ac67dfda46d98f103d94c865c7c6a0961951b1234b5e6450dcf2a466"
+    },
+    {
+      "expected_live_state": "absent",
+      "path": "database/migrations/2026_10_01_120000_add_item_meta_to_savedimages_table.php",
+      "target_bytes": 2303,
+      "target_sha256": "992fbfe8086732e9bde10be89c3f52ddb4fef49edfdec12b744377c2e4181bbf"
+    }
+  ],
+  "status": "independent_review_required_not_authorized_to_stage",
+  "unchanged_source_archive_sha256": "3067bca578201a39254d8544b633a04ff6a9e43fc0de2a2783a95ccde9a1bfcd"
+}

@@ -1,0 +1,18 @@
+{
+  "actual_uid": 0,
+  "elapsed_seconds": 11.168178755004192,
+  "errors": 0,
+  "failures": 0,
+  "modules": [
+    "test_laravel_log_guard",
+    "test_production_alpha_transparency_runner",
+    "test_production_alpha_gate_controls",
+    "test_laravel_dependency_gate"
+  ],
+  "runner_sha256": "e1f4cc0121c620f6d8bda9fb72e6f3bdc17f7a7f15530024f6b9cea526c9d0fd",
+  "skips": 0,
+  "source_rehearsal_sha256": "fb14b09421dd4a8da0fbfcfbefaa5d0e3f32a0529312d50169d70c39f17b83e7",
+  "status": "pass",
+  "test_log_sha256": "d0727a69401e4be5411e3f93b100ed19ee76f421c6010a9b01aef90d9791816f",
+  "tests": 82
+}

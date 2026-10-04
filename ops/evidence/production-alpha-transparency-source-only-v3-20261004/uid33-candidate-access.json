@@ -1,0 +1,36 @@
+{
+  "actual_process": {
+    "alpha_class_readable": true,
+    "gid": 33,
+    "laravel": "12.69.1",
+    "uid": 33,
+    "vendor_write_denied": true
+  },
+  "probe_executed_only_in_disposable_local_directory": true,
+  "probe_sha256": "932042e2122e8eb536fc197020c8dde6d9abbf4a488a0683f998409c1d08280a",
+  "status": "pass",
+  "vendor_identity": {
+    "directory_mode": 509,
+    "executable_allowlist_sha256": "551df886bc842a49ea87d8d9bb0cfe3478e3cc5eeea841c83409e8349d120154",
+    "executable_file_mode": 509,
+    "executable_files": 10,
+    "gid": 1000,
+    "manifest": {
+      "bytes": 26481661,
+      "directories": 925,
+      "files": 6460,
+      "sha256": "7df0a101ceb0386b72ec4cfc71f2be8576fc5a5d4b777d11c05e5b7f1ed770d8"
+    },
+    "metadata_sha256": "db8aba0a4f49d0cecaeaac0b5b742c5f94b1a514a8d4452c361cb61e2dbacf0d",
+    "ordinary_file_mode": 436,
+    "ordinary_files": 6450,
+    "root_metadata": {
+      "gid": 1000,
+      "kind": "directory",
+      "mode": 509,
+      "uid": 1000
+    },
+    "total_bytes": 26481661,
+    "uid": 1000
+  }
+}

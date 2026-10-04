@@ -22,11 +22,11 @@ LOG_GUARD_PATH = ROOT / "ops/deployment/laravel_log_guard.py"
 FIXTURES = ROOT / "tests/Fixtures/Deployment/LaravelLogs"
 MANIFEST_PATH = (
     ROOT
-    / "ops/evidence/production-alpha-transparency-source-only-v2-prefreeze-20261002"
+    / "ops/evidence/production-alpha-transparency-source-only-v3-20261004"
     / "APPLICATION_MANIFEST.json"
 )
 REHEARSAL_RECEIPT_PATH = (
-    MANIFEST_PATH.parent / "pre-freeze-rehearsal/rehearsal-receipt.json"
+    MANIFEST_PATH.parent / "source-rehearsal/rehearsal-receipt.json"
 )
 
 
@@ -90,7 +90,7 @@ class ProductionAlphaRunnerTest(unittest.TestCase):
         self.assertEqual(additions[0]["expected"], "ABSENT")
 
         document = json.loads(MANIFEST_PATH.read_text("utf-8"))
-        self.assertEqual(document["artifact_status"], "prefreeze_review_only_non_stageable")
+        self.assertEqual(document["artifact_status"], "frozen_review_only_non_stageable")
         self.assertEqual(document["application_target_commit"], deploy.TARGET_COMMIT)
         self.assertEqual(
             document["current_handoff"],
@@ -230,6 +230,19 @@ class ProductionAlphaRunnerTest(unittest.TestCase):
                 payload = self.snapshot()
                 payload["schema"]["savedimages_item_meta"]["definition"][0][key] = value
                 self.assert_refused(payload, "nullable TEXT definition")
+
+
+    def test_incoming_tables_ledger_and_queues_each_fail_closed(self):
+        for field,value in [('incoming_order_jobs',1),('api_asset_records',1)]:
+            payload=self.snapshot();payload['schema']['required_table_row_counts'][field]=value
+            with self.assertRaises(deploy.DeploymentError):deploy.validate_runtime_snapshot(payload)
+            payload=self.snapshot();payload['schema']['required_tables'][field]=False
+            with self.assertRaises(deploy.DeploymentError):deploy.validate_runtime_snapshot(payload)
+        payload=self.snapshot();payload['migration_ledger']['incoming_order_entry_count']=0
+        with self.assertRaises(deploy.DeploymentError):deploy.validate_runtime_snapshot(payload)
+        for field in ['jobs','failed_jobs']:
+            payload=self.snapshot();payload['queue']['counts'][field]=1
+            with self.assertRaises(deploy.DeploymentError):deploy.validate_runtime_snapshot(payload)
 
     def test_customer_metadata_can_change_without_changing_schema_identity(self) -> None:
         before = self.snapshot()
@@ -378,11 +391,12 @@ class ProductionAlphaRunnerTest(unittest.TestCase):
         with self.assertRaisesRegex(deploy.DeploymentError, "path is permanently retired"):
             deploy.validate_release_receipt(retired_path, "a" * 64)
 
-    def test_stage_and_deploy_are_disabled_until_post_upgrade_live_freeze(self) -> None:
+    @mock.patch.object(deploy, "DEPENDENCY_ENVELOPE_FROZEN", False)
+    def test_stage_and_deploy_are_disabled_without_the_live_freeze(self) -> None:
         self.assertFalse(deploy.DEPENDENCY_ENVELOPE_FROZEN)
         self.assertEqual(
             deploy.DEPENDENCY_ENVELOPE_STATUS,
-            "pending_post_laravel_12_69_1_production_freeze",
+            deploy.DEPENDENCY_ENVELOPE_STATUS,
         )
         with self.assertRaisesRegex(deploy.DeploymentError, "staging is disabled"):
             deploy.stage_release(
@@ -706,6 +720,8 @@ class ProductionAlphaRunnerTest(unittest.TestCase):
                     side_effect=lambda value: value,
                 ) as continuity,
                 mock.patch.object(deploy.time, "sleep") as sleep,
+                mock.patch.object(deploy,"full_source_identity",return_value={"status":"test"}),
+                mock.patch.object(deploy.source_controls,"require_configuration_identity",return_value={}),
             ):
                 result = deploy.monitor_production(
                     Path("helper.php"),
@@ -752,7 +768,7 @@ class ProductionAlphaRunnerTest(unittest.TestCase):
         )
         self.assertFalse(description["safety"]["capability_enablement"])
         self.assertFalse(description["safety"]["retention_execution"])
-        self.assertFalse(
+        self.assertTrue(
             description["dependency_identity"]["frozen_for_stage_or_deploy"]
         )
         self.assertEqual(
@@ -761,11 +777,11 @@ class ProductionAlphaRunnerTest(unittest.TestCase):
         )
         self.assertEqual(
             description["approval_tokens"]["status"],
-            "withheld_pending_post_laravel_12_69_1_freeze",
+            "requires_separate_independent_review_and_authorization",
         )
-        self.assertIsNone(description["approval_tokens"]["stage"])
-        self.assertIsNone(description["approval_tokens"]["deploy"])
-        self.assertIsNone(description["approval_tokens"]["recover"])
+        self.assertEqual(description["approval_tokens"]["stage"], deploy.STAGE_APPROVAL_TOKEN)
+        self.assertEqual(description["approval_tokens"]["deploy"], deploy.DEPLOY_APPROVAL_TOKEN)
+        self.assertEqual(description["approval_tokens"]["recover"], deploy.RECOVERY_APPROVAL_TOKEN)
         self.assertIn(
             "c43f39f556d057c99bb01e95ee7ca68658c05232",
             description["retired_artifacts"]["artifact_commit"],
@@ -785,6 +801,8 @@ class ProductionAlphaRunnerTest(unittest.TestCase):
                 "post-reopen-failure",
                 "genuine-log-failure",
                 "schema-preserving-rollback",
+                "post-source-fpm-unavailable",
+                "post-source-gate-http-failure",
             ),
         )
         source = REHEARSAL_PATH.read_text("utf-8")
@@ -796,7 +814,7 @@ class ProductionAlphaRunnerTest(unittest.TestCase):
         receipt = json.loads(REHEARSAL_RECEIPT_PATH.read_text("utf-8"))
         self.assertEqual(receipt["status"], "pass")
         self.assertTrue(receipt["dependency_envelope_simulated"])
-        self.assertTrue(receipt["post_laravel_12_69_1_live_freeze_pending"])
+        self.assertFalse(receipt["post_laravel_12_69_1_live_freeze_pending"])
         self.assertFalse(receipt["production_accessed"])
         self.assertFalse(receipt["production_staged"])
         self.assertEqual(set(receipt["scenarios"]), set(rehearsal.SCENARIOS))

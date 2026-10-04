@@ -1,0 +1,8 @@
+PHPUnit 11.5.50 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.3.6
+Configuration: /tmp/buydtf-alpha-v3-production-suite-20261004-r3/phpunit.xml
+
+Time: 00:06.304, Memory: 68.50 MB
+
+OK (131 tests, 1500 assertions)

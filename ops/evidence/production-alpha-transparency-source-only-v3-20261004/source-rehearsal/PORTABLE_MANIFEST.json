@@ -1,0 +1,56 @@
+{
+  "algorithm": "sort regular files by POSIX relative path; for each record store path, exact byte count, and lowercase SHA-256 of raw bytes; serialize as UTF-8 JSON with sorted keys, two-space indentation, and one LF",
+  "entries": [
+    {
+      "bytes": 8613,
+      "path": "candidate-check-failure-receipt.json",
+      "sha256": "a59bb60ea98301f33f5ea9ed1eb7e3400620e8582ae5e959f817b87d4ac5ec6a"
+    },
+    {
+      "bytes": 10861,
+      "path": "genuine-log-failure-receipt.json",
+      "sha256": "02eb2e86ce081d3184bb852566faad196b1b5258d5654fc7130d415fdce14244"
+    },
+    {
+      "bytes": 10861,
+      "path": "post-reopen-failure-receipt.json",
+      "sha256": "1a5484567bb567941bdfc0badc3b94fc5d60d0b67cfbb9a919358cf6f115e0ca"
+    },
+    {
+      "bytes": 10941,
+      "path": "post-source-fpm-unavailable-receipt.json",
+      "sha256": "7558d2f12b70b64afa1d9f8e94cbb89fa50a0e736d36dcef8f5113df5f3a5b56"
+    },
+    {
+      "bytes": 13260,
+      "path": "post-source-gate-http-failure-receipt.json",
+      "sha256": "7fef86d1df811dddfe6d9227f7f3ca0c703e78fd413f608add6e0d57ca16f286"
+    },
+    {
+      "bytes": 8313,
+      "path": "pre-source-failure-receipt.json",
+      "sha256": "4a3a7c9e6800cbf62c900410a3554e1a5e86d8c7ad2071646e10aea9d48898de"
+    },
+    {
+      "bytes": 102730,
+      "path": "rehearsal-receipt.json",
+      "sha256": "fb14b09421dd4a8da0fbfcfbefaa5d0e3f32a0529312d50169d70c39f17b83e7"
+    },
+    {
+      "bytes": 10931,
+      "path": "schema-preserving-rollback-receipt.json",
+      "sha256": "30aeea34289e5eb83d601a1f25e7742e0bc9407c8f40db86e765c19443caa960"
+    },
+    {
+      "bytes": 8581,
+      "path": "source-swap-failure-receipt.json",
+      "sha256": "0740815391377e774e702d47cb157bb210f67f4f6105b9ff747ca2b454c5ff2c"
+    },
+    {
+      "bytes": 6209,
+      "path": "success-receipt.json",
+      "sha256": "d1cd272302da52f1cd57633c7ceef93f546132f258ce03c999c5e89513edc25a"
+    }
+  ],
+  "entries_sha256": "ef6b5d5eca8adebd04995521c4dc3f3073583a18de340e16be1f1ec0547f19b0"
+}

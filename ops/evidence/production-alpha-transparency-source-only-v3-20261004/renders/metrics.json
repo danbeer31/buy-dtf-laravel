@@ -1,0 +1,109 @@
+{
+    "schema_version": 1,
+    "threshold": 128,
+    "source_fixture": {
+        "relative_path": "../../../tests/Fixtures/ImageProcessing/shadow-glow.png",
+        "sha256": "45a9ccffb66a229a3b16c3c487ffeb8cc30e61ee3eac271b34d97ea868f0c8d4"
+    },
+    "renders": {
+        "source-shadow-glow.png": {
+            "bytes": 226,
+            "sha256": "2b785681b94972f6fbf67c7a6e7273e66de4fa2347430bd43e349a53e34c3bcb",
+            "rgba_sha256": "972fd737ba96e8c454b2e9557575d36c0f2f80cc47a7dd3b3e68e6412501d0f2",
+            "width_px": 14,
+            "height_px": 12,
+            "aspect_ratio": 1.16666667,
+            "x_dpi": 299.9994,
+            "y_dpi": 299.9994,
+            "alpha_values": [
+                0,
+                32,
+                96,
+                160,
+                255
+            ],
+            "visible_bounds": {
+                "x": 1,
+                "y": 0,
+                "width": 11,
+                "height": 11
+            }
+        },
+        "before-buggy-threshold.png": {
+            "bytes": 164,
+            "sha256": "7694eb26c4f787ebe65a8dcee8c61b4bed1350852743524e89d44a37ee02c844",
+            "rgba_sha256": "3810b031e790c5897f731ba290d2e1ff2bc45c30e65ebb44fd195849a3549082",
+            "width_px": 11,
+            "height_px": 11,
+            "aspect_ratio": 1,
+            "x_dpi": 299.9994,
+            "y_dpi": 299.9994,
+            "alpha_values": [
+                255
+            ],
+            "visible_bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 11,
+                "height": 11
+            }
+        },
+        "after-fixed-imagick.png": {
+            "bytes": 162,
+            "sha256": "255674254fe9f9610413361f877586acfc4834ba0f7195154e09a308e7d95c52",
+            "rgba_sha256": "9f7b54ff696720fb8b1cf8b1c58928649ac5037c62d1c9a0edc0154fb1511981",
+            "width_px": 7,
+            "height_px": 7,
+            "aspect_ratio": 1,
+            "x_dpi": 299.9994,
+            "y_dpi": 299.9994,
+            "alpha_values": [
+                255
+            ],
+            "visible_bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 7,
+                "height": 7
+            }
+        },
+        "after-fixed-gd.png": {
+            "bytes": 100,
+            "sha256": "b0e589a2982b0deb1aa45575070bf22efe7cfaf83e360f38d198822eff03b71b",
+            "rgba_sha256": "9f7b54ff696720fb8b1cf8b1c58928649ac5037c62d1c9a0edc0154fb1511981",
+            "width_px": 7,
+            "height_px": 7,
+            "aspect_ratio": 1,
+            "x_dpi": 299.9994,
+            "y_dpi": 299.9994,
+            "alpha_values": [
+                255
+            ],
+            "visible_bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 7,
+                "height": 7
+            }
+        },
+        "comparison.png": {
+            "bytes": 9999,
+            "sha256": "3cfb2f36cb51b8cf42f16ec8a8809658c38fd5bdb706bf3c38c23aff29387054",
+            "rgba_sha256": "8e5a1ed3e49d18aef01d25537df5a32029cbca6cd1ea50008a196686bef30cca",
+            "width_px": 1050,
+            "height_px": 390,
+            "aspect_ratio": 2.69230769,
+            "x_dpi": 299.9994,
+            "y_dpi": 299.9994,
+            "alpha_values": [
+                255
+            ],
+            "visible_bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 1050,
+                "height": 390
+            }
+        }
+    }
+}

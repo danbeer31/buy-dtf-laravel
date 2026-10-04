@@ -11,7 +11,7 @@ const EXPECTED_FUEL_CONNECTION = 'fuelmysql';
 const TARGET_MIGRATION = '2026_10_01_120000_add_item_meta_to_savedimages_table';
 const TARGET_TABLE = 'savedimages';
 const TARGET_COLUMN = 'item_meta';
-const REQUIRED_FUEL_TABLES = ['businesses', 'dtforders', 'dtfimages', TARGET_TABLE];
+const REQUIRED_FUEL_TABLES = ['businesses', 'dtforders', 'dtfimages', TARGET_TABLE, 'incoming_order_jobs', 'api_asset_records'];
 
 /**
  * Boot the installed application and emit a credential-free, deterministic
@@ -59,67 +59,6 @@ try {
     $databaseName = $fuelConfig['database'] ?? null;
     if (! is_string($databaseName) || $databaseName === '') {
         throw new RuntimeException('The reviewed Fuel database name is unavailable.');
-    }
-
-    if (($argv[2] ?? '') === '--write-mysql-client') {
-        $clientPath = $argv[3] ?? '';
-        if (! is_string($clientPath) || $clientPath === '' || file_exists($clientPath)) {
-            throw new RuntimeException('The temporary MySQL client path is invalid or already exists.');
-        }
-        $clientDirectory = dirname($clientPath);
-        $realClientDirectory = realpath($clientDirectory);
-        if ($realClientDirectory === false || ! is_dir($realClientDirectory)) {
-            throw new RuntimeException('The temporary MySQL client directory is invalid.');
-        }
-        $approvedClientRoot = realpath(
-            $realApplicationRoot.'/storage/app/private/operations/production-alpha-transparency-rollbacks',
-        );
-        if (
-            $approvedClientRoot === false
-            || ($realClientDirectory !== $approvedClientRoot
-                && ! str_starts_with(
-                    $realClientDirectory,
-                    $approvedClientRoot.DIRECTORY_SEPARATOR,
-                ))
-        ) {
-            throw new RuntimeException('The temporary MySQL client path is outside the approved rollback root.');
-        }
-        $options = [
-            'host' => $fuelConfig['host'] ?? null,
-            'port' => $fuelConfig['port'] ?? null,
-            'socket' => $fuelConfig['unix_socket'] ?? null,
-            'user' => $fuelConfig['username'] ?? null,
-            'password' => $fuelConfig['password'] ?? null,
-        ];
-        $lines = ['[client]'];
-        foreach ($options as $name => $value) {
-            if ($value === null || $value === '') {
-                continue;
-            }
-            $lines[] = $name.'='.mysqlOptionValue((string) $value);
-        }
-        $handle = @fopen($clientPath, 'x');
-        if ($handle === false) {
-            throw new RuntimeException('Unable to create the temporary MySQL client file.');
-        }
-        try {
-            if (fwrite($handle, implode(PHP_EOL, $lines).PHP_EOL) === false) {
-                throw new RuntimeException('Unable to write the temporary MySQL client file.');
-            }
-        } finally {
-            fclose($handle);
-        }
-        if (! chmod($clientPath, 0600)) {
-            @unlink($clientPath);
-            throw new RuntimeException('Unable to restrict the temporary MySQL client file.');
-        }
-        fwrite(STDOUT, json_encode([
-            'status' => 'created',
-            'client_file' => $clientPath,
-            'database_name' => $databaseName,
-            'database_name_sha256' => hash('sha256', $databaseName),
-        ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR).PHP_EOL);
-        exit(0);
     }
 
     $ledgerTable = config('database.migrations.table', 'migrations');
@@ -323,7 +262,7 @@ SQL, [$databaseName]),
     }
 
     $result = [
-        'probe_version' => 2,
+        'probe_version' => 3,
         'artifact' => 'buy-dtf-production-alpha-transparency-runtime-probe-v1',
         'generated_at_utc' => gmdate('Y-m-d\TH:i:s\Z'),
         'application_root' => $realApplicationRoot,
@@ -357,6 +296,7 @@ SQL, [$databaseName]),
             'rows_sha256' => canonicalHash($ledgerRows),
             'target_migration' => TARGET_MIGRATION,
             'target_entry_count' => count($targetMigrationEntries),
+            'incoming_order_entry_count' => count(array_filter($ledgerRows, static fn (array $row): bool => $row['migration'] === '2026_09_27_120000_create_incoming_order_v1_tables')),
             'without_target_row_count' => count($ledgerWithoutTarget),
             'without_target_rows_sha256' => canonicalHash($ledgerWithoutTarget),
         ],
@@ -449,15 +389,6 @@ function canonicalJson(mixed $value): string
 function canonicalHash(mixed $value): string
 {
     return hash('sha256', canonicalJson($value));
-}
-
-function mysqlOptionValue(string $value): string
-{
-    return '"'.str_replace(
-        ['\\', '"', "\n", "\r"],
-        ['\\\\', '\\"', '\\n', '\\r'],
-        $value,
-    ).'"';
 }
 
 function fail(string $message): never

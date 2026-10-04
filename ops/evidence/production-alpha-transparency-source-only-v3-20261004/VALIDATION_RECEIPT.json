@@ -1,0 +1,62 @@
+{
+  "application": {
+    "focused_supplement": {
+      "assertions": 818,
+      "tests": 29
+    },
+    "isolated_sqlite_and_blocked_external_http": true,
+    "phpunit": "11.5.50",
+    "production_source_mirror": {
+      "assertions": 1500,
+      "source_cas": "2c8268cdfbfd3fc294d17de7ab960ab2e1a7f8faa38acd68935af18945f1bc4f",
+      "tests": 131
+    },
+    "real_imagick_and_gd": true,
+    "repository_full": {
+      "assertions": 1959,
+      "tests": 191
+    },
+    "wsl_php": "8.3.6"
+  },
+  "artifacts_sha256": "21a72e2cfd5cec4a187fa88dbcbc03530df3284d6f57ae19763021d1ac47ad10",
+  "candidate_builds": {
+    "clean_mirrors": 2,
+    "dependency_update_or_install": false,
+    "identities_retained": true,
+    "routes_each": 178
+  },
+  "frontend_full_audit": {
+    "critical": 2,
+    "high": 14,
+    "info": 0,
+    "low": 1,
+    "moderate": 2,
+    "total": 19
+  },
+  "frontend_production_audit_zero": true,
+  "php_lint_paths": 13,
+  "php_platform": "8.2.30 pass",
+  "production_immutability_receipt_sha256": "00f4c5d9dce7e60872d0601adc965d96fb7c9462075fa302f03323d10cc8ae12",
+  "production_stage_or_cutover_performed": false,
+  "python": {
+    "actual_uid": 0,
+    "elapsed_seconds": 11.168178755004192,
+    "errors": 0,
+    "failures": 0,
+    "modules": [
+      "test_laravel_log_guard",
+      "test_production_alpha_transparency_runner",
+      "test_production_alpha_gate_controls",
+      "test_laravel_dependency_gate"
+    ],
+    "runner_sha256": "e1f4cc0121c620f6d8bda9fb72e6f3bdc17f7a7f15530024f6b9cea526c9d0fd",
+    "skips": 0,
+    "source_rehearsal_sha256": "fb14b09421dd4a8da0fbfcfbefaa5d0e3f32a0529312d50169d70c39f17b83e7",
+    "status": "pass",
+    "test_log_sha256": "d0727a69401e4be5411e3f93b100ed19ee76f421c6010a9b01aef90d9791816f",
+    "tests": 82
+  },
+  "raw_customer_data_in_git": false,
+  "renderer_runs_identical": 2,
+  "status": "independent_review_ready_with_existing_frontend_development_advisories"
+}

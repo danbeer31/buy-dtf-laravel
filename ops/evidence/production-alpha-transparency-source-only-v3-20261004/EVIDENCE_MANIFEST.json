@@ -1,0 +1,692 @@
+{
+  "artifact": "buy-dtf-transparency-source-only-v3-independent-review-evidence-manifest-v1",
+  "base_commit": "3db18d1fff3f599299eecd2aae21b9102fc45540",
+  "branch": "fix/production-alpha-transparency-source-only-v3-20261004",
+  "changed_paths_count": 70,
+  "complete_runtime_source_before": {
+    "files": 326,
+    "sha256": "3909bdc2303b5c578135859c847f311cd84b827e62ac4e5dbce3d2297f6da71f"
+  },
+  "complete_runtime_source_candidate": {
+    "files": 327,
+    "sha256": "2c8268cdfbfd3fc294d17de7ab960ab2e1a7f8faa38acd68935af18945f1bc4f"
+  },
+  "dependency_baseline": {
+    "accepted_live_cache_sha256": "468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9",
+    "accepted_live_lock_sha256": "77055fc8acf891496b0b356bb034d7935c04989a3751f52b788ecd1b7999206d",
+    "accepted_live_vendor_sha256": "7df0a101ceb0386b72ec4cfc71f2be8576fc5a5d4b777d11c05e5b7f1ed770d8"
+  },
+  "entries": [
+    {
+      "bytes": 992,
+      "path": ".gitattributes",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "90f5af36aaeac86526dae45c2a6117e97f2324d28142b7a84d11e85186be1e54"
+    },
+    {
+      "bytes": 40050,
+      "path": "app/Helpers/ImageHelper.php",
+      "role": "unchanged_reviewed_source_or_regression_input",
+      "sha256": "852eeb5843c27c8c8272adb8ebd0940e3961109ade2a727329b0c41f7c2ecede"
+    },
+    {
+      "bytes": 17948,
+      "path": "app/Helpers/ProductionHelper.php",
+      "role": "unchanged_reviewed_source_or_regression_input",
+      "sha256": "8d0a18fcbe6c1297ac5f41c082100d9e6baa9ed4b7252ce5b36994a7c5d551a7"
+    },
+    {
+      "bytes": 15188,
+      "path": "app/Http/Controllers/Admin/OrderImageController.php",
+      "role": "unchanged_reviewed_source_or_regression_input",
+      "sha256": "9567e7950999b7ea9b744e9cd59a8fa9e9563490ad8ce069549a4137c3687bcb"
+    },
+    {
+      "bytes": 36241,
+      "path": "app/Http/Controllers/CartController.php",
+      "role": "unchanged_reviewed_source_or_regression_input",
+      "sha256": "deb8a5265bc371c24e358f59d2b12fb81d03d414e29f585f658f7d43b6aca051"
+    },
+    {
+      "bytes": 44572,
+      "path": "app/Http/Controllers/Checkout/CheckoutController.php",
+      "role": "unchanged_reviewed_source_or_regression_input",
+      "sha256": "206dfc3c9e80cfe537971f7adee4d9120fe7fd3e6200c0b94d18fa5f4ff5d2b6"
+    },
+    {
+      "bytes": 11172,
+      "path": "app/Http/Controllers/TeamCustomizationController.php",
+      "role": "unchanged_reviewed_source_or_regression_input",
+      "sha256": "ffff301f85fd02c0913d5d7f492b5a5f0661088aac8ba1f53973e563e06a89af"
+    },
+    {
+      "bytes": 3538,
+      "path": "app/Http/Controllers/Webhooks/ShippoWebhookController.php",
+      "role": "unchanged_reviewed_source_or_regression_input",
+      "sha256": "cc82a885ac67dfda46d98f103d94c865c7c6a0961951b1234b5e6450dcf2a466"
+    },
+    {
+      "bytes": 9837,
+      "path": "app/Models/DtfImage.php",
+      "role": "unchanged_reviewed_source_or_regression_input",
+      "sha256": "9f67088a0a6c760ebccf02a510d72fa0bafa6bf157ddcff712ce74af6b3c55ed"
+    },
+    {
+      "bytes": 1520,
+      "path": "app/Models/SavedImage.php",
+      "role": "unchanged_reviewed_source_or_regression_input",
+      "sha256": "41b4ffcfa94ba9648b7c7e717efc1a82da37ed890d0ef31f96b00264b94f1a66"
+    },
+    {
+      "bytes": 9086,
+      "path": "app/Services/ShippoService.php",
+      "role": "unchanged_reviewed_source_or_regression_input",
+      "sha256": "0bc3ebff9bf24406559c564ef659784c157573a1cac3b6eb6558022214c468ff"
+    },
+    {
+      "bytes": 2303,
+      "path": "database/migrations/2026_10_01_120000_add_item_meta_to_savedimages_table.php",
+      "role": "unchanged_reviewed_source_or_regression_input",
+      "sha256": "992fbfe8086732e9bde10be89c3f52ddb4fef49edfdec12b744377c2e4181bbf"
+    },
+    {
+      "bytes": 69829,
+      "path": "ops/deployment/laravel_dependency_gate.py",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "b93c08f58a08333120369c1cc75c60631d621c3a8099ca3967065721c45679f5"
+    },
+    {
+      "bytes": 3480,
+      "path": "ops/deployment/laravel_fpm_opcache_probe.php",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "b8b34f87d45a0c000cc0df7917496631320cfbdcca1ff44bc41741ce0d569262"
+    },
+    {
+      "bytes": 11876,
+      "path": "ops/deployment/laravel_log_guard.py",
+      "role": "unchanged_reviewed_source_or_regression_input",
+      "sha256": "4bdec766469e71568631dbcf7408e94696f2fd99c46c18dd58b8374f31a488c8"
+    },
+    {
+      "bytes": 37980,
+      "path": "ops/deployment/laravel_nginx_identity.py",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "1243fea2757aca89f586ec4b322b0d23ee1e19b2d027c21bd6523e71e6e6e8e0"
+    },
+    {
+      "bytes": 16542,
+      "path": "ops/deployment/production_alpha_dependency_envelope.json",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "04850fe3aef14981c92f5b2af373bd136cfb6fead456d86fcab7233acb009fd1"
+    },
+    {
+      "bytes": 37489,
+      "path": "ops/deployment/production_alpha_gate_controls.py",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "642c7d0cf698ac2b01c9311e066182eabcae29fe7f4ff4e8b681d29cd72f1fb3"
+    },
+    {
+      "bytes": 147012,
+      "path": "ops/deployment/production_alpha_transparency_deploy.py",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "e1f4cc0121c620f6d8bda9fb72e6f3bdc17f7a7f15530024f6b9cea526c9d0fd"
+    },
+    {
+      "bytes": 15525,
+      "path": "ops/deployment/production_alpha_transparency_runtime_probe.php",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "e4f0e1880a877f4f3866e35d7049de936857eeb1d70c3c8a6e229a9c53653f85"
+    },
+    {
+      "bytes": 37109,
+      "path": "ops/deployment/rehearse_laravel_dependency_gate.py",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "5faa69641d11d392cb1c860d94e676025b30a8196455087d05fa3c7023c38d25"
+    },
+    {
+      "bytes": 37231,
+      "path": "ops/deployment/rehearse_laravel_dependency_opcache.py",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "8a376834f42c454fa0b4b1d04a2da0b7695c17b294fe296a7585bfe33e2821ba"
+    },
+    {
+      "bytes": 38696,
+      "path": "ops/deployment/rehearse_production_alpha_transparency.py",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "d6c52a0214d1d34b6b82040f5cde621da3a326964dd4257fbc638d2b4c96b128"
+    },
+    {
+      "bytes": 36699,
+      "path": "ops/deployment/test_laravel_dependency_gate.py",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "ef377aeb69698f03ffb1d54bbf40a0837ef98728df7f62141e9a66e2c8f9ac89"
+    },
+    {
+      "bytes": 11797,
+      "path": "ops/deployment/test_laravel_log_guard.py",
+      "role": "unchanged_reviewed_source_or_regression_input",
+      "sha256": "9615afd4e61c3b48668a2f4409dd9aed0f55a3aab5262ff237424607d914bd72"
+    },
+    {
+      "bytes": 9556,
+      "path": "ops/deployment/test_production_alpha_gate_controls.py",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "8570687d6a7025f00a7ad2373b2a1a1b3e25d809dda6b2dcd1122c1c5c431d02"
+    },
+    {
+      "bytes": 38735,
+      "path": "ops/deployment/test_production_alpha_transparency_runner.py",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "06b60e9894b0d12cbf7055dfe4528ac3ded66fbd60bc1a43d9b541caeed31779"
+    },
+    {
+      "bytes": 8111,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/APPLICATION_MANIFEST.json",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "f7f9c098e48dd5cefafed6708bfad7069880eae5941b2885f0f317214f54027c"
+    },
+    {
+      "bytes": 6217,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/CHANGED_PATHS.txt",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "adc79ebab6148093333d61f4589e8f287cb387d4d274bfea756deee41af3f2bc"
+    },
+    {
+      "bytes": 17770,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/REVIEW_HANDOFF.txt",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "80d4d7623dedb5eaf9495c47451cff375453f4d423785722b72be50b307f3095"
+    },
+    {
+      "bytes": 1923,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/VALIDATION_RECEIPT.json",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "df69a5559b02e5d8df55f8a01f8c2888eee6a1d18c8f50aa7d08fd5c701d623a"
+    },
+    {
+      "bytes": 8731,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/artifact-identities.json",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "21a72e2cfd5cec4a187fa88dbcbc03530df3284d6f57ae19763021d1ac47ad10"
+    },
+    {
+      "bytes": 46,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/build-a-composer-audit.txt",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "e464a6f19a008d852b61fd0966a47b663d20d70ccfba0b30edd6483a787f15f5"
+    },
+    {
+      "bytes": 25,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/build-a-composer-validate.txt",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "43add299dc97ecbd90ec2dc456ef5a0bd824bb9abdae2a3d7cdb520e21f8e86d"
+    },
+    {
+      "bytes": 273,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/build-a-package-discovery.txt",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "1306c598a02c1f6569bca56d18f0b5710b08dbab9e8d5636f9655701c917188f"
+    },
+    {
+      "bytes": 46,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/build-b-composer-audit.txt",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "e464a6f19a008d852b61fd0966a47b663d20d70ccfba0b30edd6483a787f15f5"
+    },
+    {
+      "bytes": 25,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/build-b-composer-validate.txt",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "43add299dc97ecbd90ec2dc456ef5a0bd824bb9abdae2a3d7cdb520e21f8e86d"
+    },
+    {
+      "bytes": 273,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/build-b-package-discovery.txt",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "1306c598a02c1f6569bca56d18f0b5710b08dbab9e8d5636f9655701c917188f"
+    },
+    {
+      "bytes": 211,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/candidate-application-suite.txt",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "6f9a53afe1200d3865c3969dcf6994e8a04de6e913f072b0d280e9e7378872ac"
+    },
+    {
+      "bytes": 1405,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/database-envelope-receipt.json",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "2f2f3ad7f6d0edb8f3c1a1431edac66cfb3bfe0224294131541fa7c3b73bd232"
+    },
+    {
+      "bytes": 1185,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/frontend-validation-receipt.json",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "860871a0fa977d1dd9ac9f900d459427fa891ad22eacbb6bd054d992d98854b7"
+    },
+    {
+      "bytes": 218,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/full-application-suite.txt",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "71b050e22d3153a81b8f45e60439aa081d1632096e3fd985ca44e0b222b35d2f"
+    },
+    {
+      "bytes": 147283,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/gate-transition-rehearsal.json",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "2116af67449fd977b63c6d0fa894bd46b44fab8f96b0689bd7d51afe93981621"
+    },
+    {
+      "bytes": 402,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/npm-build.txt",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "428d9460ecae524d1929669491ce31a5861006bc12b5cff1ef51db39b0dee391"
+    },
+    {
+      "bytes": 41904,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/npm-full-audit.json",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "8b3d6d3c22f414979c36bf335ea780ee2f2f447a11bbab7b4ebbb41df6d9077f"
+    },
+    {
+      "bytes": 386,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/npm-production-audit.json",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "406e6a745bbfe9bcbac6c22a1fdf39230babd383a86631fea282931e76519718"
+    },
+    {
+      "bytes": 19447,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/opcache-rehearsal.json",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "3ea401b33544357716472475f7e785f95b764100ae2a013eef59bb6c53692f23"
+    },
+    {
+      "bytes": 13218,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/parser-fixture-analysis.json",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "832cd46a937b1906b1963be981d6ab59707eaabc35c4fd418c48b85ae4bd8cde"
+    },
+    {
+      "bytes": 2640,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/php8230-lint.json",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "c3abd976c91a4196cd1efdfc2f035d030a7fc88a2d0a3f34db4c8227b7daafa1"
+    },
+    {
+      "bytes": 741,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/php8230-platform-receipt.json",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "00fff6ddc1f31afd0c0efc9bdc734c775aa78885bffbb507b80e8493ba9129db"
+    },
+    {
+      "bytes": 21460,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/production-after-preparation.json",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "b319e07d9c7e3ee8708effbffbed6997d6dd5d0fa9ddca52e8e45ec80b62ac2a"
+    },
+    {
+      "bytes": 227,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/production-application-suite.txt",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "092ee2c671d0e943cc0ac1c29725a3862306e2510407ce30e9447fe42c446c9d"
+    },
+    {
+      "bytes": 1481,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/production-immutability-receipt.json",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "00f4c5d9dce7e60872d0601adc965d96fb7c9462075fa302f03323d10cc8ae12"
+    },
+    {
+      "bytes": 21152,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/production-read-only-freeze.json",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "417f4fbebae6028be2faa2e5df12d24e606acb85103c892012f46b61159dc6af"
+    },
+    {
+      "bytes": 21460,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/production-read-only-with-config.json",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "42d64713052ab16797b0b5fb582f5550ef86ff918413afac3243a9a0ec3272fc"
+    },
+    {
+      "bytes": 594,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/python-validation-receipt.json",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "d6770ca4865e960c439ca87fb745a0a16c41724f59eca5aa5b2d47f2b70485e4"
+    },
+    {
+      "bytes": 15345,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/python-validation.txt",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "d0727a69401e4be5411e3f93b100ed19ee76f421c6010a9b01aef90d9791816f"
+    },
+    {
+      "bytes": 3241,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/render-reproducibility.json",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "cc1471546776e0aab9f2d72be73b0beabf93ae1d6ebf427c464107de90ca0150"
+    },
+    {
+      "bytes": 8760,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/render_evidence.php",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "6a63329c1dfd20defc7e57f5eec7e1bfc8907964cdbed7fb8527b719581338cb"
+    },
+    {
+      "bytes": 100,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/renders/after-fixed-gd.png",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "b0e589a2982b0deb1aa45575070bf22efe7cfaf83e360f38d198822eff03b71b"
+    },
+    {
+      "bytes": 162,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/renders/after-fixed-imagick.png",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "255674254fe9f9610413361f877586acfc4834ba0f7195154e09a308e7d95c52"
+    },
+    {
+      "bytes": 164,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/renders/before-buggy-threshold.png",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "7694eb26c4f787ebe65a8dcee8c61b4bed1350852743524e89d44a37ee02c844"
+    },
+    {
+      "bytes": 9999,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/renders/comparison.png",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "3cfb2f36cb51b8cf42f16ec8a8809658c38fd5bdb706bf3c38c23aff29387054"
+    },
+    {
+      "bytes": 3488,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/renders/metrics.json",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "ea67caa5c25149f7814569a8b4113e0a91a931d83d88005e15563d5bc89a71f9"
+    },
+    {
+      "bytes": 226,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/renders/source-shadow-glow.png",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "2b785681b94972f6fbf67c7a6e7273e66de4fa2347430bd43e349a53e34c3bcb"
+    },
+    {
+      "bytes": 74350,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/runtime-source-before-manifest.json",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "bc4ab65b8331dbf8d6ed783eca1c402eddb417845057e0494ec4a9374380bacf"
+    },
+    {
+      "bytes": 74610,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/runtime-source-candidate-manifest.json",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "831665b6de4f6fc20dd4de60b675f2f6931f7fa94816fc9cb42a9f9eba44d25a"
+    },
+    {
+      "bytes": 7711,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/source-only-builds.json",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "d798182bcfb0cd08f6a3391739ca890a7ad52e934149b6e80bf7f24155984716"
+    },
+    {
+      "bytes": 2012,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/source-rehearsal/PORTABLE_MANIFEST.json",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "85c3a2860d4cc82b38175f342f6cbf499d1311299a35914a1f512df459156092"
+    },
+    {
+      "bytes": 8613,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/source-rehearsal/candidate-check-failure-receipt.json",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "a59bb60ea98301f33f5ea9ed1eb7e3400620e8582ae5e959f817b87d4ac5ec6a"
+    },
+    {
+      "bytes": 10861,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/source-rehearsal/genuine-log-failure-receipt.json",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "02eb2e86ce081d3184bb852566faad196b1b5258d5654fc7130d415fdce14244"
+    },
+    {
+      "bytes": 10861,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/source-rehearsal/post-reopen-failure-receipt.json",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "1a5484567bb567941bdfc0badc3b94fc5d60d0b67cfbb9a919358cf6f115e0ca"
+    },
+    {
+      "bytes": 10941,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/source-rehearsal/post-source-fpm-unavailable-receipt.json",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "7558d2f12b70b64afa1d9f8e94cbb89fa50a0e736d36dcef8f5113df5f3a5b56"
+    },
+    {
+      "bytes": 13260,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/source-rehearsal/post-source-gate-http-failure-receipt.json",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "7fef86d1df811dddfe6d9227f7f3ca0c703e78fd413f608add6e0d57ca16f286"
+    },
+    {
+      "bytes": 8313,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/source-rehearsal/pre-source-failure-receipt.json",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "4a3a7c9e6800cbf62c900410a3554e1a5e86d8c7ad2071646e10aea9d48898de"
+    },
+    {
+      "bytes": 102730,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/source-rehearsal/rehearsal-receipt.json",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "fb14b09421dd4a8da0fbfcfbefaa5d0e3f32a0529312d50169d70c39f17b83e7"
+    },
+    {
+      "bytes": 10931,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/source-rehearsal/schema-preserving-rollback-receipt.json",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "30aeea34289e5eb83d601a1f25e7742e0bc9407c8f40db86e765c19443caa960"
+    },
+    {
+      "bytes": 8581,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/source-rehearsal/source-swap-failure-receipt.json",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "0740815391377e774e702d47cb157bb210f67f4f6105b9ff747ca2b454c5ff2c"
+    },
+    {
+      "bytes": 6209,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/source-rehearsal/success-receipt.json",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "d1cd272302da52f1cd57633c7ceef93f546132f258ce03c999c5e89513edc25a"
+    },
+    {
+      "bytes": 1043,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/uid33-candidate-access.json",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "9a32e1d91ad558ecc5bbbd4fce2ff7864055e7f83a3a6c0160be8130fe200f08"
+    },
+    {
+      "bytes": 1386597,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v3-20261004/vendor-inventory.jsonl",
+      "role": "changed_operations_or_review_evidence",
+      "sha256": "c646726893e4d74b42343218f891409e925541d9bf8ab0563ff98a9c998b8fd5"
+    },
+    {
+      "bytes": 9027,
+      "path": "tests/Feature/Admin/ProductionComparisonAlphaPolicyTest.php",
+      "role": "unchanged_reviewed_source_or_regression_input",
+      "sha256": "05d9d35903f014a1ef8a10434d91086ae7d53a4bd59e66a806e43fe7095d8b82"
+    },
+    {
+      "bytes": 8360,
+      "path": "tests/Feature/Cart/SavedImageAlphaPolicyTest.php",
+      "role": "unchanged_reviewed_source_or_regression_input",
+      "sha256": "76cc8d9368128aa28b0f914ade5e960403656821065c692af6200482558cc960"
+    },
+    {
+      "bytes": 5808,
+      "path": "tests/Feature/Migrations/SavedImageItemMetadataMigrationTest.php",
+      "role": "unchanged_reviewed_source_or_regression_input",
+      "sha256": "c97a2473f0d8c1ef6bdaa2f08c9f7ccc87f3c4ec406e69d4b2ad7b9172bee0fc"
+    },
+    {
+      "bytes": 2916,
+      "path": "tests/Feature/TeamCustomization/ProductionAlphaPolicyTest.php",
+      "role": "unchanged_reviewed_source_or_regression_input",
+      "sha256": "e773a8b51dd9d3f142e880b46022b1bfb4a870d68168d89b2c99eef0f0f7a160"
+    },
+    {
+      "bytes": 578,
+      "path": "tests/Fixtures/Deployment/LaravelLogs/genuine-candidate-error.txt",
+      "role": "unchanged_reviewed_source_or_regression_input",
+      "sha256": "1ec4221ffc8a375fe9c9f403c62bfaae427286e592cd1b29bbd48509cc2f71ea"
+    },
+    {
+      "bytes": 217,
+      "path": "tests/Fixtures/Deployment/LaravelLogs/genuine-caught-failure-message.txt",
+      "role": "unchanged_reviewed_source_or_regression_input",
+      "sha256": "d15655149998cb9d5d044150696edb78798b08bfba616b4058c88c6877538817"
+    },
+    {
+      "bytes": 258,
+      "path": "tests/Fixtures/Deployment/LaravelLogs/genuine-exception.txt",
+      "role": "unchanged_reviewed_source_or_regression_input",
+      "sha256": "63df5926c4bf907e281add7a4d475018cc058431a68450294c57127f2d2fc24f"
+    },
+    {
+      "bytes": 145,
+      "path": "tests/Fixtures/Deployment/LaravelLogs/genuine-fatal.txt",
+      "role": "unchanged_reviewed_source_or_regression_input",
+      "sha256": "9de34c7c43645feb9cdd18c51981e35e12190ebf46e5e3a2a048f8d9301c9eee"
+    },
+    {
+      "bytes": 95,
+      "path": "tests/Fixtures/Deployment/LaravelLogs/genuine-missing-class.txt",
+      "role": "unchanged_reviewed_source_or_regression_input",
+      "sha256": "6e98603d75b7aa399b5f056b77d53bbecb8879227410e237167fde1503c5f74e"
+    },
+    {
+      "bytes": 76,
+      "path": "tests/Fixtures/Deployment/LaravelLogs/genuine-missing-view.txt",
+      "role": "unchanged_reviewed_source_or_regression_input",
+      "sha256": "f9e8474b3554b7cd77c4c8752c03d9870c17620bea40e53a9fbe66b4becb8077"
+    },
+    {
+      "bytes": 95,
+      "path": "tests/Fixtures/Deployment/LaravelLogs/genuine-orphan-trace.txt",
+      "role": "unchanged_reviewed_source_or_regression_input",
+      "sha256": "f6eb8b63ff4033ab43b0e2ead345c20ed92b86e22dcfd13f5fa26f0591bd0181"
+    },
+    {
+      "bytes": 103,
+      "path": "tests/Fixtures/Deployment/LaravelLogs/genuine-sqlstate.txt",
+      "role": "unchanged_reviewed_source_or_regression_input",
+      "sha256": "f0643758e7d928c9f71e965ed3dc573d892d989d524049215f1381703d6fef03"
+    },
+    {
+      "bytes": 279,
+      "path": "tests/Fixtures/Deployment/LaravelLogs/genuine-structured-exception.txt",
+      "role": "unchanged_reviewed_source_or_regression_input",
+      "sha256": "af3dd128c3bf1b27b03a9ac6f50d5f34dca4e70c97af9089a65fd8f37ba7374c"
+    },
+    {
+      "bytes": 258,
+      "path": "tests/Fixtures/Deployment/LaravelLogs/genuine-trace.txt",
+      "role": "unchanged_reviewed_source_or_regression_input",
+      "sha256": "30d9f629f7db5153bd0fee22e517bbc73077feb0e0101e65a8717afa9e6c6d01"
+    },
+    {
+      "bytes": 88,
+      "path": "tests/Fixtures/Deployment/LaravelLogs/genuine-type-error.txt",
+      "role": "unchanged_reviewed_source_or_regression_input",
+      "sha256": "8f963c9cad50497d6a6908d2efc9ccea42409e2aaa657806855f85055ac00540"
+    },
+    {
+      "bytes": 1988,
+      "path": "tests/Fixtures/Deployment/LaravelLogs/reviewed-56-error-delta.provenance.json",
+      "role": "unchanged_reviewed_source_or_regression_input",
+      "sha256": "2230b2a71e4a215fd558adccd89090fecf70d1fd69e95f04448531f311dba06a"
+    },
+    {
+      "bytes": 4894,
+      "path": "tests/Fixtures/Deployment/LaravelLogs/reviewed-56-error-delta.redacted.txt",
+      "role": "unchanged_reviewed_source_or_regression_input",
+      "sha256": "d8bf0641949f96ac39240e92f0b5545c4ac5fb6a8fbfa4af2fe2f6029dd27f53"
+    },
+    {
+      "bytes": 693,
+      "path": "tests/Fixtures/ImageProcessing/SHA256SUMS",
+      "role": "unchanged_reviewed_source_or_regression_input",
+      "sha256": "c9abeda276606a89c271abf014130fb2560e0b4f6c57368cc269e51bfee50960"
+    },
+    {
+      "bytes": 126,
+      "path": "tests/Fixtures/ImageProcessing/antialiased-edges.png",
+      "role": "unchanged_reviewed_source_or_regression_input",
+      "sha256": "34a498973c03bc0374286d6db4bb17ff1693ed2e6b8269c87dab4bfcf3b60486"
+    },
+    {
+      "bytes": 464,
+      "path": "tests/Fixtures/ImageProcessing/cart-source.pdf",
+      "role": "unchanged_reviewed_source_or_regression_input",
+      "sha256": "e7dae5721b4ff8d5697cd254eaf5f809dc3c9e8d5477e2191547ec68a179b0d0"
+    },
+    {
+      "bytes": 251,
+      "path": "tests/Fixtures/ImageProcessing/cart-source.svg",
+      "role": "unchanged_reviewed_source_or_regression_input",
+      "sha256": "98f2f2000d588f4ef8a747380f7a49d591f26b5c4ba7083a7da37ac8fb7d8773"
+    },
+    {
+      "bytes": 143,
+      "path": "tests/Fixtures/ImageProcessing/fully-transparent.png",
+      "role": "unchanged_reviewed_source_or_regression_input",
+      "sha256": "4dbf1d71c3fc5bfd641b493ca46bdfc9f8f00152a97e43a052f455b6b44544fa"
+    },
+    {
+      "bytes": 4348,
+      "path": "tests/Fixtures/ImageProcessing/generate_fixtures.php",
+      "role": "unchanged_reviewed_source_or_regression_input",
+      "sha256": "9976a0eb42265b4723697f356cacc7318d3994b188dfa47562afd4cb2531451a"
+    },
+    {
+      "bytes": 105,
+      "path": "tests/Fixtures/ImageProcessing/hard-edged-opaque.png",
+      "role": "unchanged_reviewed_source_or_regression_input",
+      "sha256": "4f05163b76be2cded84e2e08e2dcaf39634b694dcb3d727dea066cbbf2f01d13"
+    },
+    {
+      "bytes": 164,
+      "path": "tests/Fixtures/ImageProcessing/no-transparent-padding.png",
+      "role": "unchanged_reviewed_source_or_regression_input",
+      "sha256": "3ad578ceb74dffe38a7e56ebe23b5d9f56ee84eda7908006fc056a4a5c67ab34"
+    },
+    {
+      "bytes": 129,
+      "path": "tests/Fixtures/ImageProcessing/shadow-glow.png",
+      "role": "unchanged_reviewed_source_or_regression_input",
+      "sha256": "45a9ccffb66a229a3b16c3c487ffeb8cc30e61ee3eac271b34d97ea868f0c8d4"
+    },
+    {
+      "bytes": 108,
+      "path": "tests/Fixtures/ImageProcessing/transparent-padding.png",
+      "role": "unchanged_reviewed_source_or_regression_input",
+      "sha256": "2d926bfdc44ce4668d4ec5c1c2458ad3a26399613654cd8b0b16f1061e54fad7"
+    },
+    {
+      "bytes": 3572,
+      "path": "tests/Unit/Helpers/ProductionAlphaPolicyTest.php",
+      "role": "unchanged_reviewed_source_or_regression_input",
+      "sha256": "ca96bf3faef47a443af324c2cae6e2d02ff1263b0c1d2caad12e5c1c857951df"
+    },
+    {
+      "bytes": 10394,
+      "path": "tests/Unit/ImageProcessing/ProductionAlphaNormalizationTest.php",
+      "role": "unchanged_reviewed_source_or_regression_input",
+      "sha256": "dce624bb188737d0c2fc613d15c78481cd4a2f39583c551fb7458fbb10405d1a"
+    }
+  ],
+  "entries_count": 110,
+  "manifest_algorithm": "sorted POSIX relative paths with exact raw-byte size and lowercase SHA-256; JSON UTF-8, sorted keys, two-space indentation, final LF",
+  "private_source_archive": {
+    "bytes": 215040,
+    "included_in_git": false,
+    "member_count": 11,
+    "sha256": "3067bca578201a39254d8544b633a04ff6a9e43fc0de2a2783a95ccde9a1bfcd"
+  },
+  "raw_production_logs_headers_cookies_configuration_and_customer_information_included": false,
+  "self_reference_policy": "EVIDENCE_MANIFEST.json excludes itself and SHA256SUMS; SHA256SUMS includes this manifest and all entries, excluding itself",
+  "status": "independent_review_required_not_authorized_to_stage"
+}

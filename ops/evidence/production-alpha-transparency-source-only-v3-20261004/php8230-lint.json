@@ -1,0 +1,67 @@
+[
+    {
+        "path":  "app/Helpers/ImageHelper.php",
+        "result":  "No syntax errors detected in app/Helpers/ImageHelper.php",
+        "exit_code":  0
+    },
+    {
+        "path":  "app/Helpers/ProductionHelper.php",
+        "result":  "No syntax errors detected in app/Helpers/ProductionHelper.php",
+        "exit_code":  0
+    },
+    {
+        "path":  "app/Http/Controllers/Admin/OrderImageController.php",
+        "result":  "No syntax errors detected in app/Http/Controllers/Admin/OrderImageController.php",
+        "exit_code":  0
+    },
+    {
+        "path":  "app/Http/Controllers/CartController.php",
+        "result":  "No syntax errors detected in app/Http/Controllers/CartController.php",
+        "exit_code":  0
+    },
+    {
+        "path":  "app/Http/Controllers/TeamCustomizationController.php",
+        "result":  "No syntax errors detected in app/Http/Controllers/TeamCustomizationController.php",
+        "exit_code":  0
+    },
+    {
+        "path":  "app/Models/DtfImage.php",
+        "result":  "No syntax errors detected in app/Models/DtfImage.php",
+        "exit_code":  0
+    },
+    {
+        "path":  "app/Models/SavedImage.php",
+        "result":  "No syntax errors detected in app/Models/SavedImage.php",
+        "exit_code":  0
+    },
+    {
+        "path":  "app/Http/Controllers/Checkout/CheckoutController.php",
+        "result":  "No syntax errors detected in app/Http/Controllers/Checkout/CheckoutController.php",
+        "exit_code":  0
+    },
+    {
+        "path":  "app/Services/ShippoService.php",
+        "result":  "No syntax errors detected in app/Services/ShippoService.php",
+        "exit_code":  0
+    },
+    {
+        "path":  "app/Http/Controllers/Webhooks/ShippoWebhookController.php",
+        "result":  "No syntax errors detected in app/Http/Controllers/Webhooks/ShippoWebhookController.php",
+        "exit_code":  0
+    },
+    {
+        "path":  "database/migrations/2026_10_01_120000_add_item_meta_to_savedimages_table.php",
+        "result":  "No syntax errors detected in database/migrations/2026_10_01_120000_add_item_meta_to_savedimages_table.php",
+        "exit_code":  0
+    },
+    {
+        "path":  "ops/deployment/production_alpha_transparency_runtime_probe.php",
+        "result":  "No syntax errors detected in ops/deployment/production_alpha_transparency_runtime_probe.php",
+        "exit_code":  0
+    },
+    {
+        "path":  "ops/deployment/laravel_fpm_opcache_probe.php",
+        "result":  "No syntax errors detected in ops/deployment/laravel_fpm_opcache_probe.php",
+        "exit_code":  0
+    }
+]

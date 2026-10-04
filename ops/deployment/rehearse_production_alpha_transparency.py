@@ -11,6 +11,9 @@ from __future__ import annotations
 
 import argparse
 import copy
+from dataclasses import replace
+from unittest import mock
+import secrets
 from contextlib import contextmanager
 import hashlib
 import importlib.util
@@ -31,7 +34,7 @@ LOG_GUARD_PATH = ROOT / "ops/deployment/laravel_log_guard.py"
 LOG_FIXTURES = ROOT / "tests/Fixtures/Deployment/LaravelLogs"
 MANIFEST_PATH = (
     ROOT
-    / "ops/evidence/production-alpha-transparency-source-only-v2-prefreeze-20261002/APPLICATION_MANIFEST.json"
+    / "ops/evidence/production-alpha-transparency-source-only-v3-20261004/APPLICATION_MANIFEST.json"
 )
 DEFAULT_ARCHIVE_PATH = (
     ROOT
@@ -58,6 +61,8 @@ SCENARIOS = (
     "post-reopen-failure",
     "genuine-log-failure",
     "schema-preserving-rollback",
+    "post-source-fpm-unavailable",
+    "post-source-gate-http-failure",
 )
 
 
@@ -143,7 +148,7 @@ def runtime_snapshot() -> dict[str, Any]:
     item_definition = [
         {
             "TABLE_NAME": "savedimages",
-            "ORDINAL_POSITION": 11,
+            "ORDINAL_POSITION": 12,
             "COLUMN_NAME": "item_meta",
             "COLUMN_TYPE": "text",
             "IS_NULLABLE": "YES",
@@ -159,16 +164,18 @@ def runtime_snapshot() -> dict[str, Any]:
         "dtforders": 73,
         "dtfimages": 109,
         "savedimages": 7,
+        "incoming_order_jobs": 0,
+        "api_asset_records": 0,
     }
     return {
-        "probe_version": 2,
+        "probe_version": 3,
         "artifact": "buy-dtf-production-alpha-transparency-runtime-probe-v1",
         "generated_at_utc": "2026-10-01T00:00:00Z",
         "application_environment": "local",
         "application_debug": False,
         "runtime": {
             "php_version": "8.2.30",
-            "laravel_version": "12.69.0",
+            "laravel_version": "12.69.1",
             "composer_classmap_authoritative": False,
             "imagick_loaded": True,
         },
@@ -187,6 +194,7 @@ def runtime_snapshot() -> dict[str, Any]:
             "rows_sha256": deploy.EXPECTED_LEDGER_SHA256,
             "target_migration": deploy.TARGET_MIGRATION,
             "target_entry_count": deploy.EXPECTED_TARGET_MIGRATION_ENTRIES,
+            "incoming_order_entry_count": 1,
             "without_target_row_count": deploy.EXPECTED_LEDGER_WITHOUT_TARGET_ROW_COUNT,
             "without_target_rows_sha256": deploy.EXPECTED_LEDGER_WITHOUT_TARGET_SHA256,
         },
@@ -227,9 +235,9 @@ def runtime_snapshot() -> dict[str, Any]:
         "queue": {
             "connection": "sync",
             "counts": {
-                "jobs_table_exists": False,
+                "jobs_table_exists": True,
                 "failed_jobs_table_exists": True,
-                "jobs": None,
+                "jobs": 0,
                 "failed_jobs": 0,
             },
         },
@@ -329,6 +337,7 @@ def run_scenario(
 
     command_log: list[list[str]] = []
     web_probe_log: list[dict[str, Any]] = []
+    emergency=[False]
     original_install = deploy.install_runtime_files
     original_gate = deploy.install_static_gate
     original_containment = deploy.establish_rollback_containment
@@ -345,6 +354,7 @@ def run_scenario(
         verification = deploy.validate_pre_source_runtime_snapshot(current)
         return {
             "status": "pass",
+            "controls": deploy.environment_identity(),
             "runtime": current,
             "runtime_command": {"rehearsal": True},
             "runtime_verification": verification,
@@ -367,6 +377,8 @@ def run_scenario(
         }
 
     def web_identity_probe(route: str) -> dict[str, Any]:
+        nonce=secrets.token_hex(12)
+        sentinel=deploy.MAINTENANCE_GATE_SENTINEL+"\n"+nonce
         completed = subprocess.run(
             [
                 "/usr/bin/setpriv",
@@ -374,6 +386,8 @@ def run_scenario(
                 f"--regid={deploy.EXPECTED_WEB_GID}",
                 "--clear-groups",
                 "/usr/bin/php",
+                "-r",
+                "$_GET['ops_gate']='"+nonce+"';require $argv[1];",
                 str(front),
             ],
             check=False,
@@ -384,7 +398,7 @@ def run_scenario(
         )
         passed = (
             completed.returncode == 0
-            and completed.stdout == deploy.MAINTENANCE_GATE_SENTINEL
+            and completed.stdout == sentinel
             and completed.stderr == ""
         )
         record = {
@@ -392,7 +406,7 @@ def run_scenario(
             "uid": deploy.EXPECTED_WEB_UID,
             "gid": deploy.EXPECTED_WEB_GID,
             "exit_status": completed.returncode,
-            "sentinel_verified": completed.stdout == deploy.MAINTENANCE_GATE_SENTINEL,
+            "sentinel_verified": completed.stdout == sentinel,
             "stderr_sha256": deploy.sha256_bytes(completed.stderr.encode("utf-8")),
             "readable_by_separate_web_identity": passed,
         }
@@ -400,10 +414,14 @@ def run_scenario(
         require(passed, "The separate web identity could not read and execute the 0644 gate.")
         return {
             "route": route,
-            "status": 503,
+            "status": 500 if emergency[0] and scenario == "post-source-gate-http-failure" else 503,
             "header_verified": True,
             "sentinel_verified": True,
             "web_identity": record,
+            "cache_buster_verified": True,
+            "route_identity_verified": True,
+            "cache_buster_sha256": deploy.sha256_bytes(nonce.encode()),
+            "request_url_sha256": deploy.sha256_bytes((route+nonce).encode()),
         }
 
     def local_gate(**kwargs: Any) -> dict[str, Any]:
@@ -495,6 +513,9 @@ def run_scenario(
         }
 
     def post_open(_helper: Path, _directory: Path, _name: str) -> dict[str, Any]:
+        if scenario in {"post-source-fpm-unavailable","post-source-gate-http-failure"}:
+            emergency[0]=True
+            raise deploy.DeploymentError("rehearsed original-live post-source emergency")
         if scenario == "post-reopen-failure":
             raise deploy.DeploymentError("rehearsed post-reopen failure")
         return {
@@ -574,6 +595,8 @@ def run_scenario(
         "LARAVEL_MAINTENANCE_FILE": application / "storage/framework/down",
         "FRONT_CONTROLLER": front,
         "OPCACHE_WAIT_SECONDS": 0,
+        "full_source_identity": lambda **kwargs: {"local_source_cas":deploy.live_manifest_snapshot(rows,target=kwargs["target"])["sha256"]},
+        "environment_identity": lambda: {"fpm_opcache":deploy.source_controls.frozen_envelope()["fpm_opcache"],"nginx":{"status":"local-double"},"frozen_envelope_sha256":deploy.source_controls.ENVELOPE_SHA256},
         # The local rehearsal exercises the corrected source-only mechanics.
         # Production remains hard-disabled until a post-12.69.1 live freeze.
         "DEPENDENCY_ENVELOPE_FROZEN": True,
@@ -603,7 +626,17 @@ def run_scenario(
         "log_delta": inspect_logs,
     }
 
-    with patched(patches):
+    item["receipt"]["controls"]=patches["environment_identity"]()
+    original_context=deploy.source_controls._gate_context_from_frozen_envelope
+    clock=[0]
+    def clock_sleep(seconds):clock[0]+=round(seconds*1_000_000_000)
+    def virtual_context(*args,**kwargs):
+        return replace(original_context(*args,**kwargs),sleep=clock_sleep,monotonic_ns=lambda:clock[0],wall_clock=lambda:1_790_000_000+clock[0]/1e9)
+    def fpm_probe():
+        if emergency[0] and scenario == "post-source-fpm-unavailable":
+            raise deploy.source_controls.FpmProbeUnavailable("rehearsed FPM timeout")
+        return deploy.source_controls.frozen_envelope()["fpm_opcache"]
+    with mock.patch.object(deploy.source_controls,"probe_fpm_opcache",side_effect=fpm_probe), mock.patch.object(deploy.source_controls,"_gate_context_from_frozen_envelope",side_effect=virtual_context), patched(patches):
         original_sleep = deploy.time.sleep
         deploy.time.sleep = lambda _seconds: None
         try:
@@ -672,7 +705,7 @@ def run_scenario(
                 "Rollback did not preserve the installed schema.",
             )
         else:
-            require(state.get("status") == "success", "Success was not durable.")
+            require(state.get("status") == "awaiting_independent_log_review", "Success was not durable.")
             source = deploy.live_manifest_snapshot(rows, target=True)
             schema_receipt = {
                 "observed_schema_state": deploy.SCHEMA_STATE,
@@ -729,6 +762,11 @@ def run_scenario(
         ),
         "migration_command_count": len(migration_commands),
         "prohibited_command_count": len(forbidden),
+        "post_mutation_fpm_fallback_count":len(state.get("post_mutation_emergency_fpm_fallbacks",[])),
+        "containment_http_verified":state.get("containment_http_verified"),
+        "fpm_checkpoint_receipt":state.get("fpm_opcache_before_mutation_receipt"),
+        "opcache_clock_model":"virtual clock advances the complete frozen seven-second interval; real FPM proof is separate",
+        "opcache_wait_receipts":[json.loads(Path(item["details"]["wait_receipt"]["path"]).read_text("utf-8")) for item in state.get("front_controller_transitions",[]) if item.get("phase")=="revalidation_wait_complete"],
         "state_sha256": state_sha256,
         "raw_evidence_entries": len(raw_inventory),
         "raw_evidence_manifest_sha256": raw_manifest_sha256,
@@ -823,7 +861,7 @@ def run(
     portable_output.mkdir(mode=0o755, parents=True, exist_ok=True)
     aggregate = {
         "status": "pass",
-        "artifact": "buy-dtf-production-alpha-transparency-source-only-local-rehearsal-v2",
+        "artifact": "buy-dtf-production-alpha-transparency-source-only-local-rehearsal-v3",
         "scope": "disposable-local-filesystem-only-no-production-access",
         "scenario_count": len(scenarios),
         "scenarios_required": list(SCENARIOS),
@@ -863,7 +901,7 @@ def run(
         "production_accessed": False,
         "production_staged": False,
         "dependency_envelope_simulated": True,
-        "post_laravel_12_69_1_live_freeze_pending": True,
+        "post_laravel_12_69_1_live_freeze_pending": False,
         "migration_command_invoked": False,
         "migration_pretend_invoked": False,
         "migration_executed_this_attempt": False,

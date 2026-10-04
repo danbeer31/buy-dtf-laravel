@@ -1,0 +1,47 @@
+{
+  "build_artifacts": [
+    {
+      "bytes": 230956,
+      "path": "assets/app-B5oFf84X.css",
+      "sha256": "66fe9f80d9a6028a28abec1f0da4c9ce6d6e92438902d8a6c7f79339dd0e59c4"
+    },
+    {
+      "bytes": 163871,
+      "path": "assets/app-i-LVkB2i.js",
+      "sha256": "297bca91a5bc086b81b6752614691c64004b85c3c574a55a9040eaad6361c634"
+    },
+    {
+      "bytes": 333,
+      "path": "manifest.json",
+      "sha256": "83e41c401b1eef34fd9800754abfae1901478e3b7b5ab98b468a117b76b245da"
+    }
+  ],
+  "build_exit": 0,
+  "critical_packages": [
+    "concurrently",
+    "shell-quote"
+  ],
+  "frontend_output_excluded_from_source_install": true,
+  "full_audit": {
+    "critical": 2,
+    "high": 14,
+    "info": 0,
+    "low": 1,
+    "moderate": 2,
+    "total": 19
+  },
+  "full_audit_exit": 1,
+  "npm_ci_exit": 0,
+  "package_lock_sha256": "376421fb004150985d0f9e5f83f21d97ee1bf89c0b280d5634d445bbeca03f49",
+  "package_lock_unchanged": true,
+  "production_audit": {
+    "critical": 0,
+    "high": 0,
+    "info": 0,
+    "low": 0,
+    "moderate": 0,
+    "total": 0
+  },
+  "production_frontend_unchanged": true,
+  "status": "build_and_production_audit_pass_full_development_audit_requires_review"
+}

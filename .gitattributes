@@ -10,3 +10,16 @@
 /.github export-ignore
 CHANGELOG.md export-ignore
 .styleci.yml export-ignore
+
+# Preserve the reviewed v4 control bytes used by the source-only runner.
+/ops/deployment/laravel_dependency_gate.py -text
+/ops/deployment/laravel_nginx_identity.py -text
+/ops/deployment/laravel_fpm_opcache_probe.php -text
+/ops/deployment/test_laravel_dependency_gate.py -text
+/ops/deployment/rehearse_laravel_dependency_gate.py -text
+/ops/deployment/rehearse_laravel_dependency_opcache.py -text
+
+# Preserve exact raw-byte receipts, including native Windows command output.
+/ops/evidence/production-alpha-transparency-source-only-v3-20261004/** -text whitespace=cr-at-eol
+# Composer package-discovery output intentionally includes display whitespace.
+/ops/evidence/production-alpha-transparency-source-only-v3-20261004/build-*-package-discovery.txt -whitespace

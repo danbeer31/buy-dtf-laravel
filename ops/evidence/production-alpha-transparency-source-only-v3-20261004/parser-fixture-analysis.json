@@ -1,0 +1,455 @@
+{
+  "complete_entry_results": {
+    "genuine-candidate-error.txt": {
+      "bytes": 578,
+      "decode_replacement_count": 0,
+      "entry_count": 6,
+      "fatal_entry_count": 6,
+      "fatal_finding_count": 6,
+      "fatal_findings": [
+        {
+          "channel": "production",
+          "entry_number": 1,
+          "entry_sha256": "b919362471763f70c2b20ba9dff392e8c3526372139386435636e05ae2667c60",
+          "level": "WARNING",
+          "signals": [
+            "candidate_error"
+          ],
+          "timestamp": "2026-10-02 01:06:00"
+        },
+        {
+          "channel": "production",
+          "entry_number": 2,
+          "entry_sha256": "0624e4a2be878d4e98a212ab6c3d9cd9c79c7300e18346749af5a0de679bf2d4",
+          "level": "ERROR",
+          "signals": [
+            "candidate_error"
+          ],
+          "timestamp": "2026-10-02 01:06:01"
+        },
+        {
+          "channel": "production",
+          "entry_number": 3,
+          "entry_sha256": "98385e4fa190dff38b1511680e79a325f6fe62c44b44f857596e94c079913d68",
+          "level": "WARNING",
+          "signals": [
+            "candidate_error"
+          ],
+          "timestamp": "2026-10-02 01:06:02"
+        },
+        {
+          "channel": "production",
+          "entry_number": 4,
+          "entry_sha256": "61c87c201da5ce776d3fd53ff559072b1e52846eb22aae79457b9dd926084f9d",
+          "level": "ERROR",
+          "signals": [
+            "candidate_error"
+          ],
+          "timestamp": "2026-10-02 01:06:03"
+        },
+        {
+          "channel": "production",
+          "entry_number": 5,
+          "entry_sha256": "204d4eed237bec9fc22acb27d478afa4669da34d53ef7cbad8b64647dc5abd75",
+          "level": "WARNING",
+          "signals": [
+            "candidate_error"
+          ],
+          "timestamp": "2026-10-02 01:06:04"
+        },
+        {
+          "channel": "production",
+          "entry_number": 6,
+          "entry_sha256": "f6c98eb23245f7a58f458261a315897acce7ecf3da2ddf7ee49b7c7b8bd26189",
+          "level": "ERROR",
+          "signals": [
+            "candidate_error"
+          ],
+          "timestamp": "2026-10-02 01:06:05"
+        }
+      ],
+      "global_failure_count": 0,
+      "invalid_utf8": false,
+      "level_counts": {
+        "ERROR": 3,
+        "WARNING": 3
+      },
+      "nonfatal_error_entry_count": 0,
+      "orphan_entry_count": 0,
+      "rollback_finding_count": 6,
+      "sha256": "1ec4221ffc8a375fe9c9f403c62bfaae427286e592cd1b29bbd48509cc2f71ea",
+      "signal_counts": {
+        "candidate_error": 6
+      },
+      "status": "fail"
+    },
+    "genuine-caught-failure-message.txt": {
+      "bytes": 217,
+      "decode_replacement_count": 0,
+      "entry_count": 2,
+      "fatal_entry_count": 2,
+      "fatal_finding_count": 2,
+      "fatal_findings": [
+        {
+          "channel": "production",
+          "entry_number": 1,
+          "entry_sha256": "a4a57ea58efaa19d56f8a4b0c748359894d428c022008ba790b4d2d0605ce263",
+          "level": "ERROR",
+          "signals": [
+            "failure_message"
+          ],
+          "timestamp": "2026-10-02 01:15:00"
+        },
+        {
+          "channel": "production",
+          "entry_number": 2,
+          "entry_sha256": "b7fae6d3a9632878963f717bfa655d2142debc6e083021e9e761e6d803543f14",
+          "level": "ERROR",
+          "signals": [
+            "failure_message"
+          ],
+          "timestamp": "2026-10-02 01:15:01"
+        }
+      ],
+      "global_failure_count": 0,
+      "invalid_utf8": false,
+      "level_counts": {
+        "ERROR": 2
+      },
+      "nonfatal_error_entry_count": 0,
+      "orphan_entry_count": 0,
+      "rollback_finding_count": 2,
+      "sha256": "d15655149998cb9d5d044150696edb78798b08bfba616b4058c88c6877538817",
+      "signal_counts": {
+        "failure_message": 2
+      },
+      "status": "fail"
+    },
+    "genuine-exception.txt": {
+      "bytes": 258,
+      "decode_replacement_count": 0,
+      "entry_count": 1,
+      "fatal_entry_count": 1,
+      "fatal_finding_count": 1,
+      "fatal_findings": [
+        {
+          "channel": "production",
+          "entry_number": 1,
+          "entry_sha256": "79b593e4968acd334908dd9cd6ca6817140f8a86e3ca0e6d4d8e8e0908ead09b",
+          "level": "ERROR",
+          "signals": [
+            "exception"
+          ],
+          "timestamp": "2026-10-02 01:00:00"
+        }
+      ],
+      "global_failure_count": 0,
+      "invalid_utf8": false,
+      "level_counts": {
+        "ERROR": 1
+      },
+      "nonfatal_error_entry_count": 0,
+      "orphan_entry_count": 0,
+      "rollback_finding_count": 1,
+      "sha256": "63df5926c4bf907e281add7a4d475018cc058431a68450294c57127f2d2fc24f",
+      "signal_counts": {
+        "exception": 1
+      },
+      "status": "fail"
+    },
+    "genuine-fatal.txt": {
+      "bytes": 145,
+      "decode_replacement_count": 0,
+      "entry_count": 1,
+      "fatal_entry_count": 1,
+      "fatal_finding_count": 1,
+      "fatal_findings": [
+        {
+          "channel": "production",
+          "entry_number": 1,
+          "entry_sha256": "362642ce7f6d9749a1d684045b1906b824fac0b0c492e0ed9569716f0603c815",
+          "level": "CRITICAL",
+          "signals": [
+            "fatal",
+            "severe_level"
+          ],
+          "timestamp": "2026-10-02 01:02:00"
+        }
+      ],
+      "global_failure_count": 0,
+      "invalid_utf8": false,
+      "level_counts": {
+        "CRITICAL": 1
+      },
+      "nonfatal_error_entry_count": 0,
+      "orphan_entry_count": 0,
+      "rollback_finding_count": 1,
+      "sha256": "9de34c7c43645feb9cdd18c51981e35e12190ebf46e5e3a2a048f8d9301c9eee",
+      "signal_counts": {
+        "fatal": 1,
+        "severe_level": 1
+      },
+      "status": "fail"
+    },
+    "genuine-missing-class.txt": {
+      "bytes": 95,
+      "decode_replacement_count": 0,
+      "entry_count": 1,
+      "fatal_entry_count": 1,
+      "fatal_finding_count": 1,
+      "fatal_findings": [
+        {
+          "channel": "production",
+          "entry_number": 1,
+          "entry_sha256": "b0fe92bde7f9c78124e2d6b10984cea362684c8a32834c2615ce7b688fbad135",
+          "level": "ERROR",
+          "signals": [
+            "missing_class"
+          ],
+          "timestamp": "2026-10-02 01:04:00"
+        }
+      ],
+      "global_failure_count": 0,
+      "invalid_utf8": false,
+      "level_counts": {
+        "ERROR": 1
+      },
+      "nonfatal_error_entry_count": 0,
+      "orphan_entry_count": 0,
+      "rollback_finding_count": 1,
+      "sha256": "6e98603d75b7aa399b5f056b77d53bbecb8879227410e237167fde1503c5f74e",
+      "signal_counts": {
+        "missing_class": 1
+      },
+      "status": "fail"
+    },
+    "genuine-missing-view.txt": {
+      "bytes": 76,
+      "decode_replacement_count": 0,
+      "entry_count": 1,
+      "fatal_entry_count": 1,
+      "fatal_finding_count": 1,
+      "fatal_findings": [
+        {
+          "channel": "production",
+          "entry_number": 1,
+          "entry_sha256": "f7dbfd4a30155cf93faf4d6f013ee0629e502046f81c53ab5f0ca7513a23c128",
+          "level": "ERROR",
+          "signals": [
+            "missing_view"
+          ],
+          "timestamp": "2026-10-02 01:05:00"
+        }
+      ],
+      "global_failure_count": 0,
+      "invalid_utf8": false,
+      "level_counts": {
+        "ERROR": 1
+      },
+      "nonfatal_error_entry_count": 0,
+      "orphan_entry_count": 0,
+      "rollback_finding_count": 1,
+      "sha256": "f9e8474b3554b7cd77c4c8752c03d9870c17620bea40e53a9fbe66b4becb8077",
+      "signal_counts": {
+        "missing_view": 1
+      },
+      "status": "fail"
+    },
+    "genuine-orphan-trace.txt": {
+      "bytes": 95,
+      "decode_replacement_count": 0,
+      "entry_count": 1,
+      "fatal_entry_count": 1,
+      "fatal_finding_count": 1,
+      "fatal_findings": [
+        {
+          "channel": null,
+          "entry_number": 1,
+          "entry_sha256": "5b56c68f51be2464081bdb92df236fa1a996f42bdabc15de615520c7932b6d5b",
+          "level": null,
+          "signals": [
+            "trace",
+            "unparsed_data"
+          ],
+          "timestamp": null
+        }
+      ],
+      "global_failure_count": 0,
+      "invalid_utf8": false,
+      "level_counts": {
+        "UNPARSED": 1
+      },
+      "nonfatal_error_entry_count": 0,
+      "orphan_entry_count": 1,
+      "rollback_finding_count": 1,
+      "sha256": "f6eb8b63ff4033ab43b0e2ead345c20ed92b86e22dcfd13f5fa26f0591bd0181",
+      "signal_counts": {
+        "trace": 1,
+        "unparsed_data": 1
+      },
+      "status": "fail"
+    },
+    "genuine-sqlstate.txt": {
+      "bytes": 103,
+      "decode_replacement_count": 0,
+      "entry_count": 1,
+      "fatal_entry_count": 1,
+      "fatal_finding_count": 1,
+      "fatal_findings": [
+        {
+          "channel": "production",
+          "entry_number": 1,
+          "entry_sha256": "dee815486ac0d3818a6bbf2a1c070c9d1ba071dc5cc148cfd448a2e1339221f7",
+          "level": "ERROR",
+          "signals": [
+            "sqlstate"
+          ],
+          "timestamp": "2026-10-02 01:03:00"
+        }
+      ],
+      "global_failure_count": 0,
+      "invalid_utf8": false,
+      "level_counts": {
+        "ERROR": 1
+      },
+      "nonfatal_error_entry_count": 0,
+      "orphan_entry_count": 0,
+      "rollback_finding_count": 1,
+      "sha256": "f0643758e7d928c9f71e965ed3dc573d892d989d524049215f1381703d6fef03",
+      "signal_counts": {
+        "sqlstate": 1
+      },
+      "status": "fail"
+    },
+    "genuine-structured-exception.txt": {
+      "bytes": 279,
+      "decode_replacement_count": 0,
+      "entry_count": 2,
+      "fatal_entry_count": 2,
+      "fatal_finding_count": 2,
+      "fatal_findings": [
+        {
+          "channel": "production",
+          "entry_number": 1,
+          "entry_sha256": "d5d9b438517d42b21305eb3d3e032ae8d893ac0467988596a3b5ad0d28011d79",
+          "level": "ERROR",
+          "signals": [
+            "exception"
+          ],
+          "timestamp": "2026-10-02 01:14:00"
+        },
+        {
+          "channel": "production",
+          "entry_number": 2,
+          "entry_sha256": "2d2b27dd6ec4321f22bd3ba24602e5712341dca0bd8142de1b385636c3483bfb",
+          "level": "ERROR",
+          "signals": [
+            "exception"
+          ],
+          "timestamp": "2026-10-02 01:14:01"
+        }
+      ],
+      "global_failure_count": 0,
+      "invalid_utf8": false,
+      "level_counts": {
+        "ERROR": 2
+      },
+      "nonfatal_error_entry_count": 0,
+      "orphan_entry_count": 0,
+      "rollback_finding_count": 2,
+      "sha256": "af3dd128c3bf1b27b03a9ac6f50d5f34dca4e70c97af9089a65fd8f37ba7374c",
+      "signal_counts": {
+        "exception": 2
+      },
+      "status": "fail"
+    },
+    "genuine-trace.txt": {
+      "bytes": 258,
+      "decode_replacement_count": 0,
+      "entry_count": 2,
+      "fatal_entry_count": 1,
+      "fatal_finding_count": 1,
+      "fatal_findings": [
+        {
+          "channel": "production",
+          "entry_number": 1,
+          "entry_sha256": "441ab0be6211d149727ca929fbafed835a60118d1466b743ad84d071b49bceb0",
+          "level": "WARNING",
+          "signals": [
+            "trace"
+          ],
+          "timestamp": "2026-10-02 01:01:00"
+        }
+      ],
+      "global_failure_count": 0,
+      "invalid_utf8": false,
+      "level_counts": {
+        "INFO": 1,
+        "WARNING": 1
+      },
+      "nonfatal_error_entry_count": 0,
+      "orphan_entry_count": 0,
+      "rollback_finding_count": 1,
+      "sha256": "30d9f629f7db5153bd0fee22e517bbc73077feb0e0101e65a8717afa9e6c6d01",
+      "signal_counts": {
+        "trace": 1
+      },
+      "status": "fail"
+    },
+    "genuine-type-error.txt": {
+      "bytes": 88,
+      "decode_replacement_count": 0,
+      "entry_count": 1,
+      "fatal_entry_count": 1,
+      "fatal_finding_count": 1,
+      "fatal_findings": [
+        {
+          "channel": "production",
+          "entry_number": 1,
+          "entry_sha256": "8f53cf610eccfb3170cf6dfcb2c94801b55289ff6480f20ded77fc1384d2c63d",
+          "level": "ERROR",
+          "signals": [
+            "exception"
+          ],
+          "timestamp": "2026-10-02 01:07:00"
+        }
+      ],
+      "global_failure_count": 0,
+      "invalid_utf8": false,
+      "level_counts": {
+        "ERROR": 1
+      },
+      "nonfatal_error_entry_count": 0,
+      "orphan_entry_count": 0,
+      "rollback_finding_count": 1,
+      "sha256": "8f963c9cad50497d6a6908d2efc9ccea42409e2aaa657806855f85055ac00540",
+      "signal_counts": {
+        "exception": 1
+      },
+      "status": "fail"
+    },
+    "reviewed-56-error-delta.redacted.txt": {
+      "bytes": 4894,
+      "decode_replacement_count": 0,
+      "entry_count": 56,
+      "fatal_entry_count": 0,
+      "fatal_finding_count": 0,
+      "fatal_findings": [],
+      "global_failure_count": 0,
+      "invalid_utf8": false,
+      "level_counts": {
+        "ERROR": 56
+      },
+      "nonfatal_error_entry_count": 56,
+      "orphan_entry_count": 0,
+      "rollback_finding_count": 0,
+      "sha256": "d8bf0641949f96ac39240e92f0b5545c4ac5fb6a8fbfa4af2fe2f6029dd27f53",
+      "signal_counts": {},
+      "status": "pass"
+    }
+  },
+  "parser_sha256": "4bdec766469e71568631dbcf7408e94696f2fd99c46c18dd58b8374f31a488c8",
+  "raw_production_logs_copied": false,
+  "reviewed_fixture_is_redacted": true,
+  "status": "pass"
+}

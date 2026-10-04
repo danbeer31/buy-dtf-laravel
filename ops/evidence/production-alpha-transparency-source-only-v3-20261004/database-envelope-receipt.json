@@ -1,0 +1,35 @@
+{
+  "capabilities": {
+    "allowed_host_count": 0,
+    "job_label_enabled": false,
+    "receiver_enabled": false,
+    "retention_enabled": false
+  },
+  "incoming_order_migration_entries": 1,
+  "incoming_order_tables_empty": true,
+  "live_read_only_helper_sha256": "e4f0e1880a877f4f3866e35d7049de936857eeb1d70c3c8a6e229a9c53653f85",
+  "private_raw_helper_output_sha256": "f1cdfe0179ed600f5799d205f43f4ab7faef608e3ee1b80dbb5020374b2a2964",
+  "queue_counts": {
+    "failed_jobs": 0,
+    "failed_jobs_table_exists": true,
+    "jobs": 0,
+    "jobs_table_exists": true
+  },
+  "redacted": "no customer rows or customer counters exported",
+  "status": "pass",
+  "verification": {
+    "item_meta_nonnull_rows": 0,
+    "ledger_row_count": 21,
+    "ledger_sha256": "f1140209ad897fbdba506d87329f9e4481ccfa5aff7fb6a423e6ec7a0dbe5f53",
+    "ledger_without_target_sha256": "3168a7da9ca4aad0a81e673ec61c1647242916d054768f4dd48ff4b9d7eb28d4",
+    "migration_command_invoked": false,
+    "migration_executed_this_attempt": false,
+    "migration_pretend_invoked": false,
+    "pre_source_item_meta_empty": true,
+    "schema_sha256": "5485779bdcf0ea3a4372410ef76cd0bc418d1f6400128868606e901b8e9e85da",
+    "schema_state": "installed_schema_source_only_v1",
+    "schema_without_item_meta_sha256": "4f1990336946bde95c6a13d0245fe4a5845eff2f23999f62e8529478d95d51ed",
+    "status": "pass",
+    "target_migration_entries": 1
+  }
+}

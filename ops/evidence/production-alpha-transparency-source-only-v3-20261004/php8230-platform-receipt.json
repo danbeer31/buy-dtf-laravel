@@ -1,0 +1,12 @@
+{
+    "php_executable_sha256":  "132075655257b1558c5d896dce117081bc068c90c50dfc5fd9c24c93dbc4312a",
+    "candidate_lock_sha256":  "77055fc8acf891496b0b356bb034d7935c04989a3751f52b788ecd1b7999206d",
+    "exit_code":  0,
+    "source_identity":  "2c8268cdfbfd3fc294d17de7ab960ab2e1a7f8faa38acd68935af18945f1bc4f",
+    "composer_sha256":  "3b3f9503a2d46590170e45edd29734197e797cea545b396d0b2823cac8ef4643",
+    "php_version":  "8.2.30",
+    "stderr_sha256":  "dc0c2c686d62b33efe2fc1d64d7c03f431fe356ed18122c6db27112e5ec577a7",
+    "stdout_sha256":  "e586310b6e5726da813da6aded80bd8e76eefce39acbc55a4db94818005d0a96",
+    "vendor_identity":  "7df0a101ceb0386b72ec4cfc71f2be8576fc5a5d4b777d11c05e5b7f1ed770d8",
+    "status":  "pass"
+}
