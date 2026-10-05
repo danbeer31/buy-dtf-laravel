@@ -1,0 +1,37 @@
+{
+  "artifact": "buydtf-original-application-recovery-independent-acceptance",
+  "complete_checksums_verified_locally_and_on_server": 1030,
+  "current_nine_public_health_checks": "passed",
+  "fatal_findings": 0,
+  "health_samples": 30,
+  "live_laravel": "12.69.1",
+  "live_original_source_files": 326,
+  "maintenance_and_static_gate": "inactive",
+  "monitor_seconds": 1802.7177028432488,
+  "new_monitoring_log_entries_independently_reparsed": 614,
+  "next_work_scope": "Local correction and complete Linux permission/rollback/reopening rehearsal of the failed process observer. No production mutation, staging, cutover, migration, capability change, retention action or customer deletion is authorized by this receipt.",
+  "normal_qbo_refreshes_completed_and_released": 3,
+  "orphan_entries": 0,
+  "production_finalization_executed": false,
+  "production_source_dependency_schema_configuration_service_changes": false,
+  "raw_logs_headers_cookies_and_artwork_data_remain_private": true,
+  "reviewed_at_utc": "2026-10-05T23:31:50.886417+00:00",
+  "reviewed_complete_evidence_manifest_sha256": "a3fcaea5fec1729986c386eba19c926cc0f5fa61e8b126554f6b0c27c401dab0",
+  "reviewed_nonfatal_diagnostics": 28,
+  "reviewed_recovery_state_sha256": "2e8ec1f54ec580dd91bdd27d14a14ce2c1f4f7b1c8667de7cc512c8dd40769e2",
+  "runtime_and_scheduler_observations_replayed": 310,
+  "scope": "Recovery of the restored original application only. Failed transparency deployment remains failed and is not authorized for retry.",
+  "status": "independent_review_accepted",
+  "supporting_independent_reviews": [
+    {
+      "bytes": 4868,
+      "name": "buydtf-original-recovery-independent-local-review.json",
+      "sha256": "72d1ebe82d250b19bbd9a4438736dfdb45f3e120265edaf4e98ec8308c27e5b3"
+    },
+    {
+      "bytes": 2311,
+      "name": "buydtf-original-recovery-independent-current-production.json",
+      "sha256": "725ff0005767e7e90ffc484757097bbf87f45870ed5100c2aed4d3bc58075158"
+    }
+  ]
+}

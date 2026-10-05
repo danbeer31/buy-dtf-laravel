@@ -1,0 +1,40 @@
+{
+  "acceptance_receipt_sha256": "523ae6c3f6da33c04930929f2ba4194a4322090fb0f2e8ae9070c8d80f9935af",
+  "artifact": "buydtf-original-application-emergency-recovery-local-closeout",
+  "fatal_findings": 0,
+  "laravel_version": "12.69.1",
+  "local_checksum_entries_reverified": 1030,
+  "local_closeout_only": true,
+  "monitor_samples": 30,
+  "monitor_seconds": 1802.7177028432488,
+  "next_authorized_scope": "Separate local operations correction and Linux process-permission/rollback/reopening rehearsal only; no production access or mutation, staging, deployment, migration, permission/capability change, retention action or customer deletion.",
+  "normal_qbo_refreshes_completed": 3,
+  "original_application_recovery_accepted": true,
+  "original_source_files": 326,
+  "production_accessed_this_turn": false,
+  "production_finalization_executed": false,
+  "raw_evidence_remains_private": true,
+  "remote_state_unchanged": true,
+  "reparsed_log_entries": 614,
+  "reviewed_at_utc": "2026-10-05T23:31:50.886417+00:00",
+  "reviewed_complete_manifest_sha256": "a3fcaea5fec1729986c386eba19c926cc0f5fa61e8b126554f6b0c27c401dab0",
+  "reviewed_nonfatal_diagnostics": 28,
+  "reviewed_recovery_state_sha256": "2e8ec1f54ec580dd91bdd27d14a14ce2c1f4f7b1c8667de7cc512c8dd40769e2",
+  "status": "independent_review_accepted_local_closeout_complete",
+  "supporting_reviews": [
+    {
+      "bytes": 4868,
+      "name": "buydtf-original-recovery-independent-local-review.json",
+      "sha256": "72d1ebe82d250b19bbd9a4438736dfdb45f3e120265edaf4e98ec8308c27e5b3",
+      "verified_locally": true
+    },
+    {
+      "bytes": 2311,
+      "name": "buydtf-original-recovery-independent-current-production.json",
+      "sha256": "725ff0005767e7e90ffc484757097bbf87f45870ed5100c2aed4d3bc58075158",
+      "verified_locally": true
+    }
+  ],
+  "transparency_deployment_remains_failed": true,
+  "transparency_retry_authorized": false
+}
