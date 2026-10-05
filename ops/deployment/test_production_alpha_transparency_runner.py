@@ -22,11 +22,11 @@ LOG_GUARD_PATH = ROOT / "ops/deployment/laravel_log_guard.py"
 FIXTURES = ROOT / "tests/Fixtures/Deployment/LaravelLogs"
 MANIFEST_PATH = (
     ROOT
-    / "ops/evidence/production-alpha-transparency-source-only-v3-20261004"
+    / "ops/evidence/production-alpha-transparency-source-only-v4-scheduler-20261004"
     / "APPLICATION_MANIFEST.json"
 )
 REHEARSAL_RECEIPT_PATH = (
-    MANIFEST_PATH.parent / "source-rehearsal/rehearsal-receipt.json"
+    ROOT / "ops/evidence/production-alpha-transparency-source-only-v4-scheduler-20261004/source-rehearsal/rehearsal-receipt.json"
 )
 
 
@@ -693,6 +693,7 @@ class ProductionAlphaRunnerTest(unittest.TestCase):
                 mock.patch.object(deploy, "MONITOR_SECONDS", 120),
                 mock.patch.object(deploy, "MONITOR_INTERVAL_SECONDS", 60),
                 mock.patch.object(deploy, "FRONT_CONTROLLER", front),
+                mock.patch.object(deploy, "EXPECTED_FRONT_CONTROLLER_SHA256", deploy.sha256_file(front)),
                 mock.patch.object(
                     deploy,
                     "LARAVEL_MAINTENANCE_FILE",
@@ -803,6 +804,8 @@ class ProductionAlphaRunnerTest(unittest.TestCase):
                 "schema-preserving-rollback",
                 "post-source-fpm-unavailable",
                 "post-source-gate-http-failure",
+                "rollback-with-normal-qbo",
+                "recovery-with-normal-qbo",
             ),
         )
         source = REHEARSAL_PATH.read_text("utf-8")

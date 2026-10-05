@@ -28,6 +28,10 @@ HEADER_LIKE = re.compile(
 
 FAILURE_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     (
+        "scheduled_qbo_refresh_failure",
+        re.compile(r"\bQBO admin snapshot refresh failed\b", re.IGNORECASE),
+    ),
+    (
         "exception",
         re.compile(
             r"\b(?:[A-Za-z_][A-Za-z0-9_\\]*Exception|Exception)"

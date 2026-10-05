@@ -1,0 +1,28 @@
+{
+  "binary_sha256": "132075655257b1558c5d896dce117081bc068c90c50dfc5fd9c24c93dbc4312a",
+  "files": [
+    {
+      "exit_code": 0,
+      "path": "ops/deployment/production_alpha_transparency_runtime_probe.php",
+      "sha256": "839588fe2930e1e673c507b05f7ccf15d7166329d66c1563775154cd7030d200",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "No syntax errors detected in C:\\Users\\danie\\projects\\bdtf-alpha-sched-v4\\ops\\deployment\\production_alpha_transparency_runtime_probe.php"
+    },
+    {
+      "exit_code": 0,
+      "path": "ops/deployment/production_alpha_scheduler_probe.php",
+      "sha256": "486971039318d754397a6a3677d9e51f51113f647b2e6d469064c714ea9cf0af",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "No syntax errors detected in C:\\Users\\danie\\projects\\bdtf-alpha-sched-v4\\ops\\deployment\\production_alpha_scheduler_probe.php"
+    },
+    {
+      "exit_code": 0,
+      "path": "ops/deployment/test_production_alpha_scheduler_probe.php",
+      "sha256": "d12237605fbfc0e9404bc87c36d7f92f91b02036de64c129167008674df7a886",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "No syntax errors detected in C:\\Users\\danie\\projects\\bdtf-alpha-sched-v4\\ops\\deployment\\test_production_alpha_scheduler_probe.php"
+    }
+  ],
+  "php_version": "8.2.30",
+  "status": "pass"
+}

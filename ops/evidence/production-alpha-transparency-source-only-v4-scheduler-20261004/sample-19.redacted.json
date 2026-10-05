@@ -1,0 +1,21 @@
+{
+  "artifact": "accepted-failed-monitor-sample-19-redacted",
+  "generated_at_utc": "2026-10-05T00:20:11Z",
+  "number": 19,
+  "runtime_probe_sha256": "74e8a9503cd38e3a6e259d638bdca59e394af09c1b627a771465a2570352cd16",
+  "scheduler": {
+    "active_overlap_mutex_count": 1,
+    "event_count": 3,
+    "overlap_mutexes": [
+      {
+        "command_sha256": "5e5f803d8dcc65662d6a731cff510c28b61dece97d429bbf4f949099f7c9f5fd",
+        "exists": true,
+        "mutex_name_sha256": "a086c96c5fd6e5ba9e3e47ba418706400ad8928e2ea406688628a505d26b3eff"
+      }
+    ],
+    "stripe_payout_sync_event_count": 1
+  },
+  "independent_review_confirmed_success_at_utc": "2026-10-05T00:20:12Z",
+  "independent_review_confirmed_mutex_later_cleared": true,
+  "provenance": "Accepted rollback-readonly-verification.json failed_sample and user independent review. This fixture does not contain raw logs, cookies, or customer data. Expiry and cache-status fields in new observer tests are explicit synthetic additions, not recovered production evidence."
+}

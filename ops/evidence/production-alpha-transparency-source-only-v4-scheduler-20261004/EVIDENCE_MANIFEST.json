@@ -1,0 +1,284 @@
+{
+  "artifact": "buy-dtf-source-scheduler-local-review-v4",
+  "base_commit": "b3d4b009b1b99d2cc6b9e7f3a641d341956d1849",
+  "entries": [
+    {
+      "bytes": 10997,
+      "path": "ops/PRODUCTION_ALPHA_TRANSPARENCY_SCHEDULER_CORRECTION_PLAN_2026-10-04.md",
+      "sha256": "a5b77ae309604c187f21ac852412ad28b85591433395e21a8e769ce1eea7a58c"
+    },
+    {
+      "bytes": 7906,
+      "path": "ops/deployment/build_production_alpha_scheduler_evidence.py",
+      "sha256": "82f9b8cab133a60853ca8eecb04ca6e6dc5c4e8751199cddfce4e0ff11adf301"
+    },
+    {
+      "bytes": 69829,
+      "path": "ops/deployment/laravel_dependency_gate.py",
+      "sha256": "b93c08f58a08333120369c1cc75c60631d621c3a8099ca3967065721c45679f5"
+    },
+    {
+      "bytes": 3480,
+      "path": "ops/deployment/laravel_fpm_opcache_probe.php",
+      "sha256": "b8b34f87d45a0c000cc0df7917496631320cfbdcca1ff44bc41741ce0d569262"
+    },
+    {
+      "bytes": 12007,
+      "path": "ops/deployment/laravel_log_guard.py",
+      "sha256": "75921c4a9f1b9a21d710c7792900014eb517f2e936a97c82ff542dd3c208dd28"
+    },
+    {
+      "bytes": 37980,
+      "path": "ops/deployment/laravel_nginx_identity.py",
+      "sha256": "1243fea2757aca89f586ec4b322b0d23ee1e19b2d027c21bd6523e71e6e6e8e0"
+    },
+    {
+      "bytes": 16542,
+      "path": "ops/deployment/production_alpha_dependency_envelope.json",
+      "sha256": "04850fe3aef14981c92f5b2af373bd136cfb6fead456d86fcab7233acb009fd1"
+    },
+    {
+      "bytes": 39363,
+      "path": "ops/deployment/production_alpha_gate_controls.py",
+      "sha256": "2719da67c6d425e5fa4bef70aade0789aba1deccfaf09f8992c8674883c65c00"
+    },
+    {
+      "bytes": 18833,
+      "path": "ops/deployment/production_alpha_scheduler_guard.py",
+      "sha256": "b48f00f683b8573d2b3d987513f330470bd3db9521a02ef0f67d8cf4c9803d47"
+    },
+    {
+      "bytes": 9101,
+      "path": "ops/deployment/production_alpha_scheduler_probe.php",
+      "sha256": "486971039318d754397a6a3677d9e51f51113f647b2e6d469064c714ea9cf0af"
+    },
+    {
+      "bytes": 157060,
+      "path": "ops/deployment/production_alpha_transparency_deploy.py",
+      "sha256": "880d6ec6cb1ca5cee95964cf48843384afbaaeb73e835d03850e32de92aa21ab"
+    },
+    {
+      "bytes": 14398,
+      "path": "ops/deployment/production_alpha_transparency_runtime_probe.php",
+      "sha256": "839588fe2930e1e673c507b05f7ccf15d7166329d66c1563775154cd7030d200"
+    },
+    {
+      "bytes": 9350,
+      "path": "ops/deployment/rehearse_production_alpha_scheduler.py",
+      "sha256": "719421e0d4d55e455791703e932f42fd58c51024cd50bdfcef59950861326786"
+    },
+    {
+      "bytes": 42796,
+      "path": "ops/deployment/rehearse_production_alpha_transparency.py",
+      "sha256": "e166675e0b9c8ace9817d6aebfa87e548bf8fefdcaf43eb0a10476d67e1f8499"
+    },
+    {
+      "bytes": 17274,
+      "path": "ops/deployment/test_production_alpha_nginx_inventory.py",
+      "sha256": "8e41cd4a9d806b1690d120a19bf78c7bc4a7b2d8a6152f7fad3d744e3cc5465a"
+    },
+    {
+      "bytes": 21190,
+      "path": "ops/deployment/test_production_alpha_scheduler.py",
+      "sha256": "08c0f3edc265c23cb363168978031279bec34029bb2b6ebf9cd37a5833ee10d4"
+    },
+    {
+      "bytes": 5742,
+      "path": "ops/deployment/test_production_alpha_scheduler_probe.php",
+      "sha256": "d12237605fbfc0e9404bc87c36d7f92f91b02036de64c129167008674df7a886"
+    },
+    {
+      "bytes": 39000,
+      "path": "ops/deployment/test_production_alpha_transparency_runner.py",
+      "sha256": "d133706e55707ed6eb4d2c25358c62b5598dabe070cb85f5f8f25ee56beb258a"
+    },
+    {
+      "bytes": 4957,
+      "path": "ops/deployment/validate_production_alpha_scheduler.py",
+      "sha256": "c87dc95c4eddfc300ce0705bb9b2f934b6a01fb6a4ca8e688071afc6275716c7"
+    },
+    {
+      "bytes": 9122,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v4-scheduler-20261004/APPLICATION_MANIFEST.json",
+      "sha256": "79d6d646ca785dcc63afa6ebf09652386b2bf927f89fbd9399310bdddef86d92"
+    },
+    {
+      "bytes": 5036,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v4-scheduler-20261004/CHANGED_PATHS.txt",
+      "sha256": "f3582b0970a834c7347b705349f7c5584cbc6a6f0d5e27bc8f3e06dc037a41b8"
+    },
+    {
+      "bytes": 7293,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v4-scheduler-20261004/LOCAL_SCOPE_RECEIPT.json",
+      "sha256": "cc2f17b7482acc92871b21cb6b33dda18f8bdf838ce71d19a3fdc3579ece82dc"
+    },
+    {
+      "bytes": 4826,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v4-scheduler-20261004/REVIEW_HANDOFF.txt",
+      "sha256": "1be79af66f0cd431898a6bee7a293ec065e25dd405fbc906dbf66f0fbb77c8df"
+    },
+    {
+      "bytes": 3315,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v4-scheduler-20261004/VALIDATION_RECEIPT.json",
+      "sha256": "542a5674fc8bb98ecae045b82c47960800700cdff9dcf9ec472d473d15a85129"
+    },
+    {
+      "bytes": 4605,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v4-scheduler-20261004/artifact-identities.json",
+      "sha256": "34718e99c9523ce12e54b0418b28a94f04d147267ea85bad23a7b2ff404b1444"
+    },
+    {
+      "bytes": 491,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v4-scheduler-20261004/gate-rehearsal.receipt.json",
+      "sha256": "840a4a2f4fa577516e62b73f626d5ac031e6f9faadaf0e15e96cfde6facdee65"
+    },
+    {
+      "bytes": 0,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v4-scheduler-20261004/gate-rehearsal.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 0,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v4-scheduler-20261004/gate-rehearsal.stdout.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 147283,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v4-scheduler-20261004/gate-transition-rehearsal.json",
+      "sha256": "091366b49f473596ecf36b8e8bc78888276654729895f6cddb14e4a43fc807ba"
+    },
+    {
+      "bytes": 1473,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v4-scheduler-20261004/php8230-operations-lint.json",
+      "sha256": "dee0000200fb0f5c46cdd1a6985c911e15d6f1b6937e425d79ac2a988a1fd4cd"
+    },
+    {
+      "bytes": 2215,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v4-scheduler-20261004/php8230-read-only-observer.json",
+      "sha256": "8d7e436d6a6feba092715a7ed84fa92089478959e4ff0f12f6f90595d644ee1d"
+    },
+    {
+      "bytes": 597,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v4-scheduler-20261004/python-tests.receipt.json",
+      "sha256": "562e02a2282d690934e8ef1e7ca998dcd3c0ef5f82fb3c2c935a8b58b080c6d6"
+    },
+    {
+      "bytes": 19488,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v4-scheduler-20261004/python-tests.stderr.txt",
+      "sha256": "f014c39abd71b05cbdf5b6ef5fcfba83fdbf80ca315972b25b8c702116ac6078"
+    },
+    {
+      "bytes": 0,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v4-scheduler-20261004/python-tests.stdout.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 1031,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v4-scheduler-20261004/sample-19.redacted.json",
+      "sha256": "4539be0fd444b8b1121a68474e58e33c8a544d44930170ad10b91365ca6afa45"
+    },
+    {
+      "bytes": 548,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v4-scheduler-20261004/scheduler-rehearsal.receipt.json",
+      "sha256": "2df2a9ea144cd9818d691614822246a2a3b74a35989f66b46ba98e7fcb02fe7c"
+    },
+    {
+      "bytes": 0,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v4-scheduler-20261004/scheduler-rehearsal.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 130,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v4-scheduler-20261004/scheduler-rehearsal.stdout.txt",
+      "sha256": "6c7fe25f1fb2b43c0ddc4f5243c24ff5c6572828fb9997ede69dea08e78dde57"
+    },
+    {
+      "bytes": 633069,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v4-scheduler-20261004/scheduler-rehearsal/scheduler-rehearsal-receipt.json",
+      "sha256": "cddfce40a8b33238ffb981bc9a7434ba9346479f3dc4fba9089320ee9c282f74"
+    },
+    {
+      "bytes": 557,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v4-scheduler-20261004/source-rehearsal.receipt.json",
+      "sha256": "eaebf3d6a4208ad2dc4bdef391ff62e068856f34cd6e180a8b3e3d11e614281f"
+    },
+    {
+      "bytes": 0,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v4-scheduler-20261004/source-rehearsal.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 723,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v4-scheduler-20261004/source-rehearsal.stdout.txt",
+      "sha256": "c3cdf0b954e0c035e3e5b294c588a2ecfe38f638e0c6d38d1d9ed3b22a71c287"
+    },
+    {
+      "bytes": 2361,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v4-scheduler-20261004/source-rehearsal/PORTABLE_MANIFEST.json",
+      "sha256": "9e9be7fd9958ea7e73f19b3e833480259f986caf25eb642663e1ce044a6997d2"
+    },
+    {
+      "bytes": 10923,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v4-scheduler-20261004/source-rehearsal/candidate-check-failure-receipt.json",
+      "sha256": "2f0479f0a6c41ce3382c12cfd17f135227b66c8b60fd06794c54951736f41f5f"
+    },
+    {
+      "bytes": 13171,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v4-scheduler-20261004/source-rehearsal/genuine-log-failure-receipt.json",
+      "sha256": "76dfbac12754d580f3adf3afe1b5fbe0cb79e9ddc9ea9b4f28e15a052ef97f6a"
+    },
+    {
+      "bytes": 13171,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v4-scheduler-20261004/source-rehearsal/post-reopen-failure-receipt.json",
+      "sha256": "09dcc97dded5dfefef1b4c08e200711de73b3163a43da949ae600121f1bd5f4c"
+    },
+    {
+      "bytes": 13251,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v4-scheduler-20261004/source-rehearsal/post-source-fpm-unavailable-receipt.json",
+      "sha256": "a472e026d2504cd514b69e82bc6ab5f506efbb5bc9fb17cce7f1d8e29249f389"
+    },
+    {
+      "bytes": 15570,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v4-scheduler-20261004/source-rehearsal/post-source-gate-http-failure-receipt.json",
+      "sha256": "f83e42dc913afed7e3f64f26103ce69f6cd0478fc62dab6cb3649fbcca727b3e"
+    },
+    {
+      "bytes": 10623,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v4-scheduler-20261004/source-rehearsal/pre-source-failure-receipt.json",
+      "sha256": "5d373697651b6a6b9447ecacf5fca373afb1401d6a1022efc39bf8dbe39cbb3b"
+    },
+    {
+      "bytes": 12317,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v4-scheduler-20261004/source-rehearsal/recovery-with-normal-qbo-receipt.json",
+      "sha256": "6fdf3c5496a90d6d4fbc37b92a63e9ce4d7b48a7f31d8a10cbe5b491c9d0a734"
+    },
+    {
+      "bytes": 150803,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v4-scheduler-20261004/source-rehearsal/rehearsal-receipt.json",
+      "sha256": "6a7b2ca007f5302bb658e7add9e6b88f66cef510fb59dc8bacdfc9a5517b2ba8"
+    },
+    {
+      "bytes": 12315,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v4-scheduler-20261004/source-rehearsal/rollback-with-normal-qbo-receipt.json",
+      "sha256": "9aed61b05227010dc162547c3cc59a55ff913aacab796b9a267d3dff3969ddbb"
+    },
+    {
+      "bytes": 13241,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v4-scheduler-20261004/source-rehearsal/schema-preserving-rollback-receipt.json",
+      "sha256": "4fae0eaf923203c1849ab301cf9b1426e7e82d29c1b293c037177e6070ba24c4"
+    },
+    {
+      "bytes": 10891,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v4-scheduler-20261004/source-rehearsal/source-swap-failure-receipt.json",
+      "sha256": "0215c160f38c9eb74940c7a7f43e6a8d1bca4afbe51a6dca37b3590dbf1708f2"
+    },
+    {
+      "bytes": 6249,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v4-scheduler-20261004/source-rehearsal/success-receipt.json",
+      "sha256": "d45f7893ee1a9731a157e932d19bcfafc6ad3578921b19485c9b99cf160d8290"
+    }
+  ],
+  "production_accessed": false,
+  "raw_logs_headers_cookies_customer_data_included": false,
+  "status": "local_review_only_no_deployment_authority"
+}

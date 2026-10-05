@@ -1,0 +1,74 @@
+BuyDTF transparency scheduler correction: local operations-only review packet
+
+Branch: fix/production-alpha-transparency-source-only-v4-scheduler-20261004
+Base: b3d4b009b1b99d2cc6b9e7f3a641d341956d1849
+Scope: local, unpushed, no production access or deployment authority.
+
+The accepted failed monitor sample 19 observed the existing scheduled QBO task
+at 2026-10-05T00:20:11Z. Independent review confirmed success at 00:20:12Z and
+subsequent mutex release. Strict scheduler-idle validation was incorrectly
+applied after reopening. The original source was automatically restored.
+The failed runner and its release receipt are permanently rejected here.
+
+Before source mutation, scheduling must remain idle. After reopening, monitoring
+and rollback/recovery verification allow only the exact pinned QBO task's normal
+ten-minute activity within the frozen bounds. Private durable observations record
+acquisition, successful completion, release and continuity. The cache observer is
+read-only; it neither calls Laravel mutex::exists() nor expires cache records.
+Exact source/event/process identities, pending mutex expiry, cache success and
+monotonic state reject unexpected, malformed, stale, stuck and failing work.
+Explicit QBO failure logs are also fatal, even when a later success masks them.
+
+Relevant validation: PASS
+- 104 tests: runner, scheduler, cache observer, source gate, nginx inventory,
+  complete-entry log parser and shared gate controls.
+- 11 source cutover, interruption, rollback and recovery rehearsals, including
+  normal QBO completion during rollback and interrupted recovery.
+- 15 post-open/monitoring scenarios, including sample 19 and monitor-close work;
+  stuck, failed, orphaned, malformed, unexpected and unscheduled work;
+  health, queue, schema, source, dependency and log-continuity failures.
+- 28 shared gate transition scenarios, preserving OPcache delay, containment,
+  exact restoration, interruptions, metadata and UID/GID 33 readability checks.
+- Actual PHP 8.2.30 lint and actual Laravel 12.69.1 FileStore/DatabaseStore
+  observation: active, expired and malformed cache records are not modified.
+  WSL validates the production Unix command/mutex identities; native Windows
+  separately validates the observer semantics on the exact PHP version.
+
+Rehearsals use disposable local paths, synthetic task/cache records, virtual
+monitor clocks and mocked external endpoints/database/application commands.
+No accounting task, cron change, mutex clearing or production command occurred.
+They exercise the actual validation, monitoring and rollback orchestration.
+
+The eleven application member definitions and the private source archive are
+byte-identical to the accepted candidate. The local accepted vendor, ownership,
+autoload set, cache and lock pass the unchanged identity validators. Application,
+image, dependency and configuration code were not edited. The accepted application,
+Composer, npm and image-render evidence remains in the base commit; these suites
+were not rerun for this operations-only correction. No fresh production proof is
+claimed. All new evidence is redacted or synthetic; raw customer/log/header/cookie
+data remains private and was not copied into this packet.
+
+Artifacts and evidence:
+- artifact-identities.json: exact runner/helper/parser/control/policy hashes and
+  preserved local candidate identities.
+- VALIDATION_RECEIPT.json and per-command receipts/output: reproducible checks.
+- source-rehearsal/, scheduler-rehearsal/ and gate-transition-rehearsal.json:
+  deterministic transition and monitoring results.
+- sample-19.redacted.json: accepted old probe fields; additional expiry/status
+  inputs are explicitly synthetic regression extensions.
+- EVIDENCE_MANIFEST.json and SHA256SUMS: complete byte checksums for this packet,
+  changed operations files and every frozen control.
+- ../../PRODUCTION_ALPHA_TRANSPARENCY_SCHEDULER_CORRECTION_PLAN_2026-10-04.md:
+  affected validation-call review, policy bounds and revised future plan.
+
+Reproduce locally from the repository root in WSL:
+  PYTHONDONTWRITEBYTECODE=1 python3 ops/deployment/validate_production_alpha_scheduler.py
+  PYTHONDONTWRITEBYTECODE=1 python3 ops/deployment/build_production_alpha_scheduler_evidence.py preserve
+  PYTHONDONTWRITEBYTECODE=1 python3 ops/deployment/build_production_alpha_scheduler_evidence.py inventory
+
+Stop for independent review. Any future push/production access/restricted stage
+needs separate authorization. A fresh release and separately approved cutover
+must use the replacement controls; no retired release or consumed authorization
+may be reused. Preserve all disabled capabilities and the empty artwork allowlist.
+No staging, cutover, recovery, finalization, migration, ShopNLTees, customer-artwork,
+retention or customer-deletion work is authorized by this packet.

@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 import copy
 from dataclasses import replace
+from datetime import datetime, timezone
 from unittest import mock
 import secrets
 from contextlib import contextmanager
@@ -34,7 +35,7 @@ LOG_GUARD_PATH = ROOT / "ops/deployment/laravel_log_guard.py"
 LOG_FIXTURES = ROOT / "tests/Fixtures/Deployment/LaravelLogs"
 MANIFEST_PATH = (
     ROOT
-    / "ops/evidence/production-alpha-transparency-source-only-v3-20261004/APPLICATION_MANIFEST.json"
+    / "ops/evidence/production-alpha-transparency-source-only-v4-scheduler-20261004/APPLICATION_MANIFEST.json"
 )
 DEFAULT_ARCHIVE_PATH = (
     ROOT
@@ -63,6 +64,8 @@ SCENARIOS = (
     "schema-preserving-rollback",
     "post-source-fpm-unavailable",
     "post-source-gate-http-failure",
+    "rollback-with-normal-qbo",
+    "recovery-with-normal-qbo",
 )
 
 
@@ -135,6 +138,31 @@ def resolve_baseline_sources(
     return resolved, evidence
 
 
+def scheduler_snapshot(observed_at: str | None = None, *, active: bool = False,
+                       started_at: str | None = None, success_at: str | None = None) -> dict[str, Any]:
+    observed_at = observed_at or datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    observed = deploy.scheduler_controls.timestamp(observed_at, "fixture")
+    started = deploy.scheduler_controls.timestamp(started_at, "fixture") if started_at else observed - observed % 600
+    success = deploy.scheduler_controls.timestamp(success_at, "fixture") if success_at else (
+        started + 12 if not active and observed >= started + 12 else started - 600 + 12)
+    stamp = lambda value: datetime.fromtimestamp(value, timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    return {
+        "observer_version": 1, "read_only": True, "cache_driver": "file",
+        "source_sha256": deploy.scheduler_controls.SOURCE_SHA256.copy(),
+        "events": deploy.scheduler_controls.expected_events(),
+        "event_count": 3, "stripe_payout_sync_event_count": 1,
+        "overlap_mutexes": [{"command_sha256": deploy.scheduler_controls.COMMAND_SHA256,
+            "mutex_name_sha256": deploy.scheduler_controls.MUTEX_SHA256, "exists": active,
+            "expires_at_unix": started + 900 if active else None,
+            "owner_sha256": "a" * 64 if active else None}],
+        "active_overlap_mutex_count": int(active),
+        "refresh_status": {"exists": True, "state": "ok",
+            "last_attempt_at": stamp(max(started, success) if active else success), "last_success_at": stamp(success),
+            "last_error_at": None, "last_error_present": False, "circuit_retry_at": None,
+            "linked_businesses": 4, "updated_businesses": 4, "invoice_count": 10},
+    }
+
+
 def runtime_snapshot() -> dict[str, Any]:
     table_definition = [
         {
@@ -168,9 +196,9 @@ def runtime_snapshot() -> dict[str, Any]:
         "api_asset_records": 0,
     }
     return {
-        "probe_version": 3,
+        "probe_version": 4,
         "artifact": "buy-dtf-production-alpha-transparency-runtime-probe-v1",
-        "generated_at_utc": "2026-10-01T00:00:00Z",
+        "generated_at_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "application_environment": "local",
         "application_debug": False,
         "runtime": {
@@ -241,18 +269,7 @@ def runtime_snapshot() -> dict[str, Any]:
                 "failed_jobs": 0,
             },
         },
-        "scheduler": {
-            "event_count": 3,
-            "stripe_payout_sync_event_count": 1,
-            "overlap_mutexes": [
-                {
-                    "command_sha256": "1" * 64,
-                    "mutex_name_sha256": "2" * 64,
-                    "exists": False,
-                }
-            ],
-            "active_overlap_mutex_count": 0,
-        },
+        "scheduler": scheduler_snapshot(),
     }
 
 
@@ -363,11 +380,19 @@ def run_scenario(
         }
 
     runtime_sequence = 0
+    rollback_observations = 0
 
     def fake_runtime_probe(_helper: Path, _directory: Path, name: str):
-        nonlocal runtime_sequence
+        nonlocal runtime_sequence, rollback_observations
         runtime_sequence += 1
         current = copy.deepcopy(snapshot())
+        if scenario in {"rollback-with-normal-qbo", "recovery-with-normal-qbo"} and (name == "rollback-runtime-probe" or name.startswith("scheduler-rollback-followup")):
+            rollback_observations += 1
+            observed = "2026-10-05T00:20:11Z" if rollback_observations == 1 else "2026-10-05T00:20:16Z"
+            current["generated_at_utc"] = observed
+            current["scheduler"] = scheduler_snapshot(observed, active=rollback_observations == 1,
+                started_at="2026-10-05T00:20:00Z",
+                success_at=None if rollback_observations == 1 else "2026-10-05T00:20:12Z")
         if scenario == "pre-source-failure" and name == "cutover-installed-schema-probe":
             current["schema"]["savedimages_item_meta"]["nonnull_rows"] = 1
         return current, {
@@ -503,7 +528,9 @@ def run_scenario(
         )
 
     def candidate_checks(_helper: Path, install_rows: list[dict[str, Any]], _directory: Path):
-        if scenario == "candidate-check-failure":
+        if scenario == "recovery-with-normal-qbo":
+            raise KeyboardInterrupt("rehearsed interruption after durable source installation")
+        if scenario in {"candidate-check-failure", "rollback-with-normal-qbo"}:
             raise deploy.DeploymentError("rehearsed candidate-check failure")
         verification = deploy.validate_runtime_snapshot(snapshot())
         return {
@@ -513,10 +540,10 @@ def run_scenario(
         }
 
     def post_open(_helper: Path, _directory: Path, _name: str) -> dict[str, Any]:
-        if scenario in {"post-source-fpm-unavailable","post-source-gate-http-failure"}:
+        if not _name.startswith("rollback") and scenario in {"post-source-fpm-unavailable","post-source-gate-http-failure"}:
             emergency[0]=True
             raise deploy.DeploymentError("rehearsed original-live post-source emergency")
-        if scenario == "post-reopen-failure":
+        if not _name.startswith("rollback") and scenario == "post-reopen-failure":
             raise deploy.DeploymentError("rehearsed post-reopen failure")
         return {
             "status": "pass",
@@ -539,6 +566,7 @@ def run_scenario(
                 install_rows, target=True
             )["sha256"],
             "final_log_checkpoint": final_log_checkpoint,
+            "final_runtime_verification": deploy.validate_runtime_snapshot(snapshot()),
         }
         path = directory / "monitoring-samples.json"
         deploy.atomic_json(path, receipt)
@@ -627,6 +655,7 @@ def run_scenario(
     }
 
     item["receipt"]["controls"]=patches["environment_identity"]()
+    item["receipt"]["scheduler_identity_sha256"] = deploy.scheduler_controls.identity_sha256(snapshot())
     original_context=deploy.source_controls._gate_context_from_frozen_envelope
     clock=[0]
     def clock_sleep(seconds):clock[0]+=round(seconds*1_000_000_000)
@@ -636,7 +665,11 @@ def run_scenario(
         if emergency[0] and scenario == "post-source-fpm-unavailable":
             raise deploy.source_controls.FpmProbeUnavailable("rehearsed FPM timeout")
         return deploy.source_controls.frozen_envelope()["fpm_opcache"]
-    with mock.patch.object(deploy.source_controls,"probe_fpm_opcache",side_effect=fpm_probe), mock.patch.object(deploy.source_controls,"_gate_context_from_frozen_envelope",side_effect=virtual_context), patched(patches):
+    original_observe = deploy.scheduler_controls.observe
+    def local_scheduler_observe(payload, previous, **kwargs):
+        epoch = deploy.scheduler_controls.timestamp(payload["generated_at_utc"], "rehearsal")
+        return original_observe(payload, previous, **kwargs, wall_time=epoch, monotonic_ns=epoch * 1_000_000_000)
+    with mock.patch.object(deploy.source_controls, "require_configuration_identity", return_value=deploy.source_controls.frozen_envelope()["configuration_sha256"]), mock.patch.object(deploy.scheduler_controls, "observe", side_effect=local_scheduler_observe), mock.patch.object(deploy.source_controls,"probe_fpm_opcache",side_effect=fpm_probe), mock.patch.object(deploy.source_controls,"_gate_context_from_frozen_envelope",side_effect=virtual_context), patched(patches):
         original_sleep = deploy.time.sleep
         deploy.time.sleep = lambda _seconds: None
         try:
@@ -654,6 +687,14 @@ def run_scenario(
                     "type": type(exception).__name__,
                     "message_sha256": deploy.sha256_bytes(str(exception).encode("utf-8")),
                 }
+                final_receipt = None
+            except KeyboardInterrupt as exception:
+                require(scenario == "recovery-with-normal-qbo", "Unexpected local interruption")
+                interrupted_states = sorted(rollback.glob("*/state.json"))
+                require(len(interrupted_states) == 1, "Interrupted rehearsal lacks exact durable state")
+                # Authorized local rehearsal only; no CLI recovery or production.
+                deploy.recover_state(state_path=interrupted_states[0], approval_token=deploy.RECOVERY_APPROVAL_TOKEN)
+                failure = {"type": type(exception).__name__, "message_sha256": deploy.sha256_bytes(str(exception).encode())}
                 final_receipt = None
         finally:
             deploy.time.sleep = original_sleep
@@ -767,6 +808,7 @@ def run_scenario(
         "fpm_checkpoint_receipt":state.get("fpm_opcache_before_mutation_receipt"),
         "opcache_clock_model":"virtual clock advances the complete frozen seven-second interval; real FPM proof is separate",
         "opcache_wait_receipts":[json.loads(Path(item["details"]["wait_receipt"]["path"]).read_text("utf-8")) for item in state.get("front_controller_transitions",[]) if item.get("phase")=="revalidation_wait_complete"],
+        "scheduler_observation_receipts": [json.loads(path.read_text("utf-8")) for path in sorted(state_directory.glob("scheduler-observation-*.json"))],
         "state_sha256": state_sha256,
         "raw_evidence_entries": len(raw_inventory),
         "raw_evidence_manifest_sha256": raw_manifest_sha256,
@@ -861,7 +903,7 @@ def run(
     portable_output.mkdir(mode=0o755, parents=True, exist_ok=True)
     aggregate = {
         "status": "pass",
-        "artifact": "buy-dtf-production-alpha-transparency-source-only-local-rehearsal-v3",
+        "artifact": "buy-dtf-production-alpha-transparency-source-only-local-rehearsal-v4-scheduler",
         "scope": "disposable-local-filesystem-only-no-production-access",
         "scenario_count": len(scenarios),
         "scenarios_required": list(SCENARIOS),

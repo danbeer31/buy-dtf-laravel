@@ -33,6 +33,7 @@ from typing import Any, Callable, Iterator
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import production_alpha_gate_controls as source_controls
+import production_alpha_scheduler_guard as scheduler_controls
 
 APP_ROOT = Path("/var/www/buy-dtf")
 RELEASE_ROOT = APP_ROOT / "storage/app/private/operations/production-alpha-transparency-releases"
@@ -56,8 +57,8 @@ TARGET_SHORT = TARGET_COMMIT[:8]
 HANDOFF_SHA256 = "ba9fd4dcf5fa5854b2e23418e0cd6ed8799874494a0341c726302b92a5acc127"
 RETIRED_ARTIFACT_COMMIT = "c43f39f556d057c99bb01e95ee7ca68658c05232"
 EXPECTED_ARCHIVE_SHA256 = "3067bca578201a39254d8544b633a04ff6a9e43fc0de2a2783a95ccde9a1bfcd"
-EXPECTED_MANIFEST_SHA256 = "f7f9c098e48dd5cefafed6708bfad7069880eae5941b2885f0f317214f54027c"
-EXPECTED_HELPER_SHA256 = "e4f0e1880a877f4f3866e35d7049de936857eeb1d70c3c8a6e229a9c53653f85"
+EXPECTED_MANIFEST_SHA256 = "79d6d646ca785dcc63afa6ebf09652386b2bf927f89fbd9399310bdddef86d92"
+EXPECTED_HELPER_SHA256 = "839588fe2930e1e673c507b05f7ccf15d7166329d66c1563775154cd7030d200"
 EXPECTED_MIGRATION_SHA256 = "992fbfe8086732e9bde10be89c3f52ddb4fef49edfdec12b744377c2e4181bbf"
 MIGRATION_RELATIVE_PATH = Path(
     "database/migrations/2026_10_01_120000_add_item_meta_to_savedimages_table.php"
@@ -84,22 +85,27 @@ EXPECTED_LEDGER_WITHOUT_TARGET_SHA256 = (
 EXPECTED_PRE_SOURCE_CAS_SHA256 = "0ceca182384a8e68560ec542c0c2c0c695971b8488321ca0899ea7a880d6fd17"
 EXPECTED_TARGET_SOURCE_CAS_SHA256 = "b3379cd90676d8b3214371e17ffd3278cd43ba1885a6223b12998a8b40e5ea27"
 
-EXPECTED_LOG_GUARD_SHA256 = "4bdec766469e71568631dbcf7408e94696f2fd99c46c18dd58b8374f31a488c8"
+EXPECTED_LOG_GUARD_SHA256 = "75921c4a9f1b9a21d710c7792900014eb517f2e936a97c82ff542dd3c208dd28"
 
 RETIRED_RUNNER_SHA256S = frozenset(
     {
         "59bbd90cafa8d1b5efd56a6c40667924193e37539f4340e4b6163c6274425cab",
         "76cfff204e86ee1119251b1d79931b1219cd19704b099f75d4e3db202ffe5b17",
+        "25da4ddef0b4eb088cdedadf4848b1286a389760942493717e52d00f02c014df",
     }
 )
 RETIRED_RELEASE_RECEIPT_SHA256S = frozenset(
-    {"15271bdf4a33a85f247bbcaba45cb115b1beed429dd6bc48349fbe4a84bc7eee"}
+    {"15271bdf4a33a85f247bbcaba45cb115b1beed429dd6bc48349fbe4a84bc7eee",
+     "5621e1aad4c25bbffa5fad0f858358458595491b6a83c28ec8fc543aa6dd3f2d"}
 )
 RETIRED_RELEASE_RECEIPT_PATHS = frozenset(
     {
         "/var/www/buy-dtf/storage/app/private/operations/"
         "production-alpha-transparency-releases/"
         "5b2d06cd-20261002T021532Z/release-receipt.json"
+        ,"/var/www/buy-dtf/storage/app/private/operations/"
+        "production-alpha-transparency-releases/"
+        "b02fce32-20261004T234125Z/release-receipt.json"
     }
 )
 
@@ -115,11 +121,11 @@ EXPECTED_FRONT_CONTROLLER_SHA256 = "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26
 DEPENDENCY_ENVELOPE_FROZEN = True
 DEPENDENCY_ENVELOPE_STATUS = "post_laravel_12_69_1_frozen_review_required"
 
-STAGE_APPROVAL_TOKEN = f"STAGE-BUYDTF-ALPHA-V3-{TARGET_COMMIT[:16]}"
-DEPLOY_APPROVAL_TOKEN = f"DEPLOY-BUYDTF-ALPHA-V3-{TARGET_COMMIT[:16]}"
-RECOVERY_APPROVAL_TOKEN = f"RECOVER-BUYDTF-ALPHA-V3-{TARGET_COMMIT[:16]}"
+STAGE_APPROVAL_TOKEN = f"STAGE-BUYDTF-ALPHA-V4-{TARGET_COMMIT[:16]}"
+DEPLOY_APPROVAL_TOKEN = f"DEPLOY-BUYDTF-ALPHA-V4-{TARGET_COMMIT[:16]}"
+RECOVERY_APPROVAL_TOKEN = f"RECOVER-BUYDTF-ALPHA-V4-{TARGET_COMMIT[:16]}"
 
-CONTROL_FILES = {'production_alpha_gate_controls.py': '2719da67c6d425e5fa4bef70aade0789aba1deccfaf09f8992c8674883c65c00', 'production_alpha_dependency_envelope.json': '04850fe3aef14981c92f5b2af373bd136cfb6fead456d86fcab7233acb009fd1', 'laravel_dependency_gate.py': 'b93c08f58a08333120369c1cc75c60631d621c3a8099ca3967065721c45679f5', 'laravel_nginx_identity.py': '1243fea2757aca89f586ec4b322b0d23ee1e19b2d027c21bd6523e71e6e6e8e0', 'laravel_fpm_opcache_probe.php': 'b8b34f87d45a0c000cc0df7917496631320cfbdcca1ff44bc41741ce0d569262'}
+CONTROL_FILES = {'production_alpha_scheduler_guard.py': 'b48f00f683b8573d2b3d987513f330470bd3db9521a02ef0f67d8cf4c9803d47', 'production_alpha_scheduler_probe.php': '486971039318d754397a6a3677d9e51f51113f647b2e6d469064c714ea9cf0af', 'production_alpha_gate_controls.py': '2719da67c6d425e5fa4bef70aade0789aba1deccfaf09f8992c8674883c65c00', 'production_alpha_dependency_envelope.json': '04850fe3aef14981c92f5b2af373bd136cfb6fead456d86fcab7233acb009fd1', 'laravel_dependency_gate.py': 'b93c08f58a08333120369c1cc75c60631d621c3a8099ca3967065721c45679f5', 'laravel_nginx_identity.py': '1243fea2757aca89f586ec4b322b0d23ee1e19b2d027c21bd6523e71e6e6e8e0', 'laravel_fpm_opcache_probe.php': 'b8b34f87d45a0c000cc0df7917496631320cfbdcca1ff44bc41741ce0d569262'}
 
 DRAIN_SECONDS = 65
 OPCACHE_WAIT_SECONDS = 7
@@ -495,6 +501,8 @@ def parse_manifest(path: Path) -> list[dict[str, Any]]:
         raise DeploymentError("The manifest pre-freeze gate differs from the runner.")
     if document.get("hash_algorithm") != "sha256 over exact raw file bytes":
         raise DeploymentError("The manifest does not declare raw-byte hashing.")
+    if document.get("scheduler_policy") != scheduler_controls.POLICY or document.get("scheduler_policy_sha256") != scheduler_controls.POLICY_SHA256:
+        raise DeploymentError("Manifest scheduler policy differs from the frozen control.")
     if document.get("expected_schema_sha256") != EXPECTED_SCHEMA_SHA256:
         raise DeploymentError("The manifest schema baseline differs from the runner.")
     ledger = document.get("expected_ledger", {})
@@ -640,6 +648,8 @@ def scoped_processes() -> list[dict[str, str]]:
     patterns = (
         "artisan migrate",
         "artisan stripe:sync-payouts",
+        "artisan accounting:reconcile-stripe-holding",
+        "artisan qbo:refresh-admin-cache",
         "artisan queue:",
         "artisan schedule:",
         "composer install",
@@ -786,9 +796,51 @@ def runtime_probe(helper: Path, evidence_directory: Path, name: str) -> tuple[di
     return payload, result
 
 
-def validate_runtime_snapshot(payload: dict[str, Any]) -> dict[str, Any]:
+class SchedulerGuard:
+    """Persist every bounded observation and lock transition in private evidence."""
+
+    def __init__(self, directory: Path):
+        self.directory = directory
+        self.path = directory / "scheduler-activity-state.json"
+
+    def observe(self, payload: dict[str, Any], phase: str) -> dict[str, Any]:
+        previous = None
+        if self.path.exists():
+            require_regular_file(self.path)
+            if stat.S_IMODE(self.path.stat().st_mode) != 0o600:
+                raise DeploymentError("Scheduler activity state is not private.")
+            try:
+                previous = json.loads(self.path.read_text(encoding="utf-8"))
+            except (UnicodeError, json.JSONDecodeError) as error:
+                raise DeploymentError("Malformed durable scheduler activity state.") from error
+        try:
+            deployment_path = self.directory / "state.json"
+            if deployment_path.exists():
+                deployment = load_json(deployment_path)
+                if not isinstance(deployment, dict) or deployment.get("scheduler_policy_sha256") != scheduler_controls.POLICY_SHA256 or deployment.get("scheduler_identity_sha256") != scheduler_controls.identity_sha256(payload):
+                    raise scheduler_controls.SchedulerError("Scheduler identity is not bound to the durable deployment/staging envelope.")
+            process_receipt = scheduler_controls.process_envelope(payload, APP_ROOT)
+            current, receipt = scheduler_controls.observe(payload, previous, phase=phase)
+        except scheduler_controls.SchedulerError as error:
+            failure = self.directory / f"scheduler-rejection-{time.monotonic_ns()}.json"
+            atomic_json(failure, {"status": "rejected", "phase": phase,
+                "policy_sha256": scheduler_controls.POLICY_SHA256,
+                "snapshot_sha256": scheduler_controls.digest(payload.get("scheduler")),
+                "reason": str(error), "at_utc": utc_now()})
+            raise DeploymentError(str(error)) from error
+        receipt["process_envelope"] = process_receipt
+        atomic_json(self.path, current)
+        path = self.directory / f"scheduler-observation-{current['sequence']:04d}.json"
+        atomic_json(path, receipt)
+        return {**receipt, "path": str(path), "sha256": sha256_file(path),
+                "state_path": str(self.path), "state_sha256": sha256_file(self.path)}
+
+
+def validate_runtime_snapshot(payload: dict[str, Any], *,
+                              scheduler_guard: SchedulerGuard | None = None,
+                              scheduler_phase: str = "idle") -> dict[str, Any]:
     if (
-        payload.get("probe_version") != 3
+        payload.get("probe_version") != 4
         or payload.get("artifact")
         != "buy-dtf-production-alpha-transparency-runtime-probe-v1"
     ):
@@ -887,13 +939,15 @@ def validate_runtime_snapshot(payload: dict[str, Any]) -> dict[str, Any]:
     counts = queue.get("counts", {})
     if counts.get("jobs") != 0 or counts.get("failed_jobs") != 0:
         raise DeploymentError("Queued or failed jobs are present.")
-    scheduler = payload.get("scheduler", {})
-    if (
-        scheduler.get("stripe_payout_sync_event_count") != 1
-        or scheduler.get("active_overlap_mutex_count") != 0
-        or not isinstance(scheduler.get("overlap_mutexes"), list)
-    ):
-        raise DeploymentError("Scheduled work or an overlap mutex differs from baseline.")
+    try:
+        if scheduler_phase == "idle":
+            scheduler_verification = scheduler_controls.require_idle(payload)
+        elif scheduler_guard is not None:
+            scheduler_verification = scheduler_guard.observe(payload, scheduler_phase)
+        else:
+            raise DeploymentError("Bounded scheduler verification needs durable activity evidence.")
+    except scheduler_controls.SchedulerError as error:
+        raise DeploymentError(str(error)) from error
     return {
         "status": "pass",
         "schema_state": SCHEMA_STATE,
@@ -907,6 +961,8 @@ def validate_runtime_snapshot(payload: dict[str, Any]) -> dict[str, Any]:
         "savedimages_data_columns": data_columns,
         "savedimages_data_sha256": data_sha256,
         "item_meta_nonnull_rows": item_meta.get("nonnull_rows"),
+        "scheduler_verification": scheduler_verification,
+        "scheduler_identity_sha256": scheduler_controls.identity_sha256(payload),
         "migration_command_invoked": False,
         "migration_pretend_invoked": False,
         "migration_executed_this_attempt": False,
@@ -931,10 +987,12 @@ def validate_pre_source_runtime_snapshot(payload: dict[str, Any]) -> dict[str, A
 
 
 def compare_installed_schema_snapshots(
-    before: dict[str, Any], after: dict[str, Any]
+    before: dict[str, Any], after: dict[str, Any], *,
+    scheduler_guard: SchedulerGuard | None = None, scheduler_phase: str = "idle",
 ) -> dict[str, Any]:
     before_verification = validate_runtime_snapshot(before)
-    after_verification = validate_runtime_snapshot(after)
+    after_verification = validate_runtime_snapshot(after, scheduler_guard=scheduler_guard,
+                                                   scheduler_phase=scheduler_phase)
     stable_keys = (
         "schema_state",
         "schema_sha256",
@@ -944,6 +1002,7 @@ def compare_installed_schema_snapshots(
         "ledger_without_target_sha256",
         "target_migration_entries",
         "savedimages_data_columns",
+        "scheduler_identity_sha256",
     )
     if any(before_verification[key] != after_verification[key] for key in stable_keys):
         raise DeploymentError("Installed schema or migration ledger changed during the operation.")
@@ -959,7 +1018,7 @@ def compare_installed_schema_snapshots(
 
 
 def verify_rollback_schema_state(
-    payload: dict[str, Any], state: dict[str, Any]
+    payload: dict[str, Any], state: dict[str, Any], *, scheduler_guard: SchedulerGuard | None = None,
 ) -> dict[str, Any]:
     """Require the exact installed schema before and after source rollback."""
     if any(
@@ -971,7 +1030,8 @@ def verify_rollback_schema_state(
         )
     ):
         raise DeploymentError("Source-only rollback state records a prohibited migration action.")
-    verification = validate_runtime_snapshot(payload)
+    verification = validate_runtime_snapshot(payload, scheduler_guard=scheduler_guard,
+        scheduler_phase="rollback" if scheduler_guard is not None else "idle")
     return {
         "status": "pass",
         "observed_schema_state": SCHEMA_STATE,
@@ -1063,7 +1123,7 @@ def production_preflight(
     live_source = live_manifest_snapshot(manifest_rows, target=require_target_source)
     dependencies = dependency_identity()
     runtime, runtime_command = runtime_probe(helper, evidence_directory, f"{prefix}-runtime-probe")
-    validate_pre_source_runtime_snapshot(runtime)
+    runtime_verification = validate_pre_source_runtime_snapshot(runtime)
     health = health_snapshot()
     disk = shutil.disk_usage(APP_ROOT)
     if disk.free < 2 * 1024 * 1024 * 1024:
@@ -1089,6 +1149,7 @@ def production_preflight(
         "controls": controls,
         "runtime": runtime,
         "runtime_command": runtime_command,
+        "runtime_verification": runtime_verification,
         "health": health,
     }
 
@@ -1128,7 +1189,7 @@ def preflight_guard(helper: Path, rows: list[dict[str, Any]]) -> dict[str, Any]:
     source = live_manifest_snapshot(rows, target=False)
     dependencies = dependency_identity()
     runtime = runtime_probe_memory(helper)
-    validate_pre_source_runtime_snapshot(runtime)
+    runtime_verification = validate_pre_source_runtime_snapshot(runtime)
     health = health_snapshot()
     return {
         "status": "pass",
@@ -1137,6 +1198,7 @@ def preflight_guard(helper: Path, rows: list[dict[str, Any]]) -> dict[str, Any]:
         "controls": controls,
         "dependencies": dependencies,
         "runtime": runtime,
+        "runtime_verification": runtime_verification,
         "health": health,
     }
 
@@ -1503,6 +1565,9 @@ def stage_release(
             "release_directory": str(release),
             "control_inputs": control_inputs,
             "controls": preflight["controls"],
+            "scheduler_policy": scheduler_controls.POLICY,
+            "scheduler_policy_sha256": scheduler_controls.POLICY_SHA256,
+            "scheduler_identity_sha256": before_verification["scheduler_identity_sha256"],
             "inputs": {
                 "archive": {"path": str(copied_archive), "sha256": sha256_file(copied_archive)},
                 "manifest": {"path": str(copied_manifest), "sha256": sha256_file(copied_manifest)},
@@ -1602,6 +1667,10 @@ def validate_release_receipt(
     if not is_relative_to(release, RELEASE_ROOT.resolve(strict=True)):
         raise DeploymentError("Release receipt is outside the approved release root.")
     receipt = load_json(path)
+    if not isinstance(receipt, dict) or receipt.get("scheduler_policy") != scheduler_controls.POLICY or receipt.get("scheduler_policy_sha256") != scheduler_controls.POLICY_SHA256:
+        raise DeploymentError("Release receipt scheduler policy differs from the frozen control.")
+    if not isinstance(receipt.get("scheduler_identity_sha256"), str) or not re.fullmatch(r"[0-9a-f]{64}", receipt["scheduler_identity_sha256"]):
+        raise DeploymentError("Release receipt lacks its exact scheduler identity.")
     if (
         not isinstance(receipt, dict)
         or receipt.get("status") != "pass"
@@ -2281,6 +2350,41 @@ def capability_probe(state_directory: Path, name: str) -> dict[str, Any]:
     }
 
 
+def settle_scheduler_activity(
+    helper: Path, state_directory: Path, runtime: dict[str, Any], *,
+    scheduler_guard: SchedulerGuard, phase: str, target: bool,
+    log_checkpoint: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Observe normal work to completion; never manipulate its mutex or task.
+
+    Every active follow-up repeats runtime, source, configuration, dependency,
+    front-controller, and (when open) health checks. Expiry/monotonic policy
+    bounds the loop even across interruption and recovery.
+    """
+    followups = []
+    verification = validate_runtime_snapshot(runtime, scheduler_guard=scheduler_guard,
+                                             scheduler_phase=phase)
+    while verification["scheduler_verification"]["active"]:
+        time.sleep(scheduler_controls.POLL_SECONDS)
+        if log_checkpoint is not None:
+            log_checkpoint = verify_log_continuity(log_checkpoint)
+        runtime, command = runtime_probe(helper, state_directory,
+            f"scheduler-{phase}-followup-{scheduler_guard.path.stat().st_mtime_ns}")
+        verification = validate_runtime_snapshot(runtime, scheduler_guard=scheduler_guard,
+                                                 scheduler_phase=phase)
+        expected_front = EXPECTED_GATE_SHA256 if phase in {"rollback", "recovery"} else EXPECTED_FRONT_CONTROLLER_SHA256
+        require_regular_file(FRONT_CONTROLLER, expected_front)
+        if phase in {"post_open", "monitor"} and LARAVEL_MAINTENANCE_FILE.exists():
+            raise DeploymentError("Maintenance unexpectedly active after reopening.")
+        followups.append({"runtime_verification": verification, "runtime_command": command,
+            "source": full_source_identity(target=target),
+            "configuration_sha256": source_controls.require_configuration_identity(),
+            "dependencies": dependency_identity(),
+            "health": health_snapshot() if phase in {"post_open", "monitor"} else {"exact_gate_retained": True}})
+    return {"status": "pass", "runtime": runtime, "runtime_verification": verification,
+            "followups": followups, "log_checkpoint": log_checkpoint}
+
+
 def post_open_health(
     helper: Path, state_directory: Path, name: str
 ) -> dict[str, Any]:
@@ -2290,7 +2394,12 @@ def post_open_health(
     health_second = health_snapshot()
     capability_second = capability_probe(state_directory, f"{name}-capability-2")
     runtime, runtime_command = runtime_probe(helper, state_directory, f"{name}-runtime")
-    runtime_verification = validate_runtime_snapshot(runtime)
+    guard = SchedulerGuard(state_directory)
+    phase = "post_open"
+    settled = settle_scheduler_activity(helper, state_directory, runtime,
+        scheduler_guard=guard, phase=phase, target=not name.startswith("rollback"))
+    runtime = settled["runtime"]
+    runtime_verification = settled["runtime_verification"]
     return {
         "health_first": health_first,
         "health_second": health_second,
@@ -2299,6 +2408,7 @@ def post_open_health(
         "runtime": runtime,
         "runtime_verification": runtime_verification,
         "runtime_command": runtime_command,
+        "scheduler_completion": settled,
         "maintenance_active": LARAVEL_MAINTENANCE_FILE.exists(),
         "front_controller_sha256": sha256_file(FRONT_CONTROLLER),
     }
@@ -2311,11 +2421,13 @@ def monitor_production(
     log_checkpoint: dict[str, Any],
 ) -> dict[str, Any]:
     samples: list[dict[str, Any]] = []
+    guard = SchedulerGuard(state_directory)
     sample_count = MONITOR_SECONDS // MONITOR_INTERVAL_SECONDS
     for index in range(sample_count):
         log_checkpoint = verify_log_continuity(log_checkpoint)
         runtime, _ = runtime_probe(helper, state_directory, f"monitor-runtime-{index + 1:02d}")
-        verification = validate_runtime_snapshot(runtime)
+        verification = validate_runtime_snapshot(runtime, scheduler_guard=guard,
+                                                  scheduler_phase="monitor")
         sample = {
             "number": index + 1,
             "at_utc": utc_now(),
@@ -2338,8 +2450,24 @@ def monitor_production(
         }
         samples.append(sample)
         atomic_json(state_directory / "monitoring-samples.json", samples)
+        settled = settle_scheduler_activity(helper, state_directory, runtime,
+            scheduler_guard=guard, phase="monitor", target=True, log_checkpoint=log_checkpoint)
+        log_checkpoint = settled["log_checkpoint"]
+        sample["scheduler_completion"] = settled
+        atomic_json(state_directory / "monitoring-samples.json", samples)
         time.sleep(MONITOR_INTERVAL_SECONDS)
     log_checkpoint = verify_log_continuity(log_checkpoint)
+    final_runtime, final_command = runtime_probe(helper, state_directory, "monitor-final-runtime")
+    final_settled = settle_scheduler_activity(helper, state_directory, final_runtime,
+        scheduler_guard=guard, phase="monitor", target=True, log_checkpoint=log_checkpoint)
+    log_checkpoint = final_settled["log_checkpoint"]
+    final_verification = final_settled["runtime_verification"]
+    require_regular_file(FRONT_CONTROLLER, EXPECTED_FRONT_CONTROLLER_SHA256)
+    if LARAVEL_MAINTENANCE_FILE.exists():
+        raise DeploymentError("Maintenance unexpectedly active at monitor close.")
+    final_checks = {"health": health_snapshot(), "source": live_manifest_snapshot(rows, target=True),
+        "full_source": full_source_identity(target=True), "dependencies": dependency_identity(),
+        "configuration_sha256": source_controls.require_configuration_identity()}
     path = state_directory / "monitoring-samples.json"
     return {
         "status": "pass",
@@ -2349,6 +2477,11 @@ def monitor_production(
         "path": str(path),
         "sha256": sha256_file(path),
         "final_log_checkpoint": log_checkpoint,
+        "final_runtime_verification": final_verification,
+        "final_runtime_command": final_command,
+        "final_scheduler_completion": final_settled,
+        "final_checks": final_checks,
+        "scheduler_state_sha256": sha256_file(guard.path),
     }
 
 
@@ -2731,13 +2864,17 @@ def rollback_operation(
         dependency_identity()
 
         runtime, runtime_command = runtime_probe(helper, state_directory, "rollback-runtime-probe")
-        rollback_schema = verify_rollback_schema_state(runtime, state)
+        scheduler_guard = SchedulerGuard(state_directory)
+        rollback_schema = verify_rollback_schema_state(runtime, state, scheduler_guard=scheduler_guard)
         schema_baseline = state.get("installed_schema_baseline")
         if not isinstance(schema_baseline, dict):
             raise DeploymentError("Rollback state is missing the installed-schema baseline.")
         rollback_schema["comparisons"] = compare_installed_schema_snapshots(
-            schema_baseline, runtime
+            schema_baseline, runtime, scheduler_guard=scheduler_guard, scheduler_phase="rollback"
         )
+        rollback_schema["scheduler_completion"] = settle_scheduler_activity(
+            helper, state_directory, runtime, scheduler_guard=scheduler_guard,
+            phase="rollback", target=False)
         rollback_schema_path = state_directory / "rollback-schema-preservation-receipt.json"
         atomic_json(rollback_schema_path, rollback_schema)
 
@@ -2753,7 +2890,7 @@ def rollback_operation(
             name="rollback-original-front-controller-restore",
         )
         state["front_controller_restore_receipt"] = front_restore["path"]
-        health = health_snapshot()
+        health = post_open_health(helper, state_directory, "rollback-post-open")
         state["status"] = "rolled_back"
         state["rollback_complete"] = True
         state["rollback_finished_at_utc"] = utc_now()
@@ -2901,6 +3038,10 @@ def deploy_release(
             atomic_json(preflight_path, preflight)
             if preflight["controls"] != receipt["controls"]:
                 raise DeploymentError("FPM/nginx differs from staged envelope")
+            if preflight["runtime_verification"]["scheduler_identity_sha256"] != receipt["scheduler_identity_sha256"]:
+                raise DeploymentError("Scheduler identity differs from the staged envelope")
+            state["scheduler_policy_sha256"] = scheduler_controls.POLICY_SHA256
+            state["scheduler_identity_sha256"] = receipt["scheduler_identity_sha256"]
             state["fpm_opcache"]=preflight["controls"]["fpm_opcache"]
             state["nginx"]=preflight["controls"]["nginx"]
             state["preflight_receipt"] = str(preflight_path)
@@ -3073,7 +3214,7 @@ def deploy_release(
                 "maintenance_active": LARAVEL_MAINTENANCE_FILE.exists(),
                 "static_gate_active": False,
                 "rollback_started": False,
-                "schema": validate_runtime_snapshot(health["runtime"]),
+                "schema": monitoring["final_runtime_verification"],
                 "source": live_manifest_snapshot(rows, target=True),
             }
             final_path = state_directory / "final-receipt.json"
@@ -3138,7 +3279,9 @@ def recover_state(
 
 def describe() -> dict[str, Any]:
     return {
-        "artifact": "BuyDTF production-alpha transparency source-only deployment runner v3",
+        "artifact": "BuyDTF production-alpha transparency source-only deployment runner v4 scheduler correction",
+        "scheduler_policy": scheduler_controls.POLICY,
+        "scheduler_policy_sha256": scheduler_controls.POLICY_SHA256,
         "target_application_commit": TARGET_COMMIT,
         "artifact_base_commit": ARTIFACT_BASE_COMMIT,
         "review_provenance": {

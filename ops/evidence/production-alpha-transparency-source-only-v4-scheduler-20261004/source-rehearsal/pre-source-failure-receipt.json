@@ -1,0 +1,284 @@
+{
+  "additive_schema_preserved": true,
+  "containment_http_verified": true,
+  "expected_failure": true,
+  "final_receipt_sha256": null,
+  "final_state_status": "rolled_back",
+  "fpm_checkpoint_receipt": null,
+  "front_controller_mode": "0o644",
+  "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
+  "migration_command_count": 0,
+  "migration_command_invoked": false,
+  "migration_executed_this_attempt": false,
+  "migration_pretend_invoked": false,
+  "observed_failure": {
+    "message_sha256": "e9eaa71ab24c874df524468bd3131b02d495b45052dee903171caad8ae442dd6",
+    "type": "DeploymentError"
+  },
+  "opcache_clock_model": "virtual clock advances the complete frozen seven-second interval; real FPM proof is separate",
+  "opcache_wait_receipts": [
+    {
+      "artifact": "buy-dtf-front-controller-opcache-revalidation-wait-v1",
+      "complete_revalidation_interval_seconds": 4,
+      "configured_wait_seconds": 7,
+      "deadline_monotonic_ns": 7000000000,
+      "earliest_allowed_probe_at_utc": "2026-09-21T14:13:27.000000Z",
+      "elapsed_monotonic_ns": 7000000000,
+      "elapsed_monotonic_seconds": 7.0,
+      "end_monotonic_ns": 7000000000,
+      "ended_at_utc": "2026-09-21T14:13:27.000000Z",
+      "identity_after": {
+        "bytes": 582,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "path": "/tmp/buy-dtf-alpha-rehearsal-5x0_u_pa/buy-dtf-alpha-pre-source-failure-95dbd4rq/application/public/index.php",
+        "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+      },
+      "identity_before": {
+        "bytes": 582,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "path": "/tmp/buy-dtf-alpha-rehearsal-5x0_u_pa/buy-dtf-alpha-pre-source-failure-95dbd4rq/application/public/index.php",
+        "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+      },
+      "operation": "cutover-static-gate",
+      "policy": {
+        "artifact": "buy-dtf-php-fpm-opcache-revalidation-policy-v1",
+        "complete_revalidation_interval_seconds": 4,
+        "file_update_protection_seconds": 2,
+        "formula": "max(5, 2 * revalidate_freq + file_update_protection + 1)",
+        "minimum_floor_seconds": 5,
+        "minimum_wait_seconds": 7,
+        "opcache_enable": true,
+        "php_version": "8.2.30",
+        "revalidate_freq_seconds": 2,
+        "safety_margin_seconds": 1,
+        "sapi": "fpm-fcgi",
+        "second_revalidation_window_seconds": 2,
+        "validate_timestamps": true
+      },
+      "sequence": 1,
+      "start_monotonic_ns": 0,
+      "started_at_utc": "2026-09-21T14:13:20.000000Z",
+      "status": "complete",
+      "target_metadata": {
+        "gid": 1000,
+        "kind": "file",
+        "mode": 420,
+        "uid": 1000
+      },
+      "target_sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+    },
+    {
+      "artifact": "buy-dtf-front-controller-opcache-revalidation-wait-v1",
+      "complete_revalidation_interval_seconds": 4,
+      "configured_wait_seconds": 7,
+      "deadline_monotonic_ns": 14000000000,
+      "earliest_allowed_probe_at_utc": "2026-09-21T14:13:34.000000Z",
+      "elapsed_monotonic_ns": 7000000000,
+      "elapsed_monotonic_seconds": 7.0,
+      "end_monotonic_ns": 14000000000,
+      "ended_at_utc": "2026-09-21T14:13:34.000000Z",
+      "identity_after": {
+        "bytes": 582,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "path": "/tmp/buy-dtf-alpha-rehearsal-5x0_u_pa/buy-dtf-alpha-pre-source-failure-95dbd4rq/application/public/index.php",
+        "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+      },
+      "identity_before": {
+        "bytes": 582,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "path": "/tmp/buy-dtf-alpha-rehearsal-5x0_u_pa/buy-dtf-alpha-pre-source-failure-95dbd4rq/application/public/index.php",
+        "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+      },
+      "operation": "rollback-static-gate",
+      "policy": {
+        "artifact": "buy-dtf-php-fpm-opcache-revalidation-policy-v1",
+        "complete_revalidation_interval_seconds": 4,
+        "file_update_protection_seconds": 2,
+        "formula": "max(5, 2 * revalidate_freq + file_update_protection + 1)",
+        "minimum_floor_seconds": 5,
+        "minimum_wait_seconds": 7,
+        "opcache_enable": true,
+        "php_version": "8.2.30",
+        "revalidate_freq_seconds": 2,
+        "safety_margin_seconds": 1,
+        "sapi": "fpm-fcgi",
+        "second_revalidation_window_seconds": 2,
+        "validate_timestamps": true
+      },
+      "sequence": 2,
+      "start_monotonic_ns": 7000000000,
+      "started_at_utc": "2026-09-21T14:13:27.000000Z",
+      "status": "complete",
+      "target_metadata": {
+        "gid": 1000,
+        "kind": "file",
+        "mode": 420,
+        "uid": 1000
+      },
+      "target_sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+    },
+    {
+      "artifact": "buy-dtf-front-controller-opcache-revalidation-wait-v1",
+      "complete_revalidation_interval_seconds": 4,
+      "configured_wait_seconds": 7,
+      "deadline_monotonic_ns": 21000000000,
+      "earliest_allowed_probe_at_utc": "2026-09-21T14:13:41.000000Z",
+      "elapsed_monotonic_ns": 7000000000,
+      "elapsed_monotonic_seconds": 7.0,
+      "end_monotonic_ns": 21000000000,
+      "ended_at_utc": "2026-09-21T14:13:41.000000Z",
+      "identity_after": {
+        "bytes": 543,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "path": "/tmp/buy-dtf-alpha-rehearsal-5x0_u_pa/buy-dtf-alpha-pre-source-failure-95dbd4rq/application/public/index.php",
+        "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
+      },
+      "identity_before": {
+        "bytes": 543,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "path": "/tmp/buy-dtf-alpha-rehearsal-5x0_u_pa/buy-dtf-alpha-pre-source-failure-95dbd4rq/application/public/index.php",
+        "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
+      },
+      "operation": "rollback-original-front-controller-restore",
+      "policy": {
+        "artifact": "buy-dtf-php-fpm-opcache-revalidation-policy-v1",
+        "complete_revalidation_interval_seconds": 4,
+        "file_update_protection_seconds": 2,
+        "formula": "max(5, 2 * revalidate_freq + file_update_protection + 1)",
+        "minimum_floor_seconds": 5,
+        "minimum_wait_seconds": 7,
+        "opcache_enable": true,
+        "php_version": "8.2.30",
+        "revalidate_freq_seconds": 2,
+        "safety_margin_seconds": 1,
+        "sapi": "fpm-fcgi",
+        "second_revalidation_window_seconds": 2,
+        "validate_timestamps": true
+      },
+      "sequence": 3,
+      "start_monotonic_ns": 14000000000,
+      "started_at_utc": "2026-09-21T14:13:34.000000Z",
+      "status": "complete",
+      "target_metadata": {
+        "gid": 1000,
+        "kind": "file",
+        "mode": 420,
+        "uid": 1000
+      },
+      "target_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
+    }
+  ],
+  "post_mutation_fpm_fallback_count": 0,
+  "prohibited_command_count": 0,
+  "raw_evidence_entries": 28,
+  "raw_evidence_manifest_sha256": "309d1ff1e80ec150df1294d929f4fbe223988d25efac4a461ea1e141dd45bd61",
+  "raw_state_directory_name": "b02fce32-20261005T011838Z",
+  "rollback_complete": true,
+  "scenario": "pre-source-failure",
+  "scheduler_observation_receipts": [
+    {
+      "active": false,
+      "last_success_unix": 1791162612,
+      "monotonic_ns": 1791163119000000000,
+      "observed_at_utc": "2026-10-05T01:18:39Z",
+      "pending": null,
+      "phase": "rollback",
+      "policy": "bounded_reviewed_qbo_only",
+      "policy_sha256": "519845cb3bee9cc46ec1997d605f38018da46a26aa418ff407f9eb3d03a599f4",
+      "process_envelope": {
+        "environments_read": false,
+        "mutex_or_task_actions": false,
+        "processes": [],
+        "read_only": true,
+        "status": "pass"
+      },
+      "scheduler_snapshot_sha256": "8478ac4a2c7bf970c14f168b44b5841302e06943e1c94a073d5a598b0ada9fd1",
+      "sequence": 1,
+      "status": "pass",
+      "task": "qbo:refresh-admin-cache",
+      "transitions": []
+    },
+    {
+      "active": false,
+      "last_success_unix": 1791162612,
+      "monotonic_ns": 1791163119000000000,
+      "observed_at_utc": "2026-10-05T01:18:39Z",
+      "pending": null,
+      "phase": "rollback",
+      "policy": "bounded_reviewed_qbo_only",
+      "policy_sha256": "519845cb3bee9cc46ec1997d605f38018da46a26aa418ff407f9eb3d03a599f4",
+      "process_envelope": {
+        "environments_read": false,
+        "mutex_or_task_actions": false,
+        "processes": [],
+        "read_only": true,
+        "status": "pass"
+      },
+      "scheduler_snapshot_sha256": "8478ac4a2c7bf970c14f168b44b5841302e06943e1c94a073d5a598b0ada9fd1",
+      "sequence": 2,
+      "status": "pass",
+      "task": "qbo:refresh-admin-cache",
+      "transitions": []
+    },
+    {
+      "active": false,
+      "last_success_unix": 1791162612,
+      "monotonic_ns": 1791163119000000000,
+      "observed_at_utc": "2026-10-05T01:18:39Z",
+      "pending": null,
+      "phase": "rollback",
+      "policy": "bounded_reviewed_qbo_only",
+      "policy_sha256": "519845cb3bee9cc46ec1997d605f38018da46a26aa418ff407f9eb3d03a599f4",
+      "process_envelope": {
+        "environments_read": false,
+        "mutex_or_task_actions": false,
+        "processes": [],
+        "read_only": true,
+        "status": "pass"
+      },
+      "scheduler_snapshot_sha256": "8478ac4a2c7bf970c14f168b44b5841302e06943e1c94a073d5a598b0ada9fd1",
+      "sequence": 3,
+      "status": "pass",
+      "task": "qbo:refresh-admin-cache",
+      "transitions": []
+    }
+  ],
+  "schema_state": "installed_schema_source_only_v1",
+  "separate_web_identity_all_passed": true,
+  "separate_web_identity_probe_count": 6,
+  "source_cas_sha256": "0ceca182384a8e68560ec542c0c2c0c695971b8488321ca0899ea7a880d6fd17",
+  "source_expectation": "expected-live",
+  "source_install_started": false,
+  "state_sha256": "4fd27251a207eafa7144c2b5f4f57500d22c27cefa0b016d388393f48e2332ee",
+  "status": "pass"
+}

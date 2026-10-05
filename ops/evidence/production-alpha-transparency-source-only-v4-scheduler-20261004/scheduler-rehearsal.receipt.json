@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "/usr/bin/python3",
+    "ops/deployment/rehearse_production_alpha_scheduler.py",
+    "--output",
+    "/mnt/c/Users/danie/projects/bdtf-alpha-sched-v4/ops/evidence/production-alpha-transparency-source-only-v4-scheduler-20261004/scheduler-rehearsal"
+  ],
+  "exit_code": 0,
+  "scope": "local disposable validation; no production access",
+  "status": "pass",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stdout_sha256": "6c7fe25f1fb2b43c0ddc4f5243c24ff5c6572828fb9997ede69dea08e78dde57"
+}

@@ -230,31 +230,8 @@ SQL, [$databaseName]),
         $queueCounts['failed_jobs'] = DB::connection($defaultConnection)->table('failed_jobs')->count();
     }
 
-    $schedule = app(Schedule::class);
-    $scheduledEvents = $schedule->events();
-    $stripePayoutEventCount = 0;
-    $overlapMutexes = [];
-    foreach ($scheduledEvents as $event) {
-        $command = isset($event->command) ? (string) $event->command : '';
-        if (str_contains($command, 'stripe:sync-payouts')) {
-            $stripePayoutEventCount++;
-        }
-        if (! ($event->withoutOverlapping ?? false)) {
-            continue;
-        }
-        $overlapMutexes[] = [
-            'command_sha256' => hash('sha256', $command),
-            'mutex_name_sha256' => hash('sha256', (string) $event->mutexName()),
-            'exists' => (bool) $event->mutex->exists($event),
-        ];
-    }
-    usort(
-        $overlapMutexes,
-        static fn (array $left, array $right): int => strcmp(
-            $left['mutex_name_sha256'],
-            $right['mutex_name_sha256'],
-        ),
-    );
+    require_once __DIR__.'/production_alpha_scheduler_probe.php';
+    $scheduler = alphaSchedulerSnapshot($realApplicationRoot);
 
     $allowedHosts = config('incoming_order.allowed_hosts', []);
     if (! is_array($allowedHosts)) {
@@ -262,7 +239,7 @@ SQL, [$databaseName]),
     }
 
     $result = [
-        'probe_version' => 3,
+        'probe_version' => 4,
         'artifact' => 'buy-dtf-production-alpha-transparency-runtime-probe-v1',
         'generated_at_utc' => gmdate('Y-m-d\TH:i:s\Z'),
         'application_root' => $realApplicationRoot,
@@ -326,15 +303,7 @@ SQL, [$databaseName]),
             'connection' => $queueConnection,
             'counts' => $queueCounts,
         ],
-        'scheduler' => [
-            'event_count' => count($scheduledEvents),
-            'stripe_payout_sync_event_count' => $stripePayoutEventCount,
-            'overlap_mutexes' => $overlapMutexes,
-            'active_overlap_mutex_count' => count(array_filter(
-                $overlapMutexes,
-                static fn (array $row): bool => $row['exists'],
-            )),
-        ],
+        'scheduler' => $scheduler,
     ];
 
     fwrite(STDOUT, json_encode(

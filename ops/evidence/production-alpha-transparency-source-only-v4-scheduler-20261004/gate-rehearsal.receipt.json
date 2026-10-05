@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "/usr/bin/python3",
+    "ops/deployment/rehearse_laravel_dependency_gate.py",
+    "--parent",
+    "/tmp",
+    "--output",
+    "/tmp/buydtf-source-scheduler-gate-xbdr3qrl/gate-rehearsal.json"
+  ],
+  "exit_code": 0,
+  "scope": "local disposable validation; no production access",
+  "status": "pass",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

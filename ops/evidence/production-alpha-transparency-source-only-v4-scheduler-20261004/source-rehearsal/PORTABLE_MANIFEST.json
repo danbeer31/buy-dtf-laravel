@@ -1,0 +1,66 @@
+{
+  "algorithm": "sort regular files by POSIX relative path; for each record store path, exact byte count, and lowercase SHA-256 of raw bytes; serialize as UTF-8 JSON with sorted keys, two-space indentation, and one LF",
+  "entries": [
+    {
+      "bytes": 10923,
+      "path": "candidate-check-failure-receipt.json",
+      "sha256": "2f0479f0a6c41ce3382c12cfd17f135227b66c8b60fd06794c54951736f41f5f"
+    },
+    {
+      "bytes": 13171,
+      "path": "genuine-log-failure-receipt.json",
+      "sha256": "76dfbac12754d580f3adf3afe1b5fbe0cb79e9ddc9ea9b4f28e15a052ef97f6a"
+    },
+    {
+      "bytes": 13171,
+      "path": "post-reopen-failure-receipt.json",
+      "sha256": "09dcc97dded5dfefef1b4c08e200711de73b3163a43da949ae600121f1bd5f4c"
+    },
+    {
+      "bytes": 13251,
+      "path": "post-source-fpm-unavailable-receipt.json",
+      "sha256": "a472e026d2504cd514b69e82bc6ab5f506efbb5bc9fb17cce7f1d8e29249f389"
+    },
+    {
+      "bytes": 15570,
+      "path": "post-source-gate-http-failure-receipt.json",
+      "sha256": "f83e42dc913afed7e3f64f26103ce69f6cd0478fc62dab6cb3649fbcca727b3e"
+    },
+    {
+      "bytes": 10623,
+      "path": "pre-source-failure-receipt.json",
+      "sha256": "5d373697651b6a6b9447ecacf5fca373afb1401d6a1022efc39bf8dbe39cbb3b"
+    },
+    {
+      "bytes": 12317,
+      "path": "recovery-with-normal-qbo-receipt.json",
+      "sha256": "6fdf3c5496a90d6d4fbc37b92a63e9ce4d7b48a7f31d8a10cbe5b491c9d0a734"
+    },
+    {
+      "bytes": 150803,
+      "path": "rehearsal-receipt.json",
+      "sha256": "6a7b2ca007f5302bb658e7add9e6b88f66cef510fb59dc8bacdfc9a5517b2ba8"
+    },
+    {
+      "bytes": 12315,
+      "path": "rollback-with-normal-qbo-receipt.json",
+      "sha256": "9aed61b05227010dc162547c3cc59a55ff913aacab796b9a267d3dff3969ddbb"
+    },
+    {
+      "bytes": 13241,
+      "path": "schema-preserving-rollback-receipt.json",
+      "sha256": "4fae0eaf923203c1849ab301cf9b1426e7e82d29c1b293c037177e6070ba24c4"
+    },
+    {
+      "bytes": 10891,
+      "path": "source-swap-failure-receipt.json",
+      "sha256": "0215c160f38c9eb74940c7a7f43e6a8d1bca4afbe51a6dca37b3590dbf1708f2"
+    },
+    {
+      "bytes": 6249,
+      "path": "success-receipt.json",
+      "sha256": "d45f7893ee1a9731a157e932d19bcfafc6ad3578921b19485c9b99cf160d8290"
+    }
+  ],
+  "entries_sha256": "7cb824044f77d7831d1c2f1763ea2fda4929c2a40d7a82a7229e0c06b84f0beb"
+}

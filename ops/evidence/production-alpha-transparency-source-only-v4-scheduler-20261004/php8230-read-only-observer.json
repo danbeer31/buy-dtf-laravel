@@ -1,0 +1,53 @@
+{
+    "status": "pass",
+    "php_version": "8.2.30",
+    "laravel_version": "12.69.1",
+    "events": [
+        {
+            "command_sha256": "3cd22110be8da68c9dda5888bc4a9738e92ef4d00165eaf2b7b622a5fa16b76d",
+            "expression": "30 1 * * *",
+            "timezone": "UTC",
+            "without_overlapping": false,
+            "expires_at_minutes": 1440,
+            "run_in_background": false,
+            "mutex_name_sha256": null
+        },
+        {
+            "command_sha256": "9c1994d1eee5d9480c167e2e69830044dc7c3d5b0868902652aa69ef48327f5a",
+            "expression": "0 * * * *",
+            "timezone": "UTC",
+            "without_overlapping": false,
+            "expires_at_minutes": 1440,
+            "run_in_background": false,
+            "mutex_name_sha256": null
+        },
+        {
+            "command_sha256": "b0ceedab8198c4ff653784c49990660d5a5f86048c433ce63530bc3e2cdea7cb",
+            "expression": "*/10 * * * *",
+            "timezone": "UTC",
+            "without_overlapping": true,
+            "expires_at_minutes": 15,
+            "run_in_background": true,
+            "mutex_name_sha256": "6f88e0a41564931449dadc6907377a34e3e909c8b8736f565f6c18e09a92e7c4"
+        }
+    ],
+    "source_sha256": {
+        "routes/console.php": "26aabb054889be1279c4c74c3e37c412e6de8a527864657b523fe983de03d444",
+        "app/Console/Commands/RefreshQboAdminSnapshots.php": "21b014cd459b284bdedda0d8aa6d489a65b85fb84a8525798875633ea484c224",
+        "app/Services/QboAdminSnapshotRefresher.php": "12c3a8bd07ec8218cb63e0b5f9d277dc8d9e7bb883d65f0ab913556509069ab2",
+        "app/Services/QboAdminSnapshotStore.php": "5162053198ca8f2bbc55759d1619f9c3a3be01df67d9b689e07d7e6e66c5ba21"
+    },
+    "active_mutex_read_only": true,
+    "expired_mutex_read_only": true,
+    "malformed_mutex_read_only_rejected": true,
+    "database_observer_select_only": true,
+    "database_select_count": 2,
+    "normalized_commands": [
+        "php artisan stripe:sync-payouts",
+        "php artisan accounting:reconcile-stripe-holding",
+        "php artisan qbo:refresh-admin-cache"
+    ],
+    "cookie_or_customer_data": false,
+    "accounting_task_executed": false,
+    "snapshot_owner_is_only_sha256": true
+}
