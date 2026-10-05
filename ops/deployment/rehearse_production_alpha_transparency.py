@@ -35,7 +35,7 @@ LOG_GUARD_PATH = ROOT / "ops/deployment/laravel_log_guard.py"
 LOG_FIXTURES = ROOT / "tests/Fixtures/Deployment/LaravelLogs"
 MANIFEST_PATH = (
     ROOT
-    / "ops/evidence/production-alpha-transparency-source-only-v4-scheduler-20261004/APPLICATION_MANIFEST.json"
+    / "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/APPLICATION_MANIFEST.json"
 )
 DEFAULT_ARCHIVE_PATH = (
     ROOT
@@ -66,6 +66,8 @@ SCENARIOS = (
     "post-source-gate-http-failure",
     "rollback-with-normal-qbo",
     "recovery-with-normal-qbo",
+    "rollback-with-qbo-startup",
+    "recovery-with-qbo-startup",
 )
 
 
@@ -139,15 +141,18 @@ def resolve_baseline_sources(
 
 
 def scheduler_snapshot(observed_at: str | None = None, *, active: bool = False,
-                       started_at: str | None = None, success_at: str | None = None) -> dict[str, Any]:
+                       started_at: str | None = None, success_at: str | None = None,
+                       startup: bool = False, attempt_at: str | None = None) -> dict[str, Any]:
     observed_at = observed_at or datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     observed = deploy.scheduler_controls.timestamp(observed_at, "fixture")
-    started = deploy.scheduler_controls.timestamp(started_at, "fixture") if started_at else observed - observed % 600
+    started = deploy.scheduler_controls.timestamp(started_at, "fixture") if started_at else observed - int(deploy.scheduler_controls.seconds_since_qbo_slot(observed))
     success = deploy.scheduler_controls.timestamp(success_at, "fixture") if success_at else (
         started + 12 if not active and observed >= started + 12 else started - 600 + 12)
     stamp = lambda value: datetime.fromtimestamp(value, timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     return {
-        "observer_version": 1, "read_only": True, "cache_driver": "file",
+        "observer_version": 2, "read_only": True, "cache_driver": "file",
+        "application_timezone": deploy.scheduler_controls.SCHEDULE_TIMEZONE,
+        "php_default_timezone": deploy.scheduler_controls.SCHEDULE_TIMEZONE,
         "source_sha256": deploy.scheduler_controls.SOURCE_SHA256.copy(),
         "events": deploy.scheduler_controls.expected_events(),
         "event_count": 3, "stripe_payout_sync_event_count": 1,
@@ -157,7 +162,7 @@ def scheduler_snapshot(observed_at: str | None = None, *, active: bool = False,
             "owner_sha256": "a" * 64 if active else None}],
         "active_overlap_mutex_count": int(active),
         "refresh_status": {"exists": True, "state": "ok",
-            "last_attempt_at": stamp(max(started, success) if active else success), "last_success_at": stamp(success),
+            "last_attempt_at": attempt_at or stamp(success if startup else max(started, success) if active else success), "last_success_at": stamp(success),
             "last_error_at": None, "last_error_present": False, "circuit_retry_at": None,
             "linked_businesses": 4, "updated_businesses": 4, "invoice_count": 10},
     }
@@ -386,13 +391,17 @@ def run_scenario(
         nonlocal runtime_sequence, rollback_observations
         runtime_sequence += 1
         current = copy.deepcopy(snapshot())
-        if scenario in {"rollback-with-normal-qbo", "recovery-with-normal-qbo"} and (name == "rollback-runtime-probe" or name.startswith("scheduler-rollback-followup")):
+        if scenario in {"rollback-with-normal-qbo", "recovery-with-normal-qbo", "rollback-with-qbo-startup", "recovery-with-qbo-startup"} and (name == "rollback-runtime-probe" or name.startswith("scheduler-rollback-followup")):
             rollback_observations += 1
-            observed = "2026-10-05T00:20:11Z" if rollback_observations == 1 else "2026-10-05T00:20:16Z"
+            startup_case = scenario.endswith("qbo-startup")
+            observed = ("2026-10-05T00:20:01Z" if rollback_observations == 1 else "2026-10-05T00:20:06Z" if rollback_observations == 2 else "2026-10-05T00:20:16Z") if startup_case else "2026-10-05T00:20:11Z" if rollback_observations == 1 else "2026-10-05T00:20:16Z"
+            active = rollback_observations <= (2 if startup_case else 1)
             current["generated_at_utc"] = observed
-            current["scheduler"] = scheduler_snapshot(observed, active=rollback_observations == 1,
+            current["scheduler"] = scheduler_snapshot(observed, active=active,
                 started_at="2026-10-05T00:20:00Z",
-                success_at=None if rollback_observations == 1 else "2026-10-05T00:20:12Z")
+                success_at=None if active else "2026-10-05T00:20:12Z",
+                startup=startup_case and rollback_observations == 1,
+                attempt_at="2026-10-05T00:20:05Z" if startup_case and rollback_observations == 2 else None)
         if scenario == "pre-source-failure" and name == "cutover-installed-schema-probe":
             current["schema"]["savedimages_item_meta"]["nonnull_rows"] = 1
         return current, {
@@ -528,9 +537,9 @@ def run_scenario(
         )
 
     def candidate_checks(_helper: Path, install_rows: list[dict[str, Any]], _directory: Path):
-        if scenario == "recovery-with-normal-qbo":
+        if scenario in {"recovery-with-normal-qbo", "recovery-with-qbo-startup"}:
             raise KeyboardInterrupt("rehearsed interruption after durable source installation")
-        if scenario in {"candidate-check-failure", "rollback-with-normal-qbo"}:
+        if scenario in {"candidate-check-failure", "rollback-with-normal-qbo", "rollback-with-qbo-startup"}:
             raise deploy.DeploymentError("rehearsed candidate-check failure")
         verification = deploy.validate_runtime_snapshot(snapshot())
         return {
@@ -689,7 +698,7 @@ def run_scenario(
                 }
                 final_receipt = None
             except KeyboardInterrupt as exception:
-                require(scenario == "recovery-with-normal-qbo", "Unexpected local interruption")
+                require(scenario in {"recovery-with-normal-qbo", "recovery-with-qbo-startup"}, "Unexpected local interruption")
                 interrupted_states = sorted(rollback.glob("*/state.json"))
                 require(len(interrupted_states) == 1, "Interrupted rehearsal lacks exact durable state")
                 # Authorized local rehearsal only; no CLI recovery or production.

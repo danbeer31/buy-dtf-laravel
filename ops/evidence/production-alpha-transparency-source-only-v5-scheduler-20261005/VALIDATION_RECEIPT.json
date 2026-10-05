@@ -1,0 +1,108 @@
+{
+  "accounting_tasks_executed": false,
+  "application_or_dependency_changes": false,
+  "cron_disabled": false,
+  "laravel_log_guard_sha256": "75921c4a9f1b9a21d710c7792900014eb517f2e936a97c82ff542dd3c208dd28",
+  "mutexes_cleared": false,
+  "production_accessed": false,
+  "receipts": {
+    "gate-rehearsal": {
+      "argv": [
+        "/usr/bin/python3",
+        "ops/deployment/rehearse_laravel_dependency_gate.py",
+        "--parent",
+        "/tmp",
+        "--output",
+        "/tmp/buydtf-source-scheduler-gate-jn081he2/gate-rehearsal.json"
+      ],
+      "exit_code": 0,
+      "scope": "local disposable validation; no production access",
+      "status": "pass",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "php8230-lint": {
+      "files": 3,
+      "status": "pass"
+    },
+    "php8230-writer-integration": {
+      "argv": [
+        "/mnt/c/tools/php8230/php.exe",
+        "C:\\Users\\danie\\projects\\bdtf-alpha-sched-v5\\ops\\deployment\\test_production_alpha_scheduler_probe.php",
+        "\\\\wsl.localhost\\Ubuntu\\tmp\\buydtf-alpha-v3-build-a-20261004-r3",
+        "C:\\Users\\danie\\AppData\\Local\\Temp\\buydtf-writer-8230-kt35r57x",
+        "C:\\Users\\danie\\projects\\bdtf-alpha-sched-v5"
+      ],
+      "exit_code": 0,
+      "scope": "local disposable validation; no production access",
+      "status": "pass",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "04d90ddde186aafb13eceecc176236041612ebef2cff98a0f30b9528c08995e1"
+    },
+    "python-tests": {
+      "argv": [
+        "/usr/bin/python3",
+        "-m",
+        "unittest",
+        "-v",
+        "test_production_alpha_scheduler",
+        "test_production_alpha_transparency_runner",
+        "test_production_alpha_gate_controls",
+        "test_production_alpha_nginx_inventory",
+        "test_laravel_log_guard",
+        "test_laravel_dependency_gate"
+      ],
+      "exit_code": 0,
+      "scope": "local disposable validation; no production access",
+      "status": "pass",
+      "stderr_sha256": "c0514d8bc0bb5baed0297a345616f99f39f1f6a48e30fe15d72468bb0259f5d2",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "real-writer-integration": {
+      "argv": [
+        "/usr/bin/php",
+        "ops/deployment/test_production_alpha_scheduler_probe.php",
+        "/tmp/buydtf-alpha-v3-build-a-20261004-r3",
+        "/tmp/buydtf-scheduler-writer-07vtgmb7",
+        "/mnt/c/Users/danie/projects/bdtf-alpha-sched-v5"
+      ],
+      "exit_code": 0,
+      "scope": "local disposable validation; no production access",
+      "status": "pass",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "ac72f60d29a8481ac236ab1abae11d47960c9fb75e1eb6a00f2f08c2aa5ba6a2"
+    },
+    "scheduler-rehearsal": {
+      "argv": [
+        "/usr/bin/python3",
+        "ops/deployment/rehearse_production_alpha_scheduler.py",
+        "--output",
+        "/mnt/c/Users/danie/projects/bdtf-alpha-sched-v5/ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/scheduler-rehearsal"
+      ],
+      "exit_code": 0,
+      "scope": "local disposable validation; no production access",
+      "status": "pass",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "b979f0e0999afeb4b69b40ee86264f1312f1e89eeb20c1e9bc2efb012284a8a5"
+    },
+    "source-rehearsal": {
+      "argv": [
+        "/usr/bin/python3",
+        "ops/deployment/rehearse_production_alpha_transparency.py",
+        "--portable-output",
+        "/mnt/c/Users/danie/projects/bdtf-alpha-sched-v5/ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/source-rehearsal"
+      ],
+      "exit_code": 0,
+      "scope": "local disposable validation; no production access",
+      "status": "pass",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "96b7c7071c86f15cfef3fc90c4a48a49a3493586b2939f6b6e1546135990f5e2"
+    }
+  },
+  "runner_sha256": "d3c1a26bb1081bb47149eb2b34787d747e56a4db4ef0eb4668f62e3baf231a3d",
+  "runtime_probe_sha256": "839588fe2930e1e673c507b05f7ccf15d7166329d66c1563775154cd7030d200",
+  "scheduler_guard_sha256": "70d694d6217928bf5d0def36a3fe4853662005f77b22f0fd7ac51c94904aca77",
+  "scheduler_probe_sha256": "91e81065a4add34e916674c2a7fcc3ebe5f867324ec350dc9220214102cf0d80",
+  "scope": "local operations-only correction",
+  "status": "pass"
+}

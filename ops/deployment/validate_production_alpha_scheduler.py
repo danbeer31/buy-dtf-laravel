@@ -9,7 +9,7 @@ import sys
 import tempfile
 
 ROOT = Path(__file__).resolve().parents[2]
-EVIDENCE = ROOT / "ops/evidence/production-alpha-transparency-source-only-v4-scheduler-20261004"
+EVIDENCE = ROOT / "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005"
 
 
 def sha(path):
@@ -44,6 +44,9 @@ def run():
     receipts["scheduler-rehearsal"] = command("scheduler-rehearsal", [sys.executable, "ops/deployment/rehearse_production_alpha_scheduler.py", "--output", str(EVIDENCE / "scheduler-rehearsal")])
     modules = ["test_production_alpha_scheduler", "test_production_alpha_transparency_runner", "test_production_alpha_gate_controls", "test_production_alpha_nginx_inventory", "test_laravel_log_guard", "test_laravel_dependency_gate"]
     receipts["python-tests"] = command("python-tests", [sys.executable, "-m", "unittest", "-v", *modules], ROOT / "ops/deployment")
+    with tempfile.TemporaryDirectory(prefix="buydtf-scheduler-writer-") as temporary:
+        receipts["real-writer-integration"] = command("real-writer-integration", ["/usr/bin/php", "ops/deployment/test_production_alpha_scheduler_probe.php", "/tmp/buydtf-alpha-v3-build-a-20261004-r3", temporary, str(ROOT)])
+        write(EVIDENCE / "real-writer-integration.json", json.loads((EVIDENCE / "real-writer-integration.stdout.txt").read_text()))
     with tempfile.TemporaryDirectory(prefix="buydtf-source-scheduler-gate-") as temporary:
         receipt_path = Path(temporary) / "gate-rehearsal.json"
         receipts["gate-rehearsal"] = command("gate-rehearsal", [sys.executable, "ops/deployment/rehearse_laravel_dependency_gate.py", "--parent", "/tmp", "--output", str(receipt_path)])
@@ -54,13 +57,20 @@ def run():
         raise RuntimeError("PHP 8.2.30 binary identity differs")
     lint = []
     for relative in ("ops/deployment/production_alpha_transparency_runtime_probe.php", "ops/deployment/production_alpha_scheduler_probe.php", "ops/deployment/test_production_alpha_scheduler_probe.php"):
-        windows_path = "C:\\Users\\danie\\projects\\bdtf-alpha-sched-v4\\" + relative.replace("/", "\\")
+        windows_path = subprocess.check_output(["wslpath", "-w", str(ROOT / relative)], text=True).strip()
         result = subprocess.run([str(native_php), "-l", windows_path], capture_output=True, text=True, timeout=30)
         if result.returncode: raise RuntimeError("PHP 8.2.30 lint failed")
         lint.append({"path": relative, "sha256": sha(ROOT / relative), "exit_code": result.returncode,
                      "stdout": result.stdout.strip(), "stderr_sha256": hashlib.sha256(result.stderr.encode()).hexdigest()})
     write(EVIDENCE / "php8230-operations-lint.json", {"status": "pass", "php_version": "8.2.30", "binary_sha256": sha(native_php), "files": lint})
     receipts["php8230-lint"] = {"status": "pass", "files": len(lint)}
+    with tempfile.TemporaryDirectory(prefix="buydtf-writer-8230-", dir="/mnt/c/Users/danie/AppData/Local/Temp") as temporary:
+        windows = lambda path: subprocess.check_output(["wslpath", "-w", str(path)], text=True).strip()
+        receipts["php8230-writer-integration"] = command("php8230-writer-integration", [str(native_php), windows(ROOT / "ops/deployment/test_production_alpha_scheduler_probe.php"), windows("/tmp/buydtf-alpha-v3-build-a-20261004-r3"), windows(temporary), windows(ROOT)])
+        proof = json.loads((EVIDENCE / "php8230-writer-integration.stdout.txt").read_text())
+        if proof["php_version"] != "8.2.30" or proof["status"] != "pass":
+            raise RuntimeError("Actual PHP 8.2.30 writer integration failed")
+        write(EVIDENCE / "php8230-read-only-writer.json", proof)
     write(EVIDENCE / "VALIDATION_RECEIPT.json", {"status": "pass", "scope": "local operations-only correction",
         "runner_sha256": sha(ROOT / "ops/deployment/production_alpha_transparency_deploy.py"),
         "scheduler_guard_sha256": sha(ROOT / "ops/deployment/production_alpha_scheduler_guard.py"),

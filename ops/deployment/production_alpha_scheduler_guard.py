@@ -15,6 +15,7 @@ from pathlib import Path
 import re
 import time
 from typing import Any
+from zoneinfo import ZoneInfo
 
 
 class SchedulerError(RuntimeError):
@@ -26,21 +27,28 @@ COMMAND_SHA256 = "5e5f803d8dcc65662d6a731cff510c28b61dece97d429bbf4f949099f7c9f5
 MUTEX_SHA256 = "a086c96c5fd6e5ba9e3e47ba418706400ad8928e2ea406688628a505d26b3eff"
 PERIOD_SECONDS = 600
 START_GRACE_SECONDS = 15
+STARTUP_SECONDS = 10
+STARTUP_POLL_SECONDS = 1
 MAX_ACTIVITY_SECONDS = 120
 MAX_OBSERVATION_GAP_SECONDS = 90
 RELEASE_GRACE_SECONDS = 5
 POLL_SECONDS = 5
 MUTEX_TTL_SECONDS = 900
+SCHEDULE_TIMEZONE = "America/Chicago"
+SCHEDULE_ZONE = ZoneInfo(SCHEDULE_TIMEZONE)
 POLICY = {
-    "artifact": "buy-dtf-source-scheduler-policy-v1",
+    "artifact": "buy-dtf-source-scheduler-policy-v2",
     "task": TASK,
     "command_sha256": COMMAND_SHA256,
     "mutex_name_sha256": MUTEX_SHA256,
     "expression": "*/10 * * * *",
-    "timezone": "UTC",
+    "timezone": SCHEDULE_TIMEZONE,
     "without_overlapping_minutes": 15,
     "run_in_background": True,
     "schedule_start_grace_seconds": START_GRACE_SECONDS,
+    "worker_startup_seconds": STARTUP_SECONDS,
+    "worker_startup_poll_seconds": STARTUP_POLL_SECONDS,
+    "timestamp_policy": "explicit RFC3339 offsets normalized to UTC; no naive or unknown offsets",
     "maximum_activity_seconds": MAX_ACTIVITY_SECONDS,
     "maximum_observation_gap_seconds": MAX_OBSERVATION_GAP_SECONDS,
     "completion_release_grace_seconds": RELEASE_GRACE_SECONDS,
@@ -73,12 +81,38 @@ def integer(value: Any, name: str) -> int:
 def timestamp(value: Any, name: str, *, nullable: bool = False) -> int | None:
     if nullable and value is None:
         return None
-    if not isinstance(value, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:Z|\+00:00)", value):
+    if not isinstance(value, str) or not re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\.[0-9]{1,6})?(?:Z|[+-](?:[01][0-9]|2[0-3]):[0-5][0-9])", value) or value.endswith("-00:00"):
         raise SchedulerError(f"Malformed scheduler {name} timestamp.")
     try:
-        return int(datetime.fromisoformat(value.replace("Z", "+00:00")).timestamp())
-    except ValueError as error:
+        return int(datetime.fromisoformat(value.replace("Z", "+00:00")).astimezone(timezone.utc).timestamp())
+    except (ValueError, OverflowError) as error:
         raise SchedulerError(f"Malformed scheduler {name} timestamp.") from error
+
+
+def schedule_local(epoch: int | float) -> datetime:
+    return datetime.fromtimestamp(epoch, timezone.utc).astimezone(SCHEDULE_ZONE)
+
+
+def seconds_since_qbo_slot(epoch: int | float) -> float:
+    at = schedule_local(epoch)
+    return (at.minute % 10) * 60 + at.second + at.microsecond / 1e6
+
+
+def due_commands(epoch: int | float) -> list[str]:
+    """The frozen event inventory evaluated in the actual IANA timezone.
+
+    Convert an absolute instant to local time, preserving both DST folds. Never
+    attach Chicago to a naive wall clock or assume a fixed UTC offset.
+    """
+    at = schedule_local(epoch)
+    due = []
+    if at.minute == 0:
+        due.append("stripe:sync-payouts")
+    if at.hour == 1 and at.minute == 30:
+        due.append("accounting:reconcile-stripe-holding")
+    if at.minute % 10 == 0:
+        due.append(TASK)
+    return due
 
 
 def expected_events() -> list[dict[str, Any]]:
@@ -90,7 +124,7 @@ def expected_events() -> list[dict[str, Any]]:
     ):
         events.append({
             "command_sha256": hashlib.sha256(f"'/usr/bin/php8.2' 'artisan' {command}".encode()).hexdigest(),
-            "expression": expression, "timezone": "UTC",
+            "expression": expression, "timezone": SCHEDULE_TIMEZONE,
             "without_overlapping": overlaps, "expires_at_minutes": 15 if overlaps else 1440,
             "run_in_background": background,
             "mutex_name_sha256": MUTEX_SHA256 if overlaps else None,
@@ -100,8 +134,10 @@ def expected_events() -> list[dict[str, Any]]:
 
 def validate_identity(payload: dict[str, Any]) -> dict[str, Any]:
     scheduler = payload.get("scheduler")
-    if not isinstance(scheduler, dict) or type(scheduler.get("observer_version")) is not int or scheduler.get("observer_version") != 1:
+    if not isinstance(scheduler, dict) or type(scheduler.get("observer_version")) is not int or scheduler.get("observer_version") != 2:
         raise SchedulerError("Scheduler read-only observer identity is unavailable.")
+    if scheduler.get("application_timezone") != SCHEDULE_TIMEZONE or scheduler.get("php_default_timezone") != SCHEDULE_TIMEZONE:
+        raise SchedulerError("Application or PHP schedule timezone differs from baseline.")
     if scheduler.get("source_sha256") != SOURCE_SHA256 or not isinstance(scheduler.get("events"), list) or digest(scheduler["events"]) != digest(expected_events()):
         raise SchedulerError("Scheduled command identity, source, or schedule differs from baseline.")
     if type(scheduler.get("event_count")) is not int or scheduler["event_count"] != 3 or type(scheduler.get("stripe_payout_sync_event_count")) is not int or scheduler.get("stripe_payout_sync_event_count") != 1:
@@ -151,7 +187,7 @@ def require_idle(payload: dict[str, Any]) -> dict[str, Any]:
 
 def identity_sha256(payload: dict[str, Any]) -> str:
     row = validate_identity(payload)["scheduler"]
-    return digest({key: row[key] for key in ("observer_version", "read_only", "cache_driver", "source_sha256", "events", "event_count", "stripe_payout_sync_event_count")})
+    return digest({key: row[key] for key in ("observer_version", "read_only", "cache_driver", "application_timezone", "php_default_timezone", "source_sha256", "events", "event_count", "stripe_payout_sync_event_count")})
 
 
 def process_envelope(payload: dict[str, Any], application_root: Path, *,
@@ -198,8 +234,14 @@ def process_envelope(payload: dict[str, Any], application_root: Path, *,
             started = now - age
             role = None
             if argv[2:] == [TASK]:
-                if argv[0] != POLICY["php_executable"] or int(started) % PERIOD_SECONDS > START_GRACE_SECONDS:
+                if argv[0] != POLICY["php_executable"]:
                     raise SchedulerError("QBO process is not from its reviewed schedule slot.")
+                if row["mutex"]["exists"]:
+                    acquired = row["mutex"]["expires_at_unix"] - MUTEX_TTL_SECONDS
+                    if seconds_since_qbo_slot(acquired) > START_GRACE_SECONDS or not acquired - 2 <= started <= acquired + STARTUP_SECONDS:
+                        raise SchedulerError("QBO worker launch does not match its bounded mutex startup.")
+                elif seconds_since_qbo_slot(started) > START_GRACE_SECONDS + STARTUP_SECONDS:
+                    raise SchedulerError("QBO finishing worker started outside its reviewed startup window.")
                 if not row["mutex"]["exists"] and row["observed"] - row["success"] > RELEASE_GRACE_SECONDS:
                     raise SchedulerError("QBO process has no matching mutex or fresh completion.")
                 role = "reviewed_qbo_worker"
@@ -209,8 +251,7 @@ def process_envelope(payload: dict[str, Any], application_root: Path, *,
                     raise SchedulerError("QBO finish process lacks fresh successful completion.")
                 role = "reviewed_qbo_successful_finish"
             elif argv[2:] == ["schedule:run"]:
-                at = datetime.fromtimestamp(row["observed"], timezone.utc)
-                if age > RELEASE_GRACE_SECONDS or at.minute % 10 or at.second > START_GRACE_SECONDS or at.minute == 0 or (at.hour == 1 and at.minute == 30):
+                if age > RELEASE_GRACE_SECONDS or seconds_since_qbo_slot(started) > START_GRACE_SECONDS or due_commands(started) != [TASK]:
                     raise SchedulerError("Scheduler dispatcher includes unapproved due work or is stale.")
                 role = "reviewed_qbo_only_dispatcher"
             else:
@@ -238,18 +279,20 @@ def observe(payload: dict[str, Any], previous: dict[str, Any] | None, *, phase: 
     if abs(now - row["observed"]) > 30:
         raise SchedulerError("Stale scheduler runtime observation.")
     if previous is None:
-        previous = {"artifact": "buy-dtf-source-scheduler-state-v1", "policy_sha256": POLICY_SHA256,
+        previous = {"artifact": "buy-dtf-source-scheduler-state-v2", "policy_sha256": POLICY_SHA256,
                     "cache_driver": row["scheduler"]["cache_driver"],
                     "last_monotonic_ns": tick, "last_observed_unix": row["observed"],
-                    "last_success_unix": row["success"], "pending": None, "sequence": 0}
-    if not isinstance(previous, dict) or previous.get("artifact") != "buy-dtf-source-scheduler-state-v1" or previous.get("policy_sha256") != POLICY_SHA256:
+                    "last_success_unix": row["success"], "last_attempt_unix": row["attempt"],
+                    "pending": None, "sequence": 0}
+    if not isinstance(previous, dict) or previous.get("artifact") != "buy-dtf-source-scheduler-state-v2" or previous.get("policy_sha256") != POLICY_SHA256:
         raise SchedulerError("Missing or malformed frozen scheduler state.")
     if previous.get("cache_driver") != row["scheduler"]["cache_driver"]:
         raise SchedulerError("Scheduler cache identity changed or is missing.")
     old_tick = integer(previous.get("last_monotonic_ns"), "monotonic state")
     old_success = integer(previous.get("last_success_unix"), "success state")
+    old_attempt = integer(previous.get("last_attempt_unix"), "attempt state")
     old_observed = integer(previous.get("last_observed_unix"), "wall state")
-    if tick < old_tick or row["observed"] < old_observed or row["success"] < old_success:
+    if tick < old_tick or row["observed"] < old_observed or row["success"] < old_success or row["attempt"] < old_attempt:
         raise SchedulerError("Scheduler clock or status regressed.")
     if abs((row["observed"] - old_observed) - (tick - old_tick) / 1e9) > 5:
         raise SchedulerError("Scheduler wall/monotonic clock continuity was lost.")
@@ -258,46 +301,102 @@ def observe(payload: dict[str, Any], previous: dict[str, Any] | None, *, phase: 
     pending = previous.get("pending")
     transitions = []
     if pending is not None:
-        if not isinstance(pending, dict) or set(pending) != {"identity_sha256", "started_unix", "first_monotonic_ns"}:
+        if not isinstance(pending, dict) or set(pending) != {"identity_sha256", "started_unix", "first_monotonic_ns", "startup_deadline_monotonic_ns", "stage", "attempt_recorded_unix", "completion_unix"}:
             raise SchedulerError("Malformed pending scheduler state.")
-        integer(pending["started_unix"], "pending start")
+        pending_start = integer(pending["started_unix"], "pending start")
         if not isinstance(pending["identity_sha256"], str) or not re.fullmatch(r"[0-9a-f]{64}", pending["identity_sha256"]):
             raise SchedulerError("Malformed pending scheduler identity.")
         first_tick = integer(pending["first_monotonic_ns"], "pending monotonic start")
         if tick < first_tick or (tick - first_tick) / 1e9 > MAX_ACTIVITY_SECONDS:
             raise SchedulerError("QBO scheduled refresh is stuck (monotonic bound).")
+        deadline = integer(pending["startup_deadline_monotonic_ns"], "startup deadline")
+        if not first_tick <= deadline <= first_tick + STARTUP_SECONDS * 10**9 or pending["stage"] not in {"startup", "running", "completing"}:
+            raise SchedulerError("Malformed durable scheduler startup transition.")
+        attempt_recorded = pending["attempt_recorded_unix"]
+        completion = pending["completion_unix"]
+        if attempt_recorded is not None and not pending_start <= integer(attempt_recorded, "recorded attempt") <= pending_start + STARTUP_SECONDS:
+            raise SchedulerError("Malformed durable scheduler attempt transition.")
+        if completion is not None and not pending_start <= integer(completion, "recorded completion") <= pending_start + MAX_ACTIVITY_SECONDS:
+            raise SchedulerError("Malformed durable scheduler completion transition.")
+        if ((pending["stage"] == "startup" and (attempt_recorded is not None or completion is not None))
+            or (pending["stage"] == "running" and (attempt_recorded is None or completion is not None))
+            or (pending["stage"] == "completing" and completion is None)):
+            raise SchedulerError("Malformed durable scheduler progress state.")
     mutex = row["mutex"]
     if mutex["exists"]:
         started = mutex["expires_at_unix"] - MUTEX_TTL_SECONDS
         age = row["observed"] - started
         identity = digest({"owner": mutex["owner_sha256"], "expires": mutex["expires_at_unix"]})
-        if started % PERIOD_SECONDS > START_GRACE_SECONDS or age > MAX_ACTIVITY_SECONDS:
+        if seconds_since_qbo_slot(started) > START_GRACE_SECONDS or age > MAX_ACTIVITY_SECONDS:
             raise SchedulerError("QBO overlap mutex is unscheduled, stale, or stuck.")
-        if not started - 2 <= row["attempt"] <= row["observed"] + 2:
-            raise SchedulerError("QBO mutex has no matching refresh attempt.")
         if row["success"] >= started and row["observed"] - row["success"] > RELEASE_GRACE_SECONDS:
             raise SchedulerError("QBO refresh succeeded but its mutex is stuck.")
         if pending is not None and pending["identity_sha256"] != identity:
             raise SchedulerError("QBO mutex changed before verified task completion.")
         if pending is None:
-            pending = {"identity_sha256": identity, "started_unix": started, "first_monotonic_ns": tick}
+            pending = {"identity_sha256": identity, "started_unix": started, "first_monotonic_ns": tick,
+                       "startup_deadline_monotonic_ns": tick + max(0, STARTUP_SECONDS - age) * 10**9,
+                       "stage": None, "attempt_recorded_unix": None, "completion_unix": None}
             transitions.append("acquired")
+        prior_stage = pending["stage"]
+        if row["attempt"] < started:
+            # Laravel acquires the mutex before the worker can call markAttempt.
+            # Admit only the previous healthy completion for a fixed ten seconds
+            # from that acquisition, never ten new seconds from a later sample.
+            if row["attempt"] != row["success"] or prior_stage in {"running", "completing"}:
+                raise SchedulerError("QBO startup has an orphaned or regressed refresh attempt.")
+            if age > STARTUP_SECONDS or tick > pending["startup_deadline_monotonic_ns"]:
+                raise SchedulerError("QBO startup did not record timely progress.")
+            if prior_stage == "startup" and (row["attempt"] != old_attempt or row["success"] != old_success):
+                raise SchedulerError("Previous QBO status changed during startup.")
+            if prior_stage is None:
+                transitions.append("startup")
+            pending["stage"] = "startup"
+        elif row["success"] >= started and row["attempt"] == row["success"]:
+            if row["success"] > started + MAX_ACTIVITY_SECONDS:
+                raise SchedulerError("QBO completion exceeded its activity bound.")
+            if prior_stage == "startup":
+                if row["success"] > started + STARTUP_SECONDS:
+                    raise SchedulerError("QBO startup completed without timely observed progress.")
+                pending["attempt_recorded_unix"] = row["success"]
+                transitions.append("startup_progress_confirmed")
+            if prior_stage == "completing" and pending["completion_unix"] != row["success"]:
+                raise SchedulerError("QBO completion changed before its mutex was released.")
+            if prior_stage != "completing":
+                transitions.append("success_recorded")
+            pending["stage"] = "completing"
+            pending["completion_unix"] = row["success"]
+        else:
+            if row["attempt"] > started + STARTUP_SECONDS or prior_stage == "completing":
+                raise SchedulerError("QBO worker did not make timely startup progress.")
+            if pending["attempt_recorded_unix"] is not None and pending["attempt_recorded_unix"] != row["attempt"]:
+                raise SchedulerError("QBO worker recorded an unexpected additional attempt.")
+            if prior_stage == "startup":
+                transitions.append("startup_progress_confirmed")
+            pending["stage"] = "running"
+            pending["attempt_recorded_unix"] = row["attempt"]
     else:
         if row["attempt"] != row["success"]:
             raise SchedulerError("QBO refresh attempt is orphaned or failed without a mutex.")
         if pending is not None:
             if not pending["started_unix"] <= row["success"] <= pending["started_unix"] + MAX_ACTIVITY_SECONDS:
                 raise SchedulerError("QBO mutex cleared without bounded successful completion.")
+            if pending["stage"] == "startup":
+                if row["success"] > pending["started_unix"] + STARTUP_SECONDS:
+                    raise SchedulerError("QBO startup mutex cleared without timely progress.")
+                transitions.append("startup_progress_confirmed")
+            if pending["completion_unix"] is not None and pending["completion_unix"] != row["success"]:
+                raise SchedulerError("QBO completion changed during mutex release.")
             transitions.extend(["completed", "released"])
             pending = None
         elif row["success"] > old_success:
-            if row["success"] % PERIOD_SECONDS > START_GRACE_SECONDS + MAX_ACTIVITY_SECONDS:
+            if seconds_since_qbo_slot(row["success"]) > START_GRACE_SECONDS + MAX_ACTIVITY_SECONDS:
                 raise SchedulerError("Unscheduled QBO refresh completion between observations.")
             transitions.append("completed_between_samples")
     current = {"artifact": previous["artifact"], "policy_sha256": POLICY_SHA256,
                "cache_driver": row["scheduler"]["cache_driver"],
                "last_monotonic_ns": tick, "last_observed_unix": row["observed"],
-               "last_success_unix": row["success"], "pending": pending,
+               "last_success_unix": row["success"], "last_attempt_unix": row["attempt"], "pending": pending,
                "sequence": integer(previous.get("sequence"), "sequence") + 1}
     receipt = {"status": "pass", "phase": phase, "policy": "bounded_reviewed_qbo_only",
                "policy_sha256": POLICY_SHA256, "task": TASK, "active": mutex["exists"],

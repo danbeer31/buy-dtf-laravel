@@ -1,0 +1,110 @@
+{
+  "accounting_tasks_executed": false,
+  "application_manifest_sha256": "613dd2a7ff5e0d51bc6a006c435dfbffa627668f256b8d5f6adac0f61a6d32ce",
+  "application_member_count": 11,
+  "application_member_definitions_unchanged": true,
+  "base_commit": "8678872c337f1e1c56347a16329b4d0a212281ce",
+  "candidate_archive_sha256": "3067bca578201a39254d8544b633a04ff6a9e43fc0de2a2783a95ccde9a1bfcd",
+  "frozen_control_sha256s": {
+    "laravel_dependency_gate.py": "b93c08f58a08333120369c1cc75c60631d621c3a8099ca3967065721c45679f5",
+    "laravel_fpm_opcache_probe.php": "b8b34f87d45a0c000cc0df7917496631320cfbdcca1ff44bc41741ce0d569262",
+    "laravel_nginx_identity.py": "1243fea2757aca89f586ec4b322b0d23ee1e19b2d027c21bd6523e71e6e6e8e0",
+    "production_alpha_dependency_envelope.json": "04850fe3aef14981c92f5b2af373bd136cfb6fead456d86fcab7233acb009fd1",
+    "production_alpha_gate_controls.py": "2719da67c6d425e5fa4bef70aade0789aba1deccfaf09f8992c8674883c65c00",
+    "production_alpha_scheduler_guard.py": "70d694d6217928bf5d0def36a3fe4853662005f77b22f0fd7ac51c94904aca77",
+    "production_alpha_scheduler_probe.php": "91e81065a4add34e916674c2a7fcc3ebe5f867324ec350dc9220214102cf0d80"
+  },
+  "laravel_log_guard_sha256": "75921c4a9f1b9a21d710c7792900014eb517f2e936a97c82ff542dd3c208dd28",
+  "preserved_local_autoload": {
+    "entries": 126,
+    "files": {
+      "autoload_classmap.php": {
+        "entries": 126,
+        "sha256": "5236a6ef5a0803719a2cb9b24d525946342063421aac9c6bec3914f1a9d9d893"
+      },
+      "autoload_static.php": {
+        "entries": 126,
+        "sha256": "1e82d08d78ebc0936284cf10cd7aca90b1753e0b7868627b2dda13bb67e54dc5"
+      }
+    },
+    "sha256": "342f417d353f8742f116898d307c34a2677e0a1cb0f814f3e8088f0bb2be1a91"
+  },
+  "preserved_local_cache": {
+    "bytes": 21768,
+    "directories": 0,
+    "files": 2,
+    "sha256": "468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9"
+  },
+  "preserved_local_vendor": {
+    "directory_mode": 509,
+    "executable_allowlist_sha256": "551df886bc842a49ea87d8d9bb0cfe3478e3cc5eeea841c83409e8349d120154",
+    "executable_file_mode": 509,
+    "executable_files": 10,
+    "gid": 1000,
+    "manifest": {
+      "bytes": 26481661,
+      "directories": 925,
+      "files": 6460,
+      "sha256": "7df0a101ceb0386b72ec4cfc71f2be8576fc5a5d4b777d11c05e5b7f1ed770d8"
+    },
+    "metadata_sha256": "db8aba0a4f49d0cecaeaac0b5b742c5f94b1a514a8d4452c361cb61e2dbacf0d",
+    "ordinary_file_mode": 436,
+    "ordinary_files": 6450,
+    "root_metadata": {
+      "gid": 1000,
+      "kind": "directory",
+      "mode": 509,
+      "uid": 1000
+    },
+    "total_bytes": 26481661,
+    "uid": 1000
+  },
+  "preserved_lock_sha256": "77055fc8acf891496b0b356bb034d7935c04989a3751f52b788ecd1b7999206d",
+  "production_accessed": false,
+  "retired_release_receipt_sha256s": [
+    "15271bdf4a33a85f247bbcaba45cb115b1beed429dd6bc48349fbe4a84bc7eee",
+    "5621e1aad4c25bbffa5fad0f858358458595491b6a83c28ec8fc543aa6dd3f2d"
+  ],
+  "retired_runner_sha256s": [
+    "25da4ddef0b4eb088cdedadf4848b1286a389760942493717e52d00f02c014df",
+    "59bbd90cafa8d1b5efd56a6c40667924193e37539f4340e4b6163c6274425cab",
+    "76cfff204e86ee1119251b1d79931b1219cd19704b099f75d4e3db202ffe5b17",
+    "880d6ec6cb1ca5cee95964cf48843384afbaaeb73e835d03850e32de92aa21ab"
+  ],
+  "runner_sha256": "d3c1a26bb1081bb47149eb2b34787d747e56a4db4ef0eb4668f62e3baf231a3d",
+  "runtime_probe_sha256": "839588fe2930e1e673c507b05f7ccf15d7166329d66c1563775154cd7030d200",
+  "scheduler_guard_sha256": "70d694d6217928bf5d0def36a3fe4853662005f77b22f0fd7ac51c94904aca77",
+  "scheduler_policy": {
+    "active_poll_seconds": 5,
+    "artifact": "buy-dtf-source-scheduler-policy-v2",
+    "command_sha256": "5e5f803d8dcc65662d6a731cff510c28b61dece97d429bbf4f949099f7c9f5fd",
+    "completion_release_grace_seconds": 5,
+    "dispatcher_php_argv0_allowlist": [
+      "/usr/bin/php8.2",
+      "/usr/bin/php",
+      "php8.2",
+      "php"
+    ],
+    "expression": "*/10 * * * *",
+    "maximum_activity_seconds": 120,
+    "maximum_observation_gap_seconds": 90,
+    "mutex_name_sha256": "a086c96c5fd6e5ba9e3e47ba418706400ad8928e2ea406688628a505d26b3eff",
+    "php_executable": "/usr/bin/php8.2",
+    "run_in_background": true,
+    "schedule_start_grace_seconds": 15,
+    "site_process_uids": [
+      33,
+      1000
+    ],
+    "task": "qbo:refresh-admin-cache",
+    "timestamp_policy": "explicit RFC3339 offsets normalized to UTC; no naive or unknown offsets",
+    "timezone": "America/Chicago",
+    "without_overlapping_minutes": 15,
+    "worker_startup_poll_seconds": 1,
+    "worker_startup_seconds": 10
+  },
+  "scheduler_policy_sha256": "f60753a47a2cb088798126a550a7a4261bc1b35487a7fcdbc5ebaab3d17d83a3",
+  "scheduler_probe_sha256": "91e81065a4add34e916674c2a7fcc3ebe5f867324ec350dc9220214102cf0d80",
+  "scope": "local operations-only; no fresh production verification",
+  "status": "pass"
+}

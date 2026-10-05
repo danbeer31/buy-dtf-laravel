@@ -1,0 +1,329 @@
+{
+  "artifact": "buy-dtf-source-scheduler-local-review-v5",
+  "base_commit": "8678872c337f1e1c56347a16329b4d0a212281ce",
+  "entries": [
+    {
+      "bytes": 12981,
+      "path": "ops/PRODUCTION_ALPHA_TRANSPARENCY_SCHEDULER_CORRECTION_PLAN_2026-10-05.md",
+      "sha256": "033be15da17b711d1d5201e2a159c163995792cd21f9b83f3c2d2a7b63a8d7d3"
+    },
+    {
+      "bytes": 7974,
+      "path": "ops/deployment/build_production_alpha_scheduler_evidence.py",
+      "sha256": "f6eb183e05d3413d9bc712f38b009af80748d4c2a62909b893330e266dcffd2e"
+    },
+    {
+      "bytes": 69829,
+      "path": "ops/deployment/laravel_dependency_gate.py",
+      "sha256": "b93c08f58a08333120369c1cc75c60631d621c3a8099ca3967065721c45679f5"
+    },
+    {
+      "bytes": 3480,
+      "path": "ops/deployment/laravel_fpm_opcache_probe.php",
+      "sha256": "b8b34f87d45a0c000cc0df7917496631320cfbdcca1ff44bc41741ce0d569262"
+    },
+    {
+      "bytes": 12007,
+      "path": "ops/deployment/laravel_log_guard.py",
+      "sha256": "75921c4a9f1b9a21d710c7792900014eb517f2e936a97c82ff542dd3c208dd28"
+    },
+    {
+      "bytes": 37980,
+      "path": "ops/deployment/laravel_nginx_identity.py",
+      "sha256": "1243fea2757aca89f586ec4b322b0d23ee1e19b2d027c21bd6523e71e6e6e8e0"
+    },
+    {
+      "bytes": 16542,
+      "path": "ops/deployment/production_alpha_dependency_envelope.json",
+      "sha256": "04850fe3aef14981c92f5b2af373bd136cfb6fead456d86fcab7233acb009fd1"
+    },
+    {
+      "bytes": 39363,
+      "path": "ops/deployment/production_alpha_gate_controls.py",
+      "sha256": "2719da67c6d425e5fa4bef70aade0789aba1deccfaf09f8992c8674883c65c00"
+    },
+    {
+      "bytes": 25554,
+      "path": "ops/deployment/production_alpha_scheduler_guard.py",
+      "sha256": "70d694d6217928bf5d0def36a3fe4853662005f77b22f0fd7ac51c94904aca77"
+    },
+    {
+      "bytes": 10443,
+      "path": "ops/deployment/production_alpha_scheduler_probe.php",
+      "sha256": "91e81065a4add34e916674c2a7fcc3ebe5f867324ec350dc9220214102cf0d80"
+    },
+    {
+      "bytes": 157311,
+      "path": "ops/deployment/production_alpha_transparency_deploy.py",
+      "sha256": "d3c1a26bb1081bb47149eb2b34787d747e56a4db4ef0eb4668f62e3baf231a3d"
+    },
+    {
+      "bytes": 14398,
+      "path": "ops/deployment/production_alpha_transparency_runtime_probe.php",
+      "sha256": "839588fe2930e1e673c507b05f7ccf15d7166329d66c1563775154cd7030d200"
+    },
+    {
+      "bytes": 12100,
+      "path": "ops/deployment/rehearse_production_alpha_scheduler.py",
+      "sha256": "545991c4b1a9534822c9ee177839e70aabc1e457014f3f9102655c0612a0c948"
+    },
+    {
+      "bytes": 43761,
+      "path": "ops/deployment/rehearse_production_alpha_transparency.py",
+      "sha256": "5d17e62e3e7e9ba8d08ffe0ee1cdff118a0721e2f3d22b73e0927192ecb6ed77"
+    },
+    {
+      "bytes": 17274,
+      "path": "ops/deployment/test_production_alpha_nginx_inventory.py",
+      "sha256": "e7f72ccd7e38b901b6a43d8a432e2d6cc9a2d30ee6f87b572d0526743fa95b54"
+    },
+    {
+      "bytes": 32853,
+      "path": "ops/deployment/test_production_alpha_scheduler.py",
+      "sha256": "cda31a84bfda02bd9e139b3be0b12b5e0c91d970767a08b1778191f63e40cbfb"
+    },
+    {
+      "bytes": 10801,
+      "path": "ops/deployment/test_production_alpha_scheduler_probe.php",
+      "sha256": "b60f550fbefd22969fbc98e9e9400ddcf7468fc18eebde73d57ba45ef588f099"
+    },
+    {
+      "bytes": 39090,
+      "path": "ops/deployment/test_production_alpha_transparency_runner.py",
+      "sha256": "524137e3b0347fcc4bd0f5c16525f88e902e276ff7940939312653a62ba421a8"
+    },
+    {
+      "bytes": 6212,
+      "path": "ops/deployment/validate_production_alpha_scheduler.py",
+      "sha256": "15c633ec2f54613d4dc9b177580849071e03431890a451ae220d3e3fa559b512"
+    },
+    {
+      "bytes": 9377,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/APPLICATION_MANIFEST.json",
+      "sha256": "613dd2a7ff5e0d51bc6a006c435dfbffa627668f256b8d5f6adac0f61a6d32ce"
+    },
+    {
+      "bytes": 5992,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/CHANGED_PATHS.txt",
+      "sha256": "f9ea80f6d3020044495686f1b660b7ae2eadd398d6422f38a2ceb4f9eb2087b1"
+    },
+    {
+      "bytes": 8647,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/LOCAL_SCOPE_RECEIPT.json",
+      "sha256": "f38f2d0b8c435d4713a3b0c36abaebea946d109624240f3071dc26277e7eccc2"
+    },
+    {
+      "bytes": 6293,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/REVIEW_HANDOFF.txt",
+      "sha256": "b8bb19e1bceffedd15f530381449abda146f000a3cfce13cc475f06c21ed5635"
+    },
+    {
+      "bytes": 4664,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/VALIDATION_RECEIPT.json",
+      "sha256": "e91551cdc9b145f88c8acc5b83351eabae9834a2ee309a6f4f1539a9dfdcf835"
+    },
+    {
+      "bytes": 4860,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/artifact-identities.json",
+      "sha256": "b4b060daf30ded9e85b6bf725ed89966a19e855f38a720ad9731498dff8a5103"
+    },
+    {
+      "bytes": 491,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/gate-rehearsal.receipt.json",
+      "sha256": "1b30306bd71a76fee376d42f5e34996bb0d316cd3536f88b6765a089d33477c0"
+    },
+    {
+      "bytes": 0,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/gate-rehearsal.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 0,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/gate-rehearsal.stdout.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 147283,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/gate-transition-rehearsal.json",
+      "sha256": "0d2cb886c348b9215917474968b3aad95b04fd1cf946fddb08ffc96accdaecdb"
+    },
+    {
+      "bytes": 1473,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/php8230-operations-lint.json",
+      "sha256": "657456c3688e38d7f546fe4c7137162214fabfa65ce63c43d9b9f1d3f2e2c0f1"
+    },
+    {
+      "bytes": 33555,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/php8230-read-only-writer.json",
+      "sha256": "db76b6704deb4c649247c526fbae78ad1b06b36e0dbcee4567c41aa138dda5a1"
+    },
+    {
+      "bytes": 651,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/php8230-writer-integration.receipt.json",
+      "sha256": "2d3ea6413fa8c07d34dc3b56db6748a8728c0ec54566a6b15412ecd9f5dd7e7f"
+    },
+    {
+      "bytes": 0,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/php8230-writer-integration.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 41581,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/php8230-writer-integration.stdout.txt",
+      "sha256": "04d90ddde186aafb13eceecc176236041612ebef2cff98a0f30b9528c08995e1"
+    },
+    {
+      "bytes": 597,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/python-tests.receipt.json",
+      "sha256": "a363ffc5a1c91d441b28f6b9c4eddf03baf6ece607211f467fddc9cc45a7b100"
+    },
+    {
+      "bytes": 20512,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/python-tests.stderr.txt",
+      "sha256": "c0514d8bc0bb5baed0297a345616f99f39f1f6a48e30fe15d72468bb0259f5d2"
+    },
+    {
+      "bytes": 0,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/python-tests.stdout.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 33554,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/real-writer-integration.json",
+      "sha256": "9812673a3cc31add0080a94e72d3d6da4398bb01a65fc547df78af58a2c96da2"
+    },
+    {
+      "bytes": 527,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/real-writer-integration.receipt.json",
+      "sha256": "5aedac67fdebcee7c5aea512eadf3ec71ec4484e5d5d03152554591129586400"
+    },
+    {
+      "bytes": 0,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/real-writer-integration.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 41580,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/real-writer-integration.stdout.txt",
+      "sha256": "ac72f60d29a8481ac236ab1abae11d47960c9fb75e1eb6a00f2f08c2aa5ba6a2"
+    },
+    {
+      "bytes": 1031,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/sample-19.redacted.json",
+      "sha256": "4539be0fd444b8b1121a68474e58e33c8a544d44930170ad10b91365ca6afa45"
+    },
+    {
+      "bytes": 548,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/scheduler-rehearsal.receipt.json",
+      "sha256": "17af481f6adbeb9ecc11c516c49e58218f0d6d998276ea6a3721a9d7b592fac3"
+    },
+    {
+      "bytes": 0,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/scheduler-rehearsal.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 130,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/scheduler-rehearsal.stdout.txt",
+      "sha256": "b979f0e0999afeb4b69b40ee86264f1312f1e89eeb20c1e9bc2efb012284a8a5"
+    },
+    {
+      "bytes": 1077123,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/scheduler-rehearsal/scheduler-rehearsal-receipt.json",
+      "sha256": "653b2b9f561069c7fa579bf7e590c7ba963aad491f51b8295e7d40d92076540b"
+    },
+    {
+      "bytes": 557,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/source-rehearsal.receipt.json",
+      "sha256": "da27db706852e6452d9ed4e9c702edf7033f65e1fab8ad514fcafb79ec399378"
+    },
+    {
+      "bytes": 0,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/source-rehearsal.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 723,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/source-rehearsal.stdout.txt",
+      "sha256": "96b7c7071c86f15cfef3fc90c4a48a49a3493586b2939f6b6e1546135990f5e2"
+    },
+    {
+      "bytes": 2709,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/source-rehearsal/PORTABLE_MANIFEST.json",
+      "sha256": "c918e44d982afe5ae107be0c885e2b183dc84a23031b3799b9a522a395ed174c"
+    },
+    {
+      "bytes": 10923,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/source-rehearsal/candidate-check-failure-receipt.json",
+      "sha256": "b16f732fa42286e922975135b675d11f5748a0da864c1f6709ab4db519dfcaf7"
+    },
+    {
+      "bytes": 13171,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/source-rehearsal/genuine-log-failure-receipt.json",
+      "sha256": "af5209624a50d741400fe14a55d7bc19eeb47c736739cc7ad43cbe69da62a83c"
+    },
+    {
+      "bytes": 13171,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/source-rehearsal/post-reopen-failure-receipt.json",
+      "sha256": "a306c4dd8196110f9ffd892c62e1a9ac72b1afc6bb90db7c1ac39675903cf2f3"
+    },
+    {
+      "bytes": 13251,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/source-rehearsal/post-source-fpm-unavailable-receipt.json",
+      "sha256": "f9cf2b09024410ec5c927526b96764a782dc8f65d388d007e88fb7e85ee618e8"
+    },
+    {
+      "bytes": 15570,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/source-rehearsal/post-source-gate-http-failure-receipt.json",
+      "sha256": "bc192af3939f4762b3231501612c0b6435aaa31ce84cee4f414e096583830082"
+    },
+    {
+      "bytes": 10623,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/source-rehearsal/pre-source-failure-receipt.json",
+      "sha256": "5b9c590efb8e2f8fe0ed6b524c3c4f5c10cae6ad002f8c896cc4e743bb79895f"
+    },
+    {
+      "bytes": 12821,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/source-rehearsal/recovery-with-normal-qbo-receipt.json",
+      "sha256": "995d0b1df25688f74f67468919c46099fc5c6cbd0d3a0b7a2bbbd29e3994ec0c"
+    },
+    {
+      "bytes": 13983,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/source-rehearsal/recovery-with-qbo-startup-receipt.json",
+      "sha256": "3772550d1d15100546154846c5d954ea3f009a651436d2d19fcbd54593ddca8f"
+    },
+    {
+      "bytes": 182965,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/source-rehearsal/rehearsal-receipt.json",
+      "sha256": "8352226f8413b15edbb6f04ede03d74ca0233f07e710ea1be7f7eebd48717cf8"
+    },
+    {
+      "bytes": 12819,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/source-rehearsal/rollback-with-normal-qbo-receipt.json",
+      "sha256": "da65a5d7b0ed3ea36fe070f474c6bacc11a3c30e77faefefab88095988a82e7e"
+    },
+    {
+      "bytes": 13981,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/source-rehearsal/rollback-with-qbo-startup-receipt.json",
+      "sha256": "24b7a45347930511ab2aaaa6595cd34d6098fb8a7e1fc3c5f78f28cae4f1e5f9"
+    },
+    {
+      "bytes": 13241,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/source-rehearsal/schema-preserving-rollback-receipt.json",
+      "sha256": "06725596d050f04891e749881720d1c691a6ca4d7a29cb873027f760ade06c0d"
+    },
+    {
+      "bytes": 10891,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/source-rehearsal/source-swap-failure-receipt.json",
+      "sha256": "c548541b86e32c54cc74da6e141258756d7806b8673dcc3ae64d08679f3a45d5"
+    },
+    {
+      "bytes": 6249,
+      "path": "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/source-rehearsal/success-receipt.json",
+      "sha256": "0c0da2b2c62e0915a640300386943021a7816a32f3e77cd4ae28592a61d55303"
+    }
+  ],
+  "production_accessed": false,
+  "raw_logs_headers_cookies_customer_data_included": false,
+  "status": "local_review_only_no_deployment_authority"
+}

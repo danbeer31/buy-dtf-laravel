@@ -57,7 +57,7 @@ TARGET_SHORT = TARGET_COMMIT[:8]
 HANDOFF_SHA256 = "ba9fd4dcf5fa5854b2e23418e0cd6ed8799874494a0341c726302b92a5acc127"
 RETIRED_ARTIFACT_COMMIT = "c43f39f556d057c99bb01e95ee7ca68658c05232"
 EXPECTED_ARCHIVE_SHA256 = "3067bca578201a39254d8544b633a04ff6a9e43fc0de2a2783a95ccde9a1bfcd"
-EXPECTED_MANIFEST_SHA256 = "79d6d646ca785dcc63afa6ebf09652386b2bf927f89fbd9399310bdddef86d92"
+EXPECTED_MANIFEST_SHA256 = "613dd2a7ff5e0d51bc6a006c435dfbffa627668f256b8d5f6adac0f61a6d32ce"
 EXPECTED_HELPER_SHA256 = "839588fe2930e1e673c507b05f7ccf15d7166329d66c1563775154cd7030d200"
 EXPECTED_MIGRATION_SHA256 = "992fbfe8086732e9bde10be89c3f52ddb4fef49edfdec12b744377c2e4181bbf"
 MIGRATION_RELATIVE_PATH = Path(
@@ -92,6 +92,7 @@ RETIRED_RUNNER_SHA256S = frozenset(
         "59bbd90cafa8d1b5efd56a6c40667924193e37539f4340e4b6163c6274425cab",
         "76cfff204e86ee1119251b1d79931b1219cd19704b099f75d4e3db202ffe5b17",
         "25da4ddef0b4eb088cdedadf4848b1286a389760942493717e52d00f02c014df",
+        "880d6ec6cb1ca5cee95964cf48843384afbaaeb73e835d03850e32de92aa21ab",
     }
 )
 RETIRED_RELEASE_RECEIPT_SHA256S = frozenset(
@@ -121,11 +122,11 @@ EXPECTED_FRONT_CONTROLLER_SHA256 = "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26
 DEPENDENCY_ENVELOPE_FROZEN = True
 DEPENDENCY_ENVELOPE_STATUS = "post_laravel_12_69_1_frozen_review_required"
 
-STAGE_APPROVAL_TOKEN = f"STAGE-BUYDTF-ALPHA-V4-{TARGET_COMMIT[:16]}"
-DEPLOY_APPROVAL_TOKEN = f"DEPLOY-BUYDTF-ALPHA-V4-{TARGET_COMMIT[:16]}"
-RECOVERY_APPROVAL_TOKEN = f"RECOVER-BUYDTF-ALPHA-V4-{TARGET_COMMIT[:16]}"
+STAGE_APPROVAL_TOKEN = f"STAGE-BUYDTF-ALPHA-V5-{TARGET_COMMIT[:16]}"
+DEPLOY_APPROVAL_TOKEN = f"DEPLOY-BUYDTF-ALPHA-V5-{TARGET_COMMIT[:16]}"
+RECOVERY_APPROVAL_TOKEN = f"RECOVER-BUYDTF-ALPHA-V5-{TARGET_COMMIT[:16]}"
 
-CONTROL_FILES = {'production_alpha_scheduler_guard.py': 'b48f00f683b8573d2b3d987513f330470bd3db9521a02ef0f67d8cf4c9803d47', 'production_alpha_scheduler_probe.php': '486971039318d754397a6a3677d9e51f51113f647b2e6d469064c714ea9cf0af', 'production_alpha_gate_controls.py': '2719da67c6d425e5fa4bef70aade0789aba1deccfaf09f8992c8674883c65c00', 'production_alpha_dependency_envelope.json': '04850fe3aef14981c92f5b2af373bd136cfb6fead456d86fcab7233acb009fd1', 'laravel_dependency_gate.py': 'b93c08f58a08333120369c1cc75c60631d621c3a8099ca3967065721c45679f5', 'laravel_nginx_identity.py': '1243fea2757aca89f586ec4b322b0d23ee1e19b2d027c21bd6523e71e6e6e8e0', 'laravel_fpm_opcache_probe.php': 'b8b34f87d45a0c000cc0df7917496631320cfbdcca1ff44bc41741ce0d569262'}
+CONTROL_FILES = {'production_alpha_scheduler_guard.py': '70d694d6217928bf5d0def36a3fe4853662005f77b22f0fd7ac51c94904aca77', 'production_alpha_scheduler_probe.php': '91e81065a4add34e916674c2a7fcc3ebe5f867324ec350dc9220214102cf0d80', 'production_alpha_gate_controls.py': '2719da67c6d425e5fa4bef70aade0789aba1deccfaf09f8992c8674883c65c00', 'production_alpha_dependency_envelope.json': '04850fe3aef14981c92f5b2af373bd136cfb6fead456d86fcab7233acb009fd1', 'laravel_dependency_gate.py': 'b93c08f58a08333120369c1cc75c60631d621c3a8099ca3967065721c45679f5', 'laravel_nginx_identity.py': '1243fea2757aca89f586ec4b322b0d23ee1e19b2d027c21bd6523e71e6e6e8e0', 'laravel_fpm_opcache_probe.php': 'b8b34f87d45a0c000cc0df7917496631320cfbdcca1ff44bc41741ce0d569262'}
 
 DRAIN_SECONDS = 65
 OPCACHE_WAIT_SECONDS = 7
@@ -2365,7 +2366,9 @@ def settle_scheduler_activity(
     verification = validate_runtime_snapshot(runtime, scheduler_guard=scheduler_guard,
                                              scheduler_phase=phase)
     while verification["scheduler_verification"]["active"]:
-        time.sleep(scheduler_controls.POLL_SECONDS)
+        pending = verification["scheduler_verification"]["pending"]
+        delay = scheduler_controls.STARTUP_POLL_SECONDS if pending["stage"] == "startup" else scheduler_controls.POLL_SECONDS
+        time.sleep(delay)
         if log_checkpoint is not None:
             log_checkpoint = verify_log_continuity(log_checkpoint)
         runtime, command = runtime_probe(helper, state_directory,
@@ -3279,7 +3282,7 @@ def recover_state(
 
 def describe() -> dict[str, Any]:
     return {
-        "artifact": "BuyDTF production-alpha transparency source-only deployment runner v4 scheduler correction",
+        "artifact": "BuyDTF production-alpha transparency source-only deployment runner v5 timezone/startup correction",
         "scheduler_policy": scheduler_controls.POLICY,
         "scheduler_policy_sha256": scheduler_controls.POLICY_SHA256,
         "target_application_commit": TARGET_COMMIT,

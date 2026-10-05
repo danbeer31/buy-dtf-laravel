@@ -1,0 +1,10 @@
+{
+  "portable_entries": 14,
+  "portable_manifest": "/mnt/c/Users/danie/projects/bdtf-alpha-sched-v5/ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/source-rehearsal/PORTABLE_MANIFEST.json",
+  "portable_manifest_sha256": "c918e44d982afe5ae107be0c885e2b183dc84a23031b3799b9a522a395ed174c",
+  "portable_receipt": "/mnt/c/Users/danie/projects/bdtf-alpha-sched-v5/ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/source-rehearsal/rehearsal-receipt.json",
+  "portable_receipt_sha256": "8352226f8413b15edbb6f04ede03d74ca0233f07e710ea1be7f7eebd48717cf8",
+  "private_rehearsal_directory": "/tmp/buy-dtf-alpha-rehearsal-ljf3gkkg",
+  "scenario_count": 13,
+  "status": "pass"
+}

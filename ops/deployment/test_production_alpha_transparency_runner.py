@@ -22,11 +22,11 @@ LOG_GUARD_PATH = ROOT / "ops/deployment/laravel_log_guard.py"
 FIXTURES = ROOT / "tests/Fixtures/Deployment/LaravelLogs"
 MANIFEST_PATH = (
     ROOT
-    / "ops/evidence/production-alpha-transparency-source-only-v4-scheduler-20261004"
+    / "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005"
     / "APPLICATION_MANIFEST.json"
 )
 REHEARSAL_RECEIPT_PATH = (
-    ROOT / "ops/evidence/production-alpha-transparency-source-only-v4-scheduler-20261004/source-rehearsal/rehearsal-receipt.json"
+    ROOT / "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/source-rehearsal/rehearsal-receipt.json"
 )
 
 
@@ -806,6 +806,8 @@ class ProductionAlphaRunnerTest(unittest.TestCase):
                 "post-source-gate-http-failure",
                 "rollback-with-normal-qbo",
                 "recovery-with-normal-qbo",
+                "rollback-with-qbo-startup",
+                "recovery-with-qbo-startup",
             ),
         )
         source = REHEARSAL_PATH.read_text("utf-8")

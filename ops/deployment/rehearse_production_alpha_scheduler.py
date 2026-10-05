@@ -20,7 +20,11 @@ import rehearse_production_alpha_transparency as source_rehearsal
 
 SCENARIOS = ("sample-19-normal-completion", "post-open-normal-completion", "monitor-close-normal-completion", "unexpected-mutex", "stuck-task", "task-failure",
              "orphaned-completion", "malformed-status", "unscheduled-task", "health-failure",
-             "queue-failure", "schema-drift", "source-drift", "dependency-drift", "log-continuity-loss")
+             "queue-failure", "schema-drift", "source-drift", "dependency-drift", "log-continuity-loss",
+             "monitor-startup-normal", "post-open-startup", "monitor-close-startup", "winter-monitor-startup",
+             "startup-never-progress", "startup-late-progress", "startup-orphaned", "startup-failure")
+SUCCESSFUL = {"sample-19-normal-completion", "post-open-normal-completion", "monitor-close-normal-completion",
+              "monitor-startup-normal", "post-open-startup", "monitor-close-startup", "winter-monitor-startup"}
 BASE = int(datetime(2026, 10, 5, 0, 2, 8, tzinfo=timezone.utc).timestamp())
 
 
@@ -28,6 +32,9 @@ def run_case(scenario: str, directory: Path) -> dict:
     directory.mkdir(mode=0o700)
     clock = [0]
     base = int(datetime(2026, 10, 5, 0, 20, 8, tzinfo=timezone.utc).timestamp()) if scenario == "post-open-normal-completion" else int(datetime(2026, 10, 5, 0, 9, 57, tzinfo=timezone.utc).timestamp()) if scenario == "monitor-close-normal-completion" else BASE
+    startup_case = "startup" in scenario
+    if startup_case:
+        base = int(datetime(2026, 10, 5, 0, 20, 0, tzinfo=timezone.utc).timestamp()) if scenario == "post-open-startup" else int(datetime(2026, 10, 5, 0, 9, 57, tzinfo=timezone.utc).timestamp()) if scenario == "monitor-close-startup" else int(datetime(2026, 12, 10, 7, 2, 0, tzinfo=timezone.utc).timestamp()) if scenario == "winter-monitor-startup" else int(datetime(2026, 10, 5, 0, 2, 0, tzinfo=timezone.utc).timestamp())
     probes = []
     phases = {"monitor": False}
     checks = {key: 0 for key in ("health", "capability", "source", "configuration", "dependency", "continuity")}
@@ -42,13 +49,30 @@ def run_case(scenario: str, directory: Path) -> dict:
         payload = source_rehearsal.runtime_snapshot()
         payload["generated_at_utc"] = stamp(now)
         start = base - 8 if scenario == "post-open-normal-completion" else base + 3 + 1800 if scenario == "monitor-close-normal-completion" else base + 18 * 60 - 8
-        observed_active = (phases["monitor"] or scenario == "post-open-normal-completion") and start <= now < start + 16
+        if startup_case:
+            start = base if scenario == "post-open-startup" else base + 3 + 1800 if scenario == "monitor-close-startup" else base + 18 * 60
+        observed_active = (phases["monitor"] or scenario in {"post-open-normal-completion", "post-open-startup"}) and start <= now < start + 16
         if scenario == "stuck-task" and phases["monitor"] and now >= start:
             observed_active = True
+        if scenario == "startup-never-progress" and phases["monitor"] and now >= start:
+            observed_active = True
+        if scenario == "startup-orphaned" and now >= start + 8:
+            observed_active = False
         success = start + 12 if now >= start + 16 and observed_active is False else None
         payload["scheduler"] = source_rehearsal.scheduler_snapshot(stamp(now), active=observed_active,
             started_at=stamp(start) if observed_active else None,
             success_at=stamp(success) if success is not None and now < start + 600 else None)
+        if startup_case and observed_active:
+            progress_at = start + (11 if scenario == "startup-late-progress" else 5)
+            awaiting = now < progress_at or scenario == "startup-never-progress"
+            payload["scheduler"] = source_rehearsal.scheduler_snapshot(stamp(now), active=True,
+                started_at=stamp(start), startup=awaiting, attempt_at=None if awaiting else stamp(progress_at))
+            if now >= start + 12 and scenario not in {"startup-never-progress", "startup-late-progress"}:
+                payload["scheduler"]["refresh_status"].update(last_attempt_at=stamp(start + 12), last_success_at=stamp(start + 12))
+        if scenario == "startup-orphaned" and phases["monitor"] and now >= start + 8:
+            payload["scheduler"]["refresh_status"].update(last_attempt_at=stamp(start - 588), last_success_at=stamp(start - 588))
+        if scenario == "startup-failure" and phases["monitor"] and now >= start + 5:
+            payload["scheduler"]["refresh_status"].update(state="error", last_error_present=True)
         if phases["monitor"] and now >= start:
             scheduler = payload["scheduler"]
             if scenario == "unexpected-mutex": scheduler["overlap_mutexes"][0]["mutex_name_sha256"] = "0" * 64
@@ -98,7 +122,7 @@ def run_case(scenario: str, directory: Path) -> dict:
             result = deploy.monitor_production(Path("local-helper.php"), [], directory, checkpoint)
         except deploy.DeploymentError as error:
             failure = {"type": type(error).__name__, "reason": str(error)}
-    successful = scenario in {"sample-19-normal-completion", "post-open-normal-completion", "monitor-close-normal-completion"}
+    successful = scenario in SUCCESSFUL
     if successful != (result is not None):
         raise RuntimeError(f"Unexpected rehearsal outcome for {scenario}: {failure}")
     observations = [json.loads(path.read_text()) for path in sorted(directory.glob("scheduler-observation-*.json"))]
@@ -108,6 +132,11 @@ def run_case(scenario: str, directory: Path) -> dict:
         assert "acquired" in transitions and "completed" in transitions and "released" in transitions
         assert clock[0] >= 1800 * 10**9
         assert observations[-1]["active"] is False
+        if startup_case:
+            assert "startup" in transitions and "startup_progress_confirmed" in transitions
+            startup_observations = [row for row in observations if row["pending"] and row["pending"]["stage"] == "startup"]
+            assert len(startup_observations) >= 2
+            assert any((later["monotonic_ns"] - earlier["monotonic_ns"]) == 10**9 for earlier, later in zip(startup_observations, startup_observations[1:]))
     return {"status": "pass", "scenario": scenario, "expected_failure": not successful,
         "failure": failure, "post_open_verified": bool(post_open["runtime_verification"]),
         "samples_completed": result["samples"] if result else len(json.loads((directory / "monitoring-samples.json").read_text())) if (directory / "monitoring-samples.json").exists() else 0,

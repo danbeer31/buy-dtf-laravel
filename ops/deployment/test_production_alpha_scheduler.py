@@ -15,13 +15,13 @@ from test_production_alpha_transparency_runner import deploy, rehearsal, ROOT
 
 controls = deploy.scheduler_controls
 REAL_OBSERVE = controls.observe
-FIXTURE = ROOT / "ops/evidence/production-alpha-transparency-source-only-v4-scheduler-20261004/sample-19.redacted.json"
+FIXTURE = ROOT / "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/sample-19.redacted.json"
 
 
-def snapshot(at="2026-10-05T00:20:11Z", *, active=True, start="2026-10-05T00:20:00Z", success=None):
+def snapshot(at="2026-10-05T00:20:11Z", *, active=True, start="2026-10-05T00:20:00Z", success=None, startup=False, attempt=None):
     payload = rehearsal.runtime_snapshot()
     payload["generated_at_utc"] = at
-    payload["scheduler"] = rehearsal.scheduler_snapshot(at, active=active, started_at=start, success_at=success)
+    payload["scheduler"] = rehearsal.scheduler_snapshot(at, active=active, started_at=start, success_at=success, startup=startup, attempt_at=attempt)
     return payload
 
 
@@ -64,7 +64,9 @@ class SchedulerPolicyTests(unittest.TestCase):
             lambda s: s.update(event_count=4),
             lambda s: s.update(stripe_payout_sync_event_count=0),
             lambda s: s["events"][0].update(expression="* * * * *"),
-            lambda s: s["events"][0].update(timezone="America/Chicago"),
+            lambda s: s["events"][0].update(timezone="UTC"),
+            lambda s: s.update(application_timezone="UTC"),
+            lambda s: s.update(php_default_timezone="UTC"),
             lambda s: s["events"][0].update(command_sha256="0" * 64),
             lambda s: s["events"][0].update(run_in_background=True),
             lambda s: s["source_sha256"].update({"routes/console.php": "0" * 64}),
@@ -119,7 +121,7 @@ class SchedulerPolicyTests(unittest.TestCase):
     def test_mutex_release_needs_success_and_success_needs_prompt_release(self):
         state, _ = step(snapshot())
         cleared = snapshot("2026-10-05T00:20:16Z", active=False, success="2026-10-05T00:10:12Z")
-        with self.assertRaisesRegex(controls.SchedulerError, "without bounded successful"):
+        with self.assertRaisesRegex(controls.SchedulerError, "without bounded successful|status regressed"):
             step(cleared, state)
         stuck = snapshot("2026-10-05T00:20:18Z", success="2026-10-05T00:20:12Z")
         with self.assertRaisesRegex(controls.SchedulerError, "mutex is stuck"):
@@ -250,6 +252,127 @@ class SchedulerPolicyTests(unittest.TestCase):
         qbo = [row for row in receipt["events"] if row["without_overlapping"]][0]
         self.assertEqual(qbo["mutex_name_sha256"], controls.MUTEX_SHA256)
         self.assertEqual(qbo["expression"], controls.POLICY["expression"])
+        self.assertEqual(qbo["timezone"], "America/Chicago")
+        self.assertEqual(receipt["real_writer_class"], "App\\Services\\QboAdminSnapshotStore")
+        self.assertEqual(receipt["real_writer_sha256"], controls.SOURCE_SHA256["app/Services/QboAdminSnapshotStore.php"])
+        for label, rows in receipt["lifecycles"].items():
+            with self.subTest(real_writer_lifecycle=label):
+                expected_offset = "-05:00" if label in {"summer", "fall_first_fold"} else "-06:00"
+                state = None
+                for row in rows:
+                    self.assertTrue(row["raw_writer_last_attempt_at"].endswith(expected_offset))
+                    self.assertTrue(row["raw_writer_last_success_at"].endswith(expected_offset))
+                    self.assertTrue(row["observer_cache_unchanged"])
+                    payload = rehearsal.runtime_snapshot()
+                    payload["generated_at_utc"] = row["generated_at_utc"]
+                    scheduler = copy.deepcopy(row["scheduler"])
+                    # WSL PHP is 8.3, while the frozen production command uses
+                    # 8.2. Project only that tested binary path in this local
+                    # fixture; source, real mutex, timezone and writer/cache
+                    # lifecycle facts must match without any projection.
+                    expected = {e["expression"]: e for e in controls.expected_events()}
+                    for event in scheduler["events"]:
+                        projected = {**event, "command_sha256": expected[event["expression"]]["command_sha256"]}
+                        self.assertEqual(projected, expected[event["expression"]])
+                        event["command_sha256"] = projected["command_sha256"]
+                    scheduler["events"].sort(key=lambda e: e["command_sha256"])
+                    scheduler["overlap_mutexes"][0]["command_sha256"] = controls.COMMAND_SHA256
+                    self.assertEqual(scheduler["overlap_mutexes"][0]["mutex_name_sha256"], controls.MUTEX_SHA256)
+                    payload["scheduler"] = scheduler
+                    if row["phase"] == "startup":
+                        with self.assertRaises(controls.SchedulerError): controls.require_idle(payload)
+                    state, observation = step(payload, state)
+                    if row["phase"] == "startup":
+                        self.assertEqual(state["pending"]["stage"], "startup")
+                        self.assertEqual(observation["transitions"], ["acquired", "startup"])
+                    if row["phase"] == "running":
+                        self.assertEqual(state["pending"]["stage"], "running")
+                        self.assertIn("startup_progress_confirmed", observation["transitions"])
+                self.assertIsNone(state["pending"])
+                self.assertEqual(observation["transitions"], ["completed", "released"])
+        for row in receipt["laravel_due_cases"]:
+            self.assertEqual(controls.due_commands(controls.timestamp(row["at_utc"], "test")), row["due_commands"])
+        self.assertEqual(receipt["timestamp_cases"]["2026-10-04T19:20:12-05:00"], "2026-10-05T00:20:12Z")
+        self.assertEqual(receipt["timestamp_cases"]["2026-12-10T01:20:12-06:00"], "2026-12-10T07:20:12Z")
+        self.assertGreaterEqual(receipt["invalid_timestamp_cases_rejected"], 9)
+        failure = rehearsal.runtime_snapshot()
+        failure["scheduler"] = copy.deepcopy(receipt["writer_failure"])
+        expected = {e["expression"]: e for e in controls.expected_events()}
+        for event in failure["scheduler"]["events"]:
+            event["command_sha256"] = expected[event["expression"]]["command_sha256"]
+        failure["scheduler"]["events"].sort(key=lambda e: e["command_sha256"])
+        failure["scheduler"]["overlap_mutexes"][0]["command_sha256"] = controls.COMMAND_SHA256
+        with self.assertRaisesRegex(controls.SchedulerError, "failing or deferred"): controls.validate_identity(failure)
+
+    def test_explicit_offset_timestamp_normalization_and_strict_calendar(self):
+        self.assertEqual(controls.timestamp("2026-10-04T19:20:12-05:00", "test"), controls.timestamp("2026-10-05T00:20:12Z", "test"))
+        self.assertEqual(controls.timestamp("2026-12-10T01:20:12-06:00", "test"), controls.timestamp("2026-12-10T07:20:12Z", "test"))
+        self.assertEqual(controls.timestamp("2026-10-05T09:20:12+09:00", "test"), controls.timestamp("2026-10-05T00:20:12.123456Z", "test"))
+        for value in ("2026-02-30T19:20:12-05:00", "2026-10-04T25:20:12-05:00", "2026-10-04T19:20:12-05:99",
+                      "2026-10-04T19:20:12-24:00", "2026-10-04T19:20:12", "2026-10-04T19:20:12-00:00",
+                      "2026-10-04T19:20:12.1234567Z", "0000-01-01T00:00:00Z", "2026-10-04T19:20:12-05:00 trailing"):
+            with self.subTest(value=value), self.assertRaises(controls.SchedulerError): controls.timestamp(value, "test")
+        payload = snapshot()
+        payload["scheduler"]["refresh_status"]["last_attempt_at"] = "2026-10-04T19:20:00-05:00"
+        payload["scheduler"]["refresh_status"]["last_success_at"] = "2026-10-04T19:10:12-05:00"
+        self.assertTrue(step(payload)[1]["active"])
+
+    def test_chicago_due_windows_include_both_dst_folds_and_spring_gap(self):
+        cases = {"2026-07-10T06:30:01Z": ["accounting:reconcile-stripe-holding", controls.TASK],
+            "2026-12-10T07:30:01Z": ["accounting:reconcile-stripe-holding", controls.TASK],
+            "2026-11-01T06:30:01Z": ["accounting:reconcile-stripe-holding", controls.TASK],
+            "2026-11-01T07:30:01Z": ["accounting:reconcile-stripe-holding", controls.TASK],
+            "2026-03-08T07:30:01Z": ["accounting:reconcile-stripe-holding", controls.TASK],
+            "2026-03-08T08:30:01Z": [controls.TASK],
+            "2026-07-10T07:00:01Z": ["stripe:sync-payouts", controls.TASK]}
+        for at, expected in cases.items():
+            self.assertEqual(controls.due_commands(controls.timestamp(at, "test")), expected)
+        first = controls.schedule_local(controls.timestamp("2026-11-01T06:30:01Z", "test"))
+        second = controls.schedule_local(controls.timestamp("2026-11-01T07:30:01Z", "test"))
+        self.assertEqual((first.hour, second.hour, first.fold, second.fold), (1, 1, 0, 1))
+
+    def test_mutex_before_mark_attempt_is_durable_and_bounded_in_every_post_open_phase(self):
+        for phase in ("post_open", "monitor", "rollback", "recovery"):
+            startup = snapshot("2026-10-05T00:20:01Z", startup=True)
+            with self.assertRaises(controls.SchedulerError): controls.require_idle(startup)
+            state, receipt = step(startup, phase=phase)
+            deadline = state["pending"]["startup_deadline_monotonic_ns"]
+            self.assertEqual(receipt["transitions"], ["acquired", "startup"])
+            state, _ = step(snapshot("2026-10-05T00:20:06Z", startup=True), json.loads(json.dumps(state)), phase=phase)
+            self.assertEqual(deadline, state["pending"]["startup_deadline_monotonic_ns"])
+            running = snapshot("2026-10-05T00:20:09Z", attempt="2026-10-05T00:20:08Z")
+            state, receipt = step(running, state, phase=phase)
+            self.assertEqual(state["pending"]["stage"], "running")
+            self.assertIn("startup_progress_confirmed", receipt["transitions"])
+            state, receipt = step(snapshot("2026-10-05T00:20:16Z", active=False, success="2026-10-05T00:20:12Z"), state, phase=phase)
+            self.assertIsNone(state["pending"])
+            self.assertEqual(receipt["transitions"], ["completed", "released"])
+
+    def test_startup_timeout_late_progress_orphan_failure_and_regression_fail_closed(self):
+        startup = snapshot("2026-10-05T00:20:01Z", startup=True)
+        state, _ = step(startup)
+        late = snapshot("2026-10-05T00:20:11Z", startup=True)
+        for previous in (None, state, json.loads(json.dumps(state))):
+            with self.assertRaisesRegex(controls.SchedulerError, "startup.*timely"):
+                step(late, previous, phase="recovery")
+        for payload in (snapshot("2026-10-05T00:20:11Z", attempt="2026-10-05T00:20:11Z"),
+                        snapshot("2026-10-05T00:20:16Z", active=False, success="2026-10-05T00:20:12Z"),
+                        snapshot("2026-10-05T00:20:06Z", active=False, success="2026-10-05T00:10:12Z")):
+            with self.assertRaises(controls.SchedulerError): step(payload, state)
+        failed = copy.deepcopy(startup); failed["scheduler"]["refresh_status"].update(state="error", last_error_present=True)
+        with self.assertRaises(controls.SchedulerError): step(failed, state)
+        changed = copy.deepcopy(startup); changed["scheduler"]["overlap_mutexes"][0]["owner_sha256"] = "b" * 64
+        with self.assertRaises(controls.SchedulerError): step(changed, state)
+        malformed = copy.deepcopy(state); malformed["pending"]["startup_deadline_monotonic_ns"] += 20 * 10**9
+        with self.assertRaises(controls.SchedulerError): step(startup, malformed)
+        running_state, _ = step(snapshot("2026-10-05T00:20:06Z", attempt="2026-10-05T00:20:05Z"), state)
+        with self.assertRaises(controls.SchedulerError): step(snapshot("2026-10-05T00:20:07Z", startup=True), running_state)
+
+    def test_fast_startup_completion_requires_success_within_fixed_startup_bound(self):
+        state, _ = step(snapshot("2026-10-05T00:20:01Z", startup=True))
+        state, receipt = step(snapshot("2026-10-05T00:20:09Z", active=False, success="2026-10-05T00:20:08Z"), state)
+        self.assertIsNone(state["pending"])
+        self.assertEqual(receipt["transitions"], ["startup_progress_confirmed", "completed", "released"])
 
     def test_scoped_process_envelope_allows_only_exact_bounded_qbo_work(self):
         def fixture(root, argv, age=11, uid=1000, exe="/usr/bin/php8.2"):
@@ -276,6 +399,26 @@ class SchedulerPolicyTests(unittest.TestCase):
             result = controls.process_envelope(payload, app, proc_root=proc, ticks_per_second=100, wall_time=now)
             self.assertEqual(result["processes"][0]["role"], "reviewed_qbo_worker")
             self.assertFalse(result["environments_read"])
+        # The mutex may be acquired at second 14, with its legitimate child
+        # starting at second 20. Bind that start to the acquisition, not just
+        # the original cron grace. A child outside the ten-second grace fails.
+        for at, age, permitted in (("2026-10-05T00:20:23Z", 3, True),
+                                   ("2026-10-05T00:20:28Z", 3, False),
+                                   ("2026-10-05T00:20:23Z", 20, False)):
+            late_slot = snapshot(at, start="2026-10-05T00:20:14Z", attempt="2026-10-05T00:20:22Z")
+            with tempfile.TemporaryDirectory() as temporary:
+                app, proc = fixture(Path(temporary), valid, age=age)
+                args = dict(proc_root=proc, ticks_per_second=100, wall_time=controls.timestamp(at, "test"))
+                if permitted:
+                    self.assertEqual(controls.process_envelope(late_slot, app, **args)["processes"][0]["role"], "reviewed_qbo_worker")
+                    self.assertTrue(step(late_slot)[1]["active"])
+                else:
+                    with self.assertRaises(controls.SchedulerError): controls.process_envelope(late_slot, app, **args)
+        with tempfile.TemporaryDirectory() as temporary:
+            app, proc = fixture(Path(temporary), ["/usr/bin/php8.2", "artisan", "schedule:run"], age=4)
+            late_slot = snapshot("2026-10-05T00:20:18Z", start="2026-10-05T00:20:14Z", attempt="2026-10-05T00:20:17Z")
+            self.assertEqual(controls.process_envelope(late_slot, app, proc_root=proc, ticks_per_second=100,
+                wall_time=controls.timestamp(late_slot["generated_at_utc"], "test"))["processes"][0]["role"], "reviewed_qbo_only_dispatcher")
         cases = [(valid, 121, 1000, "/usr/bin/php8.2"), (valid, 11, 0, "/usr/bin/php8.2"),
                  (valid, 11, 1000, "/usr/bin/php8.3"),
                  (["/usr/bin/php8.2", "artisan", "stripe:sync-payouts"], 11, 1000, "/usr/bin/php8.2"),
@@ -310,9 +453,9 @@ class SchedulerPolicyTests(unittest.TestCase):
             (entry / "status").write_text("Uid:\t1000\t1000\t1000\t1000\n")
             fields = ["S"] + ["0"] * 19; fields[19] = "99900"
             (entry / "stat").write_text("424242 (php) " + " ".join(fields))
-            for at in ("2026-10-05T00:20:01Z", "2026-10-05T01:00:01Z", "2026-10-05T01:30:01Z", "2026-10-05T00:21:01Z"):
+            for at in ("2026-10-05T00:20:01Z", "2026-10-05T01:30:01Z", "2026-10-05T01:00:01Z", "2026-10-05T06:30:01Z", "2026-12-10T07:30:01Z", "2026-11-01T06:30:01Z", "2026-11-01T07:30:01Z", "2026-10-05T00:21:01Z"):
                 payload = snapshot(at, start=at[:-3] + "00Z")
-                if at == "2026-10-05T00:20:01Z":
+                if at in {"2026-10-05T00:20:01Z", "2026-10-05T01:30:01Z"}:
                     self.assertEqual(controls.process_envelope(payload, app, proc_root=proc, ticks_per_second=100, wall_time=controls.timestamp(at, "test"))["processes"][0]["role"], "reviewed_qbo_only_dispatcher")
                 else:
                     with self.assertRaises(controls.SchedulerError):

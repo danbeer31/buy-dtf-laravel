@@ -1,0 +1,76 @@
+{
+  "algorithm": "sort regular files by POSIX relative path; for each record store path, exact byte count, and lowercase SHA-256 of raw bytes; serialize as UTF-8 JSON with sorted keys, two-space indentation, and one LF",
+  "entries": [
+    {
+      "bytes": 10923,
+      "path": "candidate-check-failure-receipt.json",
+      "sha256": "b16f732fa42286e922975135b675d11f5748a0da864c1f6709ab4db519dfcaf7"
+    },
+    {
+      "bytes": 13171,
+      "path": "genuine-log-failure-receipt.json",
+      "sha256": "af5209624a50d741400fe14a55d7bc19eeb47c736739cc7ad43cbe69da62a83c"
+    },
+    {
+      "bytes": 13171,
+      "path": "post-reopen-failure-receipt.json",
+      "sha256": "a306c4dd8196110f9ffd892c62e1a9ac72b1afc6bb90db7c1ac39675903cf2f3"
+    },
+    {
+      "bytes": 13251,
+      "path": "post-source-fpm-unavailable-receipt.json",
+      "sha256": "f9cf2b09024410ec5c927526b96764a782dc8f65d388d007e88fb7e85ee618e8"
+    },
+    {
+      "bytes": 15570,
+      "path": "post-source-gate-http-failure-receipt.json",
+      "sha256": "bc192af3939f4762b3231501612c0b6435aaa31ce84cee4f414e096583830082"
+    },
+    {
+      "bytes": 10623,
+      "path": "pre-source-failure-receipt.json",
+      "sha256": "5b9c590efb8e2f8fe0ed6b524c3c4f5c10cae6ad002f8c896cc4e743bb79895f"
+    },
+    {
+      "bytes": 12821,
+      "path": "recovery-with-normal-qbo-receipt.json",
+      "sha256": "995d0b1df25688f74f67468919c46099fc5c6cbd0d3a0b7a2bbbd29e3994ec0c"
+    },
+    {
+      "bytes": 13983,
+      "path": "recovery-with-qbo-startup-receipt.json",
+      "sha256": "3772550d1d15100546154846c5d954ea3f009a651436d2d19fcbd54593ddca8f"
+    },
+    {
+      "bytes": 182965,
+      "path": "rehearsal-receipt.json",
+      "sha256": "8352226f8413b15edbb6f04ede03d74ca0233f07e710ea1be7f7eebd48717cf8"
+    },
+    {
+      "bytes": 12819,
+      "path": "rollback-with-normal-qbo-receipt.json",
+      "sha256": "da65a5d7b0ed3ea36fe070f474c6bacc11a3c30e77faefefab88095988a82e7e"
+    },
+    {
+      "bytes": 13981,
+      "path": "rollback-with-qbo-startup-receipt.json",
+      "sha256": "24b7a45347930511ab2aaaa6595cd34d6098fb8a7e1fc3c5f78f28cae4f1e5f9"
+    },
+    {
+      "bytes": 13241,
+      "path": "schema-preserving-rollback-receipt.json",
+      "sha256": "06725596d050f04891e749881720d1c691a6ca4d7a29cb873027f760ade06c0d"
+    },
+    {
+      "bytes": 10891,
+      "path": "source-swap-failure-receipt.json",
+      "sha256": "c548541b86e32c54cc74da6e141258756d7806b8673dcc3ae64d08679f3a45d5"
+    },
+    {
+      "bytes": 6249,
+      "path": "success-receipt.json",
+      "sha256": "0c0da2b2c62e0915a640300386943021a7816a32f3e77cd4ae28592a61d55303"
+    }
+  ],
+  "entries_sha256": "7bb5c62e0f6817b337fe79fa8a9364d55df23a2b0935b8bb0d84d26aca3c3169"
+}

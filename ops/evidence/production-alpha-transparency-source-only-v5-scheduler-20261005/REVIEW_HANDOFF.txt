@@ -1,0 +1,94 @@
+BuyDTF transparency scheduler timezone/startup correction: local review packet
+
+Branch: fix/production-alpha-transparency-source-only-v5-scheduler-20261005
+Base: 8678872c337f1e1c56347a16329b4d0a212281ce
+Scope: local, unpushed operations-only replacement. No deployment authority.
+
+Corrections:
+1. The unchanged QBO writer emits Chicago offset timestamps. The observer now
+   strictly validates explicit offsets and normalizes its returned copy to UTC,
+   without rewriting cache records or altering production timezone/configuration.
+   Application/PHP/event timezones are frozen to America/Chicago. Due work is
+   evaluated through that IANA zone, including summer/winter and both DST folds.
+2. Laravel mutex acquisition precedes markAttempt(). After reopening, a matching
+   fresh mutex with the previous healthy completion may enter a durable startup
+   state for ten seconds from acquisition. The original deadline never renews.
+   Timely attempt/progress, bounded success and release remain mandatory. Every
+   pre-mutation gate stays strictly idle; unexpected/stuck/failing work is fatal.
+   Startup follow-ups run every second, then every five seconds during running
+   work. Worker launch time is bound to the verified mutex acquisition, allowing
+   a normal child launch to cross the original cron-start grace without exemption.
+
+Frozen identities:
+Runner: d3c1a26bb1081bb47149eb2b34787d747e56a4db4ef0eb4668f62e3baf231a3d
+Scheduler guard: 70d694d6217928bf5d0def36a3fe4853662005f77b22f0fd7ac51c94904aca77
+PHP observer: 91e81065a4add34e916674c2a7fcc3ebe5f867324ec350dc9220214102cf0d80
+Runtime helper, unchanged: 839588fe2930e1e673c507b05f7ccf15d7166329d66c1563775154cd7030d200
+Gate adapter, unchanged: 2719da67c6d425e5fa4bef70aade0789aba1deccfaf09f8992c8674883c65c00
+Shared gate, unchanged: b93c08f58a08333120369c1cc75c60631d621c3a8099ca3967065721c45679f5
+Log parser, unchanged: 75921c4a9f1b9a21d710c7792900014eb517f2e936a97c82ff542dd3c208dd28
+All helper, policy, manifest and candidate identities: artifact-identities.json
+
+Validation: PASS
+- 109 tests: scheduler, runner, source gate, nginx/database-envelope controls,
+  complete-entry log parser and shared gate controls.
+- 13 source cutover/interruption/rollback/recovery rehearsals, adding real guard
+  startup transitions during automatic rollback and interrupted recovery.
+- 23 monitoring/post-open scenarios, including sample 19, winter, startup at
+  reopening and monitor close, late/stuck/orphaned/failing startup, and every
+  previously reviewed health/queue/schema/source/dependency/log-continuity failure.
+- 28 shared gate transition scenarios retain OPcache waits, containment, exact
+  restoration, interruptions, UID/GID 33 readability and metadata protections.
+- Real QboAdminSnapshotStore markSuccess()/markAttempt()/markFailure() and Laravel
+  overlap acquisition/framework finish in disposable caches. Real summer/winter
+  writer timestamps, normalized observations and no observer cache writes.
+- Actual Laravel schedule-expression decisions agree with Python Chicago due
+  windows across summer, winter, spring gap and both fall-fold instants.
+- Exact PHP 8.2.30 native binary repeats the writer/cache lifecycle and parser
+  integration; all three operations PHP files pass that binary's lint.
+
+Integration/rehearsal scope:
+No accounting command, QBO API/business query, cron or production action ran.
+Only disposable local fixture mutexes are acquired/released by the real Laravel
+lifecycle test. The observer itself never acquires/releases/prunes them. Monitor
+clocks are virtual and external endpoints/SQL/application commands are doubles.
+WSL's PHP path differs from production: test inventory projects only that binary
+path after verifying all other real fields and the actual unchanged Unix mutex.
+Native Windows command/mutex formatting is platform-specific. Live controls do
+not project or weaken any identity. DST schedule tests use an absolute-instant
+test date factory to avoid ambiguous-wall-time mock reparsing.
+
+Preservation:
+All eleven application member definitions and the source archive are identical
+to the accepted candidate. Local vendor/modes/ownership/autoload/cache/lock pass
+unchanged accepted identity checks. No application/image/dependency/configuration
+code changed. Schema, customer artwork and disabled capabilities were not accessed
+or changed. Prior application/Composer/npm/render proofs remain in the retained
+base evidence; these suites were not rerun for an operations-only correction.
+No fresh production verification is claimed. The old review packet and all
+retained releases/evidence remain untouched. New evidence is synthetic/redacted;
+no raw production logs, headers, cookies, configurations or customer data are here.
+
+Review files:
+- artifact-identities.json: every control/policy/helper/candidate hash.
+- VALIDATION_RECEIPT.json and per-command receipts/stdout/stderr: exact checks.
+- real-writer-integration.json and php8230-read-only-writer.json: actual writer,
+  observer, offset parsing, framework lifecycle and DST expression proofs.
+- source-rehearsal/, scheduler-rehearsal/ and gate-transition-rehearsal.json:
+  transition/monitoring results.
+- APPLICATION_MANIFEST.json: unchanged eleven members plus the new frozen policy.
+- CHANGED_PATHS.txt, LOCAL_SCOPE_RECEIPT.json, EVIDENCE_MANIFEST.json, SHA256SUMS:
+  exact scope and complete byte inventory.
+- ../../PRODUCTION_ALPHA_TRANSPARENCY_SCHEDULER_CORRECTION_PLAN_2026-10-05.md:
+  reviewed-call coverage, bounds and revised future staging/deployment/rollback.
+
+Local reproduction in WSL from this worktree:
+  PYTHONDONTWRITEBYTECODE=1 python3 ops/deployment/validate_production_alpha_scheduler.py
+  PYTHONDONTWRITEBYTECODE=1 python3 ops/deployment/build_production_alpha_scheduler_evidence.py preserve
+  PYTHONDONTWRITEBYTECODE=1 python3 ops/deployment/build_production_alpha_scheduler_evidence.py inventory
+
+Stop for independent review. Do not push or access production under this handoff.
+Fresh restricted staging and evidence-bound cutover require separate authority.
+The rejected v4 runner and permanently retired v3 runner cannot be retried.
+All incoming-order/job-label/retention capabilities remain disabled; artwork hosts
+remain empty. No ShopNLTees, migration, retention or customer-deletion changes.

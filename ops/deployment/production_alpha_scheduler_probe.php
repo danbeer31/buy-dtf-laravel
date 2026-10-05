@@ -98,6 +98,28 @@ function alphaSchedulerCacheRecord(object $store, string $key, bool $mutex): ?ar
     throw new RuntimeException('Unsupported read-only scheduler cache store.');
 }
 
+function alphaSchedulerTimestampUtc(string $value): string
+{
+    // Parse the writer's explicit offset; never reinterpret it in the current
+    // timezone, normalize an invalid calendar date, or accept an unknown offset.
+    if (! preg_match('/^([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2})(?:\.([0-9]{1,6}))?(Z|[+-](?:[01][0-9]|2[0-3]):[0-5][0-9])$/D', $value, $parts)
+        || str_starts_with($value, '0000-') || str_ends_with($value, '-00:00')) {
+        throw new RuntimeException('Malformed QBO refresh timestamp.');
+    }
+    $fraction = $parts[2] ?? '';
+    $offset = $parts[3] === 'Z' ? '+00:00' : $parts[3];
+    $canonical = $parts[1].'.'.str_pad($fraction, 6, '0').$offset;
+    $instant = DateTimeImmutable::createFromFormat('!Y-m-d\TH:i:s.uP', $canonical);
+    $errors = DateTimeImmutable::getLastErrors();
+    if ($instant === false || ($errors !== false && ($errors['warning_count'] || $errors['error_count']))
+        || $instant->format('Y-m-d\TH:i:s.uP') !== $canonical) {
+        throw new RuntimeException('Malformed QBO refresh timestamp.');
+    }
+
+    return $instant->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d\TH:i:s')
+        .($fraction === '' ? '' : '.'.$instant->format('u')).'Z';
+}
+
 function alphaSchedulerCapture(string $applicationRoot): array
 {
     $events = app(Schedule::class)->events();
@@ -160,8 +182,11 @@ function alphaSchedulerCapture(string $applicationRoot): array
         throw new RuntimeException('Malformed QBO refresh state.');
     }
     foreach (['last_attempt_at', 'last_success_at', 'last_error_at', 'circuit_retry_at'] as $key) {
-        if ($status[$key] !== null && (! is_string($status[$key]) || ! preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:Z|\+00:00)$/D', $status[$key]))) {
-            throw new RuntimeException('Malformed QBO refresh timestamp.');
+        if ($status[$key] !== null) {
+            if (! is_string($status[$key])) {
+                throw new RuntimeException('Malformed QBO refresh timestamp.');
+            }
+            $status[$key] = alphaSchedulerTimestampUtc($status[$key]);
         }
     }
     foreach (['linked_businesses', 'updated_businesses', 'invoice_count'] as $key) {
@@ -175,7 +200,8 @@ function alphaSchedulerCapture(string $applicationRoot): array
     }
 
     return [
-        'observer_version' => 1, 'read_only' => true,
+        'observer_version' => 2, 'read_only' => true,
+        'application_timezone' => config('app.timezone'), 'php_default_timezone' => date_default_timezone_get(),
         'cache_driver' => $store instanceof FileStore ? 'file' : 'database',
         'source_sha256' => $source, 'events' => $inventory,
         'event_count' => count($events), 'stripe_payout_sync_event_count' => $stripeCount,

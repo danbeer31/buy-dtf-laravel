@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "/usr/bin/python3",
+    "ops/deployment/rehearse_production_alpha_transparency.py",
+    "--portable-output",
+    "/mnt/c/Users/danie/projects/bdtf-alpha-sched-v5/ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/source-rehearsal"
+  ],
+  "exit_code": 0,
+  "scope": "local disposable validation; no production access",
+  "status": "pass",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stdout_sha256": "96b7c7071c86f15cfef3fc90c4a48a49a3493586b2939f6b6e1546135990f5e2"
+}

@@ -9,7 +9,7 @@ import re
 import production_alpha_scheduler_guard as scheduler
 
 ROOT = Path(__file__).resolve().parents[2]
-EVIDENCE = ROOT / "ops/evidence/production-alpha-transparency-source-only-v4-scheduler-20261004"
+EVIDENCE = ROOT / "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005"
 BASE_EVIDENCE = ROOT / "ops/evidence/production-alpha-transparency-source-only-v3-20261004"
 RUNNER = ROOT / "ops/deployment/production_alpha_transparency_deploy.py"
 
@@ -25,7 +25,7 @@ def write(path, value):
 
 def freeze():
     manifest = json.loads((BASE_EVIDENCE / "APPLICATION_MANIFEST.json").read_text())
-    manifest["retired_runner_sha256s"] = sorted(set(manifest["retired_runner_sha256s"]) | {"25da4ddef0b4eb088cdedadf4848b1286a389760942493717e52d00f02c014df"})
+    manifest["retired_runner_sha256s"] = sorted(set(manifest["retired_runner_sha256s"]) | {"25da4ddef0b4eb088cdedadf4848b1286a389760942493717e52d00f02c014df", "880d6ec6cb1ca5cee95964cf48843384afbaaeb73e835d03850e32de92aa21ab"})
     manifest["scheduler_policy_sha256"] = scheduler.POLICY_SHA256
     manifest["scheduler_policy"] = scheduler.POLICY
     write(EVIDENCE / "APPLICATION_MANIFEST.json", manifest)
@@ -62,12 +62,12 @@ def inventory():
         ROOT / "ops/deployment/test_production_alpha_scheduler_probe.php",
         ROOT / "ops/deployment/validate_production_alpha_scheduler.py",
         Path(__file__).resolve(),
-        ROOT / "ops/PRODUCTION_ALPHA_TRANSPARENCY_SCHEDULER_CORRECTION_PLAN_2026-10-04.md",
+        ROOT / "ops/PRODUCTION_ALPHA_TRANSPARENCY_SCHEDULER_CORRECTION_PLAN_2026-10-05.md",
     } | {ROOT / "ops/deployment" / name for name in runner.CONTROL_FILES}, key=lambda path: path.as_posix())
     entries = [{"path": p.relative_to(ROOT).as_posix(), "bytes": p.stat().st_size, "sha256": sha(p)}
                for p in paths if p.is_file() and p not in excluded]
-    write(EVIDENCE / "EVIDENCE_MANIFEST.json", {"artifact": "buy-dtf-source-scheduler-local-review-v4", "status": "local_review_only_no_deployment_authority",
-        "base_commit": "b3d4b009b1b99d2cc6b9e7f3a641d341956d1849", "production_accessed": False,
+    write(EVIDENCE / "EVIDENCE_MANIFEST.json", {"artifact": "buy-dtf-source-scheduler-local-review-v5", "status": "local_review_only_no_deployment_authority",
+        "base_commit": "8678872c337f1e1c56347a16329b4d0a212281ce", "production_accessed": False,
         "raw_logs_headers_cookies_customer_data_included": False, "entries": entries})
     entries.append({"path": (EVIDENCE / "EVIDENCE_MANIFEST.json").relative_to(ROOT).as_posix(), "sha256": sha(EVIDENCE / "EVIDENCE_MANIFEST.json")})
     (EVIDENCE / "SHA256SUMS").write_text("".join(f"{r['sha256']}  {r['path']}\n" for r in sorted(entries, key=lambda row: row["path"])), encoding="utf-8", newline="\n")
@@ -90,7 +90,7 @@ def preserve():
     archive = ROOT / "storage/app/private/operations/production-alpha-transparency-source-only-package-20261002/production-alpha-transparency-b02fce32.tar"
     if sha(archive) != runner.EXPECTED_ARCHIVE_SHA256: raise RuntimeError("Source archive changed")
     write(EVIDENCE / "artifact-identities.json", {
-        "status": "pass", "base_commit": "b3d4b009b1b99d2cc6b9e7f3a641d341956d1849",
+        "status": "pass", "base_commit": "8678872c337f1e1c56347a16329b4d0a212281ce",
         "scope": "local operations-only; no fresh production verification",
         "runner_sha256": sha(RUNNER), "scheduler_guard_sha256": sha(ROOT / "ops/deployment/production_alpha_scheduler_guard.py"),
         "scheduler_probe_sha256": sha(ROOT / "ops/deployment/production_alpha_scheduler_probe.php"),

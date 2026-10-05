@@ -23,7 +23,7 @@ import rehearse_production_alpha_transparency as rehearsal
 
 
 ROOT = Path(__file__).resolve().parents[2]
-EVIDENCE = ROOT / "ops/evidence/production-alpha-transparency-source-only-v4-scheduler-20261004"
+EVIDENCE = ROOT / "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005"
 SSL_INCLUDE = "/etc/letsencrypt/options-ssl-nginx.conf"
 
 
