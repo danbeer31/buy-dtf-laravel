@@ -50,6 +50,11 @@ class ProcessScopeTests(unittest.TestCase):
         return controls.process_envelope(payload, self.app, proc_root=self.proc,
             ticks_per_second=100, wall_time=controls.timestamp(payload["generated_at_utc"], "test"), scope_reader=reader)
 
+    def remove_pid_directory(self):
+        for member in self.entry.iterdir():
+            member.unlink()
+        self.entry.rmdir()
+
     def test_same_uid_fpm_positive_foreign_scope_passes_with_redacted_receipt(self):
         reader = mock.Mock(return_value=self.receipt)
         result = self.observe(reader)
@@ -112,11 +117,83 @@ class ProcessScopeTests(unittest.TestCase):
 
     def test_process_exit_during_probe_is_distinguished_from_pid_reuse(self):
         def exited(_):
-            (self.entry / "stat").unlink()
+            self.remove_pid_directory()
             return self.receipt
         result = self.observe(exited)
         self.assertEqual(result["processes"], [])
         self.assertEqual(result["verified_outside_application"], [])
+        self.assertEqual(result["confirmed_process_exits"][0]["trigger"], "kernel_identity_unavailable_after_success")
+
+    def test_exit_before_fpm_read_requires_fresh_bound_kernel_absence_proof(self):
+        def rejected(_):
+            self.remove_pid_directory()
+            raise controls.ProcessScopeProbeRejected("a" * 64)
+        result = self.observe(rejected)
+        proof = result["confirmed_process_exits"][0]
+        self.assertEqual(proof["identity"], self.identity)
+        self.assertEqual(proof["trigger"], "validated_fpm_target_unavailable_rejection")
+        self.assertEqual(proof["response_sha256"], "a" * 64)
+        self.assertEqual(len(proof["checks"]), 2)
+        self.assertTrue(all(row["pid_directory_errno"] == 2 for row in proof["checks"]))
+        self.assertEqual(result["processes"], [])
+        self.assertEqual(result["verified_outside_application"], [])
+
+    def test_rejected_response_for_live_unreadable_process_is_not_an_exit(self):
+        with self.assertRaisesRegex(controls.SchedulerError, "remains live"):
+            self.observe(mock.Mock(side_effect=controls.ProcessScopeProbeRejected("a" * 64)))
+
+    def test_reused_pid_after_rejected_response_fails_closed(self):
+        def reused(_):
+            text = (self.entry / "stat").read_text()
+            (self.entry / "stat").write_text(text.replace("99900", "99901"))
+            raise controls.ProcessScopeProbeRejected("a" * 64)
+        with self.assertRaisesRegex(controls.SchedulerError, "PID reused"):
+            self.observe(reused)
+
+    def test_missing_fact_with_present_pid_is_not_confirmed_disappearance(self):
+        for success in (False, True):
+            with self.subTest(success=success):
+                before = (self.entry / "stat").read_bytes()
+                def partial(_):
+                    (self.entry / "stat").unlink()
+                    if success:
+                        return self.receipt
+                    raise controls.ProcessScopeProbeRejected("a" * 64)
+                try:
+                    with self.assertRaisesRegex(controls.SchedulerError, "disappearance is unproven"):
+                        self.observe(partial)
+                finally:
+                    (self.entry / "stat").write_bytes(before)
+
+    def test_access_denial_during_fresh_absence_check_remains_fatal(self):
+        original = Path.lstat
+        def denied(path):
+            if path == self.entry:
+                raise PermissionError(13, "Permission denied")
+            return original(path)
+        with mock.patch.object(Path, "lstat", denied), self.assertRaisesRegex(controls.SchedulerError, "disappearance is unproven"):
+            self.observe(mock.Mock(side_effect=controls.ProcessScopeProbeRejected("a" * 64)))
+
+    def test_pid_reappearing_between_absence_checks_is_rejected(self):
+        original = Path.lstat
+        lookups = 0
+        def once_absent(path):
+            nonlocal lookups
+            if path == self.entry:
+                lookups += 1
+                if lookups == 1:
+                    raise FileNotFoundError(2, "No such file")
+            return original(path)
+        with mock.patch.object(Path, "lstat", once_absent), self.assertRaisesRegex(controls.SchedulerError, "remains live"):
+            self.observe(mock.Mock(side_effect=controls.ProcessScopeProbeRejected("a" * 64)))
+        self.assertEqual(lookups, 2)
+
+    def test_unrelated_observer_failure_is_never_ignored_even_after_exit(self):
+        def unavailable(_):
+            self.remove_pid_directory()
+            raise controls.SchedulerError("FPM unavailable")
+        with self.assertRaisesRegex(controls.SchedulerError, "FPM unavailable"):
+            self.observe(unavailable)
 
     def test_other_unreadable_uid_is_not_silently_ignored(self):
         (self.entry / "status").write_text("Uid:\t1001\t1001\t1001\t1001\n")
@@ -148,6 +225,19 @@ class ProcessScopeTests(unittest.TestCase):
         with mock.patch.object(Path, "iterdir", proc_entries), mock.patch.object(deploy, "APP_ROOT", self.app), mock.patch.object(controls, "FpmProcessScopeReader", return_value=lambda _: {}):
             with self.assertRaisesRegex(deploy.DeploymentError, "unavailable or ambiguous"):
                 deploy.scoped_processes()
+
+    def test_idle_preflight_records_confirmed_exit_after_fpm_rejection(self):
+        original_iterdir = Path.iterdir
+        def proc_entries(path):
+            return iter([self.entry]) if path == Path("/proc") else original_iterdir(path)
+        def rejected(_):
+            self.remove_pid_directory()
+            raise controls.ProcessScopeProbeRejected("a" * 64)
+        receipts = []
+        with mock.patch.object(Path, "iterdir", proc_entries), mock.patch.object(deploy, "APP_ROOT", self.app), mock.patch.object(controls, "FpmProcessScopeReader", return_value=rejected):
+            self.assertEqual(deploy.scoped_processes(scope_receipts=receipts), [])
+        self.assertEqual(receipts[0]["identity"], self.identity)
+        self.assertEqual(receipts[0]["status"], "confirmed_gone")
 
     @unittest.skipUnless(os.geteuid() == 0, "root-owned isolated Phase 0 inventory")
     def test_unreadable_process_scope_fails_actual_phase0_before_release_creation(self):
@@ -231,6 +321,18 @@ class ScopeTransportTests(unittest.TestCase):
     def test_timeout_fails_closed_and_disposable_copy_is_removed(self):
         with self.assertRaisesRegex(controls.SchedulerError, "unavailable or malformed"):
             self.transport(timeout=True)
+
+    def test_only_exact_target_unavailable_rejection_has_exit_check_disposition(self):
+        body = {"artifact": "buy-dtf-process-scope-v1", "status": "rejected",
+            "reason": "Process scope evidence unavailable or malformed.", "read_only": True}
+        raw = b"Status: 503 Service Unavailable\nContent-Type: application/json\n\n" + json.dumps(body).encode()
+        with self.assertRaises(controls.ProcessScopeProbeRejected):
+            self.transport(raw=raw)
+        for change in ({"reason": "Read-only observer is not UID/GID 33."}, {"read_only": False}, {"extra": "data"}):
+            changed = b"Status: 503 Service Unavailable\n\n" + json.dumps({**body, **change}).encode()
+            with self.subTest(change=change), self.assertRaises(controls.SchedulerError) as error:
+                self.transport(raw=changed)
+            self.assertNotIsInstance(error.exception, controls.ProcessScopeProbeRejected)
 
 
 class LocalReviewOnlyTests(unittest.TestCase):

@@ -11,7 +11,7 @@
     "php": "8.2.30",
     "vendor": "7df0a101ceb0386b72ec4cfc71f2be8576fc5a5d4b777d11c05e5b7f1ed770d8"
   },
-  "application_manifest_sha256": "627a09b0d5168c2c757f06dcfcfbb8ecc51b3127623e793e33201be02a67bafd",
+  "application_manifest_sha256": "1821ba8099fafb2ddd48dd75f0a6ee8abbb43d83d5fafda2de9319022750b9a2",
   "application_members_unchanged": 11,
   "artifact": "buy-dtf-process-permission-local-correction-review-v1",
   "artwork_hosts": [],
@@ -24,7 +24,7 @@
     "production_alpha_dependency_envelope.json": "04850fe3aef14981c92f5b2af373bd136cfb6fead456d86fcab7233acb009fd1",
     "production_alpha_gate_controls.py": "2719da67c6d425e5fa4bef70aade0789aba1deccfaf09f8992c8674883c65c00",
     "production_alpha_process_scope_probe.php": "1dca015bffdaf4433ff00ecb0569faad0928c28a726b827f773d4cae4b4737c6",
-    "production_alpha_scheduler_guard.py": "57bfd7848428ca59d021492e3a9106a1f8ce9bcae7d900a8127d456ac3c2c39a",
+    "production_alpha_scheduler_guard.py": "d4334e0181ececbd76d140711998f1d143f648dc9a4de85f413f2083354b6489",
     "production_alpha_scheduler_probe.php": "91e81065a4add34e916674c2a7fcc3ebe5f867324ec350dc9220214102cf0d80"
   },
   "deployable": false,
@@ -39,20 +39,66 @@
   "log_parser_sha256": "75921c4a9f1b9a21d710c7792900014eb517f2e936a97c82ff542dd3c208dd28",
   "new_action_tokens_issued": false,
   "plan": "PROPOSED_PLAN.txt",
-  "private_linux_entries_reverified": 2393,
-  "private_linux_manifest_sha256": "585c4b8705375f3d65938f41897f7a3c6cf1dc01bc9c97d6dd74a8ba5d0b1703",
+  "previous_local_correction_commit": "4ce447e4ac3712570d17ed334da03aec5adfe8a0",
+  "private_linux_entries_reverified": 3196,
+  "private_linux_manifest_sha256": "2da4cbb425b8b8e156ca76a18a26f9e64c65bcde2cc51295be8f5489fb5f4e4d",
+  "process_exit_race_proof": {
+    "actor_uid": 1000,
+    "complete_original_source": {
+      "files": 326,
+      "sha256": "3909bdc2303b5c578135859c847f311cd84b827e62ac4e5dbce3d2297f6da71f"
+    },
+    "corrected_state": "rolled_back",
+    "fresh_kernel_proof": {
+      "artifact": "buy-dtf-confirmed-process-exit-v1",
+      "checks": [
+        {
+          "at_utc": "2026-10-06T01:09:15.216121+00:00",
+          "monotonic_ns": 125349808288175,
+          "pid_directory_errno": 2
+        },
+        {
+          "at_utc": "2026-10-06T01:09:15.216178+00:00",
+          "monotonic_ns": 125349808333756,
+          "pid_directory_errno": 2
+        }
+      ],
+      "environments_read": false,
+      "identity": {
+        "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
+        "pid": 72053,
+        "start_ticks": 12533411,
+        "uid": 33
+      },
+      "method": "two_fresh_pid_directory_enoent_checks",
+      "process_or_permission_actions": false,
+      "read_only": true,
+      "response_sha256": "abe449dc423f3d24ce15d6c71d05d207f0031c4d1812135e5420bc735c729691",
+      "status": "confirmed_gone",
+      "trigger": "validated_fpm_target_unavailable_rejection"
+    },
+    "full_seven_second_waits": 3,
+    "maintenance_active_after": false,
+    "pre_correction_state": "rollback_failed_site_gated",
+    "raw_evidence_private": true,
+    "real_fpm_status": 503,
+    "rollback_complete": true,
+    "state_sha256": "a4a3dc56a6941f5efbec566120d28babefd29db7aa1777be02fc5b5a5d81f974",
+    "target_uid": 33
+  },
   "production_accessed": false,
   "pushed": false,
   "receiver_job_label_retention_enabled": false,
   "recovery_closeout_sha256": "c2c746064b3f45e7c1666c4f4088cf0ecef4c1c9ca9a13c2a9d32d41f0070f94",
-  "runner_sha256": "50551f24c04bff7ed2a918463c539351a0c5c3bcf2a8990afade9d0994b71584",
+  "remaining_blocker_correction": "Validated FPM rejection followed by fresh bound kernel absence proof; live, unreadable and reused PIDs remain rejected",
+  "runner_sha256": "15add24297007e11143dcbc63bc8fc3d8c97ce991102bee07f38e815393923fd",
   "runtime_helper_sha256": "839588fe2930e1e673c507b05f7ccf15d7166329d66c1563775154cd7030d200",
   "stageable": false,
   "status": "ready_for_independent_review",
   "tests": {
-    "complete_control_suite": 130,
+    "complete_control_suite": 139,
     "gate_transition_monotonic_waits_verified": 48,
-    "linux_permission_full_rollback_scenarios": 6,
+    "linux_permission_full_rollback_scenarios": 8,
     "php_8_2_30_lint_and_real_writer": "pass",
     "production_like_opcache_http": "pass",
     "scheduler_monitor_scenarios": 23,

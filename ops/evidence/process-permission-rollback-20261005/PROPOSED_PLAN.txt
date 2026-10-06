@@ -18,6 +18,16 @@ and again by the UID 1000 caller. The probe checks stable cwd/executable values,
 exact FPM SAPI/version, UID/GID, strict JSON and a five-second transport timeout.
 Only positive evidence of an outside application scope permits exclusion.
 Unknown, unreadable, changed, malformed or scoped unapproved work is rejected.
+If the original target exits before FPM reads it, only the pinned helper's exact
+validated target-unavailable rejection enters the fresh disappearance check.
+Two new PID-directory lookups must return ENOENT under the same proc root after
+that response. The private observation binds the original PID, UID, start ticks
+and command hash, rejection-response hash and both UTC/monotonic check times.
+A present PID, reused identity, missing individual fact, unreadable lookup,
+timeout, unrelated helper rejection or malformed response remains fatal. A
+successful scope response followed by disappearance uses the same fresh proof.
+Both the idle preflight and shared rollback/post-open/monitor observer record
+the confirmed exit rather than silently dropping an observer failure.
 Normal scoped QBO work retains its exact schedule, timezone, startup, owner,
 executable, completion and duration bounds. No process environment is read.
 No process is signaled and no existing permission, group, ACL or mutex changes.
@@ -41,12 +51,19 @@ restore; reopening remains prohibited and the exact static gate is retained.
 
 The local Linux rehearsal uses real UID 1000 and UID/GID 33 processes, real
 nginx/PHP-FPM, exact reviewed gate bytes, original metadata 1000:1000/0644,
-durable transitions and full monotonic seven-second waits. All six cases
+durable transitions and full monotonic seven-second waits. All eight cases
 restore the complete frozen 326-file source CAS. The legacy case reproduces
 the denied cwd and gated outcome. Corrected automatic rollback and reopening
 through the recovery entry point succeed with the foreign process still alive
 and unchanged. Scoped work, unavailable FPM observation and mismatched response
 remain gated. Raw HTTP headers are mode 0600; copied configuration is private.
+Two added cases have the parent let only its newly created UID 33 fixture finish
+normally and reap it immediately before the real FPM scope read. FPM returns
+the actual rejected 503. The old handling remains gated; the corrected handling
+records fresh absence checks, completes automatic rollback and reopening,
+restores exact original metadata, exits maintenance and verifies HTTP health.
+The observer/runner does not signal a process or change its access. Existing
+live-foreign scenarios still prove the process remains alive and unchanged.
 
 Local FPM is PHP 8.3.6. The sentinel HTTP controller loads actual Laravel
 12.69.1 but does not boot the customer application. Database/runtime envelopes

@@ -37,7 +37,9 @@ controls = deploy.scheduler_controls
 gate = deploy.source_controls.dependency_gate
 ROOT = Path(__file__).resolve().parents[2]
 SCENARIOS = ("legacy-unreadable-foreign", "corrected-foreign-rollback", "corrected-foreign-reopening-replay",
+             "legacy-exit-before-fpm-read", "corrected-exit-before-fpm-read",
              "corrected-scoped-work", "observer-unavailable", "observer-response-mismatch")
+EXIT_SCENARIOS = {"legacy-exit-before-fpm-read", "corrected-exit-before-fpm-read"}
 
 
 def require(value, message):
@@ -49,6 +51,19 @@ def port():
     with socket.socket() as listener:
         listener.bind(("127.0.0.1", 0))
         return listener.getsockname()[1]
+
+
+def send_fixture_message(channel, value):
+    channel.sendall(json.dumps(value, sort_keys=True, separators=(",", ":")).encode() + b"\n")
+
+
+def receive_fixture_message(channel):
+    data = b""
+    while not data.endswith(b"\n"):
+        chunk = channel.recv(4096 - len(data))
+        require(chunk and len(data) + len(chunk) < 4096, "Malformed bounded fixture IPC.")
+        data += chunk
+    return json.loads(data)
 
 
 def owned(path, uid=1000, gid=1000, mode=0o700):
@@ -85,6 +100,7 @@ def actor(request_path: Path):
             "FPM did not prove target scope with actual UID 33.")
     probes = []
     commands = []
+    exit_events = []
 
     def fresh():
         return source.runtime_snapshot()
@@ -133,6 +149,40 @@ def actor(request_path: Path):
         return {"status": "pass", "isolated_maintenance_double": True}
 
     real_reader_class = controls.FpmProcessScopeReader
+    def exit_before_fpm_read(identity):
+        # Test-only IPC asks the fixture's parent to let its own child finish
+        # normally and reap it. The deployment/observer sends no process signal.
+        with socket.socket(fileno=request["exit_control_fd"]) as channel:
+            channel.settimeout(10)
+            send_fixture_message(channel, {"action": "finish_owned_fixture", "identity": identity})
+            reply = receive_fixture_message(channel)
+        require(reply["pid"] == pid and reply["returncode"] == 0 and reply["reaped"] is True,
+                "Fixture did not disappear before the real FPM read.")
+        real_run = subprocess.run
+        def record_transport(argv, **kwargs):
+            value = real_run(argv, **kwargs)
+            require(argv[:2] == ["/usr/bin/cgi-fcgi", "-bind"], "Unexpected exit-race transport.")
+            raw = value.stdout.replace(b"\r\n", b"\n")
+            headers, body = raw.split(b"\n\n", 1)
+            rejected = json.loads(body)
+            require(b"Status: 503 Service Unavailable" in headers and rejected["status"] == "rejected"
+                and rejected["reason"] == "Process scope evidence unavailable or malformed.",
+                "The real FPM helper did not reject the already-gone target.")
+            path = state_dir / "exit-race-fpm-response.private"
+            deploy.atomic_write(path, value.stdout, 0o600)
+            exit_events.append({"identity": identity, "fpm_status": 503,
+                "fpm_response_sha256": deploy.sha256_file(path), "fixture_completion": reply,
+                "response_received_monotonic_ns": time.monotonic_ns()})
+            return value
+        try:
+            with mock.patch.object(controls.subprocess, "run", side_effect=record_transport):
+                observation_reader(identity)
+        except controls.ProcessScopeProbeRejected as error:
+            if scenario == "legacy-exit-before-fpm-read":
+                raise controls.SchedulerError("Pre-correction rejected response has no fresh disappearance check.") from error
+            raise
+        raise RuntimeError("Exited target unexpectedly returned successful FPM scope evidence.")
+
     def reader_factory(*_args, **_kwargs):
         if scenario == "legacy-unreadable-foreign":
             # V5 behavior: permission denial has no UID 33 scope fallback.
@@ -141,6 +191,8 @@ def actor(request_path: Path):
             return real_reader_class(scope_helper, scope_socket.with_name("absent-fpm.sock"), expected_php_version=request["local_php_version"])
         if scenario == "observer-response-mismatch":
             return lambda identity: {**positive, "identity": {**identity, "start_ticks": identity["start_ticks"] + 1}}
+        if scenario in EXIT_SCENARIOS:
+            return exit_before_fpm_read
         return observation_reader
 
     baseline = fresh()
@@ -210,7 +262,7 @@ def actor(request_path: Path):
         source_after = deploy.live_manifest_snapshot(rows, target=False)
         complete_source_after = deploy.full_source_identity(target=False)
         require(source_after["sha256"] == deploy.EXPECTED_PRE_SOURCE_CAS_SHA256, "Original scoped source was not restored.")
-        expected_open = scenario in {"corrected-foreign-rollback", "corrected-foreign-reopening-replay"}
+        expected_open = scenario in {"corrected-foreign-rollback", "corrected-foreign-reopening-replay", "corrected-exit-before-fpm-read"}
         require((failure is None) == expected_open, "Rollback outcome differs from scenario.")
         if expected_open:
             require(final_state["status"] == "rolled_back" and final_state["rollback_complete"] is True,
@@ -219,14 +271,27 @@ def actor(request_path: Path):
             require(deploy.sha256_file(front) == original_sha, "Exact original front was not restored.")
             require(deploy.path_metadata(front) == gate.reviewed_front_controller_metadata(), "Original metadata changed.")
             process_receipts = [json.loads(p.read_text())["process_envelope"] for p in sorted(state_dir.glob("scheduler-observation-*.json"))]
-            require(process_receipts and all(any(item["pid"] == pid and item["scope_source"] == "read_only_fpm_uid_33"
-                for item in row["verified_outside_application"]) for row in process_receipts), "Rollback and reopening did not use the real UID 33 scope proof.")
+            if scenario == "corrected-exit-before-fpm-read":
+                exits = [item for row in process_receipts for item in row["confirmed_process_exits"]]
+                require(len(exits) == 1 and exits[0]["identity"] == before_pid
+                    and exits[0]["trigger"] == "validated_fpm_target_unavailable_rejection"
+                    and exits[0]["response_sha256"] == exit_events[0]["fpm_response_sha256"],
+                    "Automatic rollback did not record fresh proof after the rejected FPM response.")
+                require(all(check["monotonic_ns"] >= exit_events[0]["response_received_monotonic_ns"]
+                    for check in exits[0]["checks"]), "Disappearance checks were not fresh after rejection.")
+                require(len(process_receipts) >= 4, "Complete rollback and reopening validation did not run.")
+            else:
+                require(process_receipts and all(any(item["pid"] == pid and item["scope_source"] == "read_only_fpm_uid_33"
+                    for item in row["verified_outside_application"]) for row in process_receipts), "Rollback and reopening did not use the real UID 33 scope proof.")
         else:
             require(final_state["status"] == "rollback_failed_site_gated", "Failure did not retain durable containment.")
             require(deploy.sha256_file(front) == deploy.EXPECTED_GATE_SHA256, "Failure did not retain exact reviewed gate.")
             final_health = gate_response(web.PUBLIC_ROUTE, label="final-contained")
             process_receipts = []
-        require(controls._process_identity(pid_entry) == before_pid, "Foreign process was altered or terminated.")
+        if scenario in EXIT_SCENARIOS:
+            require(len(exit_events) == 1 and not pid_entry.exists(), "Exit-race target was not normally completed and reaped.")
+        else:
+            require(controls._process_identity(pid_entry) == before_pid, "Foreign process was altered or terminated.")
         transitions = [json.loads(p.read_text()) for p in state_dir.glob("*opcache*wait*.json")]
         # Transition receipts carry real monotonic elapsed time. No clock doubles.
         wait_receipts = []
@@ -237,7 +302,10 @@ def actor(request_path: Path):
         require(wait_receipts and all(item["elapsed_monotonic_ns"] >= 7_000_000_000 for item in wait_receipts),
             "Full seven-second monotonic gate waits were not recorded.")
         portable = {"scenario": scenario, "status": "pass", "actor_uid": 1000, "target_uid": 33,
-            "kernel_permission_denials": denial, "fpm_scope_proven": True, "foreign_process_unchanged": True,
+            "kernel_permission_denials": denial, "fpm_scope_proven": True,
+            "foreign_process_unchanged": scenario not in EXIT_SCENARIOS,
+            "owned_fixture_completed_normally": scenario in EXIT_SCENARIOS, "exit_race_events": exit_events,
+            "confirmed_process_exits": [item for row in process_receipts for item in row["confirmed_process_exits"]],
             "final_state_status": final_state["status"], "rollback_complete": final_state.get("rollback_complete", False),
             "source_restored_sha256": source_after["sha256"], "front_controller_sha256": deploy.sha256_file(front),
             "complete_original_source": complete_source_after,
@@ -315,6 +383,7 @@ def run(private_parent: Path, output: Path, vendor: Path, original_source: Path)
         shutil.copyfile(ROOT / "ops/deployment/production_alpha_process_scope_probe.php", scope_helper)
         owned(scope_helper, mode=0o600)
         nginx = fpm = foreign = None
+        parent_channel = actor_channel = None
         try:
             fpm = web._start_process(["/usr/sbin/php-fpm8.3", "--nodaemonize", "--fpm-config", str(stack_dir / "fpm.conf")], stack_dir / "fpm.private.log")
             web._wait_for_socket(socket_path, fpm)
@@ -330,20 +399,47 @@ def run(private_parent: Path, output: Path, vendor: Path, original_source: Path)
                 "helper": str(item["helper"]), "scope_helper": str(scope_helper), "socket": str(socket_path),
                 "release_receipt": str(item["receipt_path"]), "origin_port": origin_port,
                 "public_port": public_port, "foreign_pid": foreign.pid, "local_php_version": local_version}
+            if scenario in EXIT_SCENARIOS:
+                parent_channel, actor_channel = socket.socketpair()
+                parent_channel.settimeout(100)
+                request["exit_control_fd"] = actor_channel.fileno()
             request_path = root / "actor-request.private.json"
             request_path.write_bytes(deploy.canonical_bytes(request))
             owned(request_path, mode=0o600)
             command = ["/usr/bin/setpriv", "--reuid=1000", "--regid=1000", "--clear-groups", "/usr/bin/python3",
                 str(Path(__file__).resolve()), "--actor-request", str(request_path)]
-            completed = subprocess.run(command, capture_output=True, timeout=100)
+            if scenario in EXIT_SCENARIOS:
+                actor_process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                    pass_fds=(actor_channel.fileno(),))
+                actor_channel.close()
+                actor_channel = None
+                message = receive_fixture_message(parent_channel)
+                require(message["action"] == "finish_owned_fixture" and message["identity"] == controls._process_identity(Path("/proc") / str(foreign.pid)),
+                    "Exit-race IPC did not bind the exact owned fixture.")
+                foreign.stdin.write(b"finish fixture normally\n")
+                foreign.stdin.flush()
+                foreign.communicate(timeout=10)
+                reply = {"pid": foreign.pid, "returncode": foreign.returncode, "reaped": True,
+                    "completed_monotonic_ns": time.monotonic_ns(), "normal_fixture_ipc_only": True}
+                require(foreign.returncode == 0 and not (Path("/proc") / str(foreign.pid)).exists(),
+                    "Owned fixture did not disappear before the FPM request.")
+                send_fixture_message(parent_channel, reply)
+                stdout, stderr = actor_process.communicate(timeout=100)
+                completed = subprocess.CompletedProcess(command, actor_process.returncode, stdout, stderr)
+            else:
+                completed = subprocess.run(command, capture_output=True, timeout=100)
             (root / "actor.stdout.private").write_bytes(completed.stdout)
             (root / "actor.stderr.private").write_bytes(completed.stderr)
             if completed.returncode:
                 # Error text is local fixture only, no production/customer information.
                 raise RuntimeError(f"Local actor {scenario} failed: {completed.stderr.decode(errors='replace')[-2500:]}")
             results.append(json.loads((state_dir / "portable-result.json").read_text()))
-            require(foreign.poll() is None, "Foreign fixture was killed by the observer/rollback.")
+            require(foreign.returncode == 0 if scenario in EXIT_SCENARIOS else foreign.poll() is None,
+                "Foreign fixture lifecycle differs from scenario.")
         finally:
+            for channel in (parent_channel, actor_channel):
+                if channel is not None:
+                    channel.close()
             if foreign is not None and foreign.poll() is None:
                 foreign.stdin.write(b"finish fixture\n")
                 foreign.stdin.flush()

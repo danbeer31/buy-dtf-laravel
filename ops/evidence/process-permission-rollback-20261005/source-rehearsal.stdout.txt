@@ -1,10 +1,10 @@
 {
   "portable_entries": 14,
   "portable_manifest": "/mnt/c/Users/danie/projects/bdtf-alpha-process-permission-20261005/ops/evidence/process-permission-rollback-20261005/source-rehearsal/PORTABLE_MANIFEST.json",
-  "portable_manifest_sha256": "bececdc64cc5c10a8705b2c248b8d2e509abae516e220ef5cae3cc6db5fb652f",
+  "portable_manifest_sha256": "95ef9aa9282e34a6da0f17783d07aea00c5bc5f50662c0b9b014a38dc580795b",
   "portable_receipt": "/mnt/c/Users/danie/projects/bdtf-alpha-process-permission-20261005/ops/evidence/process-permission-rollback-20261005/source-rehearsal/rehearsal-receipt.json",
-  "portable_receipt_sha256": "21a993abaa85dbe75c5c36cc8476b1b9bddd1309aeaf4c8917186f07c9757cd6",
-  "private_rehearsal_directory": "/tmp/buy-dtf-alpha-rehearsal-83xihw0q",
+  "portable_receipt_sha256": "19e437792fc0a15c0e87871f99bfce2f86109249118a3c8160703e689e56738a",
+  "private_rehearsal_directory": "/tmp/buy-dtf-alpha-rehearsal-tujabq00",
   "scenario_count": 13,
   "status": "pass"
 }

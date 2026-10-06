@@ -57,7 +57,7 @@ TARGET_SHORT = TARGET_COMMIT[:8]
 HANDOFF_SHA256 = "ba9fd4dcf5fa5854b2e23418e0cd6ed8799874494a0341c726302b92a5acc127"
 RETIRED_ARTIFACT_COMMIT = "c43f39f556d057c99bb01e95ee7ca68658c05232"
 EXPECTED_ARCHIVE_SHA256 = "3067bca578201a39254d8544b633a04ff6a9e43fc0de2a2783a95ccde9a1bfcd"
-EXPECTED_MANIFEST_SHA256 = "627a09b0d5168c2c757f06dcfcfbb8ecc51b3127623e793e33201be02a67bafd"
+EXPECTED_MANIFEST_SHA256 = "1821ba8099fafb2ddd48dd75f0a6ee8abbb43d83d5fafda2de9319022750b9a2"
 EXPECTED_HELPER_SHA256 = "839588fe2930e1e673c507b05f7ccf15d7166329d66c1563775154cd7030d200"
 EXPECTED_MIGRATION_SHA256 = "992fbfe8086732e9bde10be89c3f52ddb4fef49edfdec12b744377c2e4181bbf"
 MIGRATION_RELATIVE_PATH = Path(
@@ -132,7 +132,7 @@ STAGE_APPROVAL_TOKEN = f"STAGE-BUYDTF-ALPHA-V5-{TARGET_COMMIT[:16]}"
 DEPLOY_APPROVAL_TOKEN = f"DEPLOY-BUYDTF-ALPHA-V5-{TARGET_COMMIT[:16]}"
 RECOVERY_APPROVAL_TOKEN = f"RECOVER-BUYDTF-ALPHA-V5-{TARGET_COMMIT[:16]}"
 
-CONTROL_FILES = {'production_alpha_scheduler_guard.py': '57bfd7848428ca59d021492e3a9106a1f8ce9bcae7d900a8127d456ac3c2c39a', 'production_alpha_process_scope_probe.php': '1dca015bffdaf4433ff00ecb0569faad0928c28a726b827f773d4cae4b4737c6', 'production_alpha_scheduler_probe.php': '91e81065a4add34e916674c2a7fcc3ebe5f867324ec350dc9220214102cf0d80', 'production_alpha_gate_controls.py': '2719da67c6d425e5fa4bef70aade0789aba1deccfaf09f8992c8674883c65c00', 'production_alpha_dependency_envelope.json': '04850fe3aef14981c92f5b2af373bd136cfb6fead456d86fcab7233acb009fd1', 'laravel_dependency_gate.py': 'b93c08f58a08333120369c1cc75c60631d621c3a8099ca3967065721c45679f5', 'laravel_nginx_identity.py': '1243fea2757aca89f586ec4b322b0d23ee1e19b2d027c21bd6523e71e6e6e8e0', 'laravel_fpm_opcache_probe.php': 'b8b34f87d45a0c000cc0df7917496631320cfbdcca1ff44bc41741ce0d569262'}
+CONTROL_FILES = {'production_alpha_scheduler_guard.py': 'd4334e0181ececbd76d140711998f1d143f648dc9a4de85f413f2083354b6489', 'production_alpha_process_scope_probe.php': '1dca015bffdaf4433ff00ecb0569faad0928c28a726b827f773d4cae4b4737c6', 'production_alpha_scheduler_probe.php': '91e81065a4add34e916674c2a7fcc3ebe5f867324ec350dc9220214102cf0d80', 'production_alpha_gate_controls.py': '2719da67c6d425e5fa4bef70aade0789aba1deccfaf09f8992c8674883c65c00', 'production_alpha_dependency_envelope.json': '04850fe3aef14981c92f5b2af373bd136cfb6fead456d86fcab7233acb009fd1', 'laravel_dependency_gate.py': 'b93c08f58a08333120369c1cc75c60631d621c3a8099ca3967065721c45679f5', 'laravel_nginx_identity.py': '1243fea2757aca89f586ec4b322b0d23ee1e19b2d027c21bd6523e71e6e6e8e0', 'laravel_fpm_opcache_probe.php': 'b8b34f87d45a0c000cc0df7917496631320cfbdcca1ff44bc41741ce0d569262'}
 
 DRAIN_SECONDS = 65
 OPCACHE_WAIT_SECONDS = 7
@@ -696,6 +696,11 @@ def scoped_processes(*, scope_receipts: list[dict[str, Any]] | None = None) -> l
             scoped = scoped or working_directory == APP_ROOT or is_relative_to(
                 working_directory, APP_ROOT
             )
+        except scheduler_controls.ConfirmedProcessExit as exit_proof:
+            if scope_receipts is not None:
+                scope_receipts.append({**exit_proof.receipt, "pid": exit_proof.receipt["identity"]["pid"],
+                    "scoped_conflict": False})
+            continue
         except (FileNotFoundError, ProcessLookupError):
             continue
         except (scheduler_controls.SchedulerError, PermissionError, ValueError, IndexError, UnicodeError) as error:

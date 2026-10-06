@@ -68,7 +68,16 @@ def run(linux_private: Path):
     require(opcache["status"] == "pass" and gate["status"] == "pass", "Gate/OPcache rehearsal failed.")
     require(all(case["complete_original_source"] == runner.source_controls.frozen_envelope()["source"]
                 for case in linux["scenarios"]), "Full original source restoration proof differs.")
-    require(all(case["foreign_process_unchanged"] for case in linux["scenarios"]), "Observed foreign process was changed.")
+    require(all(case["foreign_process_unchanged"] or (case["scenario"] in {"legacy-exit-before-fpm-read", "corrected-exit-before-fpm-read"}
+                and case["owned_fixture_completed_normally"] and len(case["exit_race_events"]) == 1
+                and case["exit_race_events"][0]["fixture_completion"]["normal_fixture_ipc_only"] is True)
+                for case in linux["scenarios"]), "Observed foreign process lifecycle differs from the fixture plan.")
+    exit_case = [case for case in linux["scenarios"] if case["scenario"] == "corrected-exit-before-fpm-read"]
+    require(len(exit_case) == 1 and exit_case[0]["rollback_complete"] and exit_case[0]["final_state_status"] == "rolled_back"
+        and len(exit_case[0]["confirmed_process_exits"]) == 1, "Complete fresh process-exit rollback proof is missing.")
+    legacy_exit = [case for case in linux["scenarios"] if case["scenario"] == "legacy-exit-before-fpm-read"]
+    require(len(legacy_exit) == 1 and legacy_exit[0]["final_state_status"] == "rollback_failed_site_gated"
+        and not legacy_exit[0]["rollback_complete"], "Pre-correction failure control did not reproduce.")
     require(sha(linux_private / "PRIVATE_MANIFEST.json") == linux["private_manifest_sha256"], "Linux private manifest differs.")
     private = json.loads((linux_private / "PRIVATE_MANIFEST.json").read_text())
     for row in private["entries"]:
@@ -93,6 +102,18 @@ def run(linux_private: Path):
     report = {"artifact": "buy-dtf-process-permission-local-correction-review-v1", "status": "ready_for_independent_review",
         "branch": git("branch", "--show-current", text=True).strip(),
         "accepted_base_commit": BASE, "local_closeout_commit": "a993584bcfed29c651f6ae5ee7dcb337ec5bf1d6",
+        "previous_local_correction_commit": "4ce447e4ac3712570d17ed334da03aec5adfe8a0",
+        "remaining_blocker_correction": "Validated FPM rejection followed by fresh bound kernel absence proof; live, unreadable and reused PIDs remain rejected",
+        "process_exit_race_proof": {"actor_uid": exit_case[0]["actor_uid"], "target_uid": exit_case[0]["target_uid"],
+            "real_fpm_status": exit_case[0]["exit_race_events"][0]["fpm_status"],
+            "fresh_kernel_proof": exit_case[0]["confirmed_process_exits"][0],
+            "pre_correction_state": legacy_exit[0]["final_state_status"],
+            "corrected_state": exit_case[0]["final_state_status"],
+            "rollback_complete": exit_case[0]["rollback_complete"],
+            "complete_original_source": exit_case[0]["complete_original_source"],
+            "maintenance_active_after": exit_case[0]["maintenance_active"],
+            "full_seven_second_waits": len(exit_case[0]["full_monotonic_wait_receipts"]),
+            "state_sha256": exit_case[0]["state_sha256"], "raw_evidence_private": True},
         "runner_sha256": runner_sha, "controls": controls,
         "runtime_helper_sha256": runner.EXPECTED_HELPER_SHA256,
         "log_parser_sha256": runner.EXPECTED_LOG_GUARD_SHA256,

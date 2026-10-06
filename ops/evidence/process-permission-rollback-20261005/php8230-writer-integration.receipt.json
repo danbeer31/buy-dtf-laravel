@@ -3,12 +3,12 @@
     "/mnt/c/tools/php8230/php.exe",
     "C:\\Users\\danie\\projects\\bdtf-alpha-process-permission-20261005\\ops\\deployment\\test_production_alpha_scheduler_probe.php",
     "\\\\wsl.localhost\\Ubuntu\\tmp\\buydtf-alpha-v3-build-a-20261004-r3",
-    "C:\\Users\\danie\\AppData\\Local\\Temp\\buydtf-writer-8230-j6tniq4o",
+    "C:\\Users\\danie\\AppData\\Local\\Temp\\buydtf-writer-8230-gpsrp50e",
     "C:\\Users\\danie\\projects\\bdtf-alpha-process-permission-20261005"
   ],
   "exit_code": 0,
   "scope": "local disposable validation; no production access",
   "status": "pass",
   "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-  "stdout_sha256": "3ee15e6044f45f18c0168b106090eab80d621b1c66bae218732be0058b448d1e"
+  "stdout_sha256": "8faf8c81fe6871dfa22ac93f195e6f7fbb474e3573abbc722b9fcfd1befb392b"
 }

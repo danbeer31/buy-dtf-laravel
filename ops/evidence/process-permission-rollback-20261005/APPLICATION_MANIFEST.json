@@ -204,6 +204,7 @@
     "maximum_process_scope_probes_per_observation": 8,
     "mutex_name_sha256": "a086c96c5fd6e5ba9e3e47ba418706400ad8928e2ea406688628a505d26b3eff",
     "php_executable": "/usr/bin/php8.2",
+    "process_exit_policy": "Validated target-unavailable FPM rejection requires two fresh PID-directory ENOENT checks under the same proc root; live, unreadable, partial and reused identities reject",
     "process_scope_probe_sha256": "1dca015bffdaf4433ff00ecb0569faad0928c28a726b827f773d4cae4b4737c6",
     "process_scope_probe_timeout_seconds": 5,
     "run_in_background": true,
@@ -220,6 +221,6 @@
     "worker_startup_poll_seconds": 1,
     "worker_startup_seconds": 10
   },
-  "scheduler_policy_sha256": "fb4bfa67e84249178e1be5c926b0f91ae5c0375cf59df0f7289253988c8e3927",
+  "scheduler_policy_sha256": "b86b2525ecd9430acafbf886358876a4fc3d57a8fe560f9740b5a162d1940020",
   "transparency_application_commit": "5b2d06cd66bd599d8a7ab1f5518790d414ee9874"
 }

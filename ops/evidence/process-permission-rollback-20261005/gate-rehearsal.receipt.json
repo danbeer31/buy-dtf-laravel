@@ -5,7 +5,7 @@
     "--parent",
     "/tmp",
     "--output",
-    "/tmp/buydtf-source-scheduler-gate-84vm_vdt/gate-rehearsal.json"
+    "/tmp/buydtf-source-scheduler-gate-eyfw0trb/gate-rehearsal.json"
   ],
   "exit_code": 0,
   "scope": "local disposable validation; no production access",

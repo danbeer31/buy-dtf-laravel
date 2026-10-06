@@ -27,6 +27,22 @@ class SchedulerError(RuntimeError):
     pass
 
 
+class ProcessScopeProbeRejected(SchedulerError):
+    """Only the pinned FPM helper's validated target-unavailable rejection."""
+
+    def __init__(self, response_sha256: str):
+        super().__init__("Read-only FPM process-scope target evidence rejected.")
+        self.response_sha256 = response_sha256
+
+
+class ConfirmedProcessExit(SchedulerError):
+    """Positive fresh kernel absence proof, retained by the calling observer."""
+
+    def __init__(self, receipt: dict[str, Any]):
+        super().__init__("Original process disappearance confirmed by fresh kernel checks.")
+        self.receipt = receipt
+
+
 TASK = "qbo:refresh-admin-cache"
 COMMAND_SHA256 = "5e5f803d8dcc65662d6a731cff510c28b61dece97d429bbf4f949099f7c9f5fd"
 MUTEX_SHA256 = "a086c96c5fd6e5ba9e3e47ba418706400ad8928e2ea406688628a505d26b3eff"
@@ -65,6 +81,7 @@ POLICY = {
     "process_scope_probe_sha256": "1dca015bffdaf4433ff00ecb0569faad0928c28a726b827f773d4cae4b4737c6",
     "process_scope_probe_timeout_seconds": 5,
     "maximum_process_scope_probes_per_observation": 8,
+    "process_exit_policy": "Validated target-unavailable FPM rejection requires two fresh PID-directory ENOENT checks under the same proc root; live, unreadable, partial and reused identities reject",
 }
 SOURCE_SHA256 = {
     "routes/console.php": "26aabb054889be1279c4c74c3e37c412e6de8a527864657b523fe983de03d444",
@@ -220,6 +237,43 @@ def _scope_path(value: Any) -> Path:
     return Path(value)
 
 
+def confirm_process_exit(entry: Path, identity: dict[str, Any], *, trigger: str,
+                         response_sha256: str | None = None) -> ConfirmedProcessExit:
+    """A missing fact or failed observer alone is never proof of disappearance.
+
+    Check the PID directory twice without Path.exists() (which hides access
+    failures), under a stable readable proc root. A present/reused PID fails
+    closed. No signals, environment reads, permission changes or retries.
+    """
+    checks = []
+    try:
+        parent = entry.parent.lstat()
+        if not stat.S_ISDIR(parent.st_mode):
+            raise SchedulerError("Process observation root is not a directory.")
+        for _ in range(2):
+            try:
+                entry.lstat()
+            except FileNotFoundError as error:
+                if error.errno != 2:
+                    raise SchedulerError("Process absence lookup has an unexpected error.") from error
+                current_parent = entry.parent.lstat()
+                if not stat.S_ISDIR(current_parent.st_mode) or (current_parent.st_dev, current_parent.st_ino) != (parent.st_dev, parent.st_ino):
+                    raise SchedulerError("Process observation root changed during absence checks.")
+                checks.append({"at_utc": datetime.now(timezone.utc).isoformat(),
+                    "monotonic_ns": time.monotonic_ns(), "pid_directory_errno": 2})
+                continue
+            current = _process_identity(entry)
+            if current != identity:
+                raise SchedulerError("Artisan PID reused or process identity changed after scope observation.")
+            raise SchedulerError("Original Artisan process remains live after scope observation failure.")
+    except (OSError, UnicodeError, ValueError, IndexError) as error:
+        raise SchedulerError("Process disappearance is unproven: live or unreadable kernel evidence.") from error
+    return ConfirmedProcessExit({"artifact": "buy-dtf-confirmed-process-exit-v1", "status": "confirmed_gone",
+        "identity": identity, "trigger": trigger, "response_sha256": response_sha256,
+        "method": "two_fresh_pid_directory_enoent_checks", "checks": checks,
+        "read_only": True, "environments_read": False, "process_or_permission_actions": False})
+
+
 def _unique_scope_object(pairs):
     value = {}
     for key, item in pairs:
@@ -280,6 +334,10 @@ class FpmProcessScopeReader:
                 headers, body = result.stdout.replace(b"\r\n", b"\n").split(b"\n\n", 1)
                 status_headers = re.findall(br"(?im)^Status:\s*([^\n]+)$", headers)
                 if status_headers and (len(status_headers) != 1 or re.fullmatch(br"200(?:\s+OK)?", status_headers[0]) is None):
+                    if len(status_headers) == 1 and re.fullmatch(br"503(?:\s+Service Unavailable)?", status_headers[0]):
+                        rejected = json.loads(body.decode("utf-8", errors="strict"), object_pairs_hook=_unique_scope_object)
+                        if isinstance(rejected, dict) and set(rejected) == {"artifact", "status", "reason", "read_only"} and rejected["artifact"] == "buy-dtf-process-scope-v1" and rejected["status"] == "rejected" and rejected["reason"] == "Process scope evidence unavailable or malformed." and rejected["read_only"] is True:
+                            raise ProcessScopeProbeRejected(hashlib.sha256(result.stdout).hexdigest())
                     raise SchedulerError("Read-only FPM process-scope probe rejected evidence.")
                 receipt = json.loads(body.decode("utf-8", errors="strict"), object_pairs_hook=_unique_scope_object)
                 required = {"artifact", "status", "nonce", "identity", "working_directory", "executable",
@@ -317,13 +375,21 @@ def resolve_process_scope(entry: Path, raw: bytes, scope_reader=None) -> tuple[d
     except PermissionError as error:
         if identity["uid"] != 33 or scope_reader is None:
             raise SchedulerError("Unreadable Artisan process scope has no validated UID 33 observer.") from error
-        receipt = scope_reader(identity)
+        try:
+            receipt = scope_reader(identity)
+        except ProcessScopeProbeRejected as rejected:
+            raise confirm_process_exit(entry, identity, trigger="validated_fpm_target_unavailable_rejection",
+                response_sha256=rejected.response_sha256) from rejected
         if not isinstance(receipt, dict) or receipt.get("identity") != identity or receipt.get("status") != "pass" or receipt.get("observer_uid") != 33 or type(receipt.get("observer_uid")) is not int or receipt.get("observer_gid") != 33 or type(receipt.get("observer_gid")) is not int or receipt.get("read_only") is not True or receipt.get("environments_read") is not False or receipt.get("process_or_permission_actions") is not False:
             raise SchedulerError("UID 33 process scope evidence is missing or mismatched.")
         cwd = _scope_path(receipt.get("working_directory"))
         executable = str(_scope_path(receipt.get("executable")))
         source = "read_only_fpm_uid_33"
-    if _process_identity(entry) != identity:
+    try:
+        after = _process_identity(entry)
+    except (FileNotFoundError, ProcessLookupError) as error:
+        raise confirm_process_exit(entry, identity, trigger="kernel_identity_unavailable_after_success") from error
+    if after != identity:
         raise SchedulerError("Artisan process identity changed during scope observation.")
     return identity, cwd, executable, source
 
@@ -343,6 +409,7 @@ def process_envelope(payload: dict[str, Any], application_root: Path, *,
     row = validate_identity(payload)
     processes = []
     excluded = []
+    exited = []
     scope_probes = 0
     workers = 0
     hz = os.sysconf("SC_CLK_TCK") if ticks_per_second is None else ticks_per_second
@@ -406,6 +473,8 @@ def process_envelope(payload: dict[str, Any], application_root: Path, *,
                 "argv_sha256": hashlib.sha256(raw).hexdigest(), "executable": executable,
                 "working_directory": str(cwd), "age_seconds": round(age, 6),
                 "start_ticks": identity["start_ticks"], "scope_source": scope_source})
+        except ConfirmedProcessExit as exit_proof:
+            exited.append(exit_proof.receipt)
         except (FileNotFoundError, ProcessLookupError):
             continue  # A process can finish during this read-only observation.
         except (UnicodeError, ValueError, IndexError, PermissionError) as error:
@@ -414,6 +483,7 @@ def process_envelope(payload: dict[str, Any], application_root: Path, *,
         raise SchedulerError("More than one QBO scheduled worker is active.")
     return {"status": "pass", "read_only": True, "processes": sorted(processes, key=lambda item: item["pid"]),
             "verified_outside_application": sorted(excluded, key=lambda item: item["pid"]),
+            "confirmed_process_exits": sorted(exited, key=lambda item: item["identity"]["pid"]),
             "uid_33_scope_probes": scope_probes,
             "environments_read": False, "mutex_or_task_actions": False}
 

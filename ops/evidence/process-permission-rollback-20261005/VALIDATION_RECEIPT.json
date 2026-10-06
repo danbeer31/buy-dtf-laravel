@@ -13,7 +13,7 @@
         "--parent",
         "/tmp",
         "--output",
-        "/tmp/buydtf-source-scheduler-gate-84vm_vdt/gate-rehearsal.json"
+        "/tmp/buydtf-source-scheduler-gate-eyfw0trb/gate-rehearsal.json"
       ],
       "exit_code": 0,
       "scope": "local disposable validation; no production access",
@@ -30,14 +30,14 @@
         "/mnt/c/tools/php8230/php.exe",
         "C:\\Users\\danie\\projects\\bdtf-alpha-process-permission-20261005\\ops\\deployment\\test_production_alpha_scheduler_probe.php",
         "\\\\wsl.localhost\\Ubuntu\\tmp\\buydtf-alpha-v3-build-a-20261004-r3",
-        "C:\\Users\\danie\\AppData\\Local\\Temp\\buydtf-writer-8230-j6tniq4o",
+        "C:\\Users\\danie\\AppData\\Local\\Temp\\buydtf-writer-8230-gpsrp50e",
         "C:\\Users\\danie\\projects\\bdtf-alpha-process-permission-20261005"
       ],
       "exit_code": 0,
       "scope": "local disposable validation; no production access",
       "status": "pass",
       "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "stdout_sha256": "3ee15e6044f45f18c0168b106090eab80d621b1c66bae218732be0058b448d1e"
+      "stdout_sha256": "8faf8c81fe6871dfa22ac93f195e6f7fbb474e3573abbc722b9fcfd1befb392b"
     },
     "python-tests": {
       "argv": [
@@ -56,7 +56,7 @@
       "exit_code": 0,
       "scope": "local disposable validation; no production access",
       "status": "pass",
-      "stderr_sha256": "bd6a45c1ab73bac2b94c2af594f09bf088bce5f0d67b5bff01a821bb0b509c85",
+      "stderr_sha256": "1c0843c79e091f92091a531a140fbbc75883a30f9952ccb9fba9766e413faa9f",
       "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     "real-writer-integration": {
@@ -64,14 +64,14 @@
         "/usr/bin/php",
         "ops/deployment/test_production_alpha_scheduler_probe.php",
         "/tmp/buydtf-alpha-v3-build-a-20261004-r3",
-        "/tmp/buydtf-scheduler-writer-tk4ot5t4",
+        "/tmp/buydtf-scheduler-writer-8z3j6ss7",
         "/mnt/c/Users/danie/projects/bdtf-alpha-process-permission-20261005"
       ],
       "exit_code": 0,
       "scope": "local disposable validation; no production access",
       "status": "pass",
       "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "stdout_sha256": "03998a9b322644e354e28c1be745c55c0674e32542aee95be0868b2bb9b31d28"
+      "stdout_sha256": "6c6e9911b656a53ae53b9f322b5499dec7ed6eb97697952fb96c1dcd4861d816"
     },
     "scheduler-rehearsal": {
       "argv": [
@@ -84,7 +84,7 @@
       "scope": "local disposable validation; no production access",
       "status": "pass",
       "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "stdout_sha256": "707c5ea779644c95653b8e6b7fb2e7d48128a4561cecf652cffdcd3ef2376a4d"
+      "stdout_sha256": "3685c94ad8ca0b35c19cc874bf3919635d23949d0e059a28ab2c0da3102ab353"
     },
     "source-rehearsal": {
       "argv": [
@@ -97,12 +97,12 @@
       "scope": "local disposable validation; no production access",
       "status": "pass",
       "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "stdout_sha256": "3cd59c66e54b0d04c3c306877c30e114ec748ed254f5d87929490461bd3fccbc"
+      "stdout_sha256": "ad1a2681c5a38c57ca8b4e5a7fda6a0ab7a5424035c97bae5b5a034d405560f6"
     }
   },
-  "runner_sha256": "50551f24c04bff7ed2a918463c539351a0c5c3bcf2a8990afade9d0994b71584",
+  "runner_sha256": "15add24297007e11143dcbc63bc8fc3d8c97ce991102bee07f38e815393923fd",
   "runtime_probe_sha256": "839588fe2930e1e673c507b05f7ccf15d7166329d66c1563775154cd7030d200",
-  "scheduler_guard_sha256": "57bfd7848428ca59d021492e3a9106a1f8ce9bcae7d900a8127d456ac3c2c39a",
+  "scheduler_guard_sha256": "d4334e0181ececbd76d140711998f1d143f648dc9a4de85f413f2083354b6489",
   "scheduler_probe_sha256": "91e81065a4add34e916674c2a7fcc3ebe5f867324ec350dc9220214102cf0d80",
   "scope": "local operations-only correction",
   "status": "pass"

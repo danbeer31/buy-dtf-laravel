@@ -5,8 +5,8 @@
   "final_receipt_sha256": null,
   "final_state_status": "rolled_back",
   "fpm_checkpoint_receipt": {
-    "path": "/tmp/buy-dtf-alpha-rehearsal-83xihw0q/buy-dtf-alpha-rollback-with-normal-qbo-pmxit286/rollbacks/b02fce32-20261006T001501Z/fpm-opcache-before-source-mutation-receipt.json",
-    "sha256": "933649b9c595f067ccfc8513eef52f23488f1744fbec4f0519f44488f1b7098c"
+    "path": "/tmp/buy-dtf-alpha-rehearsal-tujabq00/buy-dtf-alpha-rollback-with-normal-qbo-tnjws45c/rollbacks/b02fce32-20261006T010710Z/fpm-opcache-before-source-mutation-receipt.json",
+    "sha256": "90d5058fcb01f78112664704723dd970a8ed28b798b99a62a98abfd5fe6e5a19"
   },
   "front_controller_mode": "0o644",
   "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
@@ -38,7 +38,7 @@
           "mode": 420,
           "uid": 1000
         },
-        "path": "/tmp/buy-dtf-alpha-rehearsal-83xihw0q/buy-dtf-alpha-rollback-with-normal-qbo-pmxit286/application/public/index.php",
+        "path": "/tmp/buy-dtf-alpha-rehearsal-tujabq00/buy-dtf-alpha-rollback-with-normal-qbo-tnjws45c/application/public/index.php",
         "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
       },
       "identity_before": {
@@ -49,7 +49,7 @@
           "mode": 420,
           "uid": 1000
         },
-        "path": "/tmp/buy-dtf-alpha-rehearsal-83xihw0q/buy-dtf-alpha-rollback-with-normal-qbo-pmxit286/application/public/index.php",
+        "path": "/tmp/buy-dtf-alpha-rehearsal-tujabq00/buy-dtf-alpha-rollback-with-normal-qbo-tnjws45c/application/public/index.php",
         "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
       },
       "operation": "cutover-static-gate",
@@ -98,7 +98,7 @@
           "mode": 420,
           "uid": 1000
         },
-        "path": "/tmp/buy-dtf-alpha-rehearsal-83xihw0q/buy-dtf-alpha-rollback-with-normal-qbo-pmxit286/application/public/index.php",
+        "path": "/tmp/buy-dtf-alpha-rehearsal-tujabq00/buy-dtf-alpha-rollback-with-normal-qbo-tnjws45c/application/public/index.php",
         "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
       },
       "identity_before": {
@@ -109,7 +109,7 @@
           "mode": 420,
           "uid": 1000
         },
-        "path": "/tmp/buy-dtf-alpha-rehearsal-83xihw0q/buy-dtf-alpha-rollback-with-normal-qbo-pmxit286/application/public/index.php",
+        "path": "/tmp/buy-dtf-alpha-rehearsal-tujabq00/buy-dtf-alpha-rollback-with-normal-qbo-tnjws45c/application/public/index.php",
         "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
       },
       "operation": "rollback-static-gate",
@@ -158,7 +158,7 @@
           "mode": 420,
           "uid": 1000
         },
-        "path": "/tmp/buy-dtf-alpha-rehearsal-83xihw0q/buy-dtf-alpha-rollback-with-normal-qbo-pmxit286/application/public/index.php",
+        "path": "/tmp/buy-dtf-alpha-rehearsal-tujabq00/buy-dtf-alpha-rollback-with-normal-qbo-tnjws45c/application/public/index.php",
         "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
       },
       "identity_before": {
@@ -169,7 +169,7 @@
           "mode": 420,
           "uid": 1000
         },
-        "path": "/tmp/buy-dtf-alpha-rehearsal-83xihw0q/buy-dtf-alpha-rollback-with-normal-qbo-pmxit286/application/public/index.php",
+        "path": "/tmp/buy-dtf-alpha-rehearsal-tujabq00/buy-dtf-alpha-rollback-with-normal-qbo-tnjws45c/application/public/index.php",
         "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
       },
       "operation": "rollback-original-front-controller-restore",
@@ -204,8 +204,8 @@
   "post_mutation_fpm_fallback_count": 0,
   "prohibited_command_count": 0,
   "raw_evidence_entries": 32,
-  "raw_evidence_manifest_sha256": "dcc2d53ea772d654293c7cfe8f6e5ec94805be7f48cec2738baf41ed805b79d7",
-  "raw_state_directory_name": "b02fce32-20261006T001501Z",
+  "raw_evidence_manifest_sha256": "04c939304c2d3d16b7f516072e045916bc5121626a6548c139222e75736c88f4",
+  "raw_state_directory_name": "b02fce32-20261006T010710Z",
   "rollback_complete": true,
   "scenario": "rollback-with-normal-qbo",
   "scheduler_observation_receipts": [
@@ -225,8 +225,9 @@
       },
       "phase": "rollback",
       "policy": "bounded_reviewed_qbo_only",
-      "policy_sha256": "fb4bfa67e84249178e1be5c926b0f91ae5c0375cf59df0f7289253988c8e3927",
+      "policy_sha256": "b86b2525ecd9430acafbf886358876a4fc3d57a8fe560f9740b5a162d1940020",
       "process_envelope": {
+        "confirmed_process_exits": [],
         "environments_read": false,
         "mutex_or_task_actions": false,
         "processes": [],
@@ -237,12 +238,12 @@
           {
             "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
             "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-            "pid": 70289,
+            "pid": 71772,
             "scope": "verified_outside_application",
             "scope_source": "native_proc_observation",
-            "start_ticks": 12233022,
+            "start_ticks": 12521960,
             "uid": 33,
-            "working_directory_sha256": "d3758440399bee83e94beadcc155d5669afabaea34751ef4e3dfc630e5defa61"
+            "working_directory_sha256": "eef2dc7433b1e426700e1c2e07a8d07fa0f681bc2b0a9c6d532e66dab97f27dc"
           }
         ]
       },
@@ -270,8 +271,9 @@
       },
       "phase": "rollback",
       "policy": "bounded_reviewed_qbo_only",
-      "policy_sha256": "fb4bfa67e84249178e1be5c926b0f91ae5c0375cf59df0f7289253988c8e3927",
+      "policy_sha256": "b86b2525ecd9430acafbf886358876a4fc3d57a8fe560f9740b5a162d1940020",
       "process_envelope": {
+        "confirmed_process_exits": [],
         "environments_read": false,
         "mutex_or_task_actions": false,
         "processes": [],
@@ -282,12 +284,12 @@
           {
             "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
             "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-            "pid": 70289,
+            "pid": 71772,
             "scope": "verified_outside_application",
             "scope_source": "native_proc_observation",
-            "start_ticks": 12233022,
+            "start_ticks": 12521960,
             "uid": 33,
-            "working_directory_sha256": "d3758440399bee83e94beadcc155d5669afabaea34751ef4e3dfc630e5defa61"
+            "working_directory_sha256": "eef2dc7433b1e426700e1c2e07a8d07fa0f681bc2b0a9c6d532e66dab97f27dc"
           }
         ]
       },
@@ -313,8 +315,9 @@
       },
       "phase": "rollback",
       "policy": "bounded_reviewed_qbo_only",
-      "policy_sha256": "fb4bfa67e84249178e1be5c926b0f91ae5c0375cf59df0f7289253988c8e3927",
+      "policy_sha256": "b86b2525ecd9430acafbf886358876a4fc3d57a8fe560f9740b5a162d1940020",
       "process_envelope": {
+        "confirmed_process_exits": [],
         "environments_read": false,
         "mutex_or_task_actions": false,
         "processes": [],
@@ -325,12 +328,12 @@
           {
             "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
             "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-            "pid": 70289,
+            "pid": 71772,
             "scope": "verified_outside_application",
             "scope_source": "native_proc_observation",
-            "start_ticks": 12233022,
+            "start_ticks": 12521960,
             "uid": 33,
-            "working_directory_sha256": "d3758440399bee83e94beadcc155d5669afabaea34751ef4e3dfc630e5defa61"
+            "working_directory_sha256": "eef2dc7433b1e426700e1c2e07a8d07fa0f681bc2b0a9c6d532e66dab97f27dc"
           }
         ]
       },
@@ -348,8 +351,9 @@
       "pending": null,
       "phase": "rollback",
       "policy": "bounded_reviewed_qbo_only",
-      "policy_sha256": "fb4bfa67e84249178e1be5c926b0f91ae5c0375cf59df0f7289253988c8e3927",
+      "policy_sha256": "b86b2525ecd9430acafbf886358876a4fc3d57a8fe560f9740b5a162d1940020",
       "process_envelope": {
+        "confirmed_process_exits": [],
         "environments_read": false,
         "mutex_or_task_actions": false,
         "processes": [],
@@ -360,12 +364,12 @@
           {
             "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
             "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-            "pid": 70289,
+            "pid": 71772,
             "scope": "verified_outside_application",
             "scope_source": "native_proc_observation",
-            "start_ticks": 12233022,
+            "start_ticks": 12521960,
             "uid": 33,
-            "working_directory_sha256": "d3758440399bee83e94beadcc155d5669afabaea34751ef4e3dfc630e5defa61"
+            "working_directory_sha256": "eef2dc7433b1e426700e1c2e07a8d07fa0f681bc2b0a9c6d532e66dab97f27dc"
           }
         ]
       },
@@ -385,6 +389,6 @@
   "source_cas_sha256": "0ceca182384a8e68560ec542c0c2c0c695971b8488321ca0899ea7a880d6fd17",
   "source_expectation": "expected-live",
   "source_install_started": true,
-  "state_sha256": "17fd85aa8e0c9f5ba0ea1f1a84b91762df8ff9e20cb358018c82fc0f3aae0f97",
+  "state_sha256": "48a68db5973b48e4fda754dad48b5a2d21cba2b34a3f5174301460fd1d3ed5d7",
   "status": "pass"
 }

@@ -5,8 +5,8 @@
   "final_receipt_sha256": null,
   "final_state_status": "rolled_back",
   "fpm_checkpoint_receipt": {
-    "path": "/tmp/buy-dtf-alpha-rehearsal-83xihw0q/buy-dtf-alpha-source-swap-failure-oerhz1ax/rollbacks/b02fce32-20261006T001449Z/fpm-opcache-before-source-mutation-receipt.json",
-    "sha256": "683147f8849f98ff9d6d2b18009d40b0a8c8630e8db11b8297f0334134fc8391"
+    "path": "/tmp/buy-dtf-alpha-rehearsal-tujabq00/buy-dtf-alpha-source-swap-failure-w751pugr/rollbacks/b02fce32-20261006T010654Z/fpm-opcache-before-source-mutation-receipt.json",
+    "sha256": "3f44c577aedffb6429646811f6d149d5755ec908c476bfe5f89fbc7e40a5519f"
   },
   "front_controller_mode": "0o644",
   "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
@@ -38,7 +38,7 @@
           "mode": 420,
           "uid": 1000
         },
-        "path": "/tmp/buy-dtf-alpha-rehearsal-83xihw0q/buy-dtf-alpha-source-swap-failure-oerhz1ax/application/public/index.php",
+        "path": "/tmp/buy-dtf-alpha-rehearsal-tujabq00/buy-dtf-alpha-source-swap-failure-w751pugr/application/public/index.php",
         "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
       },
       "identity_before": {
@@ -49,7 +49,7 @@
           "mode": 420,
           "uid": 1000
         },
-        "path": "/tmp/buy-dtf-alpha-rehearsal-83xihw0q/buy-dtf-alpha-source-swap-failure-oerhz1ax/application/public/index.php",
+        "path": "/tmp/buy-dtf-alpha-rehearsal-tujabq00/buy-dtf-alpha-source-swap-failure-w751pugr/application/public/index.php",
         "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
       },
       "operation": "cutover-static-gate",
@@ -98,7 +98,7 @@
           "mode": 420,
           "uid": 1000
         },
-        "path": "/tmp/buy-dtf-alpha-rehearsal-83xihw0q/buy-dtf-alpha-source-swap-failure-oerhz1ax/application/public/index.php",
+        "path": "/tmp/buy-dtf-alpha-rehearsal-tujabq00/buy-dtf-alpha-source-swap-failure-w751pugr/application/public/index.php",
         "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
       },
       "identity_before": {
@@ -109,7 +109,7 @@
           "mode": 420,
           "uid": 1000
         },
-        "path": "/tmp/buy-dtf-alpha-rehearsal-83xihw0q/buy-dtf-alpha-source-swap-failure-oerhz1ax/application/public/index.php",
+        "path": "/tmp/buy-dtf-alpha-rehearsal-tujabq00/buy-dtf-alpha-source-swap-failure-w751pugr/application/public/index.php",
         "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
       },
       "operation": "rollback-static-gate",
@@ -158,7 +158,7 @@
           "mode": 420,
           "uid": 1000
         },
-        "path": "/tmp/buy-dtf-alpha-rehearsal-83xihw0q/buy-dtf-alpha-source-swap-failure-oerhz1ax/application/public/index.php",
+        "path": "/tmp/buy-dtf-alpha-rehearsal-tujabq00/buy-dtf-alpha-source-swap-failure-w751pugr/application/public/index.php",
         "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
       },
       "identity_before": {
@@ -169,7 +169,7 @@
           "mode": 420,
           "uid": 1000
         },
-        "path": "/tmp/buy-dtf-alpha-rehearsal-83xihw0q/buy-dtf-alpha-source-swap-failure-oerhz1ax/application/public/index.php",
+        "path": "/tmp/buy-dtf-alpha-rehearsal-tujabq00/buy-dtf-alpha-source-swap-failure-w751pugr/application/public/index.php",
         "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
       },
       "operation": "rollback-original-front-controller-restore",
@@ -204,30 +204,42 @@
   "post_mutation_fpm_fallback_count": 0,
   "prohibited_command_count": 0,
   "raw_evidence_entries": 30,
-  "raw_evidence_manifest_sha256": "7c4a735bf9e556fe877b95843fbd771058640625a25de0ab177f4ccebfdea38b",
-  "raw_state_directory_name": "b02fce32-20261006T001449Z",
+  "raw_evidence_manifest_sha256": "6fd5bd36e42f4d5c1295defe1c581b1644409d4c3bd86cd516179b584e854b03",
+  "raw_state_directory_name": "b02fce32-20261006T010654Z",
   "rollback_complete": true,
   "scenario": "source-swap-failure",
   "scheduler_observation_receipts": [
     {
       "active": false,
-      "last_success_unix": 1791245412,
-      "monotonic_ns": 1791245690000000000,
-      "observed_at_utc": "2026-10-06T00:14:50Z",
+      "last_success_unix": 1791248412,
+      "monotonic_ns": 1791248815000000000,
+      "observed_at_utc": "2026-10-06T01:06:55Z",
       "pending": null,
       "phase": "rollback",
       "policy": "bounded_reviewed_qbo_only",
-      "policy_sha256": "fb4bfa67e84249178e1be5c926b0f91ae5c0375cf59df0f7289253988c8e3927",
+      "policy_sha256": "b86b2525ecd9430acafbf886358876a4fc3d57a8fe560f9740b5a162d1940020",
       "process_envelope": {
+        "confirmed_process_exits": [],
         "environments_read": false,
         "mutex_or_task_actions": false,
         "processes": [],
         "read_only": true,
         "status": "pass",
         "uid_33_scope_probes": 0,
-        "verified_outside_application": []
+        "verified_outside_application": [
+          {
+            "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
+            "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
+            "pid": 71772,
+            "scope": "verified_outside_application",
+            "scope_source": "native_proc_observation",
+            "start_ticks": 12521960,
+            "uid": 33,
+            "working_directory_sha256": "eef2dc7433b1e426700e1c2e07a8d07fa0f681bc2b0a9c6d532e66dab97f27dc"
+          }
+        ]
       },
-      "scheduler_snapshot_sha256": "027948bf5a707f8c1ce7ac74021bbce4fe483eebd3e1527c0c4bc50624bf5517",
+      "scheduler_snapshot_sha256": "ffb0a976367c01559eaea739123562fb63a8064eb0929855ff937e4e556c585c",
       "sequence": 1,
       "status": "pass",
       "task": "qbo:refresh-admin-cache",
@@ -235,23 +247,35 @@
     },
     {
       "active": false,
-      "last_success_unix": 1791245412,
-      "monotonic_ns": 1791245690000000000,
-      "observed_at_utc": "2026-10-06T00:14:50Z",
+      "last_success_unix": 1791248412,
+      "monotonic_ns": 1791248815000000000,
+      "observed_at_utc": "2026-10-06T01:06:55Z",
       "pending": null,
       "phase": "rollback",
       "policy": "bounded_reviewed_qbo_only",
-      "policy_sha256": "fb4bfa67e84249178e1be5c926b0f91ae5c0375cf59df0f7289253988c8e3927",
+      "policy_sha256": "b86b2525ecd9430acafbf886358876a4fc3d57a8fe560f9740b5a162d1940020",
       "process_envelope": {
+        "confirmed_process_exits": [],
         "environments_read": false,
         "mutex_or_task_actions": false,
         "processes": [],
         "read_only": true,
         "status": "pass",
         "uid_33_scope_probes": 0,
-        "verified_outside_application": []
+        "verified_outside_application": [
+          {
+            "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
+            "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
+            "pid": 71772,
+            "scope": "verified_outside_application",
+            "scope_source": "native_proc_observation",
+            "start_ticks": 12521960,
+            "uid": 33,
+            "working_directory_sha256": "eef2dc7433b1e426700e1c2e07a8d07fa0f681bc2b0a9c6d532e66dab97f27dc"
+          }
+        ]
       },
-      "scheduler_snapshot_sha256": "027948bf5a707f8c1ce7ac74021bbce4fe483eebd3e1527c0c4bc50624bf5517",
+      "scheduler_snapshot_sha256": "ffb0a976367c01559eaea739123562fb63a8064eb0929855ff937e4e556c585c",
       "sequence": 2,
       "status": "pass",
       "task": "qbo:refresh-admin-cache",
@@ -259,23 +283,35 @@
     },
     {
       "active": false,
-      "last_success_unix": 1791245412,
-      "monotonic_ns": 1791245690000000000,
-      "observed_at_utc": "2026-10-06T00:14:50Z",
+      "last_success_unix": 1791248412,
+      "monotonic_ns": 1791248815000000000,
+      "observed_at_utc": "2026-10-06T01:06:55Z",
       "pending": null,
       "phase": "rollback",
       "policy": "bounded_reviewed_qbo_only",
-      "policy_sha256": "fb4bfa67e84249178e1be5c926b0f91ae5c0375cf59df0f7289253988c8e3927",
+      "policy_sha256": "b86b2525ecd9430acafbf886358876a4fc3d57a8fe560f9740b5a162d1940020",
       "process_envelope": {
+        "confirmed_process_exits": [],
         "environments_read": false,
         "mutex_or_task_actions": false,
         "processes": [],
         "read_only": true,
         "status": "pass",
         "uid_33_scope_probes": 0,
-        "verified_outside_application": []
+        "verified_outside_application": [
+          {
+            "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
+            "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
+            "pid": 71772,
+            "scope": "verified_outside_application",
+            "scope_source": "native_proc_observation",
+            "start_ticks": 12521960,
+            "uid": 33,
+            "working_directory_sha256": "eef2dc7433b1e426700e1c2e07a8d07fa0f681bc2b0a9c6d532e66dab97f27dc"
+          }
+        ]
       },
-      "scheduler_snapshot_sha256": "027948bf5a707f8c1ce7ac74021bbce4fe483eebd3e1527c0c4bc50624bf5517",
+      "scheduler_snapshot_sha256": "ffb0a976367c01559eaea739123562fb63a8064eb0929855ff937e4e556c585c",
       "sequence": 3,
       "status": "pass",
       "task": "qbo:refresh-admin-cache",
@@ -288,6 +324,6 @@
   "source_cas_sha256": "0ceca182384a8e68560ec542c0c2c0c695971b8488321ca0899ea7a880d6fd17",
   "source_expectation": "expected-live",
   "source_install_started": true,
-  "state_sha256": "e609448d4f889e366f19cfbc6f64e8ca2a0396d1229bf0f4d2203aa295b32b1e",
+  "state_sha256": "6e8db74b7885136f98c64472925ed3a382baa1ed13ce089b6d3ef83ec6e28434",
   "status": "pass"
 }
