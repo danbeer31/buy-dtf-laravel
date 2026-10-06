@@ -1,0 +1,16 @@
+{
+  "actual_metadata_contains_kind_file": true,
+  "artifact": "buy-dtf-v6-proof-metadata-regression-v1",
+  "corrected_bytes_restored": true,
+  "corrected_runner_sha256": "4ec63506a90b0aa3e7588a7e7de345e8db449acf5b94d1852edb19bcf264f278",
+  "exit_code": 1,
+  "failure": "Production FPM prerequisite evidence is not private or receipt-bound.",
+  "path_metadata_mocked": false,
+  "prior_commit": "d684b894d4d5555fc7468b37f7d41bd922c41c24",
+  "prior_runner_sha256": "daa271588abd5078d54f290a8fffff4ac758be9b799b8585270712c9417b1826",
+  "production_accessed": false,
+  "regression": "fresh V6 stage receipt through real validator as UID/GID 1000",
+  "status": "expected_pre_correction_failure_reproduced",
+  "stderr_sha256": "13c3c19ee979e450c8cd84b54832a36185f039d75bf8958771c0ad078cec204d",
+  "validate_release_receipt_mocked": false
+}

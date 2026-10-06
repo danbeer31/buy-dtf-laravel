@@ -44,6 +44,23 @@ def run():
     receipts["scheduler-rehearsal"] = command("scheduler-rehearsal", [sys.executable, "ops/deployment/rehearse_production_alpha_scheduler.py", "--output", str(EVIDENCE / "scheduler-rehearsal")])
     modules = ["test_production_alpha_activation", "test_production_alpha_process_scope", "test_production_alpha_scheduler", "test_production_alpha_transparency_runner", "test_production_alpha_gate_controls", "test_production_alpha_nginx_inventory", "test_laravel_log_guard", "test_laravel_dependency_gate"]
     receipts["python-tests"] = command("python-tests", [sys.executable, "-m", "unittest", "-v", *modules], ROOT / "ops/deployment")
+    validation_records = [json.loads(line.removeprefix("V6_RECEIPT_VALIDATION "))
+        for line in (EVIDENCE / "python-tests.stdout.txt").read_text().splitlines()
+        if line.startswith("V6_RECEIPT_VALIDATION ")]
+    passing = [value for value in validation_records if value["status"] == "pass"]
+    rejected = [value for value in validation_records if value["status"] == "rejected"]
+    expected_metadata = {"kind": "file", "uid": 1000, "gid": 1000, "mode": 0o600}
+    if len(passing) != 23 or len(rejected) != 22 or any(value["actor_uid"] != 1000 or value["actor_gid"] != 1000 for value in validation_records):
+        raise RuntimeError("Actual UID/GID 1000 staging-receipt validation coverage is incomplete")
+    if any(value["proof_metadata"] != {key: expected_metadata for key in ("activation_fpm", "activation_fpm_after")} for value in passing):
+        raise RuntimeError("Fresh proof-file metadata did not pass the real validator")
+    write(EVIDENCE / "fresh-v6-receipt-validation.json", {"status": "pass",
+        "runner_sha256": sha(ROOT / "ops/deployment/production_alpha_transparency_deploy.py"),
+        "fresh_receipts": len(passing), "negative_cases": len(rejected), "records": validation_records,
+        "stage_release_mocked": False, "validate_release_receipt_mocked": False, "path_metadata_mocked": False,
+        "scope": "disposable Linux staging receipts with real UID/GID, bytes and filesystem metadata",
+        "external_production_observations": "explicit local doubles", "production_accessed": False})
+    receipts["fresh-v6-receipt-validation"] = {"status": "pass", "fresh_receipts": len(passing), "negative_cases": len(rejected)}
     with tempfile.TemporaryDirectory(prefix="buydtf-scheduler-writer-") as temporary:
         receipts["real-writer-integration"] = command("real-writer-integration", ["/usr/bin/php", "ops/deployment/test_production_alpha_scheduler_probe.php", "/tmp/buydtf-alpha-v3-build-a-20261004-r3", temporary, str(ROOT)])
         write(EVIDENCE / "real-writer-integration.json", json.loads((EVIDENCE / "real-writer-integration.stdout.txt").read_text()))

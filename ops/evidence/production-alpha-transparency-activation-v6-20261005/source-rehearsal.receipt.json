@@ -9,5 +9,5 @@
   "scope": "local disposable validation; no production access",
   "status": "pass",
   "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-  "stdout_sha256": "7cb1dbacacfff31d55aca1f23ca09e4773d60862b859d0bbca7ba1a9cfa68aba"
+  "stdout_sha256": "71f819ccd42390b2a7da6ca598ded5fcb7476a318231e9c81d9b38fad4a124d7"
 }

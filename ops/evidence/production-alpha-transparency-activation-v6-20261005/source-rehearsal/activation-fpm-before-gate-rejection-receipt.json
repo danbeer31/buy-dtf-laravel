@@ -20,8 +20,8 @@
   "post_mutation_fpm_fallback_count": 0,
   "prohibited_command_count": 0,
   "raw_evidence_entries": 15,
-  "raw_evidence_manifest_sha256": "49dfa4c77faadc9c8351e2c1307990343e36f04dc6337b6cf236d0040210d038",
-  "raw_state_directory_name": "b02fce32-20261006T014823Z",
+  "raw_evidence_manifest_sha256": "ce4bb434adf4d2bb6ea9d7b6f33a905f9dfd63cb8cbe1b3d5a9a2d8e9ef3931a",
+  "raw_state_directory_name": "b02fce32-20261006T020544Z",
   "rollback_complete": false,
   "scenario": "activation-fpm-before-gate-rejection",
   "scheduler_observation_receipts": [],
@@ -31,6 +31,6 @@
   "source_cas_sha256": "0ceca182384a8e68560ec542c0c2c0c695971b8488321ca0899ea7a880d6fd17",
   "source_expectation": "expected-live",
   "source_install_started": false,
-  "state_sha256": "3f35bcd578ab02e1412d455f62b6f7371f22b346ec9e91d484a6482bb458e901",
+  "state_sha256": "440bd91e9d6184316d0abec4df83e2b654d1a627129c0e9e419767c1d2b6ea04",
   "status": "pass"
 }

@@ -1781,7 +1781,7 @@ def validate_release_receipt(
         item = receipt.get(key, {})
         proof_path = Path(str(item.get("path", "")))
         require_regular_file(proof_path, str(item.get("sha256", "")))
-        if not is_relative_to(proof_path.resolve(strict=True), release / "evidence") or path_metadata(proof_path) != {"uid": 1000, "gid": 1000, "mode": 0o600}:
+        if not is_relative_to(proof_path.resolve(strict=True), release / "evidence") or path_metadata(proof_path) != {"kind": "file", "uid": 1000, "gid": 1000, "mode": 0o600}:
             raise DeploymentError("Production FPM prerequisite evidence is not private or receipt-bound.")
         recorded = load_json(proof_path)
         if recorded != {"phase": item.get("phase"), "proof": item.get("proof")}:

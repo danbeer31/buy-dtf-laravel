@@ -125,11 +125,11 @@
       "uid": 1000
     },
     {
-      "bytes": 165592,
+      "bytes": 165608,
       "gid": 1000,
       "mode": "0600",
       "name": "production_alpha_transparency_deploy.py",
-      "sha256": "daa271588abd5078d54f290a8fffff4ac758be9b799b8585270712c9417b1826",
+      "sha256": "4ec63506a90b0aa3e7588a7e7de345e8db449acf5b94d1852edb19bcf264f278",
       "source_path": "ops/deployment/production_alpha_transparency_deploy.py",
       "uid": 1000
     },

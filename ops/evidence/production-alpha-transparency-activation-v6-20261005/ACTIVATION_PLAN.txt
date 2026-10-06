@@ -11,6 +11,15 @@ V5 tokens and an arbitrary unissued V6 token cannot authorize any action.
 The CLI rejects before accessing production or input paths. The package cannot
 stage, deploy or recover in this state. No finalization action is introduced.
 
+The receipt-metadata review correction adds kind=file to the exact expected
+proof-file metadata, preserving UID/GID 1000:1000, mode 0600, hash binding and
+resolved evidence-path containment. Disposable fresh V6 staging receipts run
+through the real validator in actual Linux UID/GID 1000 processes. Neither
+path_metadata nor validate_release_receipt is mocked. Permission, ownership,
+tampering, missing-proof, escaping-path and symbolic-proof cases fail closed.
+Only external production observations are local doubles; these receipts do
+not satisfy the pending production PHP 8.2.30 FPM requirement or authorize use.
+
 Future authorization bindings must use fresh action-specific V6 values. They
 must be frozen, revalidated and independently reviewed before any production
 access or execution. Changing runner/input bytes invalidates the previous

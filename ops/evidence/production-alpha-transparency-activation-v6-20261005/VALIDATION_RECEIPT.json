@@ -6,6 +6,11 @@
   "mutexes_cleared": false,
   "production_accessed": false,
   "receipts": {
+    "fresh-v6-receipt-validation": {
+      "fresh_receipts": 23,
+      "negative_cases": 22,
+      "status": "pass"
+    },
     "gate-rehearsal": {
       "argv": [
         "/usr/bin/python3",
@@ -13,7 +18,7 @@
         "--parent",
         "/tmp",
         "--output",
-        "/tmp/buydtf-source-scheduler-gate-czm5u20y/gate-rehearsal.json"
+        "/tmp/buydtf-source-scheduler-gate-pc34aaql/gate-rehearsal.json"
       ],
       "exit_code": 0,
       "scope": "local disposable validation; no production access",
@@ -30,14 +35,14 @@
         "/mnt/c/tools/php8230/php.exe",
         "C:\\Users\\danie\\projects\\bdtf-alpha-activation-v6-20261005\\ops\\deployment\\test_production_alpha_scheduler_probe.php",
         "\\\\wsl.localhost\\Ubuntu\\tmp\\buydtf-alpha-v3-build-a-20261004-r3",
-        "C:\\Users\\danie\\AppData\\Local\\Temp\\buydtf-writer-8230-_c4f51jl",
+        "C:\\Users\\danie\\AppData\\Local\\Temp\\buydtf-writer-8230-hs7crxqg",
         "C:\\Users\\danie\\projects\\bdtf-alpha-activation-v6-20261005"
       ],
       "exit_code": 0,
       "scope": "local disposable validation; no production access",
       "status": "pass",
       "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "stdout_sha256": "c2f119e739330696e44e0756234b1ff6dcd3fb2099b85785dda34f2fac1fef55"
+      "stdout_sha256": "445685f3438ca3f58e32bc5a702fe50f59acdf5d6eab37ee9f950c9077a9d04d"
     },
     "python-tests": {
       "argv": [
@@ -57,22 +62,22 @@
       "exit_code": 0,
       "scope": "local disposable validation; no production access",
       "status": "pass",
-      "stderr_sha256": "91d57eb208964529fa9d77b8973ae4c0b9a03e7972886249fe23f8db7abf9f68",
-      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      "stderr_sha256": "dbfd8fe1e2cdfef65c1feee599678c6039836884341f7a2c90f395db5c877fbd",
+      "stdout_sha256": "9ae4c578a333123114fd21eca4a82e0b0a44d9ae1986e78ca1e06aa797766623"
     },
     "real-writer-integration": {
       "argv": [
         "/usr/bin/php",
         "ops/deployment/test_production_alpha_scheduler_probe.php",
         "/tmp/buydtf-alpha-v3-build-a-20261004-r3",
-        "/tmp/buydtf-scheduler-writer-mws1jfld",
+        "/tmp/buydtf-scheduler-writer-xxbbg6rq",
         "/mnt/c/Users/danie/projects/bdtf-alpha-activation-v6-20261005"
       ],
       "exit_code": 0,
       "scope": "local disposable validation; no production access",
       "status": "pass",
       "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "stdout_sha256": "972e2d0f1ec5510daccc14a729f8ad636841395e16b46b24d0e84d1a97e3f83c"
+      "stdout_sha256": "88feabf9e5be1a028cd01601dae8be852af5fbc5c23665002b78c19eede9a44c"
     },
     "scheduler-rehearsal": {
       "argv": [
@@ -85,7 +90,7 @@
       "scope": "local disposable validation; no production access",
       "status": "pass",
       "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "stdout_sha256": "a8a11958115cc7772b1dac294473eb07b61fe4895d35fdd1a92e7a5fc11bf05a"
+      "stdout_sha256": "700b190c29ef7dbca15315329e27429a3d6567da724045373784247fdd216a56"
     },
     "source-rehearsal": {
       "argv": [
@@ -98,10 +103,10 @@
       "scope": "local disposable validation; no production access",
       "status": "pass",
       "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "stdout_sha256": "7cb1dbacacfff31d55aca1f23ca09e4773d60862b859d0bbca7ba1a9cfa68aba"
+      "stdout_sha256": "71f819ccd42390b2a7da6ca598ded5fcb7476a318231e9c81d9b38fad4a124d7"
     }
   },
-  "runner_sha256": "daa271588abd5078d54f290a8fffff4ac758be9b799b8585270712c9417b1826",
+  "runner_sha256": "4ec63506a90b0aa3e7588a7e7de345e8db449acf5b94d1852edb19bcf264f278",
   "runtime_probe_sha256": "839588fe2930e1e673c507b05f7ccf15d7166329d66c1563775154cd7030d200",
   "scheduler_guard_sha256": "d4334e0181ececbd76d140711998f1d143f648dc9a4de85f413f2083354b6489",
   "scheduler_probe_sha256": "91e81065a4add34e916674c2a7fcc3ebe5f867324ec350dc9220214102cf0d80",

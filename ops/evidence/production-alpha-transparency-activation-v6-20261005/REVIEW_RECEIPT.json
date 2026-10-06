@@ -36,7 +36,7 @@
     "stage": null
   },
   "input_count": 15,
-  "input_manifest_sha256": "1b7210f1a126e5a0129755fd9c259ff478257a068655d005109bcbf51c09e5b6",
+  "input_manifest_sha256": "efb0c62b7ac26f864c4882ed152f5ee8ff3fe3a22a348b44142731b7ac5e892f",
   "limits": [
     "Database, production runtime envelope and maintenance commands are isolated doubles.",
     "Local FPM is PHP 8.3.6; production PHP 8.2.30 is not accessed.",
@@ -46,13 +46,13 @@
     "bytes": 675840,
     "metadata": "1000:1000/0600; mtime 0; regular files only",
     "path": "/mnt/c/Users/danie/projects/bdtf-alpha-activation-v6-20261005/storage/app/private/operations/production-alpha-activation-v6-local-package-20261005/production-alpha-transparency-v6-inputs.tar",
-    "sha256": "197b7e07162a057836731f55ff63857e76d87ac4cc0e16e3bda80ae7b857c709",
+    "sha256": "54131efd3d38ba00e6ccb3f0a165f925ca8d39aa4e9e52f85e75d20eacd7ee2b",
     "two_serializations_byte_identical": true
   },
   "new_authorizations_issued": false,
   "plan": "ACTIVATION_PLAN.txt",
   "private_linux_entries_verified": 3228,
-  "private_linux_manifest_sha256": "3bc8b9d794fa918ff5def3a091ed4368777d9862d8d3782c03879331b12c2d2b",
+  "private_linux_manifest_sha256": "f0f6858d532f4593bbdc2ee83c5a4bd2041d757fc481b43d1f7f8c824a10f594",
   "production_accessed": false,
   "production_php_8_2_30_fpm_prerequisite": {
     "accepted_scope_probe_sha256": "1dca015bffdaf4433ff00ecb0569faad0928c28a726b827f773d4cae4b4737c6",
@@ -63,16 +63,18 @@
   "pushed": false,
   "receiver_job_label_retention_enabled": false,
   "retained_evidence_preserved": true,
-  "runner_sha256": "daa271588abd5078d54f290a8fffff4ac758be9b799b8585270712c9417b1826",
+  "runner_sha256": "4ec63506a90b0aa3e7588a7e7de345e8db449acf5b94d1852edb19bcf264f278",
   "source_archive_sha256": "3067bca578201a39254d8544b633a04ff6a9e43fc0de2a2783a95ccde9a1bfcd",
   "stageable": false,
   "status": "ready_for_independent_review_tokens_withheld",
   "tests": {
-    "control_suite": 150,
+    "control_suite": 157,
+    "fresh_v6_staged_receipts_real_validator": 23,
     "gate_monotonic_waits": 48,
     "linux_uid_1000_33_scenarios": 8,
     "native_php_8_2_30_lint_writer": "pass",
     "real_php83_activation_rejections": 8,
+    "real_receipt_negative_cases": 22,
     "scheduler_scenarios": 23,
     "source_scenarios": 15
   }

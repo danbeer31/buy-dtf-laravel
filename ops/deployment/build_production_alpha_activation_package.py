@@ -84,7 +84,8 @@ def run(private_linux_root: Path):
         require(all(hashlib.sha256(handle.extractfile(m).read()).hexdigest() == next(e["sha256"] for e in entries if e["name"] == m.name) for m in members), "Bundle input hashes differ.")
     receipts = {key: json.loads((EVIDENCE / name).read_text()) for key, name in {
         "validation": "VALIDATION_RECEIPT.json", "source": "source-rehearsal/rehearsal-receipt.json",
-        "scheduler": "scheduler-rehearsal/scheduler-rehearsal-receipt.json", "linux": "linux-rehearsal.json"}.items()}
+        "scheduler": "scheduler-rehearsal/scheduler-rehearsal-receipt.json", "linux": "linux-rehearsal.json",
+        "fresh_v6": "fresh-v6-receipt-validation.json"}.items()}
     runner_sha = sha(Path(runner.__file__))
     require(all(value["status"] == "pass" and value["runner_sha256"] == runner_sha for value in receipts.values()), "Validation does not bind this runner.")
     linux = receipts["linux"]
@@ -100,6 +101,10 @@ def run(private_linux_root: Path):
     require(match is not None, "Complete controls suite failed.")
     gate = json.loads((EVIDENCE / "gate-transition-rehearsal.json").read_text())
     require(gate["status"] == "pass", "Gate rehearsals failed.")
+    fresh_v6 = receipts["fresh_v6"]
+    require(fresh_v6["fresh_receipts"] == 23 and fresh_v6["negative_cases"] == 22
+        and fresh_v6["stage_release_mocked"] is False and fresh_v6["validate_release_receipt_mocked"] is False
+        and fresh_v6["path_metadata_mocked"] is False, "Fresh V6 receipt round-trip coverage is incomplete.")
     shadow = Path("/tmp/buydtf-remember-v4-build-a/shadow")
     write("RETAINED_LOCAL_DEPENDENCIES.json", {"scope": "read-only retained local build; no production access",
         "vendor": runner.source_controls.require_candidate_vendor(shadow / "vendor"),
@@ -116,6 +121,7 @@ def run(private_linux_root: Path):
             "two_serializations_byte_identical": True, "metadata": "1000:1000/0600; mtime 0; regular files only"},
         "tests": {"control_suite": int(match[1]), "source_scenarios": receipts["source"]["scenario_count"],
             "scheduler_scenarios": receipts["scheduler"]["scenario_count"], "linux_uid_1000_33_scenarios": linux["scenario_count"],
+            "fresh_v6_staged_receipts_real_validator": fresh_v6["fresh_receipts"], "real_receipt_negative_cases": fresh_v6["negative_cases"],
             "real_php83_activation_rejections": len(linux["scenarios"]),
             "gate_monotonic_waits": gate["shared_monotonic_revalidation_waits_verified"], "native_php_8_2_30_lint_writer": "pass"},
         "private_linux_manifest_sha256": linux["private_manifest_sha256"], "private_linux_entries_verified": len(private_entries),

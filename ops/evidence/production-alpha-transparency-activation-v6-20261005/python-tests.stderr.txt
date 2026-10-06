@@ -9,6 +9,13 @@ test_real_phase0_and_stage_fail_before_release_creation_without_exact_fpm (test_
 test_rejected_malformed_duplicate_and_unparsed_responses_are_fatal (test_production_alpha_activation.ActivationPrerequisiteTests.test_rejected_malformed_duplicate_and_unparsed_responses_are_fatal) ... ok
 test_retired_or_wrong_action_authorization_cannot_be_enabled (test_production_alpha_activation.ActivationPrerequisiteTests.test_retired_or_wrong_action_authorization_cannot_be_enabled) ... ok
 test_same_request_fpm_proof_has_exact_version_and_bound_kernel_identity (test_production_alpha_activation.ActivationPrerequisiteTests.test_same_request_fpm_proof_has_exact_version_and_bound_kernel_identity) ... ok
+test_fresh_v6_staging_receipt_passes_real_validator_and_metadata (test_production_alpha_activation.FreshV6StagingReceiptTests.test_fresh_v6_staging_receipt_passes_real_validator_and_metadata) ... ok
+test_hash_valid_proof_paths_outside_evidence_are_rejected (test_production_alpha_activation.FreshV6StagingReceiptTests.test_hash_valid_proof_paths_outside_evidence_are_rejected) ... ok
+test_missing_proof_binding_or_file_is_rejected (test_production_alpha_activation.FreshV6StagingReceiptTests.test_missing_proof_binding_or_file_is_rejected) ... ok
+test_proof_permission_drift_is_rejected (test_production_alpha_activation.FreshV6StagingReceiptTests.test_proof_permission_drift_is_rejected) ... ok
+test_proof_tampering_is_rejected_with_original_and_rebound_hash (test_production_alpha_activation.FreshV6StagingReceiptTests.test_proof_tampering_is_rejected_with_original_and_rebound_hash) ... ok
+test_proof_uid_or_gid_drift_is_rejected (test_production_alpha_activation.FreshV6StagingReceiptTests.test_proof_uid_or_gid_drift_is_rejected) ... ok
+test_symlink_proof_is_rejected (test_production_alpha_activation.FreshV6StagingReceiptTests.test_symlink_proof_is_rejected) ... ok
 test_all_cli_mutations_reject_before_access_even_with_consumed_token (test_production_alpha_process_scope.LocalReviewOnlyTests.test_all_cli_mutations_reject_before_access_even_with_consumed_token) ... ok
 test_direct_production_entrypoints_reject_before_path_access (test_production_alpha_process_scope.LocalReviewOnlyTests.test_direct_production_entrypoints_reject_before_path_access) ... ok
 test_failed_v5_controls_and_receipt_are_permanently_retired (test_production_alpha_process_scope.LocalReviewOnlyTests.test_failed_v5_controls_and_receipt_are_permanently_retired) ... ok
@@ -150,6 +157,6 @@ test_wait_is_shared_by_install_reassert_containment_restore_and_recovery (test_l
 test_wall_clock_regression_cannot_shorten_monotonic_wait (test_laravel_dependency_gate.LaravelDependencyGateUnitTest.test_wall_clock_regression_cannot_shorten_monotonic_wait) ... ok
 
 ----------------------------------------------------------------------
-Ran 150 tests in 59.678s
+Ran 157 tests in 114.957s
 
 OK

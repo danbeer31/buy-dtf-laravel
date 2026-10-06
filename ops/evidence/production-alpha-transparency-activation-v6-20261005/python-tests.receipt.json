@@ -16,6 +16,6 @@
   "exit_code": 0,
   "scope": "local disposable validation; no production access",
   "status": "pass",
-  "stderr_sha256": "91d57eb208964529fa9d77b8973ae4c0b9a03e7972886249fe23f8db7abf9f68",
-  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  "stderr_sha256": "dbfd8fe1e2cdfef65c1feee599678c6039836884341f7a2c90f395db5c877fbd",
+  "stdout_sha256": "9ae4c578a333123114fd21eca4a82e0b0a44d9ae1986e78ca1e06aa797766623"
 }
