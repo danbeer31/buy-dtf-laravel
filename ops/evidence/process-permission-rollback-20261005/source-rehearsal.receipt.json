@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "/usr/bin/python3",
+    "ops/deployment/rehearse_production_alpha_transparency.py",
+    "--portable-output",
+    "/mnt/c/Users/danie/projects/bdtf-alpha-process-permission-20261005/ops/evidence/process-permission-rollback-20261005/source-rehearsal"
+  ],
+  "exit_code": 0,
+  "scope": "local disposable validation; no production access",
+  "status": "pass",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stdout_sha256": "3cd59c66e54b0d04c3c306877c30e114ec748ed254f5d87929490461bd3fccbc"
+}

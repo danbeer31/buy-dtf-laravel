@@ -8,13 +8,18 @@ no code in this module acquires, releases, clears, or executes scheduled work.
 from __future__ import annotations
 
 from datetime import datetime, timezone
+import base64
 import hashlib
 import json
 import os
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import re
+import secrets
+import stat
+import subprocess
+import tempfile
 import time
-from typing import Any
+from typing import Any, Callable
 from zoneinfo import ZoneInfo
 
 
@@ -37,7 +42,7 @@ MUTEX_TTL_SECONDS = 900
 SCHEDULE_TIMEZONE = "America/Chicago"
 SCHEDULE_ZONE = ZoneInfo(SCHEDULE_TIMEZONE)
 POLICY = {
-    "artifact": "buy-dtf-source-scheduler-policy-v2",
+    "artifact": "buy-dtf-source-scheduler-policy-v3",
     "task": TASK,
     "command_sha256": COMMAND_SHA256,
     "mutex_name_sha256": MUTEX_SHA256,
@@ -56,6 +61,10 @@ POLICY = {
     "site_process_uids": [33, 1000],
     "php_executable": "/usr/bin/php8.2",
     "dispatcher_php_argv0_allowlist": ["/usr/bin/php8.2", "/usr/bin/php", "php8.2", "php"],
+    "unreadable_process_scope": "UID 33 read-only FPM observation bound to PID, UID, start ticks and command hash; ambiguous evidence rejected",
+    "process_scope_probe_sha256": "1dca015bffdaf4433ff00ecb0569faad0928c28a726b827f773d4cae4b4737c6",
+    "process_scope_probe_timeout_seconds": 5,
+    "maximum_process_scope_probes_per_observation": 8,
 }
 SOURCE_SHA256 = {
     "routes/console.php": "26aabb054889be1279c4c74c3e37c412e6de8a527864657b523fe983de03d444",
@@ -190,9 +199,139 @@ def identity_sha256(payload: dict[str, Any]) -> str:
     return digest({key: row[key] for key in ("observer_version", "read_only", "cache_driver", "application_timezone", "php_default_timezone", "source_sha256", "events", "event_count", "stripe_payout_sync_event_count")})
 
 
+def _process_identity(entry: Path, raw: bytes | None = None) -> dict[str, Any]:
+    """Kernel identity excludes command content and all environment variables."""
+    status = (entry / "status").read_text(encoding="utf-8", errors="strict")
+    match = re.search(r"(?m)^Uid:\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s*$", status)
+    if not match or len(set(match.groups())) != 1:
+        raise SchedulerError("Ambiguous process owner in scheduler observation.")
+    text = (entry / "stat").read_text(encoding="utf-8", errors="strict")
+    fields = text.rsplit(") ", 1)[1].split()
+    if not text.startswith(f"{entry.name} (") or not fields[19].isdigit() or int(fields[19]) <= 0:
+        raise SchedulerError("Malformed process start identity.")
+    command = (entry / "cmdline").read_bytes() if raw is None else raw
+    return {"pid": int(entry.name), "uid": int(match[1]), "start_ticks": int(fields[19]),
+            "argv_sha256": hashlib.sha256(command).hexdigest()}
+
+
+def _scope_path(value: Any) -> Path:
+    if not isinstance(value, str) or not value.startswith("/") or "\0" in value or value.endswith(" (deleted)") or any(part in {".", ".."} for part in value.split("/")) or str(PurePosixPath(value)) != value:
+        raise SchedulerError("Malformed process scope path.")
+    return Path(value)
+
+
+def _unique_scope_object(pairs):
+    value = {}
+    for key, item in pairs:
+        if key in value:
+            raise SchedulerError("Duplicate field in FPM process-scope evidence.")
+        value[key] = item
+    return value
+
+
+class FpmProcessScopeReader:
+    """Read PID scope through the existing FPM UID, without sudo or chmod of /proc.
+
+    Only nonsecret, hash-pinned control code is briefly placed in a fresh 0711
+    execution directory. Request facts and results stay in memory/private receipts.
+    No application, customer data, environment, cache, or scheduled work is read.
+    """
+
+    def __init__(self, probe_path: Path, socket_path: Path, *, expected_php_version: str = "8.2.30"):
+        self.probe_path = probe_path
+        self.socket_path = socket_path
+        self.expected_php_version = expected_php_version
+
+    def __call__(self, identity: dict[str, Any]) -> dict[str, Any]:
+        if os.geteuid() != 1000 or identity.get("uid") != 33:
+            raise SchedulerError("Unreadable process scope requires the reviewed UID 1000 to UID 33 observer.")
+        try:
+            metadata = self.probe_path.lstat()
+            code = self.probe_path.read_bytes()
+            if not stat.S_ISREG(metadata.st_mode) or metadata.st_uid != 1000 or metadata.st_gid != 1000 or stat.S_IMODE(metadata.st_mode) & 0o022 or hashlib.sha256(code).hexdigest() != POLICY["process_scope_probe_sha256"]:
+                raise SchedulerError("Process-scope helper identity or protection differs from the frozen control.")
+            if not stat.S_ISSOCK(self.socket_path.lstat().st_mode):
+                raise SchedulerError("Reviewed FPM socket is unavailable.")
+            nonce = secrets.token_hex(24)
+            request = {**identity, "nonce": nonce}
+            directory = Path(tempfile.mkdtemp(prefix="buy-dtf-readonly-process-scope-"))
+            script = directory / "scope.php"
+            try:
+                script.write_bytes(code)
+                os.chmod(script, 0o644)
+                os.chmod(directory, 0o711)
+                self._verify_execution_copy(directory, script, code)
+                environment = {
+                    "GATEWAY_INTERFACE": "CGI/1.1", "SERVER_SOFTWARE": "buy-dtf-readonly-process-scope",
+                    "SERVER_PROTOCOL": "HTTP/1.1", "REQUEST_METHOD": "GET", "CONTENT_LENGTH": "0",
+                    "SCRIPT_FILENAME": str(script), "SCRIPT_NAME": "/internal-process-scope.php",
+                    "DOCUMENT_ROOT": str(directory), "DOCUMENT_URI": "/internal-process-scope.php",
+                    "REQUEST_URI": "/internal-process-scope.php", "QUERY_STRING": "",
+                    "REMOTE_ADDR": "127.0.0.1", "REMOTE_PORT": "0", "SERVER_ADDR": "127.0.0.1",
+                    "SERVER_PORT": "443", "SERVER_NAME": "buy-dtf.com", "HTTPS": "on",
+                    "REDIRECT_STATUS": "200", "BUYDTF_PROCESS_SCOPE_REQUEST": base64.b64encode(
+                        json.dumps(request, sort_keys=True, separators=(",", ":")).encode()).decode(),
+                }
+                result = subprocess.run(["/usr/bin/cgi-fcgi", "-bind", "-connect", str(self.socket_path)],
+                    env=environment, capture_output=True, timeout=POLICY["process_scope_probe_timeout_seconds"], check=False)
+                self._verify_execution_copy(directory, script, code)
+                if result.returncode != 0 or len(result.stdout) > 16384 or len(result.stderr) > 4096:
+                    raise SchedulerError("Read-only FPM process-scope transport failed.")
+                headers, body = result.stdout.replace(b"\r\n", b"\n").split(b"\n\n", 1)
+                status_headers = re.findall(br"(?im)^Status:\s*([^\n]+)$", headers)
+                if status_headers and (len(status_headers) != 1 or re.fullmatch(br"200(?:\s+OK)?", status_headers[0]) is None):
+                    raise SchedulerError("Read-only FPM process-scope probe rejected evidence.")
+                receipt = json.loads(body.decode("utf-8", errors="strict"), object_pairs_hook=_unique_scope_object)
+                required = {"artifact", "status", "nonce", "identity", "working_directory", "executable",
+                    "observer_uid", "observer_gid", "sapi", "php_version", "read_only", "environments_read", "process_or_permission_actions"}
+                if not isinstance(receipt, dict) or set(receipt) != required or receipt["artifact"] != "buy-dtf-process-scope-v1" or receipt["status"] != "pass" or receipt["nonce"] != nonce or receipt["identity"] != identity or any(type(receipt["identity"][key]) is not int for key in ("pid", "uid", "start_ticks")) or type(receipt["observer_uid"]) is not int or receipt["observer_uid"] != 33 or type(receipt["observer_gid"]) is not int or receipt["observer_gid"] != 33 or receipt["sapi"] != "fpm-fcgi" or receipt["php_version"] != self.expected_php_version or receipt["read_only"] is not True or receipt["environments_read"] is not False or receipt["process_or_permission_actions"] is not False:
+                    raise SchedulerError("Read-only FPM process-scope response identity differs from request.")
+                _scope_path(receipt["working_directory"])
+                _scope_path(receipt["executable"])
+                return receipt
+            finally:
+                # Remove only our freshly created file/directory, never an existing tree.
+                if script.exists():
+                    self._verify_execution_copy(directory, script, code)
+                    script.unlink()
+                directory.rmdir()
+        except SchedulerError:
+            raise
+        except (OSError, ValueError, UnicodeError, subprocess.SubprocessError) as error:
+            raise SchedulerError("Read-only FPM process-scope evidence is unavailable or malformed.") from error
+
+    @staticmethod
+    def _verify_execution_copy(directory: Path, script: Path, code: bytes) -> None:
+        folder, member = directory.lstat(), script.lstat()
+        if not stat.S_ISDIR(folder.st_mode) or not stat.S_ISREG(member.st_mode) or folder.st_uid != 1000 or member.st_uid != 1000 or folder.st_gid != 1000 or member.st_gid != 1000 or stat.S_IMODE(folder.st_mode) != 0o711 or stat.S_IMODE(member.st_mode) != 0o644 or script.read_bytes() != code:
+            raise SchedulerError("Temporary nonsecret observer control identity changed.")
+
+
+def resolve_process_scope(entry: Path, raw: bytes, scope_reader=None) -> tuple[dict[str, Any], Path, str, str]:
+    """Resolve scope positively; a permission error is never an exclusion."""
+    identity = _process_identity(entry, raw)
+    source = "native_proc_observation"
+    try:
+        cwd = (entry / "cwd").resolve(strict=True)
+        executable = str(_scope_path(os.readlink(entry / "exe")))
+    except PermissionError as error:
+        if identity["uid"] != 33 or scope_reader is None:
+            raise SchedulerError("Unreadable Artisan process scope has no validated UID 33 observer.") from error
+        receipt = scope_reader(identity)
+        if not isinstance(receipt, dict) or receipt.get("identity") != identity or receipt.get("status") != "pass" or receipt.get("observer_uid") != 33 or type(receipt.get("observer_uid")) is not int or receipt.get("observer_gid") != 33 or type(receipt.get("observer_gid")) is not int or receipt.get("read_only") is not True or receipt.get("environments_read") is not False or receipt.get("process_or_permission_actions") is not False:
+            raise SchedulerError("UID 33 process scope evidence is missing or mismatched.")
+        cwd = _scope_path(receipt.get("working_directory"))
+        executable = str(_scope_path(receipt.get("executable")))
+        source = "read_only_fpm_uid_33"
+    if _process_identity(entry) != identity:
+        raise SchedulerError("Artisan process identity changed during scope observation.")
+    return identity, cwd, executable, source
+
+
 def process_envelope(payload: dict[str, Any], application_root: Path, *,
                      proc_root: Path = Path("/proc"), ticks_per_second: int | None = None,
-                     wall_time: float | None = None) -> dict[str, Any]:
+                     wall_time: float | None = None,
+                     scope_reader: Callable[[dict[str, Any]], dict[str, Any]] | None = None) -> dict[str, Any]:
     """Read only command/cwd/executable/UID/start-time facts, never environments.
 
     Only an exact QBO worker or its exact successful finish command may remain.
@@ -203,10 +342,18 @@ def process_envelope(payload: dict[str, Any], application_root: Path, *,
     """
     row = validate_identity(payload)
     processes = []
+    excluded = []
+    scope_probes = 0
     workers = 0
     hz = os.sysconf("SC_CLK_TCK") if ticks_per_second is None else ticks_per_second
     now = time.time() if wall_time is None else wall_time
     uptime = float((proc_root / "uptime").read_text().split()[0])
+    def bounded_reader(identity):
+        nonlocal scope_probes
+        scope_probes += 1
+        if scope_probes > POLICY["maximum_process_scope_probes_per_observation"]:
+            raise SchedulerError("Unreadable process scope observation exceeds its bounded probe count.")
+        return scope_reader(identity)
     for entry in proc_root.iterdir():
         if not entry.name.isdigit() or int(entry.name) in {os.getpid(), os.getppid()}:
             continue
@@ -217,18 +364,17 @@ def process_envelope(payload: dict[str, Any], application_root: Path, *,
             argv = raw.rstrip(b"\0").decode("utf-8", errors="strict").split("\0")
             if not any(value == "artisan" or value.endswith("/artisan") for value in argv):
                 continue
-            cwd = (entry / "cwd").resolve(strict=True)
-            if cwd != application_root and str(application_root) not in " ".join(argv):
+            identity, cwd, executable, scope_source = resolve_process_scope(entry, raw, bounded_reader if scope_reader else None)
+            if cwd != application_root and application_root not in cwd.parents and str(application_root) not in " ".join(argv):
+                excluded.append({**identity, "scope_source": scope_source, "scope": "verified_outside_application",
+                    "working_directory_sha256": hashlib.sha256(str(cwd).encode()).hexdigest(),
+                    "executable_sha256": hashlib.sha256(executable.encode()).hexdigest()})
                 continue
-            executable = os.path.realpath(entry / "exe")
             if cwd != application_root or executable != POLICY["php_executable"] or len(argv) < 3 or argv[0] not in POLICY["dispatcher_php_argv0_allowlist"] or argv[1] != "artisan":
                 raise SchedulerError("Unexpected scoped Artisan executable or working directory.")
-            status = (entry / "status").read_text()
-            match = re.search(r"(?m)^Uid:\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s*$", status)
-            if not match or len(set(match.groups())) != 1 or int(match[1]) not in POLICY["site_process_uids"]:
+            if identity["uid"] not in POLICY["site_process_uids"]:
                 raise SchedulerError("Unexpected scheduled task process owner.")
-            fields = (entry / "stat").read_text().rsplit(") ", 1)[1].split()
-            age = uptime - int(fields[19]) / hz
+            age = uptime - identity["start_ticks"] / hz
             if age < 0 or age > MAX_ACTIVITY_SECONDS:
                 raise SchedulerError("Scheduled process start time is malformed or stuck.")
             started = now - age
@@ -256,9 +402,10 @@ def process_envelope(payload: dict[str, Any], application_root: Path, *,
                 role = "reviewed_qbo_only_dispatcher"
             else:
                 raise SchedulerError("Unexpected or failing scoped Artisan work after reopening.")
-            processes.append({"pid": int(entry.name), "role": role, "uid": int(match[1]),
+            processes.append({"pid": int(entry.name), "role": role, "uid": identity["uid"],
                 "argv_sha256": hashlib.sha256(raw).hexdigest(), "executable": executable,
-                "working_directory": str(cwd), "age_seconds": round(age, 6)})
+                "working_directory": str(cwd), "age_seconds": round(age, 6),
+                "start_ticks": identity["start_ticks"], "scope_source": scope_source})
         except (FileNotFoundError, ProcessLookupError):
             continue  # A process can finish during this read-only observation.
         except (UnicodeError, ValueError, IndexError, PermissionError) as error:
@@ -266,6 +413,8 @@ def process_envelope(payload: dict[str, Any], application_root: Path, *,
     if workers > 1:
         raise SchedulerError("More than one QBO scheduled worker is active.")
     return {"status": "pass", "read_only": True, "processes": sorted(processes, key=lambda item: item["pid"]),
+            "verified_outside_application": sorted(excluded, key=lambda item: item["pid"]),
+            "uid_33_scope_probes": scope_probes,
             "environments_read": False, "mutex_or_task_actions": False}
 
 

@@ -1,0 +1,74 @@
+{
+  "base_commit": "aa95711b6f09fda1207f97457aa056938b8f6c8b",
+  "candidate_archive_sha256": "3067bca578201a39254d8544b633a04ff6a9e43fc0de2a2783a95ccde9a1bfcd",
+  "frozen_dependency_envelope_sha256": "04850fe3aef14981c92f5b2af373bd136cfb6fead456d86fcab7233acb009fd1",
+  "members": [
+    {
+      "bytes": 40050,
+      "path": "app/Helpers/ImageHelper.php",
+      "sha256": "852eeb5843c27c8c8272adb8ebd0940e3961109ade2a727329b0c41f7c2ecede",
+      "unchanged_from_base": true
+    },
+    {
+      "bytes": 17948,
+      "path": "app/Helpers/ProductionHelper.php",
+      "sha256": "8d0a18fcbe6c1297ac5f41c082100d9e6baa9ed4b7252ce5b36994a7c5d551a7",
+      "unchanged_from_base": true
+    },
+    {
+      "bytes": 15188,
+      "path": "app/Http/Controllers/Admin/OrderImageController.php",
+      "sha256": "9567e7950999b7ea9b744e9cd59a8fa9e9563490ad8ce069549a4137c3687bcb",
+      "unchanged_from_base": true
+    },
+    {
+      "bytes": 36241,
+      "path": "app/Http/Controllers/CartController.php",
+      "sha256": "deb8a5265bc371c24e358f59d2b12fb81d03d414e29f585f658f7d43b6aca051",
+      "unchanged_from_base": true
+    },
+    {
+      "bytes": 11172,
+      "path": "app/Http/Controllers/TeamCustomizationController.php",
+      "sha256": "ffff301f85fd02c0913d5d7f492b5a5f0661088aac8ba1f53973e563e06a89af",
+      "unchanged_from_base": true
+    },
+    {
+      "bytes": 9837,
+      "path": "app/Models/DtfImage.php",
+      "sha256": "9f67088a0a6c760ebccf02a510d72fa0bafa6bf157ddcff712ce74af6b3c55ed",
+      "unchanged_from_base": true
+    },
+    {
+      "bytes": 1520,
+      "path": "app/Models/SavedImage.php",
+      "sha256": "41b4ffcfa94ba9648b7c7e717efc1a82da37ed890d0ef31f96b00264b94f1a66",
+      "unchanged_from_base": true
+    },
+    {
+      "bytes": 44572,
+      "path": "app/Http/Controllers/Checkout/CheckoutController.php",
+      "sha256": "206dfc3c9e80cfe537971f7adee4d9120fe7fd3e6200c0b94d18fa5f4ff5d2b6",
+      "unchanged_from_base": true
+    },
+    {
+      "bytes": 9086,
+      "path": "app/Services/ShippoService.php",
+      "sha256": "0bc3ebff9bf24406559c564ef659784c157573a1cac3b6eb6558022214c468ff",
+      "unchanged_from_base": true
+    },
+    {
+      "bytes": 3538,
+      "path": "app/Http/Controllers/Webhooks/ShippoWebhookController.php",
+      "sha256": "cc82a885ac67dfda46d98f103d94c865c7c6a0961951b1234b5e6450dcf2a466",
+      "unchanged_from_base": true
+    },
+    {
+      "bytes": 2303,
+      "path": "database/migrations/2026_10_01_120000_add_item_meta_to_savedimages_table.php",
+      "sha256": "992fbfe8086732e9bde10be89c3f52ddb4fef49edfdec12b744377c2e4181bbf",
+      "unchanged_from_base": true
+    }
+  ],
+  "status": "pass"
+}

@@ -57,7 +57,7 @@ TARGET_SHORT = TARGET_COMMIT[:8]
 HANDOFF_SHA256 = "ba9fd4dcf5fa5854b2e23418e0cd6ed8799874494a0341c726302b92a5acc127"
 RETIRED_ARTIFACT_COMMIT = "c43f39f556d057c99bb01e95ee7ca68658c05232"
 EXPECTED_ARCHIVE_SHA256 = "3067bca578201a39254d8544b633a04ff6a9e43fc0de2a2783a95ccde9a1bfcd"
-EXPECTED_MANIFEST_SHA256 = "613dd2a7ff5e0d51bc6a006c435dfbffa627668f256b8d5f6adac0f61a6d32ce"
+EXPECTED_MANIFEST_SHA256 = "627a09b0d5168c2c757f06dcfcfbb8ecc51b3127623e793e33201be02a67bafd"
 EXPECTED_HELPER_SHA256 = "839588fe2930e1e673c507b05f7ccf15d7166329d66c1563775154cd7030d200"
 EXPECTED_MIGRATION_SHA256 = "992fbfe8086732e9bde10be89c3f52ddb4fef49edfdec12b744377c2e4181bbf"
 MIGRATION_RELATIVE_PATH = Path(
@@ -93,11 +93,13 @@ RETIRED_RUNNER_SHA256S = frozenset(
         "76cfff204e86ee1119251b1d79931b1219cd19704b099f75d4e3db202ffe5b17",
         "25da4ddef0b4eb088cdedadf4848b1286a389760942493717e52d00f02c014df",
         "880d6ec6cb1ca5cee95964cf48843384afbaaeb73e835d03850e32de92aa21ab",
+        "d3c1a26bb1081bb47149eb2b34787d747e56a4db4ef0eb4668f62e3baf231a3d",
     }
 )
 RETIRED_RELEASE_RECEIPT_SHA256S = frozenset(
     {"15271bdf4a33a85f247bbcaba45cb115b1beed429dd6bc48349fbe4a84bc7eee",
-     "5621e1aad4c25bbffa5fad0f858358458595491b6a83c28ec8fc543aa6dd3f2d"}
+     "5621e1aad4c25bbffa5fad0f858358458595491b6a83c28ec8fc543aa6dd3f2d",
+     "6734f82816d511623e54d68718ae10ff55376ecfdf56b03782e6d6caab87642e"}
 )
 RETIRED_RELEASE_RECEIPT_PATHS = frozenset(
     {
@@ -107,6 +109,9 @@ RETIRED_RELEASE_RECEIPT_PATHS = frozenset(
         ,"/var/www/buy-dtf/storage/app/private/operations/"
         "production-alpha-transparency-releases/"
         "b02fce32-20261004T234125Z/release-receipt.json"
+        ,"/var/www/buy-dtf/storage/app/private/operations/"
+        "production-alpha-transparency-releases/"
+        "b02fce32-20261005T024550Z/release-receipt.json"
     }
 )
 
@@ -121,12 +126,13 @@ EXPECTED_FRONT_CONTROLLER_SHA256 = "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26
 # historical dependency envelope. Staging and cutover need separate authority.
 DEPENDENCY_ENVELOPE_FROZEN = True
 DEPENDENCY_ENVELOPE_STATUS = "post_laravel_12_69_1_frozen_review_required"
+LOCAL_CORRECTION_REVIEW_ONLY = True
 
 STAGE_APPROVAL_TOKEN = f"STAGE-BUYDTF-ALPHA-V5-{TARGET_COMMIT[:16]}"
 DEPLOY_APPROVAL_TOKEN = f"DEPLOY-BUYDTF-ALPHA-V5-{TARGET_COMMIT[:16]}"
 RECOVERY_APPROVAL_TOKEN = f"RECOVER-BUYDTF-ALPHA-V5-{TARGET_COMMIT[:16]}"
 
-CONTROL_FILES = {'production_alpha_scheduler_guard.py': '70d694d6217928bf5d0def36a3fe4853662005f77b22f0fd7ac51c94904aca77', 'production_alpha_scheduler_probe.php': '91e81065a4add34e916674c2a7fcc3ebe5f867324ec350dc9220214102cf0d80', 'production_alpha_gate_controls.py': '2719da67c6d425e5fa4bef70aade0789aba1deccfaf09f8992c8674883c65c00', 'production_alpha_dependency_envelope.json': '04850fe3aef14981c92f5b2af373bd136cfb6fead456d86fcab7233acb009fd1', 'laravel_dependency_gate.py': 'b93c08f58a08333120369c1cc75c60631d621c3a8099ca3967065721c45679f5', 'laravel_nginx_identity.py': '1243fea2757aca89f586ec4b322b0d23ee1e19b2d027c21bd6523e71e6e6e8e0', 'laravel_fpm_opcache_probe.php': 'b8b34f87d45a0c000cc0df7917496631320cfbdcca1ff44bc41741ce0d569262'}
+CONTROL_FILES = {'production_alpha_scheduler_guard.py': '57bfd7848428ca59d021492e3a9106a1f8ce9bcae7d900a8127d456ac3c2c39a', 'production_alpha_process_scope_probe.php': '1dca015bffdaf4433ff00ecb0569faad0928c28a726b827f773d4cae4b4737c6', 'production_alpha_scheduler_probe.php': '91e81065a4add34e916674c2a7fcc3ebe5f867324ec350dc9220214102cf0d80', 'production_alpha_gate_controls.py': '2719da67c6d425e5fa4bef70aade0789aba1deccfaf09f8992c8674883c65c00', 'production_alpha_dependency_envelope.json': '04850fe3aef14981c92f5b2af373bd136cfb6fead456d86fcab7233acb009fd1', 'laravel_dependency_gate.py': 'b93c08f58a08333120369c1cc75c60631d621c3a8099ca3967065721c45679f5', 'laravel_nginx_identity.py': '1243fea2757aca89f586ec4b322b0d23ee1e19b2d027c21bd6523e71e6e6e8e0', 'laravel_fpm_opcache_probe.php': 'b8b34f87d45a0c000cc0df7917496631320cfbdcca1ff44bc41741ce0d569262'}
 
 DRAIN_SECONDS = 65
 OPCACHE_WAIT_SECONDS = 7
@@ -645,7 +651,7 @@ def live_manifest_snapshot(rows: list[dict[str, Any]], *, target: bool = False) 
     return snapshot
 
 
-def scoped_processes() -> list[dict[str, str]]:
+def scoped_processes(*, scope_receipts: list[dict[str, Any]] | None = None) -> list[dict[str, str]]:
     patterns = (
         "artisan migrate",
         "artisan stripe:sync-payouts",
@@ -660,31 +666,56 @@ def scoped_processes() -> list[dict[str, str]]:
         "production_alpha_transparency_deploy.py --deploy",
     )
     matches: list[dict[str, str]] = []
+    scope_reader = scheduler_controls.FpmProcessScopeReader(
+        Path(__file__).with_name("production_alpha_process_scope_probe.php"), FPM_SOCKET)
+    scope_probes = 0
+    def bounded_reader(identity):
+        nonlocal scope_probes
+        scope_probes += 1
+        if scope_probes > scheduler_controls.POLICY["maximum_process_scope_probes_per_observation"]:
+            raise scheduler_controls.SchedulerError("Pre-mutation process scope exceeds bounded probe count.")
+        return scope_reader(identity)
     for entry in Path("/proc").iterdir():
         if not entry.name.isdigit() or int(entry.name) in {os.getpid(), os.getppid()}:
             continue
         try:
-            command = (entry / "cmdline").read_bytes().replace(b"\0", b" ").decode(
-                "utf-8", errors="replace"
+            raw = (entry / "cmdline").read_bytes()
+            command = raw.replace(b"\0", b" ").decode(
+                "utf-8", errors="strict"
             )
         except (FileNotFoundError, PermissionError, ProcessLookupError):
             continue
+        except UnicodeError as error:
+            raise DeploymentError("Malformed process command evidence before source mutation.") from error
         lowered = command.lower()
-        if not any(pattern.lower() in lowered for pattern in patterns):
+        if not any(pattern.lower() in lowered for pattern in patterns) and not any(value == b"artisan" or value.endswith(b"/artisan") for value in raw.split(b"\0")):
             continue
         scoped = str(APP_ROOT).lower() in lowered
         try:
-            working_directory = (entry / "cwd").resolve(strict=True)
+            identity, working_directory, executable, source = scheduler_controls.resolve_process_scope(entry, raw, bounded_reader)
             scoped = scoped or working_directory == APP_ROOT or is_relative_to(
                 working_directory, APP_ROOT
             )
-        except (FileNotFoundError, PermissionError, ProcessLookupError, RuntimeError):
-            pass
+        except (FileNotFoundError, ProcessLookupError):
+            continue
+        except (scheduler_controls.SchedulerError, PermissionError, ValueError, IndexError, UnicodeError) as error:
+            raise DeploymentError("Pre-mutation process scope is unavailable or ambiguous.") from error
         try:
             cgroup = (entry / "cgroup").read_text("utf-8", errors="replace").lower()
             scoped = scoped or "buy-dtf" in cgroup or "buy_dtf" in cgroup
         except (FileNotFoundError, PermissionError, ProcessLookupError):
-            pass
+            if not entry.exists():
+                continue
+            raise DeploymentError("Pre-mutation process cgroup scope is unavailable.")
+        try:
+            if scheduler_controls._process_identity(entry) != identity:
+                raise DeploymentError("Pre-mutation process identity changed during scope checks.")
+        except (FileNotFoundError, ProcessLookupError):
+            continue
+        if scope_receipts is not None:
+            scope_receipts.append({**identity, "scope_source": source, "scoped_conflict": scoped,
+                "working_directory_sha256": sha256_bytes(str(working_directory).encode()),
+                "executable_sha256": sha256_bytes(executable.encode()), "read_only": True})
         if scoped:
             matches.append({"pid": entry.name, "classification": "scoped-conflict"})
     return sorted(matches, key=lambda item: int(item["pid"]))
@@ -820,7 +851,9 @@ class SchedulerGuard:
                 deployment = load_json(deployment_path)
                 if not isinstance(deployment, dict) or deployment.get("scheduler_policy_sha256") != scheduler_controls.POLICY_SHA256 or deployment.get("scheduler_identity_sha256") != scheduler_controls.identity_sha256(payload):
                     raise scheduler_controls.SchedulerError("Scheduler identity is not bound to the durable deployment/staging envelope.")
-            process_receipt = scheduler_controls.process_envelope(payload, APP_ROOT)
+            process_receipt = scheduler_controls.process_envelope(payload, APP_ROOT,
+                scope_reader=scheduler_controls.FpmProcessScopeReader(
+                    Path(__file__).with_name("production_alpha_process_scope_probe.php"), FPM_SOCKET))
             current, receipt = scheduler_controls.observe(payload, previous, phase=phase)
         except scheduler_controls.SchedulerError as error:
             failure = self.directory / f"scheduler-rejection-{time.monotonic_ns()}.json"
@@ -1116,7 +1149,8 @@ def production_preflight(
         raise DeploymentError("Embedded static-gate bytes differ from the reviewed identity.")
     if not lock_is_free(DEPENDENCY_LOCK):
         raise DeploymentError("The dependency deployment lock is active.")
-    conflicts = scoped_processes()
+    process_scope_receipts: list[dict[str, Any]] = []
+    conflicts = scoped_processes(scope_receipts=process_scope_receipts)
     if conflicts:
         raise DeploymentError("A scoped production process is active.")
     controls=environment_identity()
@@ -1140,6 +1174,7 @@ def production_preflight(
         "dependency_lock_free": True,
         "alpha_repair_lock_free": lock_is_free(DEPLOYMENT_LOCK),
         "scoped_processes": conflicts,
+        "process_scope_observations": sorted(process_scope_receipts, key=lambda item: item["pid"]),
         "active_fpm_connections_observed": active_fpm_connections(),
         "disk": {"total": disk.total, "used": disk.used, "free": disk.free},
         "front_controller_sha256": EXPECTED_FRONT_CONTROLLER_SHA256,
@@ -1441,6 +1476,11 @@ def artifact_inventory(root: Path, *, exclude: set[Path] | None = None) -> list[
     return records
 
 
+def require_local_correction_scope() -> None:
+    if LOCAL_CORRECTION_REVIEW_ONLY and APP_ROOT.resolve(strict=False) == Path("/var/www/buy-dtf"):
+        raise DeploymentError("Local correction is non-stageable: production actions require a separately reviewed activation package.")
+
+
 def stage_release(
     *,
     archive: Path,
@@ -1449,6 +1489,7 @@ def stage_release(
     log_guard: Path,
     approval_token: str,
 ) -> Path:
+    require_local_correction_scope()
     if not DEPENDENCY_ENVELOPE_FROZEN:
         raise DeploymentError(
             "Transparency staging is disabled until the post-Laravel-12.69.1 "
@@ -2975,6 +3016,7 @@ def deploy_release(
     release_receipt_sha256: str,
     approval_token: str,
 ) -> Path:
+    require_local_correction_scope()
     if not DEPENDENCY_ENVELOPE_FROZEN:
         raise DeploymentError(
             "Transparency deployment is disabled until the post-Laravel-12.69.1 "
@@ -3252,6 +3294,7 @@ def deploy_release(
 def recover_state(
     *, state_path: Path, approval_token: str
 ) -> Path:
+    require_local_correction_scope()
     if approval_token != RECOVERY_APPROVAL_TOKEN:
         raise DeploymentError("The exact reviewed recovery approval token was not supplied.")
     state_path = require_regular_file(state_path)
@@ -3282,7 +3325,8 @@ def recover_state(
 
 def describe() -> dict[str, Any]:
     return {
-        "artifact": "BuyDTF production-alpha transparency source-only deployment runner v5 timezone/startup correction",
+        "artifact": "BuyDTF local process-scope rollback correction; review only",
+        "local_correction_review_only": LOCAL_CORRECTION_REVIEW_ONLY,
         "scheduler_policy": scheduler_controls.POLICY,
         "scheduler_policy_sha256": scheduler_controls.POLICY_SHA256,
         "target_application_commit": TARGET_COMMIT,
@@ -3358,13 +3402,13 @@ def describe() -> dict[str, Any]:
         },
         "approval_tokens": {
             "status": (
-                "requires_separate_independent_review_and_authorization"
+                "blocked_local_correction_requires_new_review_and_authorization"
                 if DEPENDENCY_ENVELOPE_FROZEN
                 else "withheld_pending_post_laravel_12_69_1_freeze"
             ),
-            "stage": STAGE_APPROVAL_TOKEN if DEPENDENCY_ENVELOPE_FROZEN else None,
-            "deploy": DEPLOY_APPROVAL_TOKEN if DEPENDENCY_ENVELOPE_FROZEN else None,
-            "recover": RECOVERY_APPROVAL_TOKEN if DEPENDENCY_ENVELOPE_FROZEN else None,
+            "stage": None,
+            "deploy": None,
+            "recover": None,
         },
         "retired_artifacts": {
             "artifact_commit": [RETIRED_ARTIFACT_COMMIT],
@@ -3417,6 +3461,8 @@ def main() -> int:
         if arguments.describe:
             print(json.dumps(describe(), indent=2, sort_keys=True))
             return 0
+        if LOCAL_CORRECTION_REVIEW_ONLY:
+            raise DeploymentError("Local correction is non-stageable: no deployment, recovery, or retry authorization exists.")
         if arguments.stage:
             if (
                 arguments.archive is None

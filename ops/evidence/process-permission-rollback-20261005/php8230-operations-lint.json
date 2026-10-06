@@ -1,0 +1,35 @@
+{
+  "binary_sha256": "132075655257b1558c5d896dce117081bc068c90c50dfc5fd9c24c93dbc4312a",
+  "files": [
+    {
+      "exit_code": 0,
+      "path": "ops/deployment/production_alpha_process_scope_probe.php",
+      "sha256": "1dca015bffdaf4433ff00ecb0569faad0928c28a726b827f773d4cae4b4737c6",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "No syntax errors detected in C:\\Users\\danie\\projects\\bdtf-alpha-process-permission-20261005\\ops\\deployment\\production_alpha_process_scope_probe.php"
+    },
+    {
+      "exit_code": 0,
+      "path": "ops/deployment/production_alpha_transparency_runtime_probe.php",
+      "sha256": "839588fe2930e1e673c507b05f7ccf15d7166329d66c1563775154cd7030d200",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "No syntax errors detected in C:\\Users\\danie\\projects\\bdtf-alpha-process-permission-20261005\\ops\\deployment\\production_alpha_transparency_runtime_probe.php"
+    },
+    {
+      "exit_code": 0,
+      "path": "ops/deployment/production_alpha_scheduler_probe.php",
+      "sha256": "91e81065a4add34e916674c2a7fcc3ebe5f867324ec350dc9220214102cf0d80",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "No syntax errors detected in C:\\Users\\danie\\projects\\bdtf-alpha-process-permission-20261005\\ops\\deployment\\production_alpha_scheduler_probe.php"
+    },
+    {
+      "exit_code": 0,
+      "path": "ops/deployment/test_production_alpha_scheduler_probe.php",
+      "sha256": "b60f550fbefd22969fbc98e9e9400ddcf7468fc18eebde73d57ba45ef588f099",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "No syntax errors detected in C:\\Users\\danie\\projects\\bdtf-alpha-process-permission-20261005\\ops\\deployment\\test_production_alpha_scheduler_probe.php"
+    }
+  ],
+  "php_version": "8.2.30",
+  "status": "pass"
+}

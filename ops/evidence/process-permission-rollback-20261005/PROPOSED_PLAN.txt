@@ -1,0 +1,109 @@
+The original-application emergency recovery is accepted and closed out locally.
+The byte-for-byte acceptance receipt is retained in the separate recovery
+closeout evidence directory. All 1,030 retained checksum entries and both
+supporting independent reviews were reverified. No production receipt, state,
+file, permission, service, cache or database was changed during this work.
+The transparency deployment remains failed. Its v5 runner, receipt and release
+are retired; neither its cutover nor its recovery may be retried.
+
+The correction resolves a process scope observation failure. UID 1000 cannot
+read /proc/<pid>/cwd or exe for the UID 33 process. V5 tried to read cwd before
+establishing whether the process belonged to BuyDTF. During rollback this error
+blocked reopening even though the boot-independent source restore had finished.
+
+The new observer uses existing PHP-FPM UID/GID 33 authority to read only PID,
+UID, start ticks, command hash, cwd and executable. A fresh request nonce binds
+the response to the target; identities are checked before/after observation
+and again by the UID 1000 caller. The probe checks stable cwd/executable values,
+exact FPM SAPI/version, UID/GID, strict JSON and a five-second transport timeout.
+Only positive evidence of an outside application scope permits exclusion.
+Unknown, unreadable, changed, malformed or scoped unapproved work is rejected.
+Normal scoped QBO work retains its exact schedule, timezone, startup, owner,
+executable, completion and duration bounds. No process environment is read.
+No process is signaled and no existing permission, group, ACL or mutex changes.
+
+The probe code is a new frozen operations input. The runtime reader briefly
+copies only its nonsecret, hash-verified bytes into a new directory outside the
+application and webroot (1000:1000, 0711; script 0644). FPM can read that control
+code but cannot write it. Requests and responses remain in memory/private
+evidence. The exact temporary copy is checked before/after execution and removed.
+Private input permissions are not relaxed. The existing FPM socket is used;
+there is no sudo, socket permission change, nginx rule, reload or configuration
+change. All ambiguity fails closed. Up to eight probes per observation are
+allowed. Preflight records redacted positive scope facts and remains strictly
+idle before any source mutation.
+
+The corrected guard is shared by post-open health, every monitor observation,
+rollback verification and recovery verification. Preflight and under-gate drain
+use the same positive scope primitive with strict conflict rejection. Failure
+of the observer after mutation does not undo the boot-independent source
+restore; reopening remains prohibited and the exact static gate is retained.
+
+The local Linux rehearsal uses real UID 1000 and UID/GID 33 processes, real
+nginx/PHP-FPM, exact reviewed gate bytes, original metadata 1000:1000/0644,
+durable transitions and full monotonic seven-second waits. All six cases
+restore the complete frozen 326-file source CAS. The legacy case reproduces
+the denied cwd and gated outcome. Corrected automatic rollback and reopening
+through the recovery entry point succeed with the foreign process still alive
+and unchanged. Scoped work, unavailable FPM observation and mismatched response
+remain gated. Raw HTTP headers are mode 0600; copied configuration is private.
+
+Local FPM is PHP 8.3.6. The sentinel HTTP controller loads actual Laravel
+12.69.1 but does not boot the customer application. Database/runtime envelopes
+and maintenance commands are explicit isolated doubles. Local PHP 8.2.30
+syntax checks and real Laravel status-writer integration also pass. These
+rehearsals are not fresh production health or PHP 8.2.30 FPM evidence. The
+separate OPcache HTTP rehearsal reproduces stale cached original/gate responses
+and verifies the complete waits. Existing gate interruptions, rollback,
+schema/ledger, UTF-8/log, scheduler startup, Chicago/DST and parser protections
+are replayed. The application, image code, eleven candidate members, archive,
+dependencies, schema and configuration bytes are unchanged.
+
+Proposed future sequence, subject to independent review and new authorization:
+
+1. Review this local operations correction and its evidence. The current
+   package is deliberately non-stageable and blocks production entry points;
+   no replacement action token is issued. Prepare and independently review an
+   activation package that removes that explicit hold and binds fresh,
+   action-specific authorizations. Old v5 authorizations remain consumed.
+2. With separate authority, verify the healthy original application, all 326
+   source bytes, original front controller and metadata, PHP 8.2.30/Laravel
+   12.69.1, lock/vendor/cache identities, configuration, services and FPM/nginx
+   routing. Use read-only nginx evidence and current protected include hashes;
+   never recreate the removed nginx sudo permission. Stop on any drift or
+   inability to positively establish process scope. Verify this probe on the
+   exact production PHP 8.2.30 FPM socket/identity before authorizing mutation.
+3. Require the installed schema and 21-row ledger, nullable TEXT item_meta with
+   zero existing non-null values, empty incoming tables/queues, disabled
+   receiver/job-label/retention and empty artwork hosts. QBO must be idle.
+   Transfer every frozen input, including the new probe, privately and create
+   a fresh reviewed release/receipt. Preserve all older slots and evidence.
+   Restricted staging needs separate approval; stop afterward for stage review.
+4. Only a separate release-receipt-bound cutover approval can install the gate,
+   perform the full seven-second waits and verified origin/public probes,
+   drain requests and repeat idle/database/source checks under the gate.
+   Install only the eleven unchanged reviewed source members. Never execute,
+   pretend, reverse or restore a migration/database. Keep Laravel 12.69.1
+   lock/vendor/cache, configuration, services and original artwork unchanged.
+   Choose a window covering cutover and monitoring that avoids the frozen
+   hourly payout and daily reconciliation schedule; evaluate it in Chicago,
+   including DST. Do not disable, reschedule or force any accounting work.
+5. After reopening, retain the bounded Chicago QBO observer and the complete
+   30-minute health/runtime/schema/dependency/queue/capability and parsed-log
+   monitor. Legitimate item_meta growth after cutover is permitted. Every
+   process scope decision must be evidenced. Stop awaiting independent log
+   review; finalization requires another evidence-bound authorization.
+6. On a reviewed failure, contain under the exact gate, complete the monotonic
+   wait and boot-independent original source restore. Reopen only after source,
+   dependencies, schema, ledger, process scope and bounded scheduler verification
+   pass, maintenance exits under the gate and the original front controller is
+   atomically restored with its full wait. Ambiguous scope or failed health
+   retains the gate and evidence. Never kill unknown processes, expand access,
+   clear mutexes, disable cron or force accounting tasks. Any separate emergency
+   action requires its own approval; do not improvise or retry the failed v5
+   deployment/recovery.
+
+This preparation made no production access, staging, cutover, recovery,
+finalization, migration, configuration/service/permission change, capability
+enablement, ShopNLTees change, retention action, customer deletion or artwork
+change. Only disposable local processes/files were used for the Linux tests.

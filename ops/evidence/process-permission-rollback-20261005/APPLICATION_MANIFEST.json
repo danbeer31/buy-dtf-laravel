@@ -1,0 +1,225 @@
+{
+  "application_target_commit": "b02fce3213fc632891036f1b5c98b9cddb94e499",
+  "artifact_base_commit": "307b99e9429ca4623c72cc121e12997bdb4dfcad",
+  "artifact_status": "frozen_review_only_non_stageable",
+  "complete_runtime_source": {
+    "after": {
+      "files": 327,
+      "sha256": "2c8268cdfbfd3fc294d17de7ab960ab2e1a7f8faa38acd68935af18945f1bc4f"
+    },
+    "before": {
+      "files": 326,
+      "sha256": "3909bdc2303b5c578135859c847f311cd84b827e62ac4e5dbce3d2297f6da71f"
+    }
+  },
+  "current_handoff": {
+    "name": "buy-dtf-codie-handoff-2026-10-02.md",
+    "sha256": "ba9fd4dcf5fa5854b2e23418e0cd6ed8799874494a0341c726302b92a5acc127"
+  },
+  "dependency_envelope": {
+    "deployable": false,
+    "stageable": false,
+    "status": "post_laravel_12_69_1_frozen_review_required"
+  },
+  "expected_ledger": {
+    "row_count": 21,
+    "sha256": "f1140209ad897fbdba506d87329f9e4481ccfa5aff7fb6a423e6ec7a0dbe5f53",
+    "target_entry_count": 1
+  },
+  "expected_live_identity_authority": "expected_live_sha256 and expected_live_bytes are the sole preflight CAS, backup, and rollback authority",
+  "expected_schema_sha256": "5485779bdcf0ea3a4372410ef76cd0bc418d1f6400128868606e901b8e9e85da",
+  "frozen_dependency_envelope_sha256": "04850fe3aef14981c92f5b2af373bd136cfb6fead456d86fcab7233acb009fd1",
+  "hash_algorithm": "sha256 over exact raw file bytes",
+  "independent_review": {
+    "label": "rollback review",
+    "sha256": "bbfd8079f73f5196ee4e519fbdee523058e0d843f375cb369fafe90c327fa760"
+  },
+  "local_operations_correction": {
+    "accepted_application_paths_unchanged": true,
+    "new_authorization_issued": false,
+    "process_scope_probe_sha256": "1dca015bffdaf4433ff00ecb0569faad0928c28a726b827f773d4cae4b4737c6",
+    "status": "review_only_non_stageable",
+    "supersedes_runner_sha256": "d3c1a26bb1081bb47149eb2b34787d747e56a4db4ef0eb4668f62e3baf231a3d"
+  },
+  "migration": {
+    "expected_live_state": "absent",
+    "installed_schema_required": true,
+    "migration_command_allowed": false,
+    "migration_pretend_allowed": false,
+    "migration_reverse_allowed": false,
+    "name": "2026_10_01_120000_add_item_meta_to_savedimages_table",
+    "source_install_only": true,
+    "target_sha256": "992fbfe8086732e9bde10be89c3f52ddb4fef49edfdec12b744377c2e4181bbf"
+  },
+  "paths": [
+    {
+      "expected_live_bytes": 28229,
+      "expected_live_sha256": "b840aa320764dca8896512422456b39162a079d7428aab78b7ad1c7ec1beb637",
+      "path": "app/Helpers/ImageHelper.php",
+      "target_bytes": 40050,
+      "target_sha256": "852eeb5843c27c8c8272adb8ebd0940e3961109ade2a727329b0c41f7c2ecede"
+    },
+    {
+      "expected_live_bytes": 17594,
+      "expected_live_sha256": "fc14a5ff52714f311cc3f2bdcdf3410ade6927505bcc626eccbbc11f129d8f12",
+      "path": "app/Helpers/ProductionHelper.php",
+      "target_bytes": 17948,
+      "target_sha256": "8d0a18fcbe6c1297ac5f41c082100d9e6baa9ed4b7252ce5b36994a7c5d551a7"
+    },
+    {
+      "expected_live_bytes": 14948,
+      "expected_live_line_endings": {
+        "crlf_count": 234,
+        "remaining_lf_count": 177
+      },
+      "expected_live_sha256": "49c2925ad3dfb0aeea32f5baf98926a2cc5112ba543d9178c6297273ff6442f1",
+      "normalized_evidence_only": {
+        "algorithm": "replace each CRLF byte pair with one LF byte; make no other byte changes",
+        "authority": "non-authoritative; never use for preflight CAS, backup verification, or rollback verification",
+        "bytes": 14714,
+        "sha256": "06a0011dfbef4c3f4502a5c940e29a6267960360921f6f414fd4f57f1c936af9"
+      },
+      "path": "app/Http/Controllers/Admin/OrderImageController.php",
+      "target_bytes": 15188,
+      "target_sha256": "9567e7950999b7ea9b744e9cd59a8fa9e9563490ad8ce069549a4137c3687bcb"
+    },
+    {
+      "expected_live_bytes": 32079,
+      "expected_live_sha256": "713ae74db4410bb4ca22e5f4f3c77ddef17403004796a9e4418fe14ea7d6696a",
+      "path": "app/Http/Controllers/CartController.php",
+      "target_bytes": 36241,
+      "target_sha256": "deb8a5265bc371c24e358f59d2b12fb81d03d414e29f585f658f7d43b6aca051"
+    },
+    {
+      "expected_live_bytes": 9957,
+      "expected_live_sha256": "46c5f4079915e25f3466e0e98305918812376039546f91ed8a9f220737f56fc3",
+      "path": "app/Http/Controllers/TeamCustomizationController.php",
+      "target_bytes": 11172,
+      "target_sha256": "ffff301f85fd02c0913d5d7f492b5a5f0661088aac8ba1f53973e563e06a89af"
+    },
+    {
+      "expected_live_bytes": 8990,
+      "expected_live_sha256": "14d6245a1ac65babfa6d06152bd9fc6692c9d33c5fe3ba5e2b8efabce728d0c2",
+      "path": "app/Models/DtfImage.php",
+      "target_bytes": 9837,
+      "target_sha256": "9f67088a0a6c760ebccf02a510d72fa0bafa6bf157ddcff712ce74af6b3c55ed"
+    },
+    {
+      "expected_live_bytes": 1043,
+      "expected_live_line_endings": {
+        "crlf_count": 45,
+        "remaining_lf_count": 0
+      },
+      "expected_live_sha256": "0282da64284bdddc2ad11ccc48c3f32c8ef0443823bbb4dcbe1d05b7973d12f7",
+      "normalized_evidence_only": {
+        "algorithm": "replace each CRLF byte pair with one LF byte; make no other byte changes",
+        "authority": "non-authoritative; never use for preflight CAS, backup verification, or rollback verification",
+        "bytes": 998,
+        "sha256": "dd6d7f7b1f1144e77447912c698c06351d30ac85bf1800b1d60dbe149fc00d7e"
+      },
+      "path": "app/Models/SavedImage.php",
+      "target_bytes": 1520,
+      "target_sha256": "41b4ffcfa94ba9648b7c7e717efc1a82da37ed890d0ef31f96b00264b94f1a66"
+    },
+    {
+      "expected_live_bytes": 44433,
+      "expected_live_line_endings": {
+        "crlf_count": 795,
+        "remaining_lf_count": 102
+      },
+      "expected_live_sha256": "4b39e9381f728b8b4a0f8a828494827b0e2520ce80d0d36910b44185e6d5c2dd",
+      "normalized_evidence_only": {
+        "algorithm": "replace each CRLF byte pair with one LF byte; make no other byte changes",
+        "authority": "non-authoritative; never use for preflight CAS, backup verification, or rollback verification",
+        "bytes": 43638,
+        "sha256": "719c3a569b99daddd8cbee6295a4992bb6da582b6ff917cf09d7eda5e33aa3f3"
+      },
+      "path": "app/Http/Controllers/Checkout/CheckoutController.php",
+      "target_bytes": 44572,
+      "target_sha256": "206dfc3c9e80cfe537971f7adee4d9120fe7fd3e6200c0b94d18fa5f4ff5d2b6"
+    },
+    {
+      "expected_live_bytes": 8299,
+      "expected_live_line_endings": {
+        "crlf_count": 214,
+        "remaining_lf_count": 0
+      },
+      "expected_live_sha256": "617673b6921ddf209c67534b6c42b13f23771a1d3fdea907f7583f7459e193c7",
+      "normalized_evidence_only": {
+        "algorithm": "replace each CRLF byte pair with one LF byte; make no other byte changes",
+        "authority": "non-authoritative; never use for preflight CAS, backup verification, or rollback verification",
+        "bytes": 8085,
+        "sha256": "85c12772b004b279d51fb12bde5d684869f18ae8589e934d2e4c57b98a124b28"
+      },
+      "path": "app/Services/ShippoService.php",
+      "target_bytes": 9086,
+      "target_sha256": "0bc3ebff9bf24406559c564ef659784c157573a1cac3b6eb6558022214c468ff"
+    },
+    {
+      "expected_live_bytes": 3385,
+      "expected_live_line_endings": {
+        "crlf_count": 94,
+        "remaining_lf_count": 0
+      },
+      "expected_live_sha256": "d8d91199bc0ca810204a04b4452cbf460bb939020a8e21b46537736a1bd5acbd",
+      "normalized_evidence_only": {
+        "algorithm": "replace each CRLF byte pair with one LF byte; make no other byte changes",
+        "authority": "non-authoritative; never use for preflight CAS, backup verification, or rollback verification",
+        "bytes": 3291,
+        "sha256": "bc30c3c2a562f787ceeb08b5193597eb3cf983ea2c957db6ea736c2fb6460646"
+      },
+      "path": "app/Http/Controllers/Webhooks/ShippoWebhookController.php",
+      "target_bytes": 3538,
+      "target_sha256": "cc82a885ac67dfda46d98f103d94c865c7c6a0961951b1234b5e6450dcf2a466"
+    },
+    {
+      "expected_live_state": "absent",
+      "path": "database/migrations/2026_10_01_120000_add_item_meta_to_savedimages_table.php",
+      "target_bytes": 2303,
+      "target_sha256": "992fbfe8086732e9bde10be89c3f52ddb4fef49edfdec12b744377c2e4181bbf"
+    }
+  ],
+  "retired_artifact_commit": "c43f39f556d057c99bb01e95ee7ca68658c05232",
+  "retired_runner_sha256s": [
+    "25da4ddef0b4eb088cdedadf4848b1286a389760942493717e52d00f02c014df",
+    "59bbd90cafa8d1b5efd56a6c40667924193e37539f4340e4b6163c6274425cab",
+    "76cfff204e86ee1119251b1d79931b1219cd19704b099f75d4e3db202ffe5b17",
+    "880d6ec6cb1ca5cee95964cf48843384afbaaeb73e835d03850e32de92aa21ab",
+    "d3c1a26bb1081bb47149eb2b34787d747e56a4db4ef0eb4668f62e3baf231a3d"
+  ],
+  "scheduler_policy": {
+    "active_poll_seconds": 5,
+    "artifact": "buy-dtf-source-scheduler-policy-v3",
+    "command_sha256": "5e5f803d8dcc65662d6a731cff510c28b61dece97d429bbf4f949099f7c9f5fd",
+    "completion_release_grace_seconds": 5,
+    "dispatcher_php_argv0_allowlist": [
+      "/usr/bin/php8.2",
+      "/usr/bin/php",
+      "php8.2",
+      "php"
+    ],
+    "expression": "*/10 * * * *",
+    "maximum_activity_seconds": 120,
+    "maximum_observation_gap_seconds": 90,
+    "maximum_process_scope_probes_per_observation": 8,
+    "mutex_name_sha256": "a086c96c5fd6e5ba9e3e47ba418706400ad8928e2ea406688628a505d26b3eff",
+    "php_executable": "/usr/bin/php8.2",
+    "process_scope_probe_sha256": "1dca015bffdaf4433ff00ecb0569faad0928c28a726b827f773d4cae4b4737c6",
+    "process_scope_probe_timeout_seconds": 5,
+    "run_in_background": true,
+    "schedule_start_grace_seconds": 15,
+    "site_process_uids": [
+      33,
+      1000
+    ],
+    "task": "qbo:refresh-admin-cache",
+    "timestamp_policy": "explicit RFC3339 offsets normalized to UTC; no naive or unknown offsets",
+    "timezone": "America/Chicago",
+    "unreadable_process_scope": "UID 33 read-only FPM observation bound to PID, UID, start ticks and command hash; ambiguous evidence rejected",
+    "without_overlapping_minutes": 15,
+    "worker_startup_poll_seconds": 1,
+    "worker_startup_seconds": 10
+  },
+  "scheduler_policy_sha256": "fb4bfa67e84249178e1be5c926b0f91ae5c0375cf59df0f7289253988c8e3927",
+  "transparency_application_commit": "5b2d06cd66bd599d8a7ab1f5518790d414ee9874"
+}

@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "/usr/bin/python3",
+    "ops/deployment/rehearse_production_alpha_scheduler.py",
+    "--output",
+    "/mnt/c/Users/danie/projects/bdtf-alpha-process-permission-20261005/ops/evidence/process-permission-rollback-20261005/scheduler-rehearsal"
+  ],
+  "exit_code": 0,
+  "scope": "local disposable validation; no production access",
+  "status": "pass",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stdout_sha256": "707c5ea779644c95653b8e6b7fb2e7d48128a4561cecf652cffdcd3ef2376a4d"
+}

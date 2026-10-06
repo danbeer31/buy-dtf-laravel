@@ -22,11 +22,11 @@ LOG_GUARD_PATH = ROOT / "ops/deployment/laravel_log_guard.py"
 FIXTURES = ROOT / "tests/Fixtures/Deployment/LaravelLogs"
 MANIFEST_PATH = (
     ROOT
-    / "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005"
+    / "ops/evidence/process-permission-rollback-20261005"
     / "APPLICATION_MANIFEST.json"
 )
 REHEARSAL_RECEIPT_PATH = (
-    ROOT / "ops/evidence/production-alpha-transparency-source-only-v5-scheduler-20261005/source-rehearsal/rehearsal-receipt.json"
+    ROOT / "ops/evidence/process-permission-rollback-20261005/source-rehearsal/rehearsal-receipt.json"
 )
 
 
@@ -392,6 +392,7 @@ class ProductionAlphaRunnerTest(unittest.TestCase):
             deploy.validate_release_receipt(retired_path, "a" * 64)
 
     @mock.patch.object(deploy, "DEPENDENCY_ENVELOPE_FROZEN", False)
+    @mock.patch.object(deploy, "LOCAL_CORRECTION_REVIEW_ONLY", False)
     def test_stage_and_deploy_are_disabled_without_the_live_freeze(self) -> None:
         self.assertFalse(deploy.DEPENDENCY_ENVELOPE_FROZEN)
         self.assertEqual(
@@ -778,11 +779,11 @@ class ProductionAlphaRunnerTest(unittest.TestCase):
         )
         self.assertEqual(
             description["approval_tokens"]["status"],
-            "requires_separate_independent_review_and_authorization",
+            "blocked_local_correction_requires_new_review_and_authorization",
         )
-        self.assertEqual(description["approval_tokens"]["stage"], deploy.STAGE_APPROVAL_TOKEN)
-        self.assertEqual(description["approval_tokens"]["deploy"], deploy.DEPLOY_APPROVAL_TOKEN)
-        self.assertEqual(description["approval_tokens"]["recover"], deploy.RECOVERY_APPROVAL_TOKEN)
+        self.assertIsNone(description["approval_tokens"]["stage"])
+        self.assertIsNone(description["approval_tokens"]["deploy"])
+        self.assertIsNone(description["approval_tokens"]["recover"])
         self.assertIn(
             "c43f39f556d057c99bb01e95ee7ca68658c05232",
             description["retired_artifacts"]["artifact_commit"],

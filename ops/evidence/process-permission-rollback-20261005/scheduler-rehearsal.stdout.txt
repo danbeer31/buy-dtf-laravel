@@ -1,0 +1,5 @@
+{
+  "status": "pass",
+  "scenarios": 23,
+  "receipt_sha256": "86e90ba3f31d94fd1eaecf962e0b42046d4e4530d4431764fab72c9c76257dad"
+}

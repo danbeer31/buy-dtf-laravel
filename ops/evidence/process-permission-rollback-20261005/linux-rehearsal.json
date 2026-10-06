@@ -1,0 +1,2746 @@
+{
+  "artifact": "buy-dtf-process-permission-linux-rollback-rehearsal-v1",
+  "baseline_source_records": [
+    {
+      "baseline_root_index": 1,
+      "bytes": 28229,
+      "path": "app/Helpers/ImageHelper.php",
+      "sha256": "b840aa320764dca8896512422456b39162a079d7428aab78b7ad1c7ec1beb637"
+    },
+    {
+      "baseline_root_index": 1,
+      "bytes": 17594,
+      "path": "app/Helpers/ProductionHelper.php",
+      "sha256": "fc14a5ff52714f311cc3f2bdcdf3410ade6927505bcc626eccbbc11f129d8f12"
+    },
+    {
+      "baseline_root_index": 2,
+      "bytes": 14948,
+      "path": "app/Http/Controllers/Admin/OrderImageController.php",
+      "sha256": "49c2925ad3dfb0aeea32f5baf98926a2cc5112ba543d9178c6297273ff6442f1"
+    },
+    {
+      "baseline_root_index": 1,
+      "bytes": 32079,
+      "path": "app/Http/Controllers/CartController.php",
+      "sha256": "713ae74db4410bb4ca22e5f4f3c77ddef17403004796a9e4418fe14ea7d6696a"
+    },
+    {
+      "baseline_root_index": 1,
+      "bytes": 9957,
+      "path": "app/Http/Controllers/TeamCustomizationController.php",
+      "sha256": "46c5f4079915e25f3466e0e98305918812376039546f91ed8a9f220737f56fc3"
+    },
+    {
+      "baseline_root_index": 1,
+      "bytes": 8990,
+      "path": "app/Models/DtfImage.php",
+      "sha256": "14d6245a1ac65babfa6d06152bd9fc6692c9d33c5fe3ba5e2b8efabce728d0c2"
+    },
+    {
+      "baseline_root_index": 2,
+      "bytes": 1043,
+      "path": "app/Models/SavedImage.php",
+      "sha256": "0282da64284bdddc2ad11ccc48c3f32c8ef0443823bbb4dcbe1d05b7973d12f7"
+    },
+    {
+      "baseline_root_index": 2,
+      "bytes": 44433,
+      "path": "app/Http/Controllers/Checkout/CheckoutController.php",
+      "sha256": "4b39e9381f728b8b4a0f8a828494827b0e2520ce80d0d36910b44185e6d5c2dd"
+    },
+    {
+      "baseline_root_index": 2,
+      "bytes": 8299,
+      "path": "app/Services/ShippoService.php",
+      "sha256": "617673b6921ddf209c67534b6c42b13f23771a1d3fdea907f7583f7459e193c7"
+    },
+    {
+      "baseline_root_index": 2,
+      "bytes": 3385,
+      "path": "app/Http/Controllers/Webhooks/ShippoWebhookController.php",
+      "sha256": "d8d91199bc0ca810204a04b4452cbf460bb939020a8e21b46537736a1bd5acbd"
+    }
+  ],
+  "complete_original_source_before": {
+    "files": 326,
+    "sha256": "3909bdc2303b5c578135859c847f311cd84b827e62ac4e5dbce3d2297f6da71f"
+  },
+  "copied_runtime_configuration_private": true,
+  "limits": [
+    "Database, production runtime envelope and maintenance commands are isolated doubles.",
+    "Local FPM is PHP 8.3.6; production PHP 8.2.30 is not accessed.",
+    "HTTP fixture loads Laravel 12.69.1 but does not boot the customer application."
+  ],
+  "local_php_fpm_version": "8.3.6",
+  "loopback_only": true,
+  "no_existing_process_or_permission_changes": true,
+  "private_evidence_entries": 2393,
+  "private_manifest_sha256": "585c4b8705375f3d65938f41897f7a3c6cf1dc01bc9c97d6dd74a8ba5d0b1703",
+  "process_scope_probe_sha256": "1dca015bffdaf4433ff00ecb0569faad0928c28a726b827f773d4cae4b4737c6",
+  "production_accessed": false,
+  "raw_http_headers_mode": "0600",
+  "rehearsal_sha256": "520374818b5c7c62432cd1bb7f78292d5460831a02809ea8328cb1c1f4047954",
+  "runner_sha256": "50551f24c04bff7ed2a918463c539351a0c5c3bcf2a8990afade9d0994b71584",
+  "scenario_count": 6,
+  "scenarios": [
+    {
+      "actor_uid": 1000,
+      "actual_autoload_laravel": "12.69.1",
+      "complete_original_source": {
+        "files": 326,
+        "sha256": "3909bdc2303b5c578135859c847f311cd84b827e62ac4e5dbce3d2297f6da71f"
+      },
+      "database_and_runtime_envelope_simulated": true,
+      "failure": {
+        "message_sha256": "215fcf35c78424b5d75aad9ee01842336ffb20eba9de2ded636ff1eb752d53af",
+        "type": "DeploymentError"
+      },
+      "final_state_status": "rollback_failed_site_gated",
+      "foreign_process_unchanged": true,
+      "fpm_scope_proven": true,
+      "front_controller_metadata": {
+        "gid": 1000,
+        "kind": "file",
+        "mode": 420,
+        "uid": 1000
+      },
+      "front_controller_sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4",
+      "full_monotonic_wait_receipts": [
+        {
+          "artifact": "buy-dtf-front-controller-opcache-revalidation-wait-v1",
+          "complete_revalidation_interval_seconds": 4,
+          "configured_wait_seconds": 7,
+          "deadline_monotonic_ns": 122353045559437,
+          "earliest_allowed_probe_at_utc": "2026-10-06T00:15:22.977162Z",
+          "elapsed_monotonic_ns": 7000105778,
+          "elapsed_monotonic_seconds": 7.000105778,
+          "end_monotonic_ns": 122353045665215,
+          "ended_at_utc": "2026-10-06T00:15:22.977467Z",
+          "identity_after": {
+            "bytes": 582,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/bdtf-proc-o7cglz33/buy-dtf-alpha-legacy-unreadable-foreign-pitgftk4/application/public/index.php",
+            "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+          },
+          "identity_before": {
+            "bytes": 582,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/bdtf-proc-o7cglz33/buy-dtf-alpha-legacy-unreadable-foreign-pitgftk4/application/public/index.php",
+            "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+          },
+          "operation": "rollback-failure-static-gate",
+          "policy": {
+            "artifact": "buy-dtf-php-fpm-opcache-revalidation-policy-v1",
+            "complete_revalidation_interval_seconds": 4,
+            "file_update_protection_seconds": 2,
+            "formula": "max(5, 2 * revalidate_freq + file_update_protection + 1)",
+            "minimum_floor_seconds": 5,
+            "minimum_wait_seconds": 7,
+            "opcache_enable": true,
+            "php_version": "8.2.30",
+            "revalidate_freq_seconds": 2,
+            "safety_margin_seconds": 1,
+            "sapi": "fpm-fcgi",
+            "second_revalidation_window_seconds": 2,
+            "validate_timestamps": true
+          },
+          "sequence": 3,
+          "start_monotonic_ns": 122346045559437,
+          "started_at_utc": "2026-10-06T00:15:15.977162Z",
+          "status": "complete",
+          "target_metadata": {
+            "gid": 1000,
+            "kind": "file",
+            "mode": 420,
+            "uid": 1000
+          },
+          "target_sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+        },
+        {
+          "artifact": "buy-dtf-front-controller-opcache-revalidation-wait-v1",
+          "complete_revalidation_interval_seconds": 4,
+          "configured_wait_seconds": 7,
+          "deadline_monotonic_ns": 122338742263204,
+          "earliest_allowed_probe_at_utc": "2026-10-06T00:15:05.742603Z",
+          "elapsed_monotonic_ns": 7000052840,
+          "elapsed_monotonic_seconds": 7.00005284,
+          "end_monotonic_ns": 122338742316044,
+          "ended_at_utc": "2026-10-06T00:15:05.742870Z",
+          "identity_after": {
+            "bytes": 582,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/bdtf-proc-o7cglz33/buy-dtf-alpha-legacy-unreadable-foreign-pitgftk4/application/public/index.php",
+            "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+          },
+          "identity_before": {
+            "bytes": 582,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/bdtf-proc-o7cglz33/buy-dtf-alpha-legacy-unreadable-foreign-pitgftk4/application/public/index.php",
+            "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+          },
+          "operation": "rollback-static-gate",
+          "policy": {
+            "artifact": "buy-dtf-php-fpm-opcache-revalidation-policy-v1",
+            "complete_revalidation_interval_seconds": 4,
+            "file_update_protection_seconds": 2,
+            "formula": "max(5, 2 * revalidate_freq + file_update_protection + 1)",
+            "minimum_floor_seconds": 5,
+            "minimum_wait_seconds": 7,
+            "opcache_enable": true,
+            "php_version": "8.2.30",
+            "revalidate_freq_seconds": 2,
+            "safety_margin_seconds": 1,
+            "sapi": "fpm-fcgi",
+            "second_revalidation_window_seconds": 2,
+            "validate_timestamps": true
+          },
+          "sequence": 1,
+          "start_monotonic_ns": 122331742263204,
+          "started_at_utc": "2026-10-06T00:14:58.742603Z",
+          "status": "complete",
+          "target_metadata": {
+            "gid": 1000,
+            "kind": "file",
+            "mode": 420,
+            "uid": 1000
+          },
+          "target_sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+        },
+        {
+          "artifact": "buy-dtf-front-controller-opcache-revalidation-wait-v1",
+          "complete_revalidation_interval_seconds": 4,
+          "configured_wait_seconds": 7,
+          "deadline_monotonic_ns": 122360089548589,
+          "earliest_allowed_probe_at_utc": "2026-10-06T00:15:30.021151Z",
+          "elapsed_monotonic_ns": 7000116984,
+          "elapsed_monotonic_seconds": 7.000116984,
+          "end_monotonic_ns": 122360089665573,
+          "ended_at_utc": "2026-10-06T00:15:30.021467Z",
+          "identity_after": {
+            "bytes": 582,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/bdtf-proc-o7cglz33/buy-dtf-alpha-legacy-unreadable-foreign-pitgftk4/application/public/index.php",
+            "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+          },
+          "identity_before": {
+            "bytes": 582,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/bdtf-proc-o7cglz33/buy-dtf-alpha-legacy-unreadable-foreign-pitgftk4/application/public/index.php",
+            "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+          },
+          "operation": "rollback-failure-static-gate-verification-failure",
+          "policy": {
+            "artifact": "buy-dtf-php-fpm-opcache-revalidation-policy-v1",
+            "complete_revalidation_interval_seconds": 4,
+            "file_update_protection_seconds": 2,
+            "formula": "max(5, 2 * revalidate_freq + file_update_protection + 1)",
+            "minimum_floor_seconds": 5,
+            "minimum_wait_seconds": 7,
+            "opcache_enable": true,
+            "php_version": "8.2.30",
+            "revalidate_freq_seconds": 2,
+            "safety_margin_seconds": 1,
+            "sapi": "fpm-fcgi",
+            "second_revalidation_window_seconds": 2,
+            "validate_timestamps": true
+          },
+          "sequence": 4,
+          "start_monotonic_ns": 122353089548589,
+          "started_at_utc": "2026-10-06T00:15:23.021151Z",
+          "status": "complete",
+          "target_metadata": {
+            "gid": 1000,
+            "kind": "file",
+            "mode": 420,
+            "uid": 1000
+          },
+          "target_sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+        },
+        {
+          "artifact": "buy-dtf-front-controller-opcache-revalidation-wait-v1",
+          "complete_revalidation_interval_seconds": 4,
+          "configured_wait_seconds": 7,
+          "deadline_monotonic_ns": 122345782552096,
+          "earliest_allowed_probe_at_utc": "2026-10-06T00:15:12.782892Z",
+          "elapsed_monotonic_ns": 7000090946,
+          "elapsed_monotonic_seconds": 7.000090946,
+          "end_monotonic_ns": 122345782643042,
+          "ended_at_utc": "2026-10-06T00:15:15.714418Z",
+          "identity_after": {
+            "bytes": 582,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/bdtf-proc-o7cglz33/buy-dtf-alpha-legacy-unreadable-foreign-pitgftk4/application/public/index.php",
+            "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+          },
+          "identity_before": {
+            "bytes": 582,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/bdtf-proc-o7cglz33/buy-dtf-alpha-legacy-unreadable-foreign-pitgftk4/application/public/index.php",
+            "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+          },
+          "operation": "rollback-static-gate-verification-failure",
+          "policy": {
+            "artifact": "buy-dtf-php-fpm-opcache-revalidation-policy-v1",
+            "complete_revalidation_interval_seconds": 4,
+            "file_update_protection_seconds": 2,
+            "formula": "max(5, 2 * revalidate_freq + file_update_protection + 1)",
+            "minimum_floor_seconds": 5,
+            "minimum_wait_seconds": 7,
+            "opcache_enable": true,
+            "php_version": "8.2.30",
+            "revalidate_freq_seconds": 2,
+            "safety_margin_seconds": 1,
+            "sapi": "fpm-fcgi",
+            "second_revalidation_window_seconds": 2,
+            "validate_timestamps": true
+          },
+          "sequence": 2,
+          "start_monotonic_ns": 122338782552096,
+          "started_at_utc": "2026-10-06T00:15:05.782892Z",
+          "status": "complete",
+          "target_metadata": {
+            "gid": 1000,
+            "kind": "file",
+            "mode": 420,
+            "uid": 1000
+          },
+          "target_sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+        }
+      ],
+      "http_probes": [
+        {
+          "body_bytes": 554,
+          "body_sha256": "a854d050b3949745269711209ff8d1e2b9425c530a18215a4fb625ecf04d12e7",
+          "gate_header_verified": false,
+          "gate_probe_header_verified": false,
+          "gate_sentinel_verified": false,
+          "header_names": [
+            "cache-control",
+            "connection",
+            "content-type",
+            "date",
+            "pragma",
+            "server",
+            "transfer-encoding",
+            "x-buydtf-opcache-rehearsal-nonce",
+            "x-buydtf-opcache-rehearsal-route"
+          ],
+          "headers_sha256": "1a6549e9f2d5146e8441133431653e781b861b5672b964be8b4274afe2dea6a7",
+          "label": "health-122331270958578",
+          "nonce_bound": true,
+          "nonce_sha256": "d9ad10232edc0e3acf5ca24df2bfbf70db76ac0cdfc1a0790419603e8ea3d808",
+          "original_sentinel_verified": true,
+          "route": "local_origin_nginx_fpm",
+          "route_bound": true,
+          "status": 200
+        },
+        {
+          "body_bytes": 554,
+          "body_sha256": "a854d050b3949745269711209ff8d1e2b9425c530a18215a4fb625ecf04d12e7",
+          "gate_header_verified": false,
+          "gate_probe_header_verified": false,
+          "gate_sentinel_verified": false,
+          "header_names": [
+            "cache-control",
+            "connection",
+            "content-type",
+            "date",
+            "pragma",
+            "server",
+            "transfer-encoding",
+            "x-buydtf-opcache-rehearsal-nonce",
+            "x-buydtf-opcache-rehearsal-route"
+          ],
+          "headers_sha256": "d958504efbfffb34dbc6e139e424492cd500ff3695869d44b43e2fcd0fbfb35b",
+          "label": "health-122331316706624",
+          "nonce_bound": true,
+          "nonce_sha256": "9fc9b79881f98dcedbc355f3c046f4aaf0069fcd4281f5d78d66a8f31bf227ee",
+          "original_sentinel_verified": true,
+          "route": "local_public_nginx_proxy",
+          "route_bound": true,
+          "status": 200
+        },
+        {
+          "body_bytes": 64,
+          "body_sha256": "e27953e3efffc5e30d967407b281948cebff70dceeb23d0a6751d2c3894f5522",
+          "gate_header_verified": true,
+          "gate_probe_header_verified": true,
+          "gate_sentinel_verified": true,
+          "header_names": [
+            "cache-control",
+            "connection",
+            "content-type",
+            "date",
+            "pragma",
+            "retry-after",
+            "server",
+            "transfer-encoding",
+            "x-buydtf-dependency-maintenance",
+            "x-buydtf-dependency-probe",
+            "x-buydtf-opcache-rehearsal-nonce",
+            "x-buydtf-opcache-rehearsal-route"
+          ],
+          "headers_sha256": "abf6ff0d5d7ecb617cb35baa9c4f7d6a68965fd7345667d6cd77f711a39cf376",
+          "label": "rollback-static-gate-1-122338763308718",
+          "nonce_bound": true,
+          "nonce_sha256": "f00ad7d46106157f19072b401ab13765354a8cb34ee253dfb0397c35bf5d4938",
+          "original_sentinel_verified": false,
+          "route": "local_origin_nginx_fpm",
+          "route_bound": true,
+          "status": 503
+        },
+        {
+          "body_bytes": 64,
+          "body_sha256": "a9caa522e3f8401a4bb224d57efa942a93b8c34504e946d07fad9bef4fb0e16e",
+          "gate_header_verified": true,
+          "gate_probe_header_verified": true,
+          "gate_sentinel_verified": true,
+          "header_names": [
+            "cache-control",
+            "connection",
+            "content-type",
+            "date",
+            "pragma",
+            "retry-after",
+            "server",
+            "transfer-encoding",
+            "x-buydtf-dependency-maintenance",
+            "x-buydtf-dependency-probe",
+            "x-buydtf-opcache-rehearsal-nonce",
+            "x-buydtf-opcache-rehearsal-route"
+          ],
+          "headers_sha256": "b4e7fa629ce3becc90234194b850a78491a3b9596453b511fe142aa184738858",
+          "label": "rollback-failure-static-gate-1-122353068828098",
+          "nonce_bound": true,
+          "nonce_sha256": "75a30dd846eb846eff5a97e5cbc195d954c147dae418cea012f68d38327fae0d",
+          "original_sentinel_verified": false,
+          "route": "local_origin_nginx_fpm",
+          "route_bound": true,
+          "status": 503
+        },
+        {
+          "body_bytes": 64,
+          "body_sha256": "2bdb4e4be3f675d9f0bc1901748a64c2f8cc5ca7c8c7a1269dc1ba9c6e7a26a7",
+          "gate_header_verified": true,
+          "gate_probe_header_verified": true,
+          "gate_sentinel_verified": true,
+          "header_names": [
+            "cache-control",
+            "connection",
+            "content-type",
+            "date",
+            "pragma",
+            "retry-after",
+            "server",
+            "transfer-encoding",
+            "x-buydtf-dependency-maintenance",
+            "x-buydtf-dependency-probe",
+            "x-buydtf-opcache-rehearsal-nonce",
+            "x-buydtf-opcache-rehearsal-route"
+          ],
+          "headers_sha256": "cdca114a036f9ea2f6602ce0ba4387f0cd5ccf783227ae731c15a183a3ca36b5",
+          "label": "final-contained-122360227545255",
+          "nonce_bound": true,
+          "nonce_sha256": "3e142d62d781e2f45019441edee90616dee9b17fbad838c6d3f7d006cc8a8bc7",
+          "original_sentinel_verified": false,
+          "route": "local_public_nginx_proxy",
+          "route_bound": true,
+          "status": 503
+        }
+      ],
+      "kernel_permission_denials": {
+        "cwd": {
+          "errno": 13,
+          "reader_uid": 1000,
+          "target_uid": 33
+        },
+        "exe": {
+          "errno": 13,
+          "reader_uid": 1000,
+          "target_uid": 33
+        }
+      },
+      "local_php_fpm_version": "8.3.6",
+      "maintenance_active": true,
+      "maintenance_commands_simulated": true,
+      "process_scope_observations": 0,
+      "production_accessed": false,
+      "production_php_version_unchanged": "8.2.30",
+      "raw_http_evidence_private": true,
+      "rollback_complete": false,
+      "scenario": "legacy-unreadable-foreign",
+      "source_restored_sha256": "0ceca182384a8e68560ec542c0c2c0c695971b8488321ca0899ea7a880d6fd17",
+      "state_sha256": "eb07e15e56d87df54834df4543c9f140d04a72521a1e3c9f87d790fe7f969dbd",
+      "status": "pass",
+      "target_uid": 33
+    },
+    {
+      "actor_uid": 1000,
+      "actual_autoload_laravel": "12.69.1",
+      "complete_original_source": {
+        "files": 326,
+        "sha256": "3909bdc2303b5c578135859c847f311cd84b827e62ac4e5dbce3d2297f6da71f"
+      },
+      "database_and_runtime_envelope_simulated": true,
+      "failure": null,
+      "final_state_status": "rolled_back",
+      "foreign_process_unchanged": true,
+      "fpm_scope_proven": true,
+      "front_controller_metadata": {
+        "gid": 1000,
+        "kind": "file",
+        "mode": 420,
+        "uid": 1000
+      },
+      "front_controller_sha256": "6dcef6e58af2c429ef908e41cc5a7070582ce89edb263484526a340b053ae49a",
+      "full_monotonic_wait_receipts": [
+        {
+          "artifact": "buy-dtf-front-controller-opcache-revalidation-wait-v1",
+          "complete_revalidation_interval_seconds": 4,
+          "configured_wait_seconds": 7,
+          "deadline_monotonic_ns": 122369114523117,
+          "earliest_allowed_probe_at_utc": "2026-10-06T00:15:39.046127Z",
+          "elapsed_monotonic_ns": 7000083129,
+          "elapsed_monotonic_seconds": 7.000083129,
+          "end_monotonic_ns": 122369114606246,
+          "ended_at_utc": "2026-10-06T00:15:39.046380Z",
+          "identity_after": {
+            "bytes": 582,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/bdtf-proc-o7cglz33/buy-dtf-alpha-corrected-foreign-rollback-_9dhw4c8/application/public/index.php",
+            "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+          },
+          "identity_before": {
+            "bytes": 582,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/bdtf-proc-o7cglz33/buy-dtf-alpha-corrected-foreign-rollback-_9dhw4c8/application/public/index.php",
+            "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+          },
+          "operation": "rollback-static-gate",
+          "policy": {
+            "artifact": "buy-dtf-php-fpm-opcache-revalidation-policy-v1",
+            "complete_revalidation_interval_seconds": 4,
+            "file_update_protection_seconds": 2,
+            "formula": "max(5, 2 * revalidate_freq + file_update_protection + 1)",
+            "minimum_floor_seconds": 5,
+            "minimum_wait_seconds": 7,
+            "opcache_enable": true,
+            "php_version": "8.2.30",
+            "revalidate_freq_seconds": 2,
+            "safety_margin_seconds": 1,
+            "sapi": "fpm-fcgi",
+            "second_revalidation_window_seconds": 2,
+            "validate_timestamps": true
+          },
+          "sequence": 1,
+          "start_monotonic_ns": 122362114523117,
+          "started_at_utc": "2026-10-06T00:15:32.046127Z",
+          "status": "complete",
+          "target_metadata": {
+            "gid": 1000,
+            "kind": "file",
+            "mode": 420,
+            "uid": 1000
+          },
+          "target_sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+        },
+        {
+          "artifact": "buy-dtf-front-controller-opcache-revalidation-wait-v1",
+          "complete_revalidation_interval_seconds": 4,
+          "configured_wait_seconds": 7,
+          "deadline_monotonic_ns": 122383503133022,
+          "earliest_allowed_probe_at_utc": "2026-10-06T00:15:56.365740Z",
+          "elapsed_monotonic_ns": 7000065796,
+          "elapsed_monotonic_seconds": 7.000065796,
+          "end_monotonic_ns": 122383503198818,
+          "ended_at_utc": "2026-10-06T00:15:56.366080Z",
+          "identity_after": {
+            "bytes": 1829,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/bdtf-proc-o7cglz33/buy-dtf-alpha-corrected-foreign-rollback-_9dhw4c8/application/public/index.php",
+            "sha256": "6dcef6e58af2c429ef908e41cc5a7070582ce89edb263484526a340b053ae49a"
+          },
+          "identity_before": {
+            "bytes": 1829,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/bdtf-proc-o7cglz33/buy-dtf-alpha-corrected-foreign-rollback-_9dhw4c8/application/public/index.php",
+            "sha256": "6dcef6e58af2c429ef908e41cc5a7070582ce89edb263484526a340b053ae49a"
+          },
+          "operation": "rollback-original-front-controller-restore",
+          "policy": {
+            "artifact": "buy-dtf-php-fpm-opcache-revalidation-policy-v1",
+            "complete_revalidation_interval_seconds": 4,
+            "file_update_protection_seconds": 2,
+            "formula": "max(5, 2 * revalidate_freq + file_update_protection + 1)",
+            "minimum_floor_seconds": 5,
+            "minimum_wait_seconds": 7,
+            "opcache_enable": true,
+            "php_version": "8.2.30",
+            "revalidate_freq_seconds": 2,
+            "safety_margin_seconds": 1,
+            "sapi": "fpm-fcgi",
+            "second_revalidation_window_seconds": 2,
+            "validate_timestamps": true
+          },
+          "sequence": 3,
+          "start_monotonic_ns": 122376503133022,
+          "started_at_utc": "2026-10-06T00:15:49.365740Z",
+          "status": "complete",
+          "target_metadata": {
+            "gid": 1000,
+            "kind": "file",
+            "mode": 420,
+            "uid": 1000
+          },
+          "target_sha256": "6dcef6e58af2c429ef908e41cc5a7070582ce89edb263484526a340b053ae49a"
+        },
+        {
+          "artifact": "buy-dtf-front-controller-opcache-revalidation-wait-v1",
+          "complete_revalidation_interval_seconds": 4,
+          "configured_wait_seconds": 7,
+          "deadline_monotonic_ns": 122376150098159,
+          "earliest_allowed_probe_at_utc": "2026-10-06T00:15:46.081701Z",
+          "elapsed_monotonic_ns": 7000101442,
+          "elapsed_monotonic_seconds": 7.000101442,
+          "end_monotonic_ns": 122376150199601,
+          "ended_at_utc": "2026-10-06T00:15:49.012976Z",
+          "identity_after": {
+            "bytes": 582,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/bdtf-proc-o7cglz33/buy-dtf-alpha-corrected-foreign-rollback-_9dhw4c8/application/public/index.php",
+            "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+          },
+          "identity_before": {
+            "bytes": 582,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/bdtf-proc-o7cglz33/buy-dtf-alpha-corrected-foreign-rollback-_9dhw4c8/application/public/index.php",
+            "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+          },
+          "operation": "rollback-static-gate-verification-failure",
+          "policy": {
+            "artifact": "buy-dtf-php-fpm-opcache-revalidation-policy-v1",
+            "complete_revalidation_interval_seconds": 4,
+            "file_update_protection_seconds": 2,
+            "formula": "max(5, 2 * revalidate_freq + file_update_protection + 1)",
+            "minimum_floor_seconds": 5,
+            "minimum_wait_seconds": 7,
+            "opcache_enable": true,
+            "php_version": "8.2.30",
+            "revalidate_freq_seconds": 2,
+            "safety_margin_seconds": 1,
+            "sapi": "fpm-fcgi",
+            "second_revalidation_window_seconds": 2,
+            "validate_timestamps": true
+          },
+          "sequence": 2,
+          "start_monotonic_ns": 122369150098159,
+          "started_at_utc": "2026-10-06T00:15:39.081701Z",
+          "status": "complete",
+          "target_metadata": {
+            "gid": 1000,
+            "kind": "file",
+            "mode": 420,
+            "uid": 1000
+          },
+          "target_sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+        }
+      ],
+      "http_probes": [
+        {
+          "body_bytes": 554,
+          "body_sha256": "a854d050b3949745269711209ff8d1e2b9425c530a18215a4fb625ecf04d12e7",
+          "gate_header_verified": false,
+          "gate_probe_header_verified": false,
+          "gate_sentinel_verified": false,
+          "header_names": [
+            "cache-control",
+            "connection",
+            "content-type",
+            "date",
+            "pragma",
+            "server",
+            "transfer-encoding",
+            "x-buydtf-opcache-rehearsal-nonce",
+            "x-buydtf-opcache-rehearsal-route"
+          ],
+          "headers_sha256": "3a70269d63c0caa9c06eb1b6234ca854f3d8458afdda459172413f6142cd68af",
+          "label": "health-122361692976826",
+          "nonce_bound": true,
+          "nonce_sha256": "cf7ad7b246b026e69e5d3cb86043c57b41ed44ba35dd27f63577f90ac0d72d33",
+          "original_sentinel_verified": true,
+          "route": "local_origin_nginx_fpm",
+          "route_bound": true,
+          "status": 200
+        },
+        {
+          "body_bytes": 554,
+          "body_sha256": "a854d050b3949745269711209ff8d1e2b9425c530a18215a4fb625ecf04d12e7",
+          "gate_header_verified": false,
+          "gate_probe_header_verified": false,
+          "gate_sentinel_verified": false,
+          "header_names": [
+            "cache-control",
+            "connection",
+            "content-type",
+            "date",
+            "pragma",
+            "server",
+            "transfer-encoding",
+            "x-buydtf-opcache-rehearsal-nonce",
+            "x-buydtf-opcache-rehearsal-route"
+          ],
+          "headers_sha256": "13d035d91bd9d06e0235edb32f638e6bd83b86a6ff56926a1a82fba6cf706012",
+          "label": "health-122361738802027",
+          "nonce_bound": true,
+          "nonce_sha256": "9f4572e65b7cd9f9b6692b59df06bb1a95b5e5e08aeb2ab0141266bb1c435005",
+          "original_sentinel_verified": true,
+          "route": "local_public_nginx_proxy",
+          "route_bound": true,
+          "status": 200
+        },
+        {
+          "body_bytes": 64,
+          "body_sha256": "8007057167350f71f9995cddc2cfb7e5319fd22e8a702ec8efb8e597402c1683",
+          "gate_header_verified": true,
+          "gate_probe_header_verified": true,
+          "gate_sentinel_verified": true,
+          "header_names": [
+            "cache-control",
+            "connection",
+            "content-type",
+            "date",
+            "pragma",
+            "retry-after",
+            "server",
+            "transfer-encoding",
+            "x-buydtf-dependency-maintenance",
+            "x-buydtf-dependency-probe",
+            "x-buydtf-opcache-rehearsal-nonce",
+            "x-buydtf-opcache-rehearsal-route"
+          ],
+          "headers_sha256": "1e4c11f87b663c4104dfa46ac1498bbd88d959205c88ffb15ac19a4e3deb652c",
+          "label": "rollback-static-gate-1-122369134727093",
+          "nonce_bound": true,
+          "nonce_sha256": "2bbd620ab7c3736ca2a18b365484ea5589c5559f66a3cde7d59c434113eee456",
+          "original_sentinel_verified": false,
+          "route": "local_origin_nginx_fpm",
+          "route_bound": true,
+          "status": 503
+        },
+        {
+          "body_bytes": 554,
+          "body_sha256": "a854d050b3949745269711209ff8d1e2b9425c530a18215a4fb625ecf04d12e7",
+          "gate_header_verified": false,
+          "gate_probe_header_verified": false,
+          "gate_sentinel_verified": false,
+          "header_names": [
+            "cache-control",
+            "connection",
+            "content-type",
+            "date",
+            "pragma",
+            "server",
+            "transfer-encoding",
+            "x-buydtf-opcache-rehearsal-nonce",
+            "x-buydtf-opcache-rehearsal-route"
+          ],
+          "headers_sha256": "ed6488337349bd9b2580dceb95539affa6fa5d8da78f6609f610be99537a9788",
+          "label": "health-122383547928246",
+          "nonce_bound": true,
+          "nonce_sha256": "5c9eb2ea900dd413ae2365838a4fba30229a54178740797e7187b67ec86bcf9c",
+          "original_sentinel_verified": true,
+          "route": "local_origin_nginx_fpm",
+          "route_bound": true,
+          "status": 200
+        },
+        {
+          "body_bytes": 554,
+          "body_sha256": "a854d050b3949745269711209ff8d1e2b9425c530a18215a4fb625ecf04d12e7",
+          "gate_header_verified": false,
+          "gate_probe_header_verified": false,
+          "gate_sentinel_verified": false,
+          "header_names": [
+            "cache-control",
+            "connection",
+            "content-type",
+            "date",
+            "pragma",
+            "server",
+            "transfer-encoding",
+            "x-buydtf-opcache-rehearsal-nonce",
+            "x-buydtf-opcache-rehearsal-route"
+          ],
+          "headers_sha256": "2573cb39649850d7dcdb6d514bd3cdf0be88ccf42f0dfd012b72591df2190045",
+          "label": "health-122383562546765",
+          "nonce_bound": true,
+          "nonce_sha256": "5491bc6f43a30b4a8c7181ac779d9872acc4e4721be16837f9d049cce6cc4415",
+          "original_sentinel_verified": true,
+          "route": "local_public_nginx_proxy",
+          "route_bound": true,
+          "status": 200
+        },
+        {
+          "body_bytes": 554,
+          "body_sha256": "a854d050b3949745269711209ff8d1e2b9425c530a18215a4fb625ecf04d12e7",
+          "gate_header_verified": false,
+          "gate_probe_header_verified": false,
+          "gate_sentinel_verified": false,
+          "header_names": [
+            "cache-control",
+            "connection",
+            "content-type",
+            "date",
+            "pragma",
+            "server",
+            "transfer-encoding",
+            "x-buydtf-opcache-rehearsal-nonce",
+            "x-buydtf-opcache-rehearsal-route"
+          ],
+          "headers_sha256": "0247794a1802187ed05c7111d8a75ae32c46cfb7b7915b9c804e19b772205cba",
+          "label": "health-122386577756889",
+          "nonce_bound": true,
+          "nonce_sha256": "91c51e40c1d0209921e2fffaec2f681271f47faaee90f96b270e58292e4784ce",
+          "original_sentinel_verified": true,
+          "route": "local_origin_nginx_fpm",
+          "route_bound": true,
+          "status": 200
+        },
+        {
+          "body_bytes": 554,
+          "body_sha256": "a854d050b3949745269711209ff8d1e2b9425c530a18215a4fb625ecf04d12e7",
+          "gate_header_verified": false,
+          "gate_probe_header_verified": false,
+          "gate_sentinel_verified": false,
+          "header_names": [
+            "cache-control",
+            "connection",
+            "content-type",
+            "date",
+            "pragma",
+            "server",
+            "transfer-encoding",
+            "x-buydtf-opcache-rehearsal-nonce",
+            "x-buydtf-opcache-rehearsal-route"
+          ],
+          "headers_sha256": "84c4c66969510483c4feaedae468357b0c260c22a7ec7d8ef9541ea5991101fc",
+          "label": "health-122386590320564",
+          "nonce_bound": true,
+          "nonce_sha256": "dd89334720bb2f76cc51ad13a7daa134c250b9969a5affcb30fee05206f676bd",
+          "original_sentinel_verified": true,
+          "route": "local_public_nginx_proxy",
+          "route_bound": true,
+          "status": 200
+        },
+        {
+          "body_bytes": 554,
+          "body_sha256": "a854d050b3949745269711209ff8d1e2b9425c530a18215a4fb625ecf04d12e7",
+          "gate_header_verified": false,
+          "gate_probe_header_verified": false,
+          "gate_sentinel_verified": false,
+          "header_names": [
+            "cache-control",
+            "connection",
+            "content-type",
+            "date",
+            "pragma",
+            "server",
+            "transfer-encoding",
+            "x-buydtf-opcache-rehearsal-nonce",
+            "x-buydtf-opcache-rehearsal-route"
+          ],
+          "headers_sha256": "784c04eddb628e03ee3514ca1bf50d41030a9cbaad6204196ee41545cc243308",
+          "label": "health-122386733808506",
+          "nonce_bound": true,
+          "nonce_sha256": "e98c7d71fb7342059e38dac80d1497409235dc9f569cfc89afa3d636dd53c441",
+          "original_sentinel_verified": true,
+          "route": "local_origin_nginx_fpm",
+          "route_bound": true,
+          "status": 200
+        },
+        {
+          "body_bytes": 554,
+          "body_sha256": "a854d050b3949745269711209ff8d1e2b9425c530a18215a4fb625ecf04d12e7",
+          "gate_header_verified": false,
+          "gate_probe_header_verified": false,
+          "gate_sentinel_verified": false,
+          "header_names": [
+            "cache-control",
+            "connection",
+            "content-type",
+            "date",
+            "pragma",
+            "server",
+            "transfer-encoding",
+            "x-buydtf-opcache-rehearsal-nonce",
+            "x-buydtf-opcache-rehearsal-route"
+          ],
+          "headers_sha256": "47ca34ab5ac9e7b326eb1feb1d21aebbc88269249a25125c50fd3bcf5f5da8b9",
+          "label": "health-122386742907732",
+          "nonce_bound": true,
+          "nonce_sha256": "2f823eacafa10aa1ac1a6d72896b0ff1076e8e809ec9e0afc16640556ca239ed",
+          "original_sentinel_verified": true,
+          "route": "local_public_nginx_proxy",
+          "route_bound": true,
+          "status": 200
+        }
+      ],
+      "kernel_permission_denials": {
+        "cwd": {
+          "errno": 13,
+          "reader_uid": 1000,
+          "target_uid": 33
+        },
+        "exe": {
+          "errno": 13,
+          "reader_uid": 1000,
+          "target_uid": 33
+        }
+      },
+      "local_php_fpm_version": "8.3.6",
+      "maintenance_active": false,
+      "maintenance_commands_simulated": true,
+      "process_scope_observations": 4,
+      "production_accessed": false,
+      "production_php_version_unchanged": "8.2.30",
+      "raw_http_evidence_private": true,
+      "rollback_complete": true,
+      "scenario": "corrected-foreign-rollback",
+      "source_restored_sha256": "0ceca182384a8e68560ec542c0c2c0c695971b8488321ca0899ea7a880d6fd17",
+      "state_sha256": "0b7fbf3b7f566897ec6a2800a1729a216ca614b6a1f57cc895601a21e44ba76d",
+      "status": "pass",
+      "target_uid": 33
+    },
+    {
+      "actor_uid": 1000,
+      "actual_autoload_laravel": "12.69.1",
+      "complete_original_source": {
+        "files": 326,
+        "sha256": "3909bdc2303b5c578135859c847f311cd84b827e62ac4e5dbce3d2297f6da71f"
+      },
+      "database_and_runtime_envelope_simulated": true,
+      "failure": null,
+      "final_state_status": "rolled_back",
+      "foreign_process_unchanged": true,
+      "fpm_scope_proven": true,
+      "front_controller_metadata": {
+        "gid": 1000,
+        "kind": "file",
+        "mode": 420,
+        "uid": 1000
+      },
+      "front_controller_sha256": "6dcef6e58af2c429ef908e41cc5a7070582ce89edb263484526a340b053ae49a",
+      "full_monotonic_wait_receipts": [
+        {
+          "artifact": "buy-dtf-front-controller-opcache-revalidation-wait-v1",
+          "complete_revalidation_interval_seconds": 4,
+          "configured_wait_seconds": 7,
+          "deadline_monotonic_ns": 122395495452236,
+          "earliest_allowed_probe_at_utc": "2026-10-06T00:16:08.358061Z",
+          "elapsed_monotonic_ns": 7000066402,
+          "elapsed_monotonic_seconds": 7.000066402,
+          "end_monotonic_ns": 122395495518638,
+          "ended_at_utc": "2026-10-06T00:16:08.358295Z",
+          "identity_after": {
+            "bytes": 582,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/bdtf-proc-o7cglz33/buy-dtf-alpha-corrected-foreign-reopening-replay-2y1yzmeo/application/public/index.php",
+            "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+          },
+          "identity_before": {
+            "bytes": 582,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/bdtf-proc-o7cglz33/buy-dtf-alpha-corrected-foreign-reopening-replay-2y1yzmeo/application/public/index.php",
+            "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+          },
+          "operation": "rollback-static-gate",
+          "policy": {
+            "artifact": "buy-dtf-php-fpm-opcache-revalidation-policy-v1",
+            "complete_revalidation_interval_seconds": 4,
+            "file_update_protection_seconds": 2,
+            "formula": "max(5, 2 * revalidate_freq + file_update_protection + 1)",
+            "minimum_floor_seconds": 5,
+            "minimum_wait_seconds": 7,
+            "opcache_enable": true,
+            "php_version": "8.2.30",
+            "revalidate_freq_seconds": 2,
+            "safety_margin_seconds": 1,
+            "sapi": "fpm-fcgi",
+            "second_revalidation_window_seconds": 2,
+            "validate_timestamps": true
+          },
+          "sequence": 1,
+          "start_monotonic_ns": 122388495452236,
+          "started_at_utc": "2026-10-06T00:16:01.358061Z",
+          "status": "complete",
+          "target_metadata": {
+            "gid": 1000,
+            "kind": "file",
+            "mode": 420,
+            "uid": 1000
+          },
+          "target_sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+        },
+        {
+          "artifact": "buy-dtf-front-controller-opcache-revalidation-wait-v1",
+          "complete_revalidation_interval_seconds": 4,
+          "configured_wait_seconds": 7,
+          "deadline_monotonic_ns": 122409834710985,
+          "earliest_allowed_probe_at_utc": "2026-10-06T00:16:22.697318Z",
+          "elapsed_monotonic_ns": 7000171113,
+          "elapsed_monotonic_seconds": 7.000171113,
+          "end_monotonic_ns": 122409834882098,
+          "ended_at_utc": "2026-10-06T00:16:25.629507Z",
+          "identity_after": {
+            "bytes": 1829,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/bdtf-proc-o7cglz33/buy-dtf-alpha-corrected-foreign-reopening-replay-2y1yzmeo/application/public/index.php",
+            "sha256": "6dcef6e58af2c429ef908e41cc5a7070582ce89edb263484526a340b053ae49a"
+          },
+          "identity_before": {
+            "bytes": 1829,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/bdtf-proc-o7cglz33/buy-dtf-alpha-corrected-foreign-reopening-replay-2y1yzmeo/application/public/index.php",
+            "sha256": "6dcef6e58af2c429ef908e41cc5a7070582ce89edb263484526a340b053ae49a"
+          },
+          "operation": "rollback-original-front-controller-restore",
+          "policy": {
+            "artifact": "buy-dtf-php-fpm-opcache-revalidation-policy-v1",
+            "complete_revalidation_interval_seconds": 4,
+            "file_update_protection_seconds": 2,
+            "formula": "max(5, 2 * revalidate_freq + file_update_protection + 1)",
+            "minimum_floor_seconds": 5,
+            "minimum_wait_seconds": 7,
+            "opcache_enable": true,
+            "php_version": "8.2.30",
+            "revalidate_freq_seconds": 2,
+            "safety_margin_seconds": 1,
+            "sapi": "fpm-fcgi",
+            "second_revalidation_window_seconds": 2,
+            "validate_timestamps": true
+          },
+          "sequence": 3,
+          "start_monotonic_ns": 122402834710985,
+          "started_at_utc": "2026-10-06T00:16:15.697318Z",
+          "status": "complete",
+          "target_metadata": {
+            "gid": 1000,
+            "kind": "file",
+            "mode": 420,
+            "uid": 1000
+          },
+          "target_sha256": "6dcef6e58af2c429ef908e41cc5a7070582ce89edb263484526a340b053ae49a"
+        },
+        {
+          "artifact": "buy-dtf-front-controller-opcache-revalidation-wait-v1",
+          "complete_revalidation_interval_seconds": 4,
+          "configured_wait_seconds": 7,
+          "deadline_monotonic_ns": 122402541656563,
+          "earliest_allowed_probe_at_utc": "2026-10-06T00:16:15.404264Z",
+          "elapsed_monotonic_ns": 7000039106,
+          "elapsed_monotonic_seconds": 7.000039106,
+          "end_monotonic_ns": 122402541695669,
+          "ended_at_utc": "2026-10-06T00:16:15.404473Z",
+          "identity_after": {
+            "bytes": 582,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/bdtf-proc-o7cglz33/buy-dtf-alpha-corrected-foreign-reopening-replay-2y1yzmeo/application/public/index.php",
+            "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+          },
+          "identity_before": {
+            "bytes": 582,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/bdtf-proc-o7cglz33/buy-dtf-alpha-corrected-foreign-reopening-replay-2y1yzmeo/application/public/index.php",
+            "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+          },
+          "operation": "rollback-static-gate-verification-failure",
+          "policy": {
+            "artifact": "buy-dtf-php-fpm-opcache-revalidation-policy-v1",
+            "complete_revalidation_interval_seconds": 4,
+            "file_update_protection_seconds": 2,
+            "formula": "max(5, 2 * revalidate_freq + file_update_protection + 1)",
+            "minimum_floor_seconds": 5,
+            "minimum_wait_seconds": 7,
+            "opcache_enable": true,
+            "php_version": "8.2.30",
+            "revalidate_freq_seconds": 2,
+            "safety_margin_seconds": 1,
+            "sapi": "fpm-fcgi",
+            "second_revalidation_window_seconds": 2,
+            "validate_timestamps": true
+          },
+          "sequence": 2,
+          "start_monotonic_ns": 122395541656563,
+          "started_at_utc": "2026-10-06T00:16:08.404264Z",
+          "status": "complete",
+          "target_metadata": {
+            "gid": 1000,
+            "kind": "file",
+            "mode": 420,
+            "uid": 1000
+          },
+          "target_sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+        }
+      ],
+      "http_probes": [
+        {
+          "body_bytes": 554,
+          "body_sha256": "a854d050b3949745269711209ff8d1e2b9425c530a18215a4fb625ecf04d12e7",
+          "gate_header_verified": false,
+          "gate_probe_header_verified": false,
+          "gate_sentinel_verified": false,
+          "header_names": [
+            "cache-control",
+            "connection",
+            "content-type",
+            "date",
+            "pragma",
+            "server",
+            "transfer-encoding",
+            "x-buydtf-opcache-rehearsal-nonce",
+            "x-buydtf-opcache-rehearsal-route"
+          ],
+          "headers_sha256": "0b03858e6dac5bfdf569972bb01dd8727b2f22b52cc94ab843035f15fcbce60b",
+          "label": "health-122388120414275",
+          "nonce_bound": true,
+          "nonce_sha256": "8d72226c24684b085ac930fe4a6ea10c1cf061f4cfbfdf272ef6eff914019427",
+          "original_sentinel_verified": true,
+          "route": "local_origin_nginx_fpm",
+          "route_bound": true,
+          "status": 200
+        },
+        {
+          "body_bytes": 554,
+          "body_sha256": "a854d050b3949745269711209ff8d1e2b9425c530a18215a4fb625ecf04d12e7",
+          "gate_header_verified": false,
+          "gate_probe_header_verified": false,
+          "gate_sentinel_verified": false,
+          "header_names": [
+            "cache-control",
+            "connection",
+            "content-type",
+            "date",
+            "pragma",
+            "server",
+            "transfer-encoding",
+            "x-buydtf-opcache-rehearsal-nonce",
+            "x-buydtf-opcache-rehearsal-route"
+          ],
+          "headers_sha256": "d0aedd6ad994a6ba89d4a04d4656dfbcccd54d881c0e9ec3197ce0ad9eb36687",
+          "label": "health-122388166502082",
+          "nonce_bound": true,
+          "nonce_sha256": "7bdf23c7976d2a4ddf1249402625cc715e1498136782a1a00fd16c039e418654",
+          "original_sentinel_verified": true,
+          "route": "local_public_nginx_proxy",
+          "route_bound": true,
+          "status": 200
+        },
+        {
+          "body_bytes": 64,
+          "body_sha256": "fb3aef73bf686112b5a7f5d3638c530b9fc87cd44d5709561f656e36bad92e3d",
+          "gate_header_verified": true,
+          "gate_probe_header_verified": true,
+          "gate_sentinel_verified": true,
+          "header_names": [
+            "cache-control",
+            "connection",
+            "content-type",
+            "date",
+            "pragma",
+            "retry-after",
+            "server",
+            "transfer-encoding",
+            "x-buydtf-dependency-maintenance",
+            "x-buydtf-dependency-probe",
+            "x-buydtf-opcache-rehearsal-nonce",
+            "x-buydtf-opcache-rehearsal-route"
+          ],
+          "headers_sha256": "61664420ad718bb175d49ebab031a8d0a8d5a9bfc3d32291d4c084818f4805ba",
+          "label": "rollback-static-gate-1-122395521213748",
+          "nonce_bound": true,
+          "nonce_sha256": "c7d1d3057bdcc19749777b57adc4a6a2ae6c68148e97d63a648a6143cf579f04",
+          "original_sentinel_verified": false,
+          "route": "local_origin_nginx_fpm",
+          "route_bound": true,
+          "status": 503
+        },
+        {
+          "body_bytes": 554,
+          "body_sha256": "a854d050b3949745269711209ff8d1e2b9425c530a18215a4fb625ecf04d12e7",
+          "gate_header_verified": false,
+          "gate_probe_header_verified": false,
+          "gate_sentinel_verified": false,
+          "header_names": [
+            "cache-control",
+            "connection",
+            "content-type",
+            "date",
+            "pragma",
+            "server",
+            "transfer-encoding",
+            "x-buydtf-opcache-rehearsal-nonce",
+            "x-buydtf-opcache-rehearsal-route"
+          ],
+          "headers_sha256": "cc8607616263d30a9ce70a31d6b2761f82d0d288f5a88c436872f750ba519464",
+          "label": "health-122409871765967",
+          "nonce_bound": true,
+          "nonce_sha256": "8ff5ea89857ef22ec7919724e56e1d4e92bcf92ba01aad3291a01fd22b022411",
+          "original_sentinel_verified": true,
+          "route": "local_origin_nginx_fpm",
+          "route_bound": true,
+          "status": 200
+        },
+        {
+          "body_bytes": 554,
+          "body_sha256": "a854d050b3949745269711209ff8d1e2b9425c530a18215a4fb625ecf04d12e7",
+          "gate_header_verified": false,
+          "gate_probe_header_verified": false,
+          "gate_sentinel_verified": false,
+          "header_names": [
+            "cache-control",
+            "connection",
+            "content-type",
+            "date",
+            "pragma",
+            "server",
+            "transfer-encoding",
+            "x-buydtf-opcache-rehearsal-nonce",
+            "x-buydtf-opcache-rehearsal-route"
+          ],
+          "headers_sha256": "28e888ea79a86dd119483efe68db565543fde75e4e45e7542917f79caa4782a2",
+          "label": "health-122409881315244",
+          "nonce_bound": true,
+          "nonce_sha256": "1b9578d151aa582a53f191b09327f98648062209f5e0a101ce5cbe53ada31ad5",
+          "original_sentinel_verified": true,
+          "route": "local_public_nginx_proxy",
+          "route_bound": true,
+          "status": 200
+        },
+        {
+          "body_bytes": 554,
+          "body_sha256": "a854d050b3949745269711209ff8d1e2b9425c530a18215a4fb625ecf04d12e7",
+          "gate_header_verified": false,
+          "gate_probe_header_verified": false,
+          "gate_sentinel_verified": false,
+          "header_names": [
+            "cache-control",
+            "connection",
+            "content-type",
+            "date",
+            "pragma",
+            "server",
+            "transfer-encoding",
+            "x-buydtf-opcache-rehearsal-nonce",
+            "x-buydtf-opcache-rehearsal-route"
+          ],
+          "headers_sha256": "b39c1a3a749d1f6f2ba95455eded051caf9a89efb3938525877e9c9f2b3f0fc1",
+          "label": "health-122412890319573",
+          "nonce_bound": true,
+          "nonce_sha256": "1206215b8c8379b4103997db8e3c524603a5570bea41caf0afc5bb3eeec032ed",
+          "original_sentinel_verified": true,
+          "route": "local_origin_nginx_fpm",
+          "route_bound": true,
+          "status": 200
+        },
+        {
+          "body_bytes": 554,
+          "body_sha256": "a854d050b3949745269711209ff8d1e2b9425c530a18215a4fb625ecf04d12e7",
+          "gate_header_verified": false,
+          "gate_probe_header_verified": false,
+          "gate_sentinel_verified": false,
+          "header_names": [
+            "cache-control",
+            "connection",
+            "content-type",
+            "date",
+            "pragma",
+            "server",
+            "transfer-encoding",
+            "x-buydtf-opcache-rehearsal-nonce",
+            "x-buydtf-opcache-rehearsal-route"
+          ],
+          "headers_sha256": "fd16e5c9420becc67e95c874cd0d0a8598cdd122475ff6baec304365e9b394d0",
+          "label": "health-122412900041829",
+          "nonce_bound": true,
+          "nonce_sha256": "196fc66f629092c3c6117603bd27ac33ffc91a169024983bbd6d683f73956869",
+          "original_sentinel_verified": true,
+          "route": "local_public_nginx_proxy",
+          "route_bound": true,
+          "status": 200
+        },
+        {
+          "body_bytes": 554,
+          "body_sha256": "a854d050b3949745269711209ff8d1e2b9425c530a18215a4fb625ecf04d12e7",
+          "gate_header_verified": false,
+          "gate_probe_header_verified": false,
+          "gate_sentinel_verified": false,
+          "header_names": [
+            "cache-control",
+            "connection",
+            "content-type",
+            "date",
+            "pragma",
+            "server",
+            "transfer-encoding",
+            "x-buydtf-opcache-rehearsal-nonce",
+            "x-buydtf-opcache-rehearsal-route"
+          ],
+          "headers_sha256": "bd9687f06e3463a528d717faab757c331948ab334d6413a63b3959ece27c3112",
+          "label": "health-122413029733693",
+          "nonce_bound": true,
+          "nonce_sha256": "ec649b7ae903f16b63685054d0a7f6c3263731fa16b2f01a5d7ded49b67efe05",
+          "original_sentinel_verified": true,
+          "route": "local_origin_nginx_fpm",
+          "route_bound": true,
+          "status": 200
+        },
+        {
+          "body_bytes": 554,
+          "body_sha256": "a854d050b3949745269711209ff8d1e2b9425c530a18215a4fb625ecf04d12e7",
+          "gate_header_verified": false,
+          "gate_probe_header_verified": false,
+          "gate_sentinel_verified": false,
+          "header_names": [
+            "cache-control",
+            "connection",
+            "content-type",
+            "date",
+            "pragma",
+            "server",
+            "transfer-encoding",
+            "x-buydtf-opcache-rehearsal-nonce",
+            "x-buydtf-opcache-rehearsal-route"
+          ],
+          "headers_sha256": "508e08a147cdcbd3dd6ae67a4cbe47c530ad95b24025dc586b7c7760f33a7b46",
+          "label": "health-122413039621185",
+          "nonce_bound": true,
+          "nonce_sha256": "1f902d79d32fc6cecaab3b594e18d1ed5455f675aa3614eba2737d9fdb450da8",
+          "original_sentinel_verified": true,
+          "route": "local_public_nginx_proxy",
+          "route_bound": true,
+          "status": 200
+        }
+      ],
+      "kernel_permission_denials": {
+        "cwd": {
+          "errno": 13,
+          "reader_uid": 1000,
+          "target_uid": 33
+        },
+        "exe": {
+          "errno": 13,
+          "reader_uid": 1000,
+          "target_uid": 33
+        }
+      },
+      "local_php_fpm_version": "8.3.6",
+      "maintenance_active": false,
+      "maintenance_commands_simulated": true,
+      "process_scope_observations": 4,
+      "production_accessed": false,
+      "production_php_version_unchanged": "8.2.30",
+      "raw_http_evidence_private": true,
+      "rollback_complete": true,
+      "scenario": "corrected-foreign-reopening-replay",
+      "source_restored_sha256": "0ceca182384a8e68560ec542c0c2c0c695971b8488321ca0899ea7a880d6fd17",
+      "state_sha256": "46be4c7489e1f2dd29c0ab968e1405787595cd277554908cd1e7aab9747248f9",
+      "status": "pass",
+      "target_uid": 33
+    },
+    {
+      "actor_uid": 1000,
+      "actual_autoload_laravel": "12.69.1",
+      "complete_original_source": {
+        "files": 326,
+        "sha256": "3909bdc2303b5c578135859c847f311cd84b827e62ac4e5dbce3d2297f6da71f"
+      },
+      "database_and_runtime_envelope_simulated": true,
+      "failure": {
+        "message_sha256": "6e1e6f5fef6d26e6b2debac89a951525a782bd34defb64ef6f1482d16a7614e3",
+        "type": "DeploymentError"
+      },
+      "final_state_status": "rollback_failed_site_gated",
+      "foreign_process_unchanged": true,
+      "fpm_scope_proven": true,
+      "front_controller_metadata": {
+        "gid": 1000,
+        "kind": "file",
+        "mode": 420,
+        "uid": 1000
+      },
+      "front_controller_sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4",
+      "full_monotonic_wait_receipts": [
+        {
+          "artifact": "buy-dtf-front-controller-opcache-revalidation-wait-v1",
+          "complete_revalidation_interval_seconds": 4,
+          "configured_wait_seconds": 7,
+          "deadline_monotonic_ns": 122436126701874,
+          "earliest_allowed_probe_at_utc": "2026-10-06T00:16:51.921149Z",
+          "elapsed_monotonic_ns": 7000139514,
+          "elapsed_monotonic_seconds": 7.000139514,
+          "end_monotonic_ns": 122436126841388,
+          "ended_at_utc": "2026-10-06T00:16:51.921493Z",
+          "identity_after": {
+            "bytes": 582,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/bdtf-proc-o7cglz33/buy-dtf-alpha-corrected-scoped-work-lsihnx_e/application/public/index.php",
+            "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+          },
+          "identity_before": {
+            "bytes": 582,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/bdtf-proc-o7cglz33/buy-dtf-alpha-corrected-scoped-work-lsihnx_e/application/public/index.php",
+            "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+          },
+          "operation": "rollback-failure-static-gate",
+          "policy": {
+            "artifact": "buy-dtf-php-fpm-opcache-revalidation-policy-v1",
+            "complete_revalidation_interval_seconds": 4,
+            "file_update_protection_seconds": 2,
+            "formula": "max(5, 2 * revalidate_freq + file_update_protection + 1)",
+            "minimum_floor_seconds": 5,
+            "minimum_wait_seconds": 7,
+            "opcache_enable": true,
+            "php_version": "8.2.30",
+            "revalidate_freq_seconds": 2,
+            "safety_margin_seconds": 1,
+            "sapi": "fpm-fcgi",
+            "second_revalidation_window_seconds": 2,
+            "validate_timestamps": true
+          },
+          "sequence": 3,
+          "start_monotonic_ns": 122429126701874,
+          "started_at_utc": "2026-10-06T00:16:44.921149Z",
+          "status": "complete",
+          "target_metadata": {
+            "gid": 1000,
+            "kind": "file",
+            "mode": 420,
+            "uid": 1000
+          },
+          "target_sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+        },
+        {
+          "artifact": "buy-dtf-front-controller-opcache-revalidation-wait-v1",
+          "complete_revalidation_interval_seconds": 4,
+          "configured_wait_seconds": 7,
+          "deadline_monotonic_ns": 122421767329208,
+          "earliest_allowed_probe_at_utc": "2026-10-06T00:16:37.561777Z",
+          "elapsed_monotonic_ns": 7000083206,
+          "elapsed_monotonic_seconds": 7.000083206,
+          "end_monotonic_ns": 122421767412414,
+          "ended_at_utc": "2026-10-06T00:16:37.562069Z",
+          "identity_after": {
+            "bytes": 582,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/bdtf-proc-o7cglz33/buy-dtf-alpha-corrected-scoped-work-lsihnx_e/application/public/index.php",
+            "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+          },
+          "identity_before": {
+            "bytes": 582,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/bdtf-proc-o7cglz33/buy-dtf-alpha-corrected-scoped-work-lsihnx_e/application/public/index.php",
+            "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+          },
+          "operation": "rollback-static-gate",
+          "policy": {
+            "artifact": "buy-dtf-php-fpm-opcache-revalidation-policy-v1",
+            "complete_revalidation_interval_seconds": 4,
+            "file_update_protection_seconds": 2,
+            "formula": "max(5, 2 * revalidate_freq + file_update_protection + 1)",
+            "minimum_floor_seconds": 5,
+            "minimum_wait_seconds": 7,
+            "opcache_enable": true,
+            "php_version": "8.2.30",
+            "revalidate_freq_seconds": 2,
+            "safety_margin_seconds": 1,
+            "sapi": "fpm-fcgi",
+            "second_revalidation_window_seconds": 2,
+            "validate_timestamps": true
+          },
+          "sequence": 1,
+          "start_monotonic_ns": 122414767329208,
+          "started_at_utc": "2026-10-06T00:16:30.561777Z",
+          "status": "complete",
+          "target_metadata": {
+            "gid": 1000,
+            "kind": "file",
+            "mode": 420,
+            "uid": 1000
+          },
+          "target_sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+        },
+        {
+          "artifact": "buy-dtf-front-controller-opcache-revalidation-wait-v1",
+          "complete_revalidation_interval_seconds": 4,
+          "configured_wait_seconds": 7,
+          "deadline_monotonic_ns": 122443162088209,
+          "earliest_allowed_probe_at_utc": "2026-10-06T00:16:58.956535Z",
+          "elapsed_monotonic_ns": 7000153083,
+          "elapsed_monotonic_seconds": 7.000153083,
+          "end_monotonic_ns": 122443162241292,
+          "ended_at_utc": "2026-10-06T00:17:01.562150Z",
+          "identity_after": {
+            "bytes": 582,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/bdtf-proc-o7cglz33/buy-dtf-alpha-corrected-scoped-work-lsihnx_e/application/public/index.php",
+            "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+          },
+          "identity_before": {
+            "bytes": 582,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/bdtf-proc-o7cglz33/buy-dtf-alpha-corrected-scoped-work-lsihnx_e/application/public/index.php",
+            "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+          },
+          "operation": "rollback-failure-static-gate-verification-failure",
+          "policy": {
+            "artifact": "buy-dtf-php-fpm-opcache-revalidation-policy-v1",
+            "complete_revalidation_interval_seconds": 4,
+            "file_update_protection_seconds": 2,
+            "formula": "max(5, 2 * revalidate_freq + file_update_protection + 1)",
+            "minimum_floor_seconds": 5,
+            "minimum_wait_seconds": 7,
+            "opcache_enable": true,
+            "php_version": "8.2.30",
+            "revalidate_freq_seconds": 2,
+            "safety_margin_seconds": 1,
+            "sapi": "fpm-fcgi",
+            "second_revalidation_window_seconds": 2,
+            "validate_timestamps": true
+          },
+          "sequence": 4,
+          "start_monotonic_ns": 122436162088209,
+          "started_at_utc": "2026-10-06T00:16:51.956535Z",
+          "status": "complete",
+          "target_metadata": {
+            "gid": 1000,
+            "kind": "file",
+            "mode": 420,
+            "uid": 1000
+          },
+          "target_sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+        },
+        {
+          "artifact": "buy-dtf-front-controller-opcache-revalidation-wait-v1",
+          "complete_revalidation_interval_seconds": 4,
+          "configured_wait_seconds": 7,
+          "deadline_monotonic_ns": 122428818923287,
+          "earliest_allowed_probe_at_utc": "2026-10-06T00:16:44.613371Z",
+          "elapsed_monotonic_ns": 7000079181,
+          "elapsed_monotonic_seconds": 7.000079181,
+          "end_monotonic_ns": 122428819002468,
+          "ended_at_utc": "2026-10-06T00:16:44.613610Z",
+          "identity_after": {
+            "bytes": 582,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/bdtf-proc-o7cglz33/buy-dtf-alpha-corrected-scoped-work-lsihnx_e/application/public/index.php",
+            "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+          },
+          "identity_before": {
+            "bytes": 582,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/bdtf-proc-o7cglz33/buy-dtf-alpha-corrected-scoped-work-lsihnx_e/application/public/index.php",
+            "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+          },
+          "operation": "rollback-static-gate-verification-failure",
+          "policy": {
+            "artifact": "buy-dtf-php-fpm-opcache-revalidation-policy-v1",
+            "complete_revalidation_interval_seconds": 4,
+            "file_update_protection_seconds": 2,
+            "formula": "max(5, 2 * revalidate_freq + file_update_protection + 1)",
+            "minimum_floor_seconds": 5,
+            "minimum_wait_seconds": 7,
+            "opcache_enable": true,
+            "php_version": "8.2.30",
+            "revalidate_freq_seconds": 2,
+            "safety_margin_seconds": 1,
+            "sapi": "fpm-fcgi",
+            "second_revalidation_window_seconds": 2,
+            "validate_timestamps": true
+          },
+          "sequence": 2,
+          "start_monotonic_ns": 122421818923287,
+          "started_at_utc": "2026-10-06T00:16:37.613371Z",
+          "status": "complete",
+          "target_metadata": {
+            "gid": 1000,
+            "kind": "file",
+            "mode": 420,
+            "uid": 1000
+          },
+          "target_sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+        }
+      ],
+      "http_probes": [
+        {
+          "body_bytes": 554,
+          "body_sha256": "a854d050b3949745269711209ff8d1e2b9425c530a18215a4fb625ecf04d12e7",
+          "gate_header_verified": false,
+          "gate_probe_header_verified": false,
+          "gate_sentinel_verified": false,
+          "header_names": [
+            "cache-control",
+            "connection",
+            "content-type",
+            "date",
+            "pragma",
+            "server",
+            "transfer-encoding",
+            "x-buydtf-opcache-rehearsal-nonce",
+            "x-buydtf-opcache-rehearsal-route"
+          ],
+          "headers_sha256": "52cb207ae520d78bbd70e6d1f26f6e1de3ce54ebe07c681e80a971a05c2e6e2a",
+          "label": "health-122414355246012",
+          "nonce_bound": true,
+          "nonce_sha256": "b7b6f95d901f12affd9ec46541418969b63504228b9922be7a053f3a288d0e7c",
+          "original_sentinel_verified": true,
+          "route": "local_origin_nginx_fpm",
+          "route_bound": true,
+          "status": 200
+        },
+        {
+          "body_bytes": 554,
+          "body_sha256": "a854d050b3949745269711209ff8d1e2b9425c530a18215a4fb625ecf04d12e7",
+          "gate_header_verified": false,
+          "gate_probe_header_verified": false,
+          "gate_sentinel_verified": false,
+          "header_names": [
+            "cache-control",
+            "connection",
+            "content-type",
+            "date",
+            "pragma",
+            "server",
+            "transfer-encoding",
+            "x-buydtf-opcache-rehearsal-nonce",
+            "x-buydtf-opcache-rehearsal-route"
+          ],
+          "headers_sha256": "46473a3adf4e933b41bb1c55b01cbfec85263e2a5840c5da6e5e513f1a3f8542",
+          "label": "health-122414402656836",
+          "nonce_bound": true,
+          "nonce_sha256": "83617ca6efa8cf59b6fd169712bba77779c9adf459ed30feac782bbc934c664f",
+          "original_sentinel_verified": true,
+          "route": "local_public_nginx_proxy",
+          "route_bound": true,
+          "status": 200
+        },
+        {
+          "body_bytes": 64,
+          "body_sha256": "5787a6e049a70310b5bd932b06541dcc2d8eaa3b4cd32a08b2920ffef4994197",
+          "gate_header_verified": true,
+          "gate_probe_header_verified": true,
+          "gate_sentinel_verified": true,
+          "header_names": [
+            "cache-control",
+            "connection",
+            "content-type",
+            "date",
+            "pragma",
+            "retry-after",
+            "server",
+            "transfer-encoding",
+            "x-buydtf-dependency-maintenance",
+            "x-buydtf-dependency-probe",
+            "x-buydtf-opcache-rehearsal-nonce",
+            "x-buydtf-opcache-rehearsal-route"
+          ],
+          "headers_sha256": "ed5ffd513d269e3aa19f35f19647a9d42ae81885d2f640ff9cd34155c2317272",
+          "label": "rollback-static-gate-1-122421797177851",
+          "nonce_bound": true,
+          "nonce_sha256": "ade163901dcf479ee1d6d127d00cea3706b54578b5cf56994f9a29704a6f5efb",
+          "original_sentinel_verified": false,
+          "route": "local_origin_nginx_fpm",
+          "route_bound": true,
+          "status": 503
+        },
+        {
+          "body_bytes": 64,
+          "body_sha256": "9ceadaacc47dcb639bd153f811498938fe73ca3db0742d1a547c487a9f60924d",
+          "gate_header_verified": true,
+          "gate_probe_header_verified": true,
+          "gate_sentinel_verified": true,
+          "header_names": [
+            "cache-control",
+            "connection",
+            "content-type",
+            "date",
+            "pragma",
+            "retry-after",
+            "server",
+            "transfer-encoding",
+            "x-buydtf-dependency-maintenance",
+            "x-buydtf-dependency-probe",
+            "x-buydtf-opcache-rehearsal-nonce",
+            "x-buydtf-opcache-rehearsal-route"
+          ],
+          "headers_sha256": "f8304a2c58e10d60c3abbbde77e0857dfcc4a33be5afcc4db80976bd3897e5c2",
+          "label": "rollback-failure-static-gate-1-122436146363058",
+          "nonce_bound": true,
+          "nonce_sha256": "3af3bf0ec2e65e2e11ca998231882488900fa3109a3de13186c1821223f53889",
+          "original_sentinel_verified": false,
+          "route": "local_origin_nginx_fpm",
+          "route_bound": true,
+          "status": 503
+        },
+        {
+          "body_bytes": 64,
+          "body_sha256": "a5ea5db8bc74d1f045f9bdc09c96c4c00ef39284a0dd26389672fcd1eb3beea2",
+          "gate_header_verified": true,
+          "gate_probe_header_verified": true,
+          "gate_sentinel_verified": true,
+          "header_names": [
+            "cache-control",
+            "connection",
+            "content-type",
+            "date",
+            "pragma",
+            "retry-after",
+            "server",
+            "transfer-encoding",
+            "x-buydtf-dependency-maintenance",
+            "x-buydtf-dependency-probe",
+            "x-buydtf-opcache-rehearsal-nonce",
+            "x-buydtf-opcache-rehearsal-route"
+          ],
+          "headers_sha256": "1aa20ff770b0f706a57022d2e8c2a15ea212c1772e38f822cd7ba26e6da69e4f",
+          "label": "final-contained-122443356114206",
+          "nonce_bound": true,
+          "nonce_sha256": "e5455b08f6468f101e37761fdc991024100e1b88d7b0b4c71642b5bac660d2df",
+          "original_sentinel_verified": false,
+          "route": "local_public_nginx_proxy",
+          "route_bound": true,
+          "status": 503
+        }
+      ],
+      "kernel_permission_denials": {
+        "cwd": {
+          "errno": 13,
+          "reader_uid": 1000,
+          "target_uid": 33
+        },
+        "exe": {
+          "errno": 13,
+          "reader_uid": 1000,
+          "target_uid": 33
+        }
+      },
+      "local_php_fpm_version": "8.3.6",
+      "maintenance_active": true,
+      "maintenance_commands_simulated": true,
+      "process_scope_observations": 0,
+      "production_accessed": false,
+      "production_php_version_unchanged": "8.2.30",
+      "raw_http_evidence_private": true,
+      "rollback_complete": false,
+      "scenario": "corrected-scoped-work",
+      "source_restored_sha256": "0ceca182384a8e68560ec542c0c2c0c695971b8488321ca0899ea7a880d6fd17",
+      "state_sha256": "4f65062291ec764ec6cd9c4212e6e57dc7cadcf29402a3faf10eb40a75b8836f",
+      "status": "pass",
+      "target_uid": 33
+    },
+    {
+      "actor_uid": 1000,
+      "actual_autoload_laravel": "12.69.1",
+      "complete_original_source": {
+        "files": 326,
+        "sha256": "3909bdc2303b5c578135859c847f311cd84b827e62ac4e5dbce3d2297f6da71f"
+      },
+      "database_and_runtime_envelope_simulated": true,
+      "failure": {
+        "message_sha256": "c53edcaa773959a6f3fc0363e872074b8355d3f138398fea5d25fcb339095aff",
+        "type": "DeploymentError"
+      },
+      "final_state_status": "rollback_failed_site_gated",
+      "foreign_process_unchanged": true,
+      "fpm_scope_proven": true,
+      "front_controller_metadata": {
+        "gid": 1000,
+        "kind": "file",
+        "mode": 420,
+        "uid": 1000
+      },
+      "front_controller_sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4",
+      "full_monotonic_wait_receipts": [
+        {
+          "artifact": "buy-dtf-front-controller-opcache-revalidation-wait-v1",
+          "complete_revalidation_interval_seconds": 4,
+          "configured_wait_seconds": 7,
+          "deadline_monotonic_ns": 122466719656611,
+          "earliest_allowed_probe_at_utc": "2026-10-06T00:17:25.119299Z",
+          "elapsed_monotonic_ns": 7000083163,
+          "elapsed_monotonic_seconds": 7.000083163,
+          "end_monotonic_ns": 122466719739774,
+          "ended_at_utc": "2026-10-06T00:17:25.119637Z",
+          "identity_after": {
+            "bytes": 582,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/bdtf-proc-o7cglz33/buy-dtf-alpha-observer-unavailable-xdqapjdi/application/public/index.php",
+            "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+          },
+          "identity_before": {
+            "bytes": 582,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/bdtf-proc-o7cglz33/buy-dtf-alpha-observer-unavailable-xdqapjdi/application/public/index.php",
+            "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+          },
+          "operation": "rollback-failure-static-gate",
+          "policy": {
+            "artifact": "buy-dtf-php-fpm-opcache-revalidation-policy-v1",
+            "complete_revalidation_interval_seconds": 4,
+            "file_update_protection_seconds": 2,
+            "formula": "max(5, 2 * revalidate_freq + file_update_protection + 1)",
+            "minimum_floor_seconds": 5,
+            "minimum_wait_seconds": 7,
+            "opcache_enable": true,
+            "php_version": "8.2.30",
+            "revalidate_freq_seconds": 2,
+            "safety_margin_seconds": 1,
+            "sapi": "fpm-fcgi",
+            "second_revalidation_window_seconds": 2,
+            "validate_timestamps": true
+          },
+          "sequence": 3,
+          "start_monotonic_ns": 122459719656611,
+          "started_at_utc": "2026-10-06T00:17:18.119299Z",
+          "status": "complete",
+          "target_metadata": {
+            "gid": 1000,
+            "kind": "file",
+            "mode": 420,
+            "uid": 1000
+          },
+          "target_sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+        },
+        {
+          "artifact": "buy-dtf-front-controller-opcache-revalidation-wait-v1",
+          "complete_revalidation_interval_seconds": 4,
+          "configured_wait_seconds": 7,
+          "deadline_monotonic_ns": 122452403859789,
+          "earliest_allowed_probe_at_utc": "2026-10-06T00:17:10.803502Z",
+          "elapsed_monotonic_ns": 7000075460,
+          "elapsed_monotonic_seconds": 7.00007546,
+          "end_monotonic_ns": 122452403935249,
+          "ended_at_utc": "2026-10-06T00:17:10.803879Z",
+          "identity_after": {
+            "bytes": 582,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/bdtf-proc-o7cglz33/buy-dtf-alpha-observer-unavailable-xdqapjdi/application/public/index.php",
+            "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+          },
+          "identity_before": {
+            "bytes": 582,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/bdtf-proc-o7cglz33/buy-dtf-alpha-observer-unavailable-xdqapjdi/application/public/index.php",
+            "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+          },
+          "operation": "rollback-static-gate",
+          "policy": {
+            "artifact": "buy-dtf-php-fpm-opcache-revalidation-policy-v1",
+            "complete_revalidation_interval_seconds": 4,
+            "file_update_protection_seconds": 2,
+            "formula": "max(5, 2 * revalidate_freq + file_update_protection + 1)",
+            "minimum_floor_seconds": 5,
+            "minimum_wait_seconds": 7,
+            "opcache_enable": true,
+            "php_version": "8.2.30",
+            "revalidate_freq_seconds": 2,
+            "safety_margin_seconds": 1,
+            "sapi": "fpm-fcgi",
+            "second_revalidation_window_seconds": 2,
+            "validate_timestamps": true
+          },
+          "sequence": 1,
+          "start_monotonic_ns": 122445403859789,
+          "started_at_utc": "2026-10-06T00:17:03.803502Z",
+          "status": "complete",
+          "target_metadata": {
+            "gid": 1000,
+            "kind": "file",
+            "mode": 420,
+            "uid": 1000
+          },
+          "target_sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+        },
+        {
+          "artifact": "buy-dtf-front-controller-opcache-revalidation-wait-v1",
+          "complete_revalidation_interval_seconds": 4,
+          "configured_wait_seconds": 7,
+          "deadline_monotonic_ns": 122473753017890,
+          "earliest_allowed_probe_at_utc": "2026-10-06T00:17:32.152660Z",
+          "elapsed_monotonic_ns": 7000118835,
+          "elapsed_monotonic_seconds": 7.000118835,
+          "end_monotonic_ns": 122473753136725,
+          "ended_at_utc": "2026-10-06T00:17:35.082563Z",
+          "identity_after": {
+            "bytes": 582,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/bdtf-proc-o7cglz33/buy-dtf-alpha-observer-unavailable-xdqapjdi/application/public/index.php",
+            "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+          },
+          "identity_before": {
+            "bytes": 582,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/bdtf-proc-o7cglz33/buy-dtf-alpha-observer-unavailable-xdqapjdi/application/public/index.php",
+            "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+          },
+          "operation": "rollback-failure-static-gate-verification-failure",
+          "policy": {
+            "artifact": "buy-dtf-php-fpm-opcache-revalidation-policy-v1",
+            "complete_revalidation_interval_seconds": 4,
+            "file_update_protection_seconds": 2,
+            "formula": "max(5, 2 * revalidate_freq + file_update_protection + 1)",
+            "minimum_floor_seconds": 5,
+            "minimum_wait_seconds": 7,
+            "opcache_enable": true,
+            "php_version": "8.2.30",
+            "revalidate_freq_seconds": 2,
+            "safety_margin_seconds": 1,
+            "sapi": "fpm-fcgi",
+            "second_revalidation_window_seconds": 2,
+            "validate_timestamps": true
+          },
+          "sequence": 4,
+          "start_monotonic_ns": 122466753017890,
+          "started_at_utc": "2026-10-06T00:17:25.152660Z",
+          "status": "complete",
+          "target_metadata": {
+            "gid": 1000,
+            "kind": "file",
+            "mode": 420,
+            "uid": 1000
+          },
+          "target_sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+        },
+        {
+          "artifact": "buy-dtf-front-controller-opcache-revalidation-wait-v1",
+          "complete_revalidation_interval_seconds": 4,
+          "configured_wait_seconds": 7,
+          "deadline_monotonic_ns": 122459438457001,
+          "earliest_allowed_probe_at_utc": "2026-10-06T00:17:17.838099Z",
+          "elapsed_monotonic_ns": 7000164881,
+          "elapsed_monotonic_seconds": 7.000164881,
+          "end_monotonic_ns": 122459438621882,
+          "ended_at_utc": "2026-10-06T00:17:17.838534Z",
+          "identity_after": {
+            "bytes": 582,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/bdtf-proc-o7cglz33/buy-dtf-alpha-observer-unavailable-xdqapjdi/application/public/index.php",
+            "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+          },
+          "identity_before": {
+            "bytes": 582,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/bdtf-proc-o7cglz33/buy-dtf-alpha-observer-unavailable-xdqapjdi/application/public/index.php",
+            "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+          },
+          "operation": "rollback-static-gate-verification-failure",
+          "policy": {
+            "artifact": "buy-dtf-php-fpm-opcache-revalidation-policy-v1",
+            "complete_revalidation_interval_seconds": 4,
+            "file_update_protection_seconds": 2,
+            "formula": "max(5, 2 * revalidate_freq + file_update_protection + 1)",
+            "minimum_floor_seconds": 5,
+            "minimum_wait_seconds": 7,
+            "opcache_enable": true,
+            "php_version": "8.2.30",
+            "revalidate_freq_seconds": 2,
+            "safety_margin_seconds": 1,
+            "sapi": "fpm-fcgi",
+            "second_revalidation_window_seconds": 2,
+            "validate_timestamps": true
+          },
+          "sequence": 2,
+          "start_monotonic_ns": 122452438457001,
+          "started_at_utc": "2026-10-06T00:17:10.838099Z",
+          "status": "complete",
+          "target_metadata": {
+            "gid": 1000,
+            "kind": "file",
+            "mode": 420,
+            "uid": 1000
+          },
+          "target_sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+        }
+      ],
+      "http_probes": [
+        {
+          "body_bytes": 554,
+          "body_sha256": "a854d050b3949745269711209ff8d1e2b9425c530a18215a4fb625ecf04d12e7",
+          "gate_header_verified": false,
+          "gate_probe_header_verified": false,
+          "gate_sentinel_verified": false,
+          "header_names": [
+            "cache-control",
+            "connection",
+            "content-type",
+            "date",
+            "pragma",
+            "server",
+            "transfer-encoding",
+            "x-buydtf-opcache-rehearsal-nonce",
+            "x-buydtf-opcache-rehearsal-route"
+          ],
+          "headers_sha256": "d8197af5355f9423005bbf960cbf0fa56e0579211aab576355aef16ae743dfb8",
+          "label": "health-122444974122485",
+          "nonce_bound": true,
+          "nonce_sha256": "3152db19f7d83eca21e390d22a1290316d9802de74a28c5369ece49d2206d7e5",
+          "original_sentinel_verified": true,
+          "route": "local_origin_nginx_fpm",
+          "route_bound": true,
+          "status": 200
+        },
+        {
+          "body_bytes": 554,
+          "body_sha256": "a854d050b3949745269711209ff8d1e2b9425c530a18215a4fb625ecf04d12e7",
+          "gate_header_verified": false,
+          "gate_probe_header_verified": false,
+          "gate_sentinel_verified": false,
+          "header_names": [
+            "cache-control",
+            "connection",
+            "content-type",
+            "date",
+            "pragma",
+            "server",
+            "transfer-encoding",
+            "x-buydtf-opcache-rehearsal-nonce",
+            "x-buydtf-opcache-rehearsal-route"
+          ],
+          "headers_sha256": "63e21be14f887663e4768cb67e4280fa4f9b3ce4a364c0e6cc0a240b8b6f2909",
+          "label": "health-122445042838296",
+          "nonce_bound": true,
+          "nonce_sha256": "d7129cfbfe2338f67364a9f6e4e490279ac75d6df7fec6786c1c22a96a16f0cd",
+          "original_sentinel_verified": true,
+          "route": "local_public_nginx_proxy",
+          "route_bound": true,
+          "status": 200
+        },
+        {
+          "body_bytes": 64,
+          "body_sha256": "cc3c40e2af7de58270ab1d7c24f45bb220c4ed372e79f1b790add2089897a0bb",
+          "gate_header_verified": true,
+          "gate_probe_header_verified": true,
+          "gate_sentinel_verified": true,
+          "header_names": [
+            "cache-control",
+            "connection",
+            "content-type",
+            "date",
+            "pragma",
+            "retry-after",
+            "server",
+            "transfer-encoding",
+            "x-buydtf-dependency-maintenance",
+            "x-buydtf-dependency-probe",
+            "x-buydtf-opcache-rehearsal-nonce",
+            "x-buydtf-opcache-rehearsal-route"
+          ],
+          "headers_sha256": "849e9be88f4bc149d1d41ea8073165b6f7de3a87c7d84f24ced3d720861bc708",
+          "label": "rollback-static-gate-1-122452426741804",
+          "nonce_bound": true,
+          "nonce_sha256": "01ca5ab6d5b1eba81fc83bb89917838418df53a22747d2303721f5f2b5ed79b6",
+          "original_sentinel_verified": false,
+          "route": "local_origin_nginx_fpm",
+          "route_bound": true,
+          "status": 503
+        },
+        {
+          "body_bytes": 64,
+          "body_sha256": "1d9981dc9119a16af4f4ceffe2d982f33af519e6fcadfd594c38aa587b552f3b",
+          "gate_header_verified": true,
+          "gate_probe_header_verified": true,
+          "gate_sentinel_verified": true,
+          "header_names": [
+            "cache-control",
+            "connection",
+            "content-type",
+            "date",
+            "pragma",
+            "retry-after",
+            "server",
+            "transfer-encoding",
+            "x-buydtf-dependency-maintenance",
+            "x-buydtf-dependency-probe",
+            "x-buydtf-opcache-rehearsal-nonce",
+            "x-buydtf-opcache-rehearsal-route"
+          ],
+          "headers_sha256": "35e33bf92e476e5a4bb6b76a857edfa745dee25079b9a4b61db68e87d2237a11",
+          "label": "rollback-failure-static-gate-1-122466741570732",
+          "nonce_bound": true,
+          "nonce_sha256": "3623bbe97d782dc7504d1af3c671223694e300d84ed6c09e3f6683e67991617a",
+          "original_sentinel_verified": false,
+          "route": "local_origin_nginx_fpm",
+          "route_bound": true,
+          "status": 503
+        },
+        {
+          "body_bytes": 64,
+          "body_sha256": "b68c80830feab91779304639f22fe66d7786e68d0d8e5156a47c2842fe171d0b",
+          "gate_header_verified": true,
+          "gate_probe_header_verified": true,
+          "gate_sentinel_verified": true,
+          "header_names": [
+            "cache-control",
+            "connection",
+            "content-type",
+            "date",
+            "pragma",
+            "retry-after",
+            "server",
+            "transfer-encoding",
+            "x-buydtf-dependency-maintenance",
+            "x-buydtf-dependency-probe",
+            "x-buydtf-opcache-rehearsal-nonce",
+            "x-buydtf-opcache-rehearsal-route"
+          ],
+          "headers_sha256": "ad894dc0c51198fc47b514d6a838dd9e30394eb56d378a6bef49f7be4012a9f3",
+          "label": "final-contained-122473864542840",
+          "nonce_bound": true,
+          "nonce_sha256": "af13ed0419780c1abc2ceaec66d0cfff304159cb87002195e4bc87d419be3c09",
+          "original_sentinel_verified": false,
+          "route": "local_public_nginx_proxy",
+          "route_bound": true,
+          "status": 503
+        }
+      ],
+      "kernel_permission_denials": {
+        "cwd": {
+          "errno": 13,
+          "reader_uid": 1000,
+          "target_uid": 33
+        },
+        "exe": {
+          "errno": 13,
+          "reader_uid": 1000,
+          "target_uid": 33
+        }
+      },
+      "local_php_fpm_version": "8.3.6",
+      "maintenance_active": true,
+      "maintenance_commands_simulated": true,
+      "process_scope_observations": 0,
+      "production_accessed": false,
+      "production_php_version_unchanged": "8.2.30",
+      "raw_http_evidence_private": true,
+      "rollback_complete": false,
+      "scenario": "observer-unavailable",
+      "source_restored_sha256": "0ceca182384a8e68560ec542c0c2c0c695971b8488321ca0899ea7a880d6fd17",
+      "state_sha256": "49b3e694fb3913fb742b4c49296a7883d2827c7943f59b30216789874821fae6",
+      "status": "pass",
+      "target_uid": 33
+    },
+    {
+      "actor_uid": 1000,
+      "actual_autoload_laravel": "12.69.1",
+      "complete_original_source": {
+        "files": 326,
+        "sha256": "3909bdc2303b5c578135859c847f311cd84b827e62ac4e5dbce3d2297f6da71f"
+      },
+      "database_and_runtime_envelope_simulated": true,
+      "failure": {
+        "message_sha256": "9cf4914281329879a6a1ff780aa9f31450656ac0d2965d205eb92763353b7883",
+        "type": "DeploymentError"
+      },
+      "final_state_status": "rollback_failed_site_gated",
+      "foreign_process_unchanged": true,
+      "fpm_scope_proven": true,
+      "front_controller_metadata": {
+        "gid": 1000,
+        "kind": "file",
+        "mode": 420,
+        "uid": 1000
+      },
+      "front_controller_sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4",
+      "full_monotonic_wait_receipts": [
+        {
+          "artifact": "buy-dtf-front-controller-opcache-revalidation-wait-v1",
+          "complete_revalidation_interval_seconds": 4,
+          "configured_wait_seconds": 7,
+          "deadline_monotonic_ns": 122496917160646,
+          "earliest_allowed_probe_at_utc": "2026-10-06T00:17:58.246341Z",
+          "elapsed_monotonic_ns": 7000087385,
+          "elapsed_monotonic_seconds": 7.000087385,
+          "end_monotonic_ns": 122496917248031,
+          "ended_at_utc": "2026-10-06T00:17:58.246609Z",
+          "identity_after": {
+            "bytes": 582,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/bdtf-proc-o7cglz33/buy-dtf-alpha-observer-response-mismatch-ogzb6j46/application/public/index.php",
+            "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+          },
+          "identity_before": {
+            "bytes": 582,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/bdtf-proc-o7cglz33/buy-dtf-alpha-observer-response-mismatch-ogzb6j46/application/public/index.php",
+            "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+          },
+          "operation": "rollback-failure-static-gate",
+          "policy": {
+            "artifact": "buy-dtf-php-fpm-opcache-revalidation-policy-v1",
+            "complete_revalidation_interval_seconds": 4,
+            "file_update_protection_seconds": 2,
+            "formula": "max(5, 2 * revalidate_freq + file_update_protection + 1)",
+            "minimum_floor_seconds": 5,
+            "minimum_wait_seconds": 7,
+            "opcache_enable": true,
+            "php_version": "8.2.30",
+            "revalidate_freq_seconds": 2,
+            "safety_margin_seconds": 1,
+            "sapi": "fpm-fcgi",
+            "second_revalidation_window_seconds": 2,
+            "validate_timestamps": true
+          },
+          "sequence": 3,
+          "start_monotonic_ns": 122489917160646,
+          "started_at_utc": "2026-10-06T00:17:51.246341Z",
+          "status": "complete",
+          "target_metadata": {
+            "gid": 1000,
+            "kind": "file",
+            "mode": 420,
+            "uid": 1000
+          },
+          "target_sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+        },
+        {
+          "artifact": "buy-dtf-front-controller-opcache-revalidation-wait-v1",
+          "complete_revalidation_interval_seconds": 4,
+          "configured_wait_seconds": 7,
+          "deadline_monotonic_ns": 122482626736415,
+          "earliest_allowed_probe_at_utc": "2026-10-06T00:17:43.955917Z",
+          "elapsed_monotonic_ns": 7000123290,
+          "elapsed_monotonic_seconds": 7.00012329,
+          "end_monotonic_ns": 122482626859705,
+          "ended_at_utc": "2026-10-06T00:17:43.956285Z",
+          "identity_after": {
+            "bytes": 582,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/bdtf-proc-o7cglz33/buy-dtf-alpha-observer-response-mismatch-ogzb6j46/application/public/index.php",
+            "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+          },
+          "identity_before": {
+            "bytes": 582,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/bdtf-proc-o7cglz33/buy-dtf-alpha-observer-response-mismatch-ogzb6j46/application/public/index.php",
+            "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+          },
+          "operation": "rollback-static-gate",
+          "policy": {
+            "artifact": "buy-dtf-php-fpm-opcache-revalidation-policy-v1",
+            "complete_revalidation_interval_seconds": 4,
+            "file_update_protection_seconds": 2,
+            "formula": "max(5, 2 * revalidate_freq + file_update_protection + 1)",
+            "minimum_floor_seconds": 5,
+            "minimum_wait_seconds": 7,
+            "opcache_enable": true,
+            "php_version": "8.2.30",
+            "revalidate_freq_seconds": 2,
+            "safety_margin_seconds": 1,
+            "sapi": "fpm-fcgi",
+            "second_revalidation_window_seconds": 2,
+            "validate_timestamps": true
+          },
+          "sequence": 1,
+          "start_monotonic_ns": 122475626736415,
+          "started_at_utc": "2026-10-06T00:17:36.955917Z",
+          "status": "complete",
+          "target_metadata": {
+            "gid": 1000,
+            "kind": "file",
+            "mode": 420,
+            "uid": 1000
+          },
+          "target_sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+        },
+        {
+          "artifact": "buy-dtf-front-controller-opcache-revalidation-wait-v1",
+          "complete_revalidation_interval_seconds": 4,
+          "configured_wait_seconds": 7,
+          "deadline_monotonic_ns": 122503977277055,
+          "earliest_allowed_probe_at_utc": "2026-10-06T00:18:05.306457Z",
+          "elapsed_monotonic_ns": 7000240087,
+          "elapsed_monotonic_seconds": 7.000240087,
+          "end_monotonic_ns": 122503977517142,
+          "ended_at_utc": "2026-10-06T00:18:07.596700Z",
+          "identity_after": {
+            "bytes": 582,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/bdtf-proc-o7cglz33/buy-dtf-alpha-observer-response-mismatch-ogzb6j46/application/public/index.php",
+            "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+          },
+          "identity_before": {
+            "bytes": 582,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/bdtf-proc-o7cglz33/buy-dtf-alpha-observer-response-mismatch-ogzb6j46/application/public/index.php",
+            "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+          },
+          "operation": "rollback-failure-static-gate-verification-failure",
+          "policy": {
+            "artifact": "buy-dtf-php-fpm-opcache-revalidation-policy-v1",
+            "complete_revalidation_interval_seconds": 4,
+            "file_update_protection_seconds": 2,
+            "formula": "max(5, 2 * revalidate_freq + file_update_protection + 1)",
+            "minimum_floor_seconds": 5,
+            "minimum_wait_seconds": 7,
+            "opcache_enable": true,
+            "php_version": "8.2.30",
+            "revalidate_freq_seconds": 2,
+            "safety_margin_seconds": 1,
+            "sapi": "fpm-fcgi",
+            "second_revalidation_window_seconds": 2,
+            "validate_timestamps": true
+          },
+          "sequence": 4,
+          "start_monotonic_ns": 122496977277055,
+          "started_at_utc": "2026-10-06T00:17:58.306457Z",
+          "status": "complete",
+          "target_metadata": {
+            "gid": 1000,
+            "kind": "file",
+            "mode": 420,
+            "uid": 1000
+          },
+          "target_sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+        },
+        {
+          "artifact": "buy-dtf-front-controller-opcache-revalidation-wait-v1",
+          "complete_revalidation_interval_seconds": 4,
+          "configured_wait_seconds": 7,
+          "deadline_monotonic_ns": 122489664913392,
+          "earliest_allowed_probe_at_utc": "2026-10-06T00:17:50.994094Z",
+          "elapsed_monotonic_ns": 7000087350,
+          "elapsed_monotonic_seconds": 7.00008735,
+          "end_monotonic_ns": 122489665000742,
+          "ended_at_utc": "2026-10-06T00:17:50.994368Z",
+          "identity_after": {
+            "bytes": 582,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/bdtf-proc-o7cglz33/buy-dtf-alpha-observer-response-mismatch-ogzb6j46/application/public/index.php",
+            "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+          },
+          "identity_before": {
+            "bytes": 582,
+            "metadata": {
+              "gid": 1000,
+              "kind": "file",
+              "mode": 420,
+              "uid": 1000
+            },
+            "path": "/tmp/bdtf-proc-o7cglz33/buy-dtf-alpha-observer-response-mismatch-ogzb6j46/application/public/index.php",
+            "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+          },
+          "operation": "rollback-static-gate-verification-failure",
+          "policy": {
+            "artifact": "buy-dtf-php-fpm-opcache-revalidation-policy-v1",
+            "complete_revalidation_interval_seconds": 4,
+            "file_update_protection_seconds": 2,
+            "formula": "max(5, 2 * revalidate_freq + file_update_protection + 1)",
+            "minimum_floor_seconds": 5,
+            "minimum_wait_seconds": 7,
+            "opcache_enable": true,
+            "php_version": "8.2.30",
+            "revalidate_freq_seconds": 2,
+            "safety_margin_seconds": 1,
+            "sapi": "fpm-fcgi",
+            "second_revalidation_window_seconds": 2,
+            "validate_timestamps": true
+          },
+          "sequence": 2,
+          "start_monotonic_ns": 122482664913392,
+          "started_at_utc": "2026-10-06T00:17:43.994094Z",
+          "status": "complete",
+          "target_metadata": {
+            "gid": 1000,
+            "kind": "file",
+            "mode": 420,
+            "uid": 1000
+          },
+          "target_sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+        }
+      ],
+      "http_probes": [
+        {
+          "body_bytes": 554,
+          "body_sha256": "a854d050b3949745269711209ff8d1e2b9425c530a18215a4fb625ecf04d12e7",
+          "gate_header_verified": false,
+          "gate_probe_header_verified": false,
+          "gate_sentinel_verified": false,
+          "header_names": [
+            "cache-control",
+            "connection",
+            "content-type",
+            "date",
+            "pragma",
+            "server",
+            "transfer-encoding",
+            "x-buydtf-opcache-rehearsal-nonce",
+            "x-buydtf-opcache-rehearsal-route"
+          ],
+          "headers_sha256": "1fc77ae75881439fb7c74f28c800372605e259a6c50638f42dc144f8882b4e2c",
+          "label": "health-122475245104880",
+          "nonce_bound": true,
+          "nonce_sha256": "d13db6e0c926b0297d5775fc47c831a8896c93a08aa321f2ab5163b535b22884",
+          "original_sentinel_verified": true,
+          "route": "local_origin_nginx_fpm",
+          "route_bound": true,
+          "status": 200
+        },
+        {
+          "body_bytes": 554,
+          "body_sha256": "a854d050b3949745269711209ff8d1e2b9425c530a18215a4fb625ecf04d12e7",
+          "gate_header_verified": false,
+          "gate_probe_header_verified": false,
+          "gate_sentinel_verified": false,
+          "header_names": [
+            "cache-control",
+            "connection",
+            "content-type",
+            "date",
+            "pragma",
+            "server",
+            "transfer-encoding",
+            "x-buydtf-opcache-rehearsal-nonce",
+            "x-buydtf-opcache-rehearsal-route"
+          ],
+          "headers_sha256": "373b6f14da54f404e51df90f556582c9fa78d6353307278a7934e6faabfb370c",
+          "label": "health-122475300875600",
+          "nonce_bound": true,
+          "nonce_sha256": "a0e12011d1f013151503b8306818f7fc82773c492a156735b544d987bef280c5",
+          "original_sentinel_verified": true,
+          "route": "local_public_nginx_proxy",
+          "route_bound": true,
+          "status": 200
+        },
+        {
+          "body_bytes": 64,
+          "body_sha256": "2b511f2ae6ccdf835dc7e79a1da08cf3289c9a748c83668e286ab133899c9958",
+          "gate_header_verified": true,
+          "gate_probe_header_verified": true,
+          "gate_sentinel_verified": true,
+          "header_names": [
+            "cache-control",
+            "connection",
+            "content-type",
+            "date",
+            "pragma",
+            "retry-after",
+            "server",
+            "transfer-encoding",
+            "x-buydtf-dependency-maintenance",
+            "x-buydtf-dependency-probe",
+            "x-buydtf-opcache-rehearsal-nonce",
+            "x-buydtf-opcache-rehearsal-route"
+          ],
+          "headers_sha256": "4f4512435b26513539c69fa9601785b6d85c3b74c8121ad700cba51249fc2772",
+          "label": "rollback-static-gate-1-122482648809079",
+          "nonce_bound": true,
+          "nonce_sha256": "a7eda060bb0d2e7555df18e870f5b8d03bcf88a8790911aeb3f8b719ee050b25",
+          "original_sentinel_verified": false,
+          "route": "local_origin_nginx_fpm",
+          "route_bound": true,
+          "status": 503
+        },
+        {
+          "body_bytes": 64,
+          "body_sha256": "091eb80d098861b57aeb0c2633a50e382fa23816fc0c3cc01ce56f7df71bedc5",
+          "gate_header_verified": true,
+          "gate_probe_header_verified": true,
+          "gate_sentinel_verified": true,
+          "header_names": [
+            "cache-control",
+            "connection",
+            "content-type",
+            "date",
+            "pragma",
+            "retry-after",
+            "server",
+            "transfer-encoding",
+            "x-buydtf-dependency-maintenance",
+            "x-buydtf-dependency-probe",
+            "x-buydtf-opcache-rehearsal-nonce",
+            "x-buydtf-opcache-rehearsal-route"
+          ],
+          "headers_sha256": "1ba8a041004db9ebd5ba7d1724152d0048d476ff1dc71e6132a9ab00a7413752",
+          "label": "rollback-failure-static-gate-1-122496948450870",
+          "nonce_bound": true,
+          "nonce_sha256": "533aea89495ab9a104d4366200c256a43f6ca049841426353e7cad00203e1f64",
+          "original_sentinel_verified": false,
+          "route": "local_origin_nginx_fpm",
+          "route_bound": true,
+          "status": 503
+        },
+        {
+          "body_bytes": 64,
+          "body_sha256": "cf1c536099ff0153e27660dd7d427692fbda62ecc943ffccf714bfbe618dfdd0",
+          "gate_header_verified": true,
+          "gate_probe_header_verified": true,
+          "gate_sentinel_verified": true,
+          "header_names": [
+            "cache-control",
+            "connection",
+            "content-type",
+            "date",
+            "pragma",
+            "retry-after",
+            "server",
+            "transfer-encoding",
+            "x-buydtf-dependency-maintenance",
+            "x-buydtf-dependency-probe",
+            "x-buydtf-opcache-rehearsal-nonce",
+            "x-buydtf-opcache-rehearsal-route"
+          ],
+          "headers_sha256": "14b7d208734ec80d2d8bd9bf2f890eb80685352cb60493177bc755771973f0c6",
+          "label": "final-contained-122504085794337",
+          "nonce_bound": true,
+          "nonce_sha256": "44c55f68377b6f5ff67405ed8be3cdf4b0a06d504eaa4eddd4017be3b4c20a74",
+          "original_sentinel_verified": false,
+          "route": "local_public_nginx_proxy",
+          "route_bound": true,
+          "status": 503
+        }
+      ],
+      "kernel_permission_denials": {
+        "cwd": {
+          "errno": 13,
+          "reader_uid": 1000,
+          "target_uid": 33
+        },
+        "exe": {
+          "errno": 13,
+          "reader_uid": 1000,
+          "target_uid": 33
+        }
+      },
+      "local_php_fpm_version": "8.3.6",
+      "maintenance_active": true,
+      "maintenance_commands_simulated": true,
+      "process_scope_observations": 0,
+      "production_accessed": false,
+      "production_php_version_unchanged": "8.2.30",
+      "raw_http_evidence_private": true,
+      "rollback_complete": false,
+      "scenario": "observer-response-mismatch",
+      "source_restored_sha256": "0ceca182384a8e68560ec542c0c2c0c695971b8488321ca0899ea7a880d6fd17",
+      "state_sha256": "a87d4cf53d86ac9c8272d5d5d0a03bb6056a66b1b4ca4352ba10dd62af66eedc",
+      "status": "pass",
+      "target_uid": 33
+    }
+  ],
+  "scheduler_guard_sha256": "57bfd7848428ca59d021492e3a9106a1f8ce9bcae7d900a8127d456ac3c2c39a",
+  "status": "pass"
+}
