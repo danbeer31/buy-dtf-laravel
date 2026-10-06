@@ -1,4 +1,4 @@
-"""Build deterministic local V6 review inputs; no tokens or production access."""
+"""Build deterministic local V6 bindings and review inputs; no execution."""
 import argparse
 import hashlib
 import io
@@ -51,8 +51,17 @@ def run(private_linux_root: Path):
         data = (ROOT / row["path"]).read_bytes()
         require(data == git("show", BASE + ":" + row["path"])
             and sha(ROOT / row["path"]) == row["target_sha256"] and len(data) == row["target_bytes"], "Application bytes changed.")
-    require((runner.STAGE_APPROVAL_TOKEN, runner.DEPLOY_APPROVAL_TOKEN, runner.RECOVERY_APPROVAL_TOKEN) == (None, None, None), "Execution tokens must remain withheld.")
-    require(not runner.LOCAL_CORRECTION_REVIEW_ONLY, "Activation must use explicit withheld authorization bindings.")
+    bindings = runner.expected_authorization_bindings()
+    require(bindings == {action: prefix + "-BUYDTF-ALPHA-V6-" + runner.TARGET_COMMIT[:16]
+        for action, prefix in {"stage": "STAGE", "deploy": "DEPLOY", "recover": "RECOVER"}.items()}, "The three expected V6 values differ from freeze.")
+    binding_record = json.loads((EVIDENCE / "AUTHORIZATION_BINDINGS.json").read_text())
+    group_sha256 = runner.sha256_bytes(runner.canonical_bytes(bindings))
+    require(binding_record["expected_values"] == bindings and binding_record["binding_group_sha256"] == group_sha256
+        and binding_record["execution_authorization_granted"] is False, "Expected bindings are not frozen together.")
+    require(manifest["activation_package"]["expected_authorization_bindings"] == bindings
+        and manifest["activation_package"]["binding_group_sha256"] == group_sha256
+        and manifest["activation_package"]["authorization_bindings_receipt_sha256"] == sha(EVIDENCE / "AUTHORIZATION_BINDINGS.json"), "Application manifest does not bind the final values.")
+    require(not runner.LOCAL_CORRECTION_REVIEW_ONLY, "Activation must retain action-specific authorization checks.")
     archive = ROOT / "storage/app/private/operations/production-alpha-transparency-source-only-package-20261002/production-alpha-transparency-b02fce32.tar"
     require(sha(archive) == runner.EXPECTED_ARCHIVE_SHA256, "Unchanged source archive differs.")
     sources = [archive, EVIDENCE / "APPLICATION_MANIFEST.json", Path(runner.__file__),
@@ -62,7 +71,8 @@ def run(private_linux_root: Path):
     entries = [{"name": p.name, "source_path": p.relative_to(ROOT).as_posix(), "sha256": sha(p),
         "bytes": p.stat().st_size, "uid": 1000, "gid": 1000, "mode": "0600"} for p in sorted(sources, key=lambda p: p.name)]
     write("INPUT_MANIFEST.json", {"generation": runner.activation_controls.GENERATION, "input_count": 15,
-        "inputs": entries, "execution_approval_tokens": {"stage": None, "deploy": None, "recover": None}})
+        "inputs": entries, "expected_authorization_bindings": bindings,
+        "binding_group_sha256": group_sha256, "execution_authorization_granted": False})
     bundle_directory = ROOT / "storage/app/private/operations/production-alpha-activation-v6-local-package-20261005"
     bundle_directory.mkdir(parents=True, exist_ok=True)
     bundle = bundle_directory / "production-alpha-transparency-v6-inputs.tar"
@@ -102,7 +112,7 @@ def run(private_linux_root: Path):
     gate = json.loads((EVIDENCE / "gate-transition-rehearsal.json").read_text())
     require(gate["status"] == "pass", "Gate rehearsals failed.")
     fresh_v6 = receipts["fresh_v6"]
-    require(fresh_v6["fresh_receipts"] == 23 and fresh_v6["negative_cases"] == 22
+    require(fresh_v6["fresh_receipts"] == 24 and fresh_v6["negative_cases"] == 23
         and fresh_v6["stage_release_mocked"] is False and fresh_v6["validate_release_receipt_mocked"] is False
         and fresh_v6["path_metadata_mocked"] is False, "Fresh V6 receipt round-trip coverage is incomplete.")
     shadow = Path("/tmp/buydtf-remember-v4-build-a/shadow")
@@ -111,8 +121,9 @@ def run(private_linux_root: Path):
         "application_autoload": runner.source_controls.require_application_autoload(shadow),
         "lock_sha256": sha(shadow / "composer.lock"), "expected_cache_sha256": runner.EXPECTED_CACHE_MANIFEST_SHA256})
     require(sha(shadow / "composer.lock") == runner.EXPECTED_COMPOSER_LOCK_SHA256, "Local retained lock differs.")
-    report = {"artifact": "buy-dtf-local-activation-v6-review-package", "status": "ready_for_independent_review_tokens_withheld",
+    report = {"artifact": "buy-dtf-local-activation-v6-review-package", "status": "ready_for_binding_review_execution_not_authorized",
         "branch": git("branch", "--show-current", text=True).strip(), "accepted_correction_commit": BASE,
+        "accepted_activation_commit": "2b94d6c5e70459351a2f7b530552a73b0a5c3ea2",
         "runner_sha256": runner_sha, "controls": controls, "accepted_controls_unchanged": accepted_controls,
         "accepted_evidence_checksum_entries_verified": len(old_rows), "application_members_unchanged": len(manifest["paths"]),
         "application_manifest_sha256": sha(EVIDENCE / "APPLICATION_MANIFEST.json"), "source_archive_sha256": sha(archive),
@@ -127,10 +138,13 @@ def run(private_linux_root: Path):
         "private_linux_manifest_sha256": linux["private_manifest_sha256"], "private_linux_entries_verified": len(private_entries),
         "production_php_8_2_30_fpm_prerequisite": {"required": True, "status": "pending_future_authorized_production_verification",
             "witness_sha256": runner.activation_controls.WITNESS_SHA256, "accepted_scope_probe_sha256": runner.activation_controls.ACCEPTED_PROCESS_PROBE_SHA256},
-        "execution_approval_tokens": {"stage": None, "deploy": None, "recover": None},
+        "expected_authorization_bindings": bindings, "binding_group_sha256": group_sha256,
+        "authorization_bindings_receipt_sha256": sha(EVIDENCE / "AUTHORIZATION_BINDINGS.json"),
+        "execution_authorization_granted": False,
         "production_accessed": False, "pushed": False, "stageable": False, "deployable": False,
         "application_dependencies_configuration_artwork_changed": False, "receiver_job_label_retention_enabled": False,
         "artwork_hosts": [], "retained_evidence_preserved": True, "new_authorizations_issued": False,
+        "new_expected_bindings_prepared": True,
         "plan": "ACTIVATION_PLAN.txt", "limits": linux["limits"]}
     write("REVIEW_RECEIPT.json", report)
     files = {p for p in EVIDENCE.rglob("*") if p.is_file() and p.name not in {"EVIDENCE_MANIFEST.json", "SHA256SUMS"}}
@@ -149,7 +163,8 @@ def run(private_linux_root: Path):
     (EVIDENCE / "SHA256SUMS").write_bytes("".join(f"{x['sha256']}  {x['path']}\n" for x in sorted(sums, key=lambda x: x["path"])).encode())
     print(json.dumps({"status": "pass", "runner_sha256": runner_sha, "tests": report["tests"],
         "input_bundle_sha256": sha(bundle), "evidence_manifest_sha256": sha(EVIDENCE / "EVIDENCE_MANIFEST.json"),
-        "checksum_file_sha256": sha(EVIDENCE / "SHA256SUMS"), "checksum_entries": len(sums), "execution_tokens": "withheld"}))
+        "checksum_file_sha256": sha(EVIDENCE / "SHA256SUMS"), "checksum_entries": len(sums),
+        "binding_group_sha256": group_sha256, "expected_bindings": bindings, "execution_authorization": "not_granted"}))
 
 
 if __name__ == "__main__":

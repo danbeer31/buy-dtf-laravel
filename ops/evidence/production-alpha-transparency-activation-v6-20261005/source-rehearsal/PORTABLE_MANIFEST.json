@@ -4,83 +4,83 @@
     {
       "bytes": 1592,
       "path": "activation-fpm-before-gate-rejection-receipt.json",
-      "sha256": "780d22d80c9a46e0655c5402fd73067b9539eca3d91668246802ac9fd67982eb"
+      "sha256": "3f22a421492d9a3bca0214ab86e8853d0421435941761270a63cd21b4918a9c5"
     },
     {
       "bytes": 12961,
       "path": "activation-fpm-under-gate-rejection-receipt.json",
-      "sha256": "d23ea67706d72c9eddda0c9444430b782ce56085acf04f9c515267840d8718ad"
+      "sha256": "18effd62fba89c2c91ed221f8667998549801aa4f5c661addc13127920b24c32"
     },
     {
       "bytes": 12864,
       "path": "candidate-check-failure-receipt.json",
-      "sha256": "ae478dcfe560f97b05e98a626926ac8b1389af6362b1f3d3d41c33cf242ca814"
+      "sha256": "742ff54c9cb7bcd35925a47058fe571049625579bd3e1604c54bb39bc1170c5f"
     },
     {
       "bytes": 15112,
       "path": "genuine-log-failure-receipt.json",
-      "sha256": "fae3a8d55cde07aa5424b8323b7aec8ae230910ca8c0a0f52673332e50f6e15a"
+      "sha256": "ab39ae1cbfddd10bcf21429634362d646f73ce9b2b65caf76c68212245e57e4c"
     },
     {
       "bytes": 15112,
       "path": "post-reopen-failure-receipt.json",
-      "sha256": "78f8f993535a64daa36ede706db8a83e238e4f699e533d10bc078a55e74d5922"
+      "sha256": "8021d7830abf41b7872e1f74d56d921dc35a568c663233e0a50c14a116ea74cc"
     },
     {
       "bytes": 15192,
       "path": "post-source-fpm-unavailable-receipt.json",
-      "sha256": "ddc07a3ed45cd8ac8cf0ece9886df38de84043e4035c6f38082aea971ed456e6"
+      "sha256": "5715b9ba09200e667417bc121ea67686c0f3e48ed19428c054f0cabf9d30eb44"
     },
     {
       "bytes": 17511,
       "path": "post-source-gate-http-failure-receipt.json",
-      "sha256": "f6a3f635c56ebf950ec0d6c7af22c2119921380af8d11aa74cc4557f22c6a0e7"
+      "sha256": "377b4b81a3ca7f63374401cbd6e58d2cc63de37b00a16842d9c2565e57855552"
     },
     {
       "bytes": 12564,
       "path": "pre-source-failure-receipt.json",
-      "sha256": "046ea340414369e3c9ac2090b5e60652b24fd756d98094b80ad3165b3729c321"
+      "sha256": "88fe4965a616ef806b126947603714b6224e1aabbe917a756ae6273bc9962795"
     },
     {
       "bytes": 15409,
       "path": "recovery-with-normal-qbo-receipt.json",
-      "sha256": "09ef2548dbfde0ac2fa196d0d379dfbdaf6819e17c9a85155a77462f6be97f38"
+      "sha256": "07f9188c5457856519e393d623fd6717c53d22f14e736370c9b622e19b592e5a"
     },
     {
       "bytes": 17218,
       "path": "recovery-with-qbo-startup-receipt.json",
-      "sha256": "f249f72029c087d71dbf2257bba8fa7e3feab2c196cc07a8d8a43ace78574b0c"
+      "sha256": "8d9ff647b019151cbda974ca2bcd0d985886f66fd675f8a504c91d6fc63e0b08"
     },
     {
       "bytes": 228672,
       "path": "rehearsal-receipt.json",
-      "sha256": "d4067fb14167d4563daa8df590d498cae4badba81785d47f0b5ebeeeed3981b7"
+      "sha256": "b86a16447ceff7e2e3e66124715a28fcdf9f4d9e4f1d4e53de28a1df732187d8"
     },
     {
       "bytes": 15407,
       "path": "rollback-with-normal-qbo-receipt.json",
-      "sha256": "df6bc412476b6a8fddfdd2bbef4db61879222e185c8917d9c5dfd6baaa0aa79b"
+      "sha256": "328b59cf4c01e6ad5758c2c29085d0fd4a2e72269f941d190b9ca7f5923c81b2"
     },
     {
       "bytes": 17216,
       "path": "rollback-with-qbo-startup-receipt.json",
-      "sha256": "c558b636aba4581ffd621c9fcde634ff7bf847328723f63cef08bbcac0c67749"
+      "sha256": "d3a74c6ebfb0d4399b89157d980a6d9de8a2fa12e56edd066be1ae69caf2f70f"
     },
     {
       "bytes": 15182,
       "path": "schema-preserving-rollback-receipt.json",
-      "sha256": "04ae4c22f7356de53d317ea16ce93621a684bf27220e9fe40ef60b3ab655fcef"
+      "sha256": "017442d761cc54cd4d4f4c60c33bc5ee941ea553b918a3552db26ce72e9ffbf2"
     },
     {
       "bytes": 12832,
       "path": "source-swap-failure-receipt.json",
-      "sha256": "1df133fe7f3a78d72e9078dae0aa9063dbb2aa3f119987d51caddbaef4bd6a23"
+      "sha256": "1721d35fe6d38be3a334f1ebdeeaba038649c819ba817ce23c22d4f16081e4fc"
     },
     {
       "bytes": 6249,
       "path": "success-receipt.json",
-      "sha256": "0b427beb9300959e338e42c55edb5189b2b7d5da481129b7b25c31f3930f86aa"
+      "sha256": "b9922dcb72f0cf37f1757cb239eeb2fceeeb9a8933452d26513fb538e6a358b4"
     }
   ],
-  "entries_sha256": "513f8ad8309820db3b077f41beb0d13d77a25965e5768bb398e215be6003e9fb"
+  "entries_sha256": "74e34b912c45ef205e72fe8fb92bb67d1c2f421d7493382b149ba29c491e6dda"
 }

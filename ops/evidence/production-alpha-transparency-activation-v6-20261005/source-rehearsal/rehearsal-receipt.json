@@ -1,5 +1,5 @@
 {
-  "application_manifest_sha256": "d46b78f9bc65c1390c23a531f3ee3a39647f8866f4320d1c03d427496cdec4a5",
+  "application_manifest_sha256": "2779d5466b6e295abda07d123334ced354a2119277bf3ffd3d7e1cd0512c2f88",
   "artifact": "buy-dtf-production-alpha-transparency-source-only-local-rehearsal-v4-scheduler",
   "artifact_base_commit": "307b99e9429ca4623c72cc121e12997bdb4dfcad",
   "baseline_source_records": [
@@ -103,13 +103,13 @@
   "post_laravel_12_69_1_live_freeze_pending": false,
   "private_evidence_manifest": {
     "entries": 892,
-    "entries_sha256": "ebca9bec8634d8a07241375c0cabddfcf3c8918dbd92c0d6f60b8181f749e513",
-    "manifest_sha256": "64c9e3cc933b03cfa0328db5faa3034591fa561139f56e02c068e83f20a36be6"
+    "entries_sha256": "09475a26316d7c3787810ad2b829a7f5c493bc0873931d36050f837a5527bf66",
+    "manifest_sha256": "dd164e0e9221f53e171db662a104c65674de06cc2cd00c178bbfd393e9709664"
   },
   "production_accessed": false,
   "production_staged": false,
   "rehearsal_script_sha256": "35b0907e9bec39ef0f9b8552827a6c184f20129104a404b5e5cfb63e28b1bb55",
-  "runner_sha256": "4ec63506a90b0aa3e7588a7e7de345e8db449acf5b94d1852edb19bcf264f278",
+  "runner_sha256": "8a89a2252975563cb65a94e0677edfd49238ef31875644e6b59352da365bb830",
   "runtime_probe_sha256": "839588fe2930e1e673c507b05f7ccf15d7166329d66c1563775154cd7030d200",
   "scenario_count": 15,
   "scenarios": {
@@ -135,8 +135,8 @@
       "post_mutation_fpm_fallback_count": 0,
       "prohibited_command_count": 0,
       "raw_evidence_entries": 15,
-      "raw_evidence_manifest_sha256": "ce4bb434adf4d2bb6ea9d7b6f33a905f9dfd63cb8cbe1b3d5a9a2d8e9ef3931a",
-      "raw_state_directory_name": "b02fce32-20261006T020544Z",
+      "raw_evidence_manifest_sha256": "5b6a9f5269d38d3f83fa72a22c8588db144b092793bdb3f942c8d33eb003d766",
+      "raw_state_directory_name": "b02fce32-20261006T022512Z",
       "rollback_complete": false,
       "scenario": "activation-fpm-before-gate-rejection",
       "scheduler_observation_receipts": [],
@@ -146,7 +146,7 @@
       "source_cas_sha256": "0ceca182384a8e68560ec542c0c2c0c695971b8488321ca0899ea7a880d6fd17",
       "source_expectation": "expected-live",
       "source_install_started": false,
-      "state_sha256": "440bd91e9d6184316d0abec4df83e2b654d1a627129c0e9e419767c1d2b6ea04",
+      "state_sha256": "a980ef40e9c1a8742c82b38e23c08f616b0e1cb61aad064595e8366116a11a72",
       "status": "pass"
     },
     "activation-fpm-under-gate-rejection": {
@@ -156,8 +156,8 @@
       "final_receipt_sha256": null,
       "final_state_status": "rolled_back",
       "fpm_checkpoint_receipt": {
-        "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-activation-fpm-under-gate-rejection-3irlrhio/rollbacks/b02fce32-20261006T020544Z/fpm-opcache-before-source-mutation-receipt.json",
-        "sha256": "caec11324348acfe7a05c4777d69be3d703d0f2d8e9e597935360a07a586db56"
+        "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-activation-fpm-under-gate-rejection-b_tfhfy9/rollbacks/b02fce32-20261006T022513Z/fpm-opcache-before-source-mutation-receipt.json",
+        "sha256": "1f0557c0648aa40842639ec86ab72a374624137e8fc599c4214d34071ed37614"
       },
       "front_controller_mode": "0o644",
       "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
@@ -189,7 +189,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-activation-fpm-under-gate-rejection-3irlrhio/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-activation-fpm-under-gate-rejection-b_tfhfy9/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "identity_before": {
@@ -200,7 +200,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-activation-fpm-under-gate-rejection-3irlrhio/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-activation-fpm-under-gate-rejection-b_tfhfy9/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "operation": "cutover-static-gate",
@@ -249,7 +249,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-activation-fpm-under-gate-rejection-3irlrhio/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-activation-fpm-under-gate-rejection-b_tfhfy9/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "identity_before": {
@@ -260,7 +260,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-activation-fpm-under-gate-rejection-3irlrhio/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-activation-fpm-under-gate-rejection-b_tfhfy9/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "operation": "rollback-static-gate",
@@ -309,7 +309,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-activation-fpm-under-gate-rejection-3irlrhio/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-activation-fpm-under-gate-rejection-b_tfhfy9/application/public/index.php",
             "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
           },
           "identity_before": {
@@ -320,7 +320,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-activation-fpm-under-gate-rejection-3irlrhio/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-activation-fpm-under-gate-rejection-b_tfhfy9/application/public/index.php",
             "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
           },
           "operation": "rollback-original-front-controller-restore",
@@ -355,16 +355,16 @@
       "post_mutation_fpm_fallback_count": 0,
       "prohibited_command_count": 0,
       "raw_evidence_entries": 30,
-      "raw_evidence_manifest_sha256": "6e8aca6c81b43bcd05436a77d7088bcf8a8133cec7bd41e5e8af6bf19ea0364f",
-      "raw_state_directory_name": "b02fce32-20261006T020544Z",
+      "raw_evidence_manifest_sha256": "921a37ca90e4031b4ae8aa81c80ca28712653712a04250d032778c1ab8295b14",
+      "raw_state_directory_name": "b02fce32-20261006T022513Z",
       "rollback_complete": true,
       "scenario": "activation-fpm-under-gate-rejection",
       "scheduler_observation_receipts": [
         {
           "active": false,
-          "last_success_unix": 1791252012,
-          "monotonic_ns": 1791252345000000000,
-          "observed_at_utc": "2026-10-06T02:05:45Z",
+          "last_success_unix": 1791253212,
+          "monotonic_ns": 1791253513000000000,
+          "observed_at_utc": "2026-10-06T02:25:13Z",
           "pending": null,
           "phase": "rollback",
           "policy": "bounded_reviewed_qbo_only",
@@ -381,16 +381,16 @@
               {
                 "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
                 "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-                "pid": 76348,
+                "pid": 78655,
                 "scope": "verified_outside_application",
                 "scope_source": "native_proc_observation",
-                "start_ticks": 12848354,
+                "start_ticks": 12956075,
                 "uid": 33,
-                "working_directory_sha256": "5071bf4af0754f7772a6aca044b35c44841fe650f72f072014f0821da557f4c4"
+                "working_directory_sha256": "3c842c4aedb6ab37c522401693fd694e1f485685b8617325b7521a27ed434059"
               }
             ]
           },
-          "scheduler_snapshot_sha256": "e89aac4a0c1d06299f9801bd422f7a4c098d028605391cfc2eac100d11a26a68",
+          "scheduler_snapshot_sha256": "e833df5d5898cde2d04815c7b4ab32be19cf7ab10b2e66cbcf177f16d8892bd6",
           "sequence": 1,
           "status": "pass",
           "task": "qbo:refresh-admin-cache",
@@ -398,9 +398,9 @@
         },
         {
           "active": false,
-          "last_success_unix": 1791252012,
-          "monotonic_ns": 1791252345000000000,
-          "observed_at_utc": "2026-10-06T02:05:45Z",
+          "last_success_unix": 1791253212,
+          "monotonic_ns": 1791253513000000000,
+          "observed_at_utc": "2026-10-06T02:25:13Z",
           "pending": null,
           "phase": "rollback",
           "policy": "bounded_reviewed_qbo_only",
@@ -417,16 +417,16 @@
               {
                 "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
                 "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-                "pid": 76348,
+                "pid": 78655,
                 "scope": "verified_outside_application",
                 "scope_source": "native_proc_observation",
-                "start_ticks": 12848354,
+                "start_ticks": 12956075,
                 "uid": 33,
-                "working_directory_sha256": "5071bf4af0754f7772a6aca044b35c44841fe650f72f072014f0821da557f4c4"
+                "working_directory_sha256": "3c842c4aedb6ab37c522401693fd694e1f485685b8617325b7521a27ed434059"
               }
             ]
           },
-          "scheduler_snapshot_sha256": "e89aac4a0c1d06299f9801bd422f7a4c098d028605391cfc2eac100d11a26a68",
+          "scheduler_snapshot_sha256": "e833df5d5898cde2d04815c7b4ab32be19cf7ab10b2e66cbcf177f16d8892bd6",
           "sequence": 2,
           "status": "pass",
           "task": "qbo:refresh-admin-cache",
@@ -434,9 +434,9 @@
         },
         {
           "active": false,
-          "last_success_unix": 1791252012,
-          "monotonic_ns": 1791252345000000000,
-          "observed_at_utc": "2026-10-06T02:05:45Z",
+          "last_success_unix": 1791253212,
+          "monotonic_ns": 1791253513000000000,
+          "observed_at_utc": "2026-10-06T02:25:13Z",
           "pending": null,
           "phase": "rollback",
           "policy": "bounded_reviewed_qbo_only",
@@ -453,16 +453,16 @@
               {
                 "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
                 "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-                "pid": 76348,
+                "pid": 78655,
                 "scope": "verified_outside_application",
                 "scope_source": "native_proc_observation",
-                "start_ticks": 12848354,
+                "start_ticks": 12956075,
                 "uid": 33,
-                "working_directory_sha256": "5071bf4af0754f7772a6aca044b35c44841fe650f72f072014f0821da557f4c4"
+                "working_directory_sha256": "3c842c4aedb6ab37c522401693fd694e1f485685b8617325b7521a27ed434059"
               }
             ]
           },
-          "scheduler_snapshot_sha256": "e89aac4a0c1d06299f9801bd422f7a4c098d028605391cfc2eac100d11a26a68",
+          "scheduler_snapshot_sha256": "e833df5d5898cde2d04815c7b4ab32be19cf7ab10b2e66cbcf177f16d8892bd6",
           "sequence": 3,
           "status": "pass",
           "task": "qbo:refresh-admin-cache",
@@ -475,7 +475,7 @@
       "source_cas_sha256": "0ceca182384a8e68560ec542c0c2c0c695971b8488321ca0899ea7a880d6fd17",
       "source_expectation": "expected-live",
       "source_install_started": false,
-      "state_sha256": "54623121fd0997f988efda65989c8ddf328ba3c5acf7c30fe0b79a1d89769b37",
+      "state_sha256": "a2882b0c4fc046a4d787dfc002e9a59e57a5da8a47f586dd743c9e0566f3223e",
       "status": "pass"
     },
     "candidate-check-failure": {
@@ -485,8 +485,8 @@
       "final_receipt_sha256": null,
       "final_state_status": "rolled_back",
       "fpm_checkpoint_receipt": {
-        "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-candidate-check-failure-941rn71i/rollbacks/b02fce32-20261006T020547Z/fpm-opcache-before-source-mutation-receipt.json",
-        "sha256": "1abcd11bb197537cdc79097efc2ac09b85dee2c152933a565433f71f5303587f"
+        "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-candidate-check-failure-6zvfpjfp/rollbacks/b02fce32-20261006T022515Z/fpm-opcache-before-source-mutation-receipt.json",
+        "sha256": "0da6c6c4dcdcb4aa43f311b060ae7681d1cb69c028b78c2f99f472f948d106b4"
       },
       "front_controller_mode": "0o644",
       "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
@@ -518,7 +518,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-candidate-check-failure-941rn71i/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-candidate-check-failure-6zvfpjfp/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "identity_before": {
@@ -529,7 +529,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-candidate-check-failure-941rn71i/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-candidate-check-failure-6zvfpjfp/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "operation": "cutover-static-gate",
@@ -578,7 +578,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-candidate-check-failure-941rn71i/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-candidate-check-failure-6zvfpjfp/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "identity_before": {
@@ -589,7 +589,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-candidate-check-failure-941rn71i/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-candidate-check-failure-6zvfpjfp/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "operation": "rollback-static-gate",
@@ -638,7 +638,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-candidate-check-failure-941rn71i/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-candidate-check-failure-6zvfpjfp/application/public/index.php",
             "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
           },
           "identity_before": {
@@ -649,7 +649,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-candidate-check-failure-941rn71i/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-candidate-check-failure-6zvfpjfp/application/public/index.php",
             "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
           },
           "operation": "rollback-original-front-controller-restore",
@@ -684,16 +684,16 @@
       "post_mutation_fpm_fallback_count": 0,
       "prohibited_command_count": 0,
       "raw_evidence_entries": 31,
-      "raw_evidence_manifest_sha256": "df75a14206507b0053fd82081177bb567625b48aa94b68770a43dddd739568f5",
-      "raw_state_directory_name": "b02fce32-20261006T020547Z",
+      "raw_evidence_manifest_sha256": "2523ada0196ecce7ddd1586dd24828f44593d4c1b24c8f3a6fd5f0fb55a18814",
+      "raw_state_directory_name": "b02fce32-20261006T022515Z",
       "rollback_complete": true,
       "scenario": "candidate-check-failure",
       "scheduler_observation_receipts": [
         {
           "active": false,
-          "last_success_unix": 1791252012,
-          "monotonic_ns": 1791252348000000000,
-          "observed_at_utc": "2026-10-06T02:05:48Z",
+          "last_success_unix": 1791253212,
+          "monotonic_ns": 1791253516000000000,
+          "observed_at_utc": "2026-10-06T02:25:16Z",
           "pending": null,
           "phase": "rollback",
           "policy": "bounded_reviewed_qbo_only",
@@ -710,16 +710,16 @@
               {
                 "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
                 "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-                "pid": 76348,
+                "pid": 78655,
                 "scope": "verified_outside_application",
                 "scope_source": "native_proc_observation",
-                "start_ticks": 12848354,
+                "start_ticks": 12956075,
                 "uid": 33,
-                "working_directory_sha256": "5071bf4af0754f7772a6aca044b35c44841fe650f72f072014f0821da557f4c4"
+                "working_directory_sha256": "3c842c4aedb6ab37c522401693fd694e1f485685b8617325b7521a27ed434059"
               }
             ]
           },
-          "scheduler_snapshot_sha256": "e89aac4a0c1d06299f9801bd422f7a4c098d028605391cfc2eac100d11a26a68",
+          "scheduler_snapshot_sha256": "e833df5d5898cde2d04815c7b4ab32be19cf7ab10b2e66cbcf177f16d8892bd6",
           "sequence": 1,
           "status": "pass",
           "task": "qbo:refresh-admin-cache",
@@ -727,9 +727,9 @@
         },
         {
           "active": false,
-          "last_success_unix": 1791252012,
-          "monotonic_ns": 1791252348000000000,
-          "observed_at_utc": "2026-10-06T02:05:48Z",
+          "last_success_unix": 1791253212,
+          "monotonic_ns": 1791253516000000000,
+          "observed_at_utc": "2026-10-06T02:25:16Z",
           "pending": null,
           "phase": "rollback",
           "policy": "bounded_reviewed_qbo_only",
@@ -746,16 +746,16 @@
               {
                 "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
                 "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-                "pid": 76348,
+                "pid": 78655,
                 "scope": "verified_outside_application",
                 "scope_source": "native_proc_observation",
-                "start_ticks": 12848354,
+                "start_ticks": 12956075,
                 "uid": 33,
-                "working_directory_sha256": "5071bf4af0754f7772a6aca044b35c44841fe650f72f072014f0821da557f4c4"
+                "working_directory_sha256": "3c842c4aedb6ab37c522401693fd694e1f485685b8617325b7521a27ed434059"
               }
             ]
           },
-          "scheduler_snapshot_sha256": "e89aac4a0c1d06299f9801bd422f7a4c098d028605391cfc2eac100d11a26a68",
+          "scheduler_snapshot_sha256": "e833df5d5898cde2d04815c7b4ab32be19cf7ab10b2e66cbcf177f16d8892bd6",
           "sequence": 2,
           "status": "pass",
           "task": "qbo:refresh-admin-cache",
@@ -763,9 +763,9 @@
         },
         {
           "active": false,
-          "last_success_unix": 1791252012,
-          "monotonic_ns": 1791252348000000000,
-          "observed_at_utc": "2026-10-06T02:05:48Z",
+          "last_success_unix": 1791253212,
+          "monotonic_ns": 1791253516000000000,
+          "observed_at_utc": "2026-10-06T02:25:16Z",
           "pending": null,
           "phase": "rollback",
           "policy": "bounded_reviewed_qbo_only",
@@ -782,16 +782,16 @@
               {
                 "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
                 "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-                "pid": 76348,
+                "pid": 78655,
                 "scope": "verified_outside_application",
                 "scope_source": "native_proc_observation",
-                "start_ticks": 12848354,
+                "start_ticks": 12956075,
                 "uid": 33,
-                "working_directory_sha256": "5071bf4af0754f7772a6aca044b35c44841fe650f72f072014f0821da557f4c4"
+                "working_directory_sha256": "3c842c4aedb6ab37c522401693fd694e1f485685b8617325b7521a27ed434059"
               }
             ]
           },
-          "scheduler_snapshot_sha256": "e89aac4a0c1d06299f9801bd422f7a4c098d028605391cfc2eac100d11a26a68",
+          "scheduler_snapshot_sha256": "e833df5d5898cde2d04815c7b4ab32be19cf7ab10b2e66cbcf177f16d8892bd6",
           "sequence": 3,
           "status": "pass",
           "task": "qbo:refresh-admin-cache",
@@ -804,7 +804,7 @@
       "source_cas_sha256": "0ceca182384a8e68560ec542c0c2c0c695971b8488321ca0899ea7a880d6fd17",
       "source_expectation": "expected-live",
       "source_install_started": true,
-      "state_sha256": "a99962d2414c7e9b1ef64bf673263ca8fb10a3bbf2482833024ca1e63c95e351",
+      "state_sha256": "2eeefc398f9986b488deb6a18d18e391857dd26c7980fc0708f14f4a8b291c7f",
       "status": "pass"
     },
     "genuine-log-failure": {
@@ -814,8 +814,8 @@
       "final_receipt_sha256": null,
       "final_state_status": "rolled_back",
       "fpm_checkpoint_receipt": {
-        "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-genuine-log-failure-yc3jvwrc/rollbacks/b02fce32-20261006T020550Z/fpm-opcache-before-source-mutation-receipt.json",
-        "sha256": "f39ecc80ef9bec257dbdec8c4e0aeb2d5d783d411b08268e4884db6cc6c363f5"
+        "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-genuine-log-failure-5f8_lcvh/rollbacks/b02fce32-20261006T022518Z/fpm-opcache-before-source-mutation-receipt.json",
+        "sha256": "f6fe85aa54871a4bd46bb10b8836c8527f3242a322a1dd5900735896bdadcfa8"
       },
       "front_controller_mode": "0o644",
       "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
@@ -847,7 +847,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-genuine-log-failure-yc3jvwrc/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-genuine-log-failure-5f8_lcvh/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "identity_before": {
@@ -858,7 +858,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-genuine-log-failure-yc3jvwrc/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-genuine-log-failure-5f8_lcvh/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "operation": "cutover-static-gate",
@@ -907,7 +907,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-genuine-log-failure-yc3jvwrc/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-genuine-log-failure-5f8_lcvh/application/public/index.php",
             "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
           },
           "identity_before": {
@@ -918,7 +918,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-genuine-log-failure-yc3jvwrc/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-genuine-log-failure-5f8_lcvh/application/public/index.php",
             "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
           },
           "operation": "candidate-original-front-controller-restore",
@@ -967,7 +967,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-genuine-log-failure-yc3jvwrc/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-genuine-log-failure-5f8_lcvh/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "identity_before": {
@@ -978,7 +978,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-genuine-log-failure-yc3jvwrc/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-genuine-log-failure-5f8_lcvh/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "operation": "rollback-static-gate",
@@ -1027,7 +1027,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-genuine-log-failure-yc3jvwrc/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-genuine-log-failure-5f8_lcvh/application/public/index.php",
             "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
           },
           "identity_before": {
@@ -1038,7 +1038,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-genuine-log-failure-yc3jvwrc/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-genuine-log-failure-5f8_lcvh/application/public/index.php",
             "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
           },
           "operation": "rollback-original-front-controller-restore",
@@ -1073,16 +1073,16 @@
       "post_mutation_fpm_fallback_count": 0,
       "prohibited_command_count": 0,
       "raw_evidence_entries": 36,
-      "raw_evidence_manifest_sha256": "42fc3fcb1081e45739fc69d14d01e26edfe5eb85a26a5bc85a1fd395e52b7860",
-      "raw_state_directory_name": "b02fce32-20261006T020550Z",
+      "raw_evidence_manifest_sha256": "e4bcda7cad08074381c92411850866a909f79fa855fdb4d8b7cc04f27129361c",
+      "raw_state_directory_name": "b02fce32-20261006T022518Z",
       "rollback_complete": true,
       "scenario": "genuine-log-failure",
       "scheduler_observation_receipts": [
         {
           "active": false,
-          "last_success_unix": 1791252012,
-          "monotonic_ns": 1791252351000000000,
-          "observed_at_utc": "2026-10-06T02:05:51Z",
+          "last_success_unix": 1791253212,
+          "monotonic_ns": 1791253519000000000,
+          "observed_at_utc": "2026-10-06T02:25:19Z",
           "pending": null,
           "phase": "rollback",
           "policy": "bounded_reviewed_qbo_only",
@@ -1099,16 +1099,16 @@
               {
                 "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
                 "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-                "pid": 76348,
+                "pid": 78655,
                 "scope": "verified_outside_application",
                 "scope_source": "native_proc_observation",
-                "start_ticks": 12848354,
+                "start_ticks": 12956075,
                 "uid": 33,
-                "working_directory_sha256": "5071bf4af0754f7772a6aca044b35c44841fe650f72f072014f0821da557f4c4"
+                "working_directory_sha256": "3c842c4aedb6ab37c522401693fd694e1f485685b8617325b7521a27ed434059"
               }
             ]
           },
-          "scheduler_snapshot_sha256": "e89aac4a0c1d06299f9801bd422f7a4c098d028605391cfc2eac100d11a26a68",
+          "scheduler_snapshot_sha256": "e833df5d5898cde2d04815c7b4ab32be19cf7ab10b2e66cbcf177f16d8892bd6",
           "sequence": 1,
           "status": "pass",
           "task": "qbo:refresh-admin-cache",
@@ -1116,9 +1116,9 @@
         },
         {
           "active": false,
-          "last_success_unix": 1791252012,
-          "monotonic_ns": 1791252351000000000,
-          "observed_at_utc": "2026-10-06T02:05:51Z",
+          "last_success_unix": 1791253212,
+          "monotonic_ns": 1791253519000000000,
+          "observed_at_utc": "2026-10-06T02:25:19Z",
           "pending": null,
           "phase": "rollback",
           "policy": "bounded_reviewed_qbo_only",
@@ -1135,16 +1135,16 @@
               {
                 "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
                 "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-                "pid": 76348,
+                "pid": 78655,
                 "scope": "verified_outside_application",
                 "scope_source": "native_proc_observation",
-                "start_ticks": 12848354,
+                "start_ticks": 12956075,
                 "uid": 33,
-                "working_directory_sha256": "5071bf4af0754f7772a6aca044b35c44841fe650f72f072014f0821da557f4c4"
+                "working_directory_sha256": "3c842c4aedb6ab37c522401693fd694e1f485685b8617325b7521a27ed434059"
               }
             ]
           },
-          "scheduler_snapshot_sha256": "e89aac4a0c1d06299f9801bd422f7a4c098d028605391cfc2eac100d11a26a68",
+          "scheduler_snapshot_sha256": "e833df5d5898cde2d04815c7b4ab32be19cf7ab10b2e66cbcf177f16d8892bd6",
           "sequence": 2,
           "status": "pass",
           "task": "qbo:refresh-admin-cache",
@@ -1152,9 +1152,9 @@
         },
         {
           "active": false,
-          "last_success_unix": 1791252012,
-          "monotonic_ns": 1791252351000000000,
-          "observed_at_utc": "2026-10-06T02:05:51Z",
+          "last_success_unix": 1791253212,
+          "monotonic_ns": 1791253519000000000,
+          "observed_at_utc": "2026-10-06T02:25:19Z",
           "pending": null,
           "phase": "rollback",
           "policy": "bounded_reviewed_qbo_only",
@@ -1171,16 +1171,16 @@
               {
                 "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
                 "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-                "pid": 76348,
+                "pid": 78655,
                 "scope": "verified_outside_application",
                 "scope_source": "native_proc_observation",
-                "start_ticks": 12848354,
+                "start_ticks": 12956075,
                 "uid": 33,
-                "working_directory_sha256": "5071bf4af0754f7772a6aca044b35c44841fe650f72f072014f0821da557f4c4"
+                "working_directory_sha256": "3c842c4aedb6ab37c522401693fd694e1f485685b8617325b7521a27ed434059"
               }
             ]
           },
-          "scheduler_snapshot_sha256": "e89aac4a0c1d06299f9801bd422f7a4c098d028605391cfc2eac100d11a26a68",
+          "scheduler_snapshot_sha256": "e833df5d5898cde2d04815c7b4ab32be19cf7ab10b2e66cbcf177f16d8892bd6",
           "sequence": 3,
           "status": "pass",
           "task": "qbo:refresh-admin-cache",
@@ -1193,7 +1193,7 @@
       "source_cas_sha256": "0ceca182384a8e68560ec542c0c2c0c695971b8488321ca0899ea7a880d6fd17",
       "source_expectation": "expected-live",
       "source_install_started": true,
-      "state_sha256": "e508f2370fc350074825e3c6c19550f8875adb52fde0f7cb19459abe64640857",
+      "state_sha256": "72960e17a837c0cfe2fa885874104e47fbd432b03cc0eda3be747113df233480",
       "status": "pass"
     },
     "post-reopen-failure": {
@@ -1203,8 +1203,8 @@
       "final_receipt_sha256": null,
       "final_state_status": "rolled_back",
       "fpm_checkpoint_receipt": {
-        "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-post-reopen-failure-cs6vpw97/rollbacks/b02fce32-20261006T020548Z/fpm-opcache-before-source-mutation-receipt.json",
-        "sha256": "43ec173b24f0156363f6d63a3af0340b40d19415b64eded39170330b3bb031cb"
+        "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-post-reopen-failure-ehh1axht/rollbacks/b02fce32-20261006T022517Z/fpm-opcache-before-source-mutation-receipt.json",
+        "sha256": "22890c5a0f90ab3edf308172165ef5a10b77b0b4a59e871975f7ad9dd3c910fa"
       },
       "front_controller_mode": "0o644",
       "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
@@ -1236,7 +1236,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-post-reopen-failure-cs6vpw97/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-post-reopen-failure-ehh1axht/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "identity_before": {
@@ -1247,7 +1247,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-post-reopen-failure-cs6vpw97/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-post-reopen-failure-ehh1axht/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "operation": "cutover-static-gate",
@@ -1296,7 +1296,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-post-reopen-failure-cs6vpw97/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-post-reopen-failure-ehh1axht/application/public/index.php",
             "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
           },
           "identity_before": {
@@ -1307,7 +1307,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-post-reopen-failure-cs6vpw97/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-post-reopen-failure-ehh1axht/application/public/index.php",
             "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
           },
           "operation": "candidate-original-front-controller-restore",
@@ -1356,7 +1356,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-post-reopen-failure-cs6vpw97/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-post-reopen-failure-ehh1axht/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "identity_before": {
@@ -1367,7 +1367,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-post-reopen-failure-cs6vpw97/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-post-reopen-failure-ehh1axht/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "operation": "rollback-static-gate",
@@ -1416,7 +1416,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-post-reopen-failure-cs6vpw97/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-post-reopen-failure-ehh1axht/application/public/index.php",
             "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
           },
           "identity_before": {
@@ -1427,7 +1427,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-post-reopen-failure-cs6vpw97/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-post-reopen-failure-ehh1axht/application/public/index.php",
             "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
           },
           "operation": "rollback-original-front-controller-restore",
@@ -1462,16 +1462,16 @@
       "post_mutation_fpm_fallback_count": 0,
       "prohibited_command_count": 0,
       "raw_evidence_entries": 34,
-      "raw_evidence_manifest_sha256": "7071de7c2324f30531787c3e19ed5cc1a4bfc3926c712d15e23e3334277e471a",
-      "raw_state_directory_name": "b02fce32-20261006T020548Z",
+      "raw_evidence_manifest_sha256": "9a368e080ec25a38db88dcf65c11483e61160c242c2e49a2059610c5af44b7e1",
+      "raw_state_directory_name": "b02fce32-20261006T022517Z",
       "rollback_complete": true,
       "scenario": "post-reopen-failure",
       "scheduler_observation_receipts": [
         {
           "active": false,
-          "last_success_unix": 1791252012,
-          "monotonic_ns": 1791252350000000000,
-          "observed_at_utc": "2026-10-06T02:05:50Z",
+          "last_success_unix": 1791253212,
+          "monotonic_ns": 1791253518000000000,
+          "observed_at_utc": "2026-10-06T02:25:18Z",
           "pending": null,
           "phase": "rollback",
           "policy": "bounded_reviewed_qbo_only",
@@ -1488,16 +1488,16 @@
               {
                 "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
                 "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-                "pid": 76348,
+                "pid": 78655,
                 "scope": "verified_outside_application",
                 "scope_source": "native_proc_observation",
-                "start_ticks": 12848354,
+                "start_ticks": 12956075,
                 "uid": 33,
-                "working_directory_sha256": "5071bf4af0754f7772a6aca044b35c44841fe650f72f072014f0821da557f4c4"
+                "working_directory_sha256": "3c842c4aedb6ab37c522401693fd694e1f485685b8617325b7521a27ed434059"
               }
             ]
           },
-          "scheduler_snapshot_sha256": "e89aac4a0c1d06299f9801bd422f7a4c098d028605391cfc2eac100d11a26a68",
+          "scheduler_snapshot_sha256": "e833df5d5898cde2d04815c7b4ab32be19cf7ab10b2e66cbcf177f16d8892bd6",
           "sequence": 1,
           "status": "pass",
           "task": "qbo:refresh-admin-cache",
@@ -1505,9 +1505,9 @@
         },
         {
           "active": false,
-          "last_success_unix": 1791252012,
-          "monotonic_ns": 1791252350000000000,
-          "observed_at_utc": "2026-10-06T02:05:50Z",
+          "last_success_unix": 1791253212,
+          "monotonic_ns": 1791253518000000000,
+          "observed_at_utc": "2026-10-06T02:25:18Z",
           "pending": null,
           "phase": "rollback",
           "policy": "bounded_reviewed_qbo_only",
@@ -1524,16 +1524,16 @@
               {
                 "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
                 "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-                "pid": 76348,
+                "pid": 78655,
                 "scope": "verified_outside_application",
                 "scope_source": "native_proc_observation",
-                "start_ticks": 12848354,
+                "start_ticks": 12956075,
                 "uid": 33,
-                "working_directory_sha256": "5071bf4af0754f7772a6aca044b35c44841fe650f72f072014f0821da557f4c4"
+                "working_directory_sha256": "3c842c4aedb6ab37c522401693fd694e1f485685b8617325b7521a27ed434059"
               }
             ]
           },
-          "scheduler_snapshot_sha256": "e89aac4a0c1d06299f9801bd422f7a4c098d028605391cfc2eac100d11a26a68",
+          "scheduler_snapshot_sha256": "e833df5d5898cde2d04815c7b4ab32be19cf7ab10b2e66cbcf177f16d8892bd6",
           "sequence": 2,
           "status": "pass",
           "task": "qbo:refresh-admin-cache",
@@ -1541,9 +1541,9 @@
         },
         {
           "active": false,
-          "last_success_unix": 1791252012,
-          "monotonic_ns": 1791252350000000000,
-          "observed_at_utc": "2026-10-06T02:05:50Z",
+          "last_success_unix": 1791253212,
+          "monotonic_ns": 1791253518000000000,
+          "observed_at_utc": "2026-10-06T02:25:18Z",
           "pending": null,
           "phase": "rollback",
           "policy": "bounded_reviewed_qbo_only",
@@ -1560,16 +1560,16 @@
               {
                 "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
                 "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-                "pid": 76348,
+                "pid": 78655,
                 "scope": "verified_outside_application",
                 "scope_source": "native_proc_observation",
-                "start_ticks": 12848354,
+                "start_ticks": 12956075,
                 "uid": 33,
-                "working_directory_sha256": "5071bf4af0754f7772a6aca044b35c44841fe650f72f072014f0821da557f4c4"
+                "working_directory_sha256": "3c842c4aedb6ab37c522401693fd694e1f485685b8617325b7521a27ed434059"
               }
             ]
           },
-          "scheduler_snapshot_sha256": "e89aac4a0c1d06299f9801bd422f7a4c098d028605391cfc2eac100d11a26a68",
+          "scheduler_snapshot_sha256": "e833df5d5898cde2d04815c7b4ab32be19cf7ab10b2e66cbcf177f16d8892bd6",
           "sequence": 3,
           "status": "pass",
           "task": "qbo:refresh-admin-cache",
@@ -1582,7 +1582,7 @@
       "source_cas_sha256": "0ceca182384a8e68560ec542c0c2c0c695971b8488321ca0899ea7a880d6fd17",
       "source_expectation": "expected-live",
       "source_install_started": true,
-      "state_sha256": "df03cdb39c500d83be5d1d244209592bd0ec08c9991b1f3e5a88d09a3bf6bed7",
+      "state_sha256": "8dbb2d4a262e18dd22d61d6a39abdd6bec4b6cfe8068e1cfd8e23bd775ef8370",
       "status": "pass"
     },
     "post-source-fpm-unavailable": {
@@ -1592,8 +1592,8 @@
       "final_receipt_sha256": null,
       "final_state_status": "rolled_back",
       "fpm_checkpoint_receipt": {
-        "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-post-source-fpm-unavailable-79108v76/rollbacks/b02fce32-20261006T020553Z/fpm-opcache-before-source-mutation-receipt.json",
-        "sha256": "0d79aa6e981f940a254bd2d1da391ed07612cb82a00a9ec19c48b5cd968ea0b0"
+        "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-post-source-fpm-unavailable-9966p8vp/rollbacks/b02fce32-20261006T022521Z/fpm-opcache-before-source-mutation-receipt.json",
+        "sha256": "867c78df61cec77d6e3b1a5b95b45a85d2806751e498d70e3f77f03026a6107a"
       },
       "front_controller_mode": "0o644",
       "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
@@ -1625,7 +1625,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-post-source-fpm-unavailable-79108v76/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-post-source-fpm-unavailable-9966p8vp/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "identity_before": {
@@ -1636,7 +1636,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-post-source-fpm-unavailable-79108v76/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-post-source-fpm-unavailable-9966p8vp/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "operation": "cutover-static-gate",
@@ -1685,7 +1685,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-post-source-fpm-unavailable-79108v76/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-post-source-fpm-unavailable-9966p8vp/application/public/index.php",
             "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
           },
           "identity_before": {
@@ -1696,7 +1696,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-post-source-fpm-unavailable-79108v76/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-post-source-fpm-unavailable-9966p8vp/application/public/index.php",
             "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
           },
           "operation": "candidate-original-front-controller-restore",
@@ -1745,7 +1745,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-post-source-fpm-unavailable-79108v76/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-post-source-fpm-unavailable-9966p8vp/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "identity_before": {
@@ -1756,7 +1756,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-post-source-fpm-unavailable-79108v76/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-post-source-fpm-unavailable-9966p8vp/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "operation": "rollback-static-gate",
@@ -1805,7 +1805,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-post-source-fpm-unavailable-79108v76/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-post-source-fpm-unavailable-9966p8vp/application/public/index.php",
             "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
           },
           "identity_before": {
@@ -1816,7 +1816,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-post-source-fpm-unavailable-79108v76/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-post-source-fpm-unavailable-9966p8vp/application/public/index.php",
             "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
           },
           "operation": "rollback-original-front-controller-restore",
@@ -1851,16 +1851,16 @@
       "post_mutation_fpm_fallback_count": 2,
       "prohibited_command_count": 0,
       "raw_evidence_entries": 34,
-      "raw_evidence_manifest_sha256": "07a0b691198930069795d0b33818a9240fd1f50433f16b9eb7c957cce09e60ff",
-      "raw_state_directory_name": "b02fce32-20261006T020553Z",
+      "raw_evidence_manifest_sha256": "e9143df7322bcbe9a1b6fdddcc0329e2e01e301f12cdb5815e427453458d79d0",
+      "raw_state_directory_name": "b02fce32-20261006T022521Z",
       "rollback_complete": true,
       "scenario": "post-source-fpm-unavailable",
       "scheduler_observation_receipts": [
         {
           "active": false,
-          "last_success_unix": 1791252012,
-          "monotonic_ns": 1791252354000000000,
-          "observed_at_utc": "2026-10-06T02:05:54Z",
+          "last_success_unix": 1791253212,
+          "monotonic_ns": 1791253523000000000,
+          "observed_at_utc": "2026-10-06T02:25:23Z",
           "pending": null,
           "phase": "rollback",
           "policy": "bounded_reviewed_qbo_only",
@@ -1877,16 +1877,16 @@
               {
                 "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
                 "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-                "pid": 76348,
+                "pid": 78655,
                 "scope": "verified_outside_application",
                 "scope_source": "native_proc_observation",
-                "start_ticks": 12848354,
+                "start_ticks": 12956075,
                 "uid": 33,
-                "working_directory_sha256": "5071bf4af0754f7772a6aca044b35c44841fe650f72f072014f0821da557f4c4"
+                "working_directory_sha256": "3c842c4aedb6ab37c522401693fd694e1f485685b8617325b7521a27ed434059"
               }
             ]
           },
-          "scheduler_snapshot_sha256": "e89aac4a0c1d06299f9801bd422f7a4c098d028605391cfc2eac100d11a26a68",
+          "scheduler_snapshot_sha256": "e833df5d5898cde2d04815c7b4ab32be19cf7ab10b2e66cbcf177f16d8892bd6",
           "sequence": 1,
           "status": "pass",
           "task": "qbo:refresh-admin-cache",
@@ -1894,9 +1894,9 @@
         },
         {
           "active": false,
-          "last_success_unix": 1791252012,
-          "monotonic_ns": 1791252354000000000,
-          "observed_at_utc": "2026-10-06T02:05:54Z",
+          "last_success_unix": 1791253212,
+          "monotonic_ns": 1791253523000000000,
+          "observed_at_utc": "2026-10-06T02:25:23Z",
           "pending": null,
           "phase": "rollback",
           "policy": "bounded_reviewed_qbo_only",
@@ -1913,16 +1913,16 @@
               {
                 "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
                 "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-                "pid": 76348,
+                "pid": 78655,
                 "scope": "verified_outside_application",
                 "scope_source": "native_proc_observation",
-                "start_ticks": 12848354,
+                "start_ticks": 12956075,
                 "uid": 33,
-                "working_directory_sha256": "5071bf4af0754f7772a6aca044b35c44841fe650f72f072014f0821da557f4c4"
+                "working_directory_sha256": "3c842c4aedb6ab37c522401693fd694e1f485685b8617325b7521a27ed434059"
               }
             ]
           },
-          "scheduler_snapshot_sha256": "e89aac4a0c1d06299f9801bd422f7a4c098d028605391cfc2eac100d11a26a68",
+          "scheduler_snapshot_sha256": "e833df5d5898cde2d04815c7b4ab32be19cf7ab10b2e66cbcf177f16d8892bd6",
           "sequence": 2,
           "status": "pass",
           "task": "qbo:refresh-admin-cache",
@@ -1930,9 +1930,9 @@
         },
         {
           "active": false,
-          "last_success_unix": 1791252012,
-          "monotonic_ns": 1791252354000000000,
-          "observed_at_utc": "2026-10-06T02:05:54Z",
+          "last_success_unix": 1791253212,
+          "monotonic_ns": 1791253523000000000,
+          "observed_at_utc": "2026-10-06T02:25:23Z",
           "pending": null,
           "phase": "rollback",
           "policy": "bounded_reviewed_qbo_only",
@@ -1949,16 +1949,16 @@
               {
                 "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
                 "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-                "pid": 76348,
+                "pid": 78655,
                 "scope": "verified_outside_application",
                 "scope_source": "native_proc_observation",
-                "start_ticks": 12848354,
+                "start_ticks": 12956075,
                 "uid": 33,
-                "working_directory_sha256": "5071bf4af0754f7772a6aca044b35c44841fe650f72f072014f0821da557f4c4"
+                "working_directory_sha256": "3c842c4aedb6ab37c522401693fd694e1f485685b8617325b7521a27ed434059"
               }
             ]
           },
-          "scheduler_snapshot_sha256": "e89aac4a0c1d06299f9801bd422f7a4c098d028605391cfc2eac100d11a26a68",
+          "scheduler_snapshot_sha256": "e833df5d5898cde2d04815c7b4ab32be19cf7ab10b2e66cbcf177f16d8892bd6",
           "sequence": 3,
           "status": "pass",
           "task": "qbo:refresh-admin-cache",
@@ -1971,7 +1971,7 @@
       "source_cas_sha256": "0ceca182384a8e68560ec542c0c2c0c695971b8488321ca0899ea7a880d6fd17",
       "source_expectation": "expected-live",
       "source_install_started": true,
-      "state_sha256": "873eaad3c9f7afcdf932645ae4ff62b6ef745d4fd34f605336134e68af1f596f",
+      "state_sha256": "1e49e8e7b99bbfb43cd301e1f33a80939be045ad2ffccc103b51840fafcdb9ae",
       "status": "pass"
     },
     "post-source-gate-http-failure": {
@@ -1981,8 +1981,8 @@
       "final_receipt_sha256": null,
       "final_state_status": "rolled_back",
       "fpm_checkpoint_receipt": {
-        "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-post-source-gate-http-failure-s8_ex73x/rollbacks/b02fce32-20261006T020555Z/fpm-opcache-before-source-mutation-receipt.json",
-        "sha256": "dcd1fd5dc2c19985c9c9bfcfe1d0aa8be01fdcb231913c105af66e09c4b45789"
+        "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-post-source-gate-http-failure-b96n6su5/rollbacks/b02fce32-20261006T022523Z/fpm-opcache-before-source-mutation-receipt.json",
+        "sha256": "330ea4cf269012e1a5b037d1cd5f2bbd9f92d5a7a04d8bd0e617b9243a29c805"
       },
       "front_controller_mode": "0o644",
       "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
@@ -2014,7 +2014,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-post-source-gate-http-failure-s8_ex73x/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-post-source-gate-http-failure-b96n6su5/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "identity_before": {
@@ -2025,7 +2025,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-post-source-gate-http-failure-s8_ex73x/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-post-source-gate-http-failure-b96n6su5/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "operation": "cutover-static-gate",
@@ -2074,7 +2074,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-post-source-gate-http-failure-s8_ex73x/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-post-source-gate-http-failure-b96n6su5/application/public/index.php",
             "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
           },
           "identity_before": {
@@ -2085,7 +2085,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-post-source-gate-http-failure-s8_ex73x/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-post-source-gate-http-failure-b96n6su5/application/public/index.php",
             "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
           },
           "operation": "candidate-original-front-controller-restore",
@@ -2134,7 +2134,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-post-source-gate-http-failure-s8_ex73x/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-post-source-gate-http-failure-b96n6su5/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "identity_before": {
@@ -2145,7 +2145,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-post-source-gate-http-failure-s8_ex73x/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-post-source-gate-http-failure-b96n6su5/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "operation": "rollback-static-gate",
@@ -2194,7 +2194,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-post-source-gate-http-failure-s8_ex73x/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-post-source-gate-http-failure-b96n6su5/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "identity_before": {
@@ -2205,7 +2205,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-post-source-gate-http-failure-s8_ex73x/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-post-source-gate-http-failure-b96n6su5/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "operation": "rollback-static-gate-verification-failure",
@@ -2254,7 +2254,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-post-source-gate-http-failure-s8_ex73x/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-post-source-gate-http-failure-b96n6su5/application/public/index.php",
             "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
           },
           "identity_before": {
@@ -2265,7 +2265,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-post-source-gate-http-failure-s8_ex73x/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-post-source-gate-http-failure-b96n6su5/application/public/index.php",
             "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
           },
           "operation": "rollback-original-front-controller-restore",
@@ -2300,16 +2300,16 @@
       "post_mutation_fpm_fallback_count": 0,
       "prohibited_command_count": 0,
       "raw_evidence_entries": 36,
-      "raw_evidence_manifest_sha256": "49b3ebed84c7cbc400c904ff074bff4c68bdf465e8d8027dab216fe576842542",
-      "raw_state_directory_name": "b02fce32-20261006T020555Z",
+      "raw_evidence_manifest_sha256": "891ae0878348d4f354240029c5b8d3bf1c5918bc96628d69664b7105c994a71a",
+      "raw_state_directory_name": "b02fce32-20261006T022523Z",
       "rollback_complete": true,
       "scenario": "post-source-gate-http-failure",
       "scheduler_observation_receipts": [
         {
           "active": false,
-          "last_success_unix": 1791252012,
-          "monotonic_ns": 1791252356000000000,
-          "observed_at_utc": "2026-10-06T02:05:56Z",
+          "last_success_unix": 1791253212,
+          "monotonic_ns": 1791253524000000000,
+          "observed_at_utc": "2026-10-06T02:25:24Z",
           "pending": null,
           "phase": "rollback",
           "policy": "bounded_reviewed_qbo_only",
@@ -2326,16 +2326,16 @@
               {
                 "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
                 "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-                "pid": 76348,
+                "pid": 78655,
                 "scope": "verified_outside_application",
                 "scope_source": "native_proc_observation",
-                "start_ticks": 12848354,
+                "start_ticks": 12956075,
                 "uid": 33,
-                "working_directory_sha256": "5071bf4af0754f7772a6aca044b35c44841fe650f72f072014f0821da557f4c4"
+                "working_directory_sha256": "3c842c4aedb6ab37c522401693fd694e1f485685b8617325b7521a27ed434059"
               }
             ]
           },
-          "scheduler_snapshot_sha256": "e89aac4a0c1d06299f9801bd422f7a4c098d028605391cfc2eac100d11a26a68",
+          "scheduler_snapshot_sha256": "e833df5d5898cde2d04815c7b4ab32be19cf7ab10b2e66cbcf177f16d8892bd6",
           "sequence": 1,
           "status": "pass",
           "task": "qbo:refresh-admin-cache",
@@ -2343,9 +2343,9 @@
         },
         {
           "active": false,
-          "last_success_unix": 1791252012,
-          "monotonic_ns": 1791252356000000000,
-          "observed_at_utc": "2026-10-06T02:05:56Z",
+          "last_success_unix": 1791253212,
+          "monotonic_ns": 1791253524000000000,
+          "observed_at_utc": "2026-10-06T02:25:24Z",
           "pending": null,
           "phase": "rollback",
           "policy": "bounded_reviewed_qbo_only",
@@ -2362,16 +2362,16 @@
               {
                 "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
                 "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-                "pid": 76348,
+                "pid": 78655,
                 "scope": "verified_outside_application",
                 "scope_source": "native_proc_observation",
-                "start_ticks": 12848354,
+                "start_ticks": 12956075,
                 "uid": 33,
-                "working_directory_sha256": "5071bf4af0754f7772a6aca044b35c44841fe650f72f072014f0821da557f4c4"
+                "working_directory_sha256": "3c842c4aedb6ab37c522401693fd694e1f485685b8617325b7521a27ed434059"
               }
             ]
           },
-          "scheduler_snapshot_sha256": "e89aac4a0c1d06299f9801bd422f7a4c098d028605391cfc2eac100d11a26a68",
+          "scheduler_snapshot_sha256": "e833df5d5898cde2d04815c7b4ab32be19cf7ab10b2e66cbcf177f16d8892bd6",
           "sequence": 2,
           "status": "pass",
           "task": "qbo:refresh-admin-cache",
@@ -2379,9 +2379,9 @@
         },
         {
           "active": false,
-          "last_success_unix": 1791252012,
-          "monotonic_ns": 1791252356000000000,
-          "observed_at_utc": "2026-10-06T02:05:56Z",
+          "last_success_unix": 1791253212,
+          "monotonic_ns": 1791253524000000000,
+          "observed_at_utc": "2026-10-06T02:25:24Z",
           "pending": null,
           "phase": "rollback",
           "policy": "bounded_reviewed_qbo_only",
@@ -2398,16 +2398,16 @@
               {
                 "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
                 "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-                "pid": 76348,
+                "pid": 78655,
                 "scope": "verified_outside_application",
                 "scope_source": "native_proc_observation",
-                "start_ticks": 12848354,
+                "start_ticks": 12956075,
                 "uid": 33,
-                "working_directory_sha256": "5071bf4af0754f7772a6aca044b35c44841fe650f72f072014f0821da557f4c4"
+                "working_directory_sha256": "3c842c4aedb6ab37c522401693fd694e1f485685b8617325b7521a27ed434059"
               }
             ]
           },
-          "scheduler_snapshot_sha256": "e89aac4a0c1d06299f9801bd422f7a4c098d028605391cfc2eac100d11a26a68",
+          "scheduler_snapshot_sha256": "e833df5d5898cde2d04815c7b4ab32be19cf7ab10b2e66cbcf177f16d8892bd6",
           "sequence": 3,
           "status": "pass",
           "task": "qbo:refresh-admin-cache",
@@ -2420,7 +2420,7 @@
       "source_cas_sha256": "0ceca182384a8e68560ec542c0c2c0c695971b8488321ca0899ea7a880d6fd17",
       "source_expectation": "expected-live",
       "source_install_started": true,
-      "state_sha256": "e44908d65f910325208af6da6cd45d310eab4be9cc1f3ad7183e755e5d421b99",
+      "state_sha256": "60ca2fd1379ee458f09826ab03a6f76964d1522e4f9baca744b4f46876624121",
       "status": "pass"
     },
     "pre-source-failure": {
@@ -2460,7 +2460,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-pre-source-failure-lmm_tphj/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-pre-source-failure-z71sxz_j/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "identity_before": {
@@ -2471,7 +2471,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-pre-source-failure-lmm_tphj/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-pre-source-failure-z71sxz_j/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "operation": "cutover-static-gate",
@@ -2520,7 +2520,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-pre-source-failure-lmm_tphj/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-pre-source-failure-z71sxz_j/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "identity_before": {
@@ -2531,7 +2531,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-pre-source-failure-lmm_tphj/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-pre-source-failure-z71sxz_j/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "operation": "rollback-static-gate",
@@ -2580,7 +2580,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-pre-source-failure-lmm_tphj/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-pre-source-failure-z71sxz_j/application/public/index.php",
             "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
           },
           "identity_before": {
@@ -2591,7 +2591,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-pre-source-failure-lmm_tphj/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-pre-source-failure-z71sxz_j/application/public/index.php",
             "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
           },
           "operation": "rollback-original-front-controller-restore",
@@ -2626,16 +2626,16 @@
       "post_mutation_fpm_fallback_count": 0,
       "prohibited_command_count": 0,
       "raw_evidence_entries": 28,
-      "raw_evidence_manifest_sha256": "ad4c09cdcf2fc9d285862bf02f7664205cee04beba224d7c8d07f984430a1a50",
-      "raw_state_directory_name": "b02fce32-20261006T020543Z",
+      "raw_evidence_manifest_sha256": "be35f5a9a7b23618e6da731179a3650c111b54a09daccf913de5f152cf0b64a7",
+      "raw_state_directory_name": "b02fce32-20261006T022511Z",
       "rollback_complete": true,
       "scenario": "pre-source-failure",
       "scheduler_observation_receipts": [
         {
           "active": false,
-          "last_success_unix": 1791252012,
-          "monotonic_ns": 1791252344000000000,
-          "observed_at_utc": "2026-10-06T02:05:44Z",
+          "last_success_unix": 1791253212,
+          "monotonic_ns": 1791253512000000000,
+          "observed_at_utc": "2026-10-06T02:25:12Z",
           "pending": null,
           "phase": "rollback",
           "policy": "bounded_reviewed_qbo_only",
@@ -2652,16 +2652,16 @@
               {
                 "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
                 "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-                "pid": 76348,
+                "pid": 78655,
                 "scope": "verified_outside_application",
                 "scope_source": "native_proc_observation",
-                "start_ticks": 12848354,
+                "start_ticks": 12956075,
                 "uid": 33,
-                "working_directory_sha256": "5071bf4af0754f7772a6aca044b35c44841fe650f72f072014f0821da557f4c4"
+                "working_directory_sha256": "3c842c4aedb6ab37c522401693fd694e1f485685b8617325b7521a27ed434059"
               }
             ]
           },
-          "scheduler_snapshot_sha256": "e89aac4a0c1d06299f9801bd422f7a4c098d028605391cfc2eac100d11a26a68",
+          "scheduler_snapshot_sha256": "e833df5d5898cde2d04815c7b4ab32be19cf7ab10b2e66cbcf177f16d8892bd6",
           "sequence": 1,
           "status": "pass",
           "task": "qbo:refresh-admin-cache",
@@ -2669,9 +2669,9 @@
         },
         {
           "active": false,
-          "last_success_unix": 1791252012,
-          "monotonic_ns": 1791252344000000000,
-          "observed_at_utc": "2026-10-06T02:05:44Z",
+          "last_success_unix": 1791253212,
+          "monotonic_ns": 1791253512000000000,
+          "observed_at_utc": "2026-10-06T02:25:12Z",
           "pending": null,
           "phase": "rollback",
           "policy": "bounded_reviewed_qbo_only",
@@ -2688,16 +2688,16 @@
               {
                 "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
                 "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-                "pid": 76348,
+                "pid": 78655,
                 "scope": "verified_outside_application",
                 "scope_source": "native_proc_observation",
-                "start_ticks": 12848354,
+                "start_ticks": 12956075,
                 "uid": 33,
-                "working_directory_sha256": "5071bf4af0754f7772a6aca044b35c44841fe650f72f072014f0821da557f4c4"
+                "working_directory_sha256": "3c842c4aedb6ab37c522401693fd694e1f485685b8617325b7521a27ed434059"
               }
             ]
           },
-          "scheduler_snapshot_sha256": "e89aac4a0c1d06299f9801bd422f7a4c098d028605391cfc2eac100d11a26a68",
+          "scheduler_snapshot_sha256": "e833df5d5898cde2d04815c7b4ab32be19cf7ab10b2e66cbcf177f16d8892bd6",
           "sequence": 2,
           "status": "pass",
           "task": "qbo:refresh-admin-cache",
@@ -2705,9 +2705,9 @@
         },
         {
           "active": false,
-          "last_success_unix": 1791252012,
-          "monotonic_ns": 1791252344000000000,
-          "observed_at_utc": "2026-10-06T02:05:44Z",
+          "last_success_unix": 1791253212,
+          "monotonic_ns": 1791253512000000000,
+          "observed_at_utc": "2026-10-06T02:25:12Z",
           "pending": null,
           "phase": "rollback",
           "policy": "bounded_reviewed_qbo_only",
@@ -2724,16 +2724,16 @@
               {
                 "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
                 "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-                "pid": 76348,
+                "pid": 78655,
                 "scope": "verified_outside_application",
                 "scope_source": "native_proc_observation",
-                "start_ticks": 12848354,
+                "start_ticks": 12956075,
                 "uid": 33,
-                "working_directory_sha256": "5071bf4af0754f7772a6aca044b35c44841fe650f72f072014f0821da557f4c4"
+                "working_directory_sha256": "3c842c4aedb6ab37c522401693fd694e1f485685b8617325b7521a27ed434059"
               }
             ]
           },
-          "scheduler_snapshot_sha256": "e89aac4a0c1d06299f9801bd422f7a4c098d028605391cfc2eac100d11a26a68",
+          "scheduler_snapshot_sha256": "e833df5d5898cde2d04815c7b4ab32be19cf7ab10b2e66cbcf177f16d8892bd6",
           "sequence": 3,
           "status": "pass",
           "task": "qbo:refresh-admin-cache",
@@ -2746,7 +2746,7 @@
       "source_cas_sha256": "0ceca182384a8e68560ec542c0c2c0c695971b8488321ca0899ea7a880d6fd17",
       "source_expectation": "expected-live",
       "source_install_started": false,
-      "state_sha256": "88dd29ef57868def1819101483d10262550baa7549cb652b4a68393f2a2acc96",
+      "state_sha256": "e0eefaf660881daf25741d8d3209e6f774a50fdcf9c0eefc169bcb71b7cd4604",
       "status": "pass"
     },
     "recovery-with-normal-qbo": {
@@ -2756,8 +2756,8 @@
       "final_receipt_sha256": null,
       "final_state_status": "rolled_back",
       "fpm_checkpoint_receipt": {
-        "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-recovery-with-normal-qbo-jalnxxzc/rollbacks/b02fce32-20261006T020558Z/fpm-opcache-before-source-mutation-receipt.json",
-        "sha256": "723ca9b446e961b67890c5d9268f1c5581551bc96357d4f3ae12d41e2eec48db"
+        "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-recovery-with-normal-qbo-by0y3mwb/rollbacks/b02fce32-20261006T022526Z/fpm-opcache-before-source-mutation-receipt.json",
+        "sha256": "5439785964dcf59f61be07fa803b1ef973006ddf4f3cea3ba3631522c5be3874"
       },
       "front_controller_mode": "0o644",
       "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
@@ -2789,7 +2789,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-recovery-with-normal-qbo-jalnxxzc/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-recovery-with-normal-qbo-by0y3mwb/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "identity_before": {
@@ -2800,7 +2800,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-recovery-with-normal-qbo-jalnxxzc/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-recovery-with-normal-qbo-by0y3mwb/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "operation": "cutover-static-gate",
@@ -2849,7 +2849,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-recovery-with-normal-qbo-jalnxxzc/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-recovery-with-normal-qbo-by0y3mwb/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "identity_before": {
@@ -2860,7 +2860,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-recovery-with-normal-qbo-jalnxxzc/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-recovery-with-normal-qbo-by0y3mwb/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "operation": "rollback-static-gate",
@@ -2909,7 +2909,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-recovery-with-normal-qbo-jalnxxzc/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-recovery-with-normal-qbo-by0y3mwb/application/public/index.php",
             "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
           },
           "identity_before": {
@@ -2920,7 +2920,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-recovery-with-normal-qbo-jalnxxzc/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-recovery-with-normal-qbo-by0y3mwb/application/public/index.php",
             "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
           },
           "operation": "rollback-original-front-controller-restore",
@@ -2955,8 +2955,8 @@
       "post_mutation_fpm_fallback_count": 0,
       "prohibited_command_count": 0,
       "raw_evidence_entries": 33,
-      "raw_evidence_manifest_sha256": "2af488628267e216ba7e69817270869aef16cee09538e2f9bd8c3096be733c79",
-      "raw_state_directory_name": "b02fce32-20261006T020558Z",
+      "raw_evidence_manifest_sha256": "4e15ad1c207985ea1527f54b1df4fd97a8829b5a0b6334852cbdb18bb3c3c4a6",
+      "raw_state_directory_name": "b02fce32-20261006T022526Z",
       "rollback_complete": true,
       "scenario": "recovery-with-normal-qbo",
       "scheduler_observation_receipts": [
@@ -2989,12 +2989,12 @@
               {
                 "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
                 "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-                "pid": 76348,
+                "pid": 78655,
                 "scope": "verified_outside_application",
                 "scope_source": "native_proc_observation",
-                "start_ticks": 12848354,
+                "start_ticks": 12956075,
                 "uid": 33,
-                "working_directory_sha256": "5071bf4af0754f7772a6aca044b35c44841fe650f72f072014f0821da557f4c4"
+                "working_directory_sha256": "3c842c4aedb6ab37c522401693fd694e1f485685b8617325b7521a27ed434059"
               }
             ]
           },
@@ -3035,12 +3035,12 @@
               {
                 "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
                 "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-                "pid": 76348,
+                "pid": 78655,
                 "scope": "verified_outside_application",
                 "scope_source": "native_proc_observation",
-                "start_ticks": 12848354,
+                "start_ticks": 12956075,
                 "uid": 33,
-                "working_directory_sha256": "5071bf4af0754f7772a6aca044b35c44841fe650f72f072014f0821da557f4c4"
+                "working_directory_sha256": "3c842c4aedb6ab37c522401693fd694e1f485685b8617325b7521a27ed434059"
               }
             ]
           },
@@ -3079,12 +3079,12 @@
               {
                 "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
                 "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-                "pid": 76348,
+                "pid": 78655,
                 "scope": "verified_outside_application",
                 "scope_source": "native_proc_observation",
-                "start_ticks": 12848354,
+                "start_ticks": 12956075,
                 "uid": 33,
-                "working_directory_sha256": "5071bf4af0754f7772a6aca044b35c44841fe650f72f072014f0821da557f4c4"
+                "working_directory_sha256": "3c842c4aedb6ab37c522401693fd694e1f485685b8617325b7521a27ed434059"
               }
             ]
           },
@@ -3115,12 +3115,12 @@
               {
                 "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
                 "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-                "pid": 76348,
+                "pid": 78655,
                 "scope": "verified_outside_application",
                 "scope_source": "native_proc_observation",
-                "start_ticks": 12848354,
+                "start_ticks": 12956075,
                 "uid": 33,
-                "working_directory_sha256": "5071bf4af0754f7772a6aca044b35c44841fe650f72f072014f0821da557f4c4"
+                "working_directory_sha256": "3c842c4aedb6ab37c522401693fd694e1f485685b8617325b7521a27ed434059"
               }
             ]
           },
@@ -3140,7 +3140,7 @@
       "source_cas_sha256": "0ceca182384a8e68560ec542c0c2c0c695971b8488321ca0899ea7a880d6fd17",
       "source_expectation": "expected-live",
       "source_install_started": true,
-      "state_sha256": "f4d688f303c90e649e6553e9b369ee45cf80229e52d6b03765993fb4822e9e50",
+      "state_sha256": "26ea0bda242ef0d458d03c5d99daeb3f2afb48ee9b6f8956baa3646b36e464b6",
       "status": "pass"
     },
     "recovery-with-qbo-startup": {
@@ -3150,8 +3150,8 @@
       "final_receipt_sha256": null,
       "final_state_status": "rolled_back",
       "fpm_checkpoint_receipt": {
-        "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-recovery-with-qbo-startup-j9b2iayv/rollbacks/b02fce32-20261006T020601Z/fpm-opcache-before-source-mutation-receipt.json",
-        "sha256": "1751d695cb99dd5367f18ebf113ab1c027769d98736e42de313a8bcae1f43787"
+        "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-recovery-with-qbo-startup-au2utdi8/rollbacks/b02fce32-20261006T022529Z/fpm-opcache-before-source-mutation-receipt.json",
+        "sha256": "5cf678b5cd2ab8779ffd0c994390caf5089c1510ae352a174ec66c0554a57c52"
       },
       "front_controller_mode": "0o644",
       "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
@@ -3183,7 +3183,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-recovery-with-qbo-startup-j9b2iayv/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-recovery-with-qbo-startup-au2utdi8/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "identity_before": {
@@ -3194,7 +3194,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-recovery-with-qbo-startup-j9b2iayv/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-recovery-with-qbo-startup-au2utdi8/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "operation": "cutover-static-gate",
@@ -3243,7 +3243,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-recovery-with-qbo-startup-j9b2iayv/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-recovery-with-qbo-startup-au2utdi8/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "identity_before": {
@@ -3254,7 +3254,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-recovery-with-qbo-startup-j9b2iayv/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-recovery-with-qbo-startup-au2utdi8/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "operation": "rollback-static-gate",
@@ -3303,7 +3303,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-recovery-with-qbo-startup-j9b2iayv/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-recovery-with-qbo-startup-au2utdi8/application/public/index.php",
             "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
           },
           "identity_before": {
@@ -3314,7 +3314,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-recovery-with-qbo-startup-j9b2iayv/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-recovery-with-qbo-startup-au2utdi8/application/public/index.php",
             "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
           },
           "operation": "rollback-original-front-controller-restore",
@@ -3349,8 +3349,8 @@
       "post_mutation_fpm_fallback_count": 0,
       "prohibited_command_count": 0,
       "raw_evidence_entries": 34,
-      "raw_evidence_manifest_sha256": "68d0dbbb7a034ebd0ca6d2bb1889a19ad173754a14453d7e4c34531b995acd79",
-      "raw_state_directory_name": "b02fce32-20261006T020601Z",
+      "raw_evidence_manifest_sha256": "639f1316ba839e34c857578f01cfb8a6942ca5d2ea24b60b36df40c0fe9cde4c",
+      "raw_state_directory_name": "b02fce32-20261006T022529Z",
       "rollback_complete": true,
       "scenario": "recovery-with-qbo-startup",
       "scheduler_observation_receipts": [
@@ -3383,12 +3383,12 @@
               {
                 "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
                 "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-                "pid": 76348,
+                "pid": 78655,
                 "scope": "verified_outside_application",
                 "scope_source": "native_proc_observation",
-                "start_ticks": 12848354,
+                "start_ticks": 12956075,
                 "uid": 33,
-                "working_directory_sha256": "5071bf4af0754f7772a6aca044b35c44841fe650f72f072014f0821da557f4c4"
+                "working_directory_sha256": "3c842c4aedb6ab37c522401693fd694e1f485685b8617325b7521a27ed434059"
               }
             ]
           },
@@ -3430,12 +3430,12 @@
               {
                 "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
                 "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-                "pid": 76348,
+                "pid": 78655,
                 "scope": "verified_outside_application",
                 "scope_source": "native_proc_observation",
-                "start_ticks": 12848354,
+                "start_ticks": 12956075,
                 "uid": 33,
-                "working_directory_sha256": "5071bf4af0754f7772a6aca044b35c44841fe650f72f072014f0821da557f4c4"
+                "working_directory_sha256": "3c842c4aedb6ab37c522401693fd694e1f485685b8617325b7521a27ed434059"
               }
             ]
           },
@@ -3474,12 +3474,12 @@
               {
                 "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
                 "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-                "pid": 76348,
+                "pid": 78655,
                 "scope": "verified_outside_application",
                 "scope_source": "native_proc_observation",
-                "start_ticks": 12848354,
+                "start_ticks": 12956075,
                 "uid": 33,
-                "working_directory_sha256": "5071bf4af0754f7772a6aca044b35c44841fe650f72f072014f0821da557f4c4"
+                "working_directory_sha256": "3c842c4aedb6ab37c522401693fd694e1f485685b8617325b7521a27ed434059"
               }
             ]
           },
@@ -3518,12 +3518,12 @@
               {
                 "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
                 "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-                "pid": 76348,
+                "pid": 78655,
                 "scope": "verified_outside_application",
                 "scope_source": "native_proc_observation",
-                "start_ticks": 12848354,
+                "start_ticks": 12956075,
                 "uid": 33,
-                "working_directory_sha256": "5071bf4af0754f7772a6aca044b35c44841fe650f72f072014f0821da557f4c4"
+                "working_directory_sha256": "3c842c4aedb6ab37c522401693fd694e1f485685b8617325b7521a27ed434059"
               }
             ]
           },
@@ -3556,12 +3556,12 @@
               {
                 "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
                 "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-                "pid": 76348,
+                "pid": 78655,
                 "scope": "verified_outside_application",
                 "scope_source": "native_proc_observation",
-                "start_ticks": 12848354,
+                "start_ticks": 12956075,
                 "uid": 33,
-                "working_directory_sha256": "5071bf4af0754f7772a6aca044b35c44841fe650f72f072014f0821da557f4c4"
+                "working_directory_sha256": "3c842c4aedb6ab37c522401693fd694e1f485685b8617325b7521a27ed434059"
               }
             ]
           },
@@ -3581,7 +3581,7 @@
       "source_cas_sha256": "0ceca182384a8e68560ec542c0c2c0c695971b8488321ca0899ea7a880d6fd17",
       "source_expectation": "expected-live",
       "source_install_started": true,
-      "state_sha256": "7983a6afffe2b61d5fd275001498d74fddf9eb1fa07e3feafc6352e2a122728a",
+      "state_sha256": "d945ba85e123e753f7ad8f779a48f298ea10157b0d2cecb16839abaab17ce645",
       "status": "pass"
     },
     "rollback-with-normal-qbo": {
@@ -3591,8 +3591,8 @@
       "final_receipt_sha256": null,
       "final_state_status": "rolled_back",
       "fpm_checkpoint_receipt": {
-        "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-rollback-with-normal-qbo-y7hj46ky/rollbacks/b02fce32-20261006T020556Z/fpm-opcache-before-source-mutation-receipt.json",
-        "sha256": "65489c7b76b51ea4631a7122fe01274850f2d6f00e8d68c62d008a31c66d094d"
+        "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-rollback-with-normal-qbo-0t4tkfk2/rollbacks/b02fce32-20261006T022524Z/fpm-opcache-before-source-mutation-receipt.json",
+        "sha256": "89d7106d4330630fe43793c1103bbd81c120b6ba757aae10b2312a481a408cb3"
       },
       "front_controller_mode": "0o644",
       "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
@@ -3624,7 +3624,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-rollback-with-normal-qbo-y7hj46ky/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-rollback-with-normal-qbo-0t4tkfk2/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "identity_before": {
@@ -3635,7 +3635,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-rollback-with-normal-qbo-y7hj46ky/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-rollback-with-normal-qbo-0t4tkfk2/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "operation": "cutover-static-gate",
@@ -3684,7 +3684,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-rollback-with-normal-qbo-y7hj46ky/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-rollback-with-normal-qbo-0t4tkfk2/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "identity_before": {
@@ -3695,7 +3695,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-rollback-with-normal-qbo-y7hj46ky/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-rollback-with-normal-qbo-0t4tkfk2/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "operation": "rollback-static-gate",
@@ -3744,7 +3744,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-rollback-with-normal-qbo-y7hj46ky/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-rollback-with-normal-qbo-0t4tkfk2/application/public/index.php",
             "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
           },
           "identity_before": {
@@ -3755,7 +3755,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-rollback-with-normal-qbo-y7hj46ky/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-rollback-with-normal-qbo-0t4tkfk2/application/public/index.php",
             "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
           },
           "operation": "rollback-original-front-controller-restore",
@@ -3790,8 +3790,8 @@
       "post_mutation_fpm_fallback_count": 0,
       "prohibited_command_count": 0,
       "raw_evidence_entries": 32,
-      "raw_evidence_manifest_sha256": "e88ec4607399ed5c144d0268f6a8f3c44c75a554085a1e1d43df52ffd41bd7ba",
-      "raw_state_directory_name": "b02fce32-20261006T020556Z",
+      "raw_evidence_manifest_sha256": "b5650df94d425e5908438cbf0f080826f917ceb4bd2dbb3bfa89923cd963ee9b",
+      "raw_state_directory_name": "b02fce32-20261006T022524Z",
       "rollback_complete": true,
       "scenario": "rollback-with-normal-qbo",
       "scheduler_observation_receipts": [
@@ -3824,12 +3824,12 @@
               {
                 "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
                 "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-                "pid": 76348,
+                "pid": 78655,
                 "scope": "verified_outside_application",
                 "scope_source": "native_proc_observation",
-                "start_ticks": 12848354,
+                "start_ticks": 12956075,
                 "uid": 33,
-                "working_directory_sha256": "5071bf4af0754f7772a6aca044b35c44841fe650f72f072014f0821da557f4c4"
+                "working_directory_sha256": "3c842c4aedb6ab37c522401693fd694e1f485685b8617325b7521a27ed434059"
               }
             ]
           },
@@ -3870,12 +3870,12 @@
               {
                 "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
                 "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-                "pid": 76348,
+                "pid": 78655,
                 "scope": "verified_outside_application",
                 "scope_source": "native_proc_observation",
-                "start_ticks": 12848354,
+                "start_ticks": 12956075,
                 "uid": 33,
-                "working_directory_sha256": "5071bf4af0754f7772a6aca044b35c44841fe650f72f072014f0821da557f4c4"
+                "working_directory_sha256": "3c842c4aedb6ab37c522401693fd694e1f485685b8617325b7521a27ed434059"
               }
             ]
           },
@@ -3914,12 +3914,12 @@
               {
                 "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
                 "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-                "pid": 76348,
+                "pid": 78655,
                 "scope": "verified_outside_application",
                 "scope_source": "native_proc_observation",
-                "start_ticks": 12848354,
+                "start_ticks": 12956075,
                 "uid": 33,
-                "working_directory_sha256": "5071bf4af0754f7772a6aca044b35c44841fe650f72f072014f0821da557f4c4"
+                "working_directory_sha256": "3c842c4aedb6ab37c522401693fd694e1f485685b8617325b7521a27ed434059"
               }
             ]
           },
@@ -3950,12 +3950,12 @@
               {
                 "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
                 "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-                "pid": 76348,
+                "pid": 78655,
                 "scope": "verified_outside_application",
                 "scope_source": "native_proc_observation",
-                "start_ticks": 12848354,
+                "start_ticks": 12956075,
                 "uid": 33,
-                "working_directory_sha256": "5071bf4af0754f7772a6aca044b35c44841fe650f72f072014f0821da557f4c4"
+                "working_directory_sha256": "3c842c4aedb6ab37c522401693fd694e1f485685b8617325b7521a27ed434059"
               }
             ]
           },
@@ -3975,7 +3975,7 @@
       "source_cas_sha256": "0ceca182384a8e68560ec542c0c2c0c695971b8488321ca0899ea7a880d6fd17",
       "source_expectation": "expected-live",
       "source_install_started": true,
-      "state_sha256": "a12e603a666196b59578d5a74e89c079d32ccc853df3fe53feae7aaf672683f9",
+      "state_sha256": "613ecfaf4a64032882cee1cd15a4bec62bf34e4926723215acaf8f254a0b4686",
       "status": "pass"
     },
     "rollback-with-qbo-startup": {
@@ -3985,8 +3985,8 @@
       "final_receipt_sha256": null,
       "final_state_status": "rolled_back",
       "fpm_checkpoint_receipt": {
-        "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-rollback-with-qbo-startup-7ovl_8us/rollbacks/b02fce32-20261006T020559Z/fpm-opcache-before-source-mutation-receipt.json",
-        "sha256": "04588e46a2686c19c85a75ff630c42b3ad81c1d448c99c7750dca1ec2a7b42de"
+        "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-rollback-with-qbo-startup-krl01ro2/rollbacks/b02fce32-20261006T022527Z/fpm-opcache-before-source-mutation-receipt.json",
+        "sha256": "d405e4eb98d2b951cdae8d92f7c9a8ab2a356b362c7bc7e1227149dfdb71201e"
       },
       "front_controller_mode": "0o644",
       "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
@@ -4018,7 +4018,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-rollback-with-qbo-startup-7ovl_8us/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-rollback-with-qbo-startup-krl01ro2/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "identity_before": {
@@ -4029,7 +4029,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-rollback-with-qbo-startup-7ovl_8us/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-rollback-with-qbo-startup-krl01ro2/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "operation": "cutover-static-gate",
@@ -4078,7 +4078,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-rollback-with-qbo-startup-7ovl_8us/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-rollback-with-qbo-startup-krl01ro2/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "identity_before": {
@@ -4089,7 +4089,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-rollback-with-qbo-startup-7ovl_8us/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-rollback-with-qbo-startup-krl01ro2/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "operation": "rollback-static-gate",
@@ -4138,7 +4138,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-rollback-with-qbo-startup-7ovl_8us/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-rollback-with-qbo-startup-krl01ro2/application/public/index.php",
             "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
           },
           "identity_before": {
@@ -4149,7 +4149,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-rollback-with-qbo-startup-7ovl_8us/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-rollback-with-qbo-startup-krl01ro2/application/public/index.php",
             "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
           },
           "operation": "rollback-original-front-controller-restore",
@@ -4184,8 +4184,8 @@
       "post_mutation_fpm_fallback_count": 0,
       "prohibited_command_count": 0,
       "raw_evidence_entries": 33,
-      "raw_evidence_manifest_sha256": "a8af246ca4de23ea50c4471282b557db538c60fd6b72c48c6984e711f7645c94",
-      "raw_state_directory_name": "b02fce32-20261006T020559Z",
+      "raw_evidence_manifest_sha256": "51108faf9dca8bce0d00202cb00fdbf4712433805af9b7b51475f297f6fbe632",
+      "raw_state_directory_name": "b02fce32-20261006T022527Z",
       "rollback_complete": true,
       "scenario": "rollback-with-qbo-startup",
       "scheduler_observation_receipts": [
@@ -4218,12 +4218,12 @@
               {
                 "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
                 "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-                "pid": 76348,
+                "pid": 78655,
                 "scope": "verified_outside_application",
                 "scope_source": "native_proc_observation",
-                "start_ticks": 12848354,
+                "start_ticks": 12956075,
                 "uid": 33,
-                "working_directory_sha256": "5071bf4af0754f7772a6aca044b35c44841fe650f72f072014f0821da557f4c4"
+                "working_directory_sha256": "3c842c4aedb6ab37c522401693fd694e1f485685b8617325b7521a27ed434059"
               }
             ]
           },
@@ -4265,12 +4265,12 @@
               {
                 "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
                 "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-                "pid": 76348,
+                "pid": 78655,
                 "scope": "verified_outside_application",
                 "scope_source": "native_proc_observation",
-                "start_ticks": 12848354,
+                "start_ticks": 12956075,
                 "uid": 33,
-                "working_directory_sha256": "5071bf4af0754f7772a6aca044b35c44841fe650f72f072014f0821da557f4c4"
+                "working_directory_sha256": "3c842c4aedb6ab37c522401693fd694e1f485685b8617325b7521a27ed434059"
               }
             ]
           },
@@ -4309,12 +4309,12 @@
               {
                 "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
                 "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-                "pid": 76348,
+                "pid": 78655,
                 "scope": "verified_outside_application",
                 "scope_source": "native_proc_observation",
-                "start_ticks": 12848354,
+                "start_ticks": 12956075,
                 "uid": 33,
-                "working_directory_sha256": "5071bf4af0754f7772a6aca044b35c44841fe650f72f072014f0821da557f4c4"
+                "working_directory_sha256": "3c842c4aedb6ab37c522401693fd694e1f485685b8617325b7521a27ed434059"
               }
             ]
           },
@@ -4353,12 +4353,12 @@
               {
                 "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
                 "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-                "pid": 76348,
+                "pid": 78655,
                 "scope": "verified_outside_application",
                 "scope_source": "native_proc_observation",
-                "start_ticks": 12848354,
+                "start_ticks": 12956075,
                 "uid": 33,
-                "working_directory_sha256": "5071bf4af0754f7772a6aca044b35c44841fe650f72f072014f0821da557f4c4"
+                "working_directory_sha256": "3c842c4aedb6ab37c522401693fd694e1f485685b8617325b7521a27ed434059"
               }
             ]
           },
@@ -4391,12 +4391,12 @@
               {
                 "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
                 "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-                "pid": 76348,
+                "pid": 78655,
                 "scope": "verified_outside_application",
                 "scope_source": "native_proc_observation",
-                "start_ticks": 12848354,
+                "start_ticks": 12956075,
                 "uid": 33,
-                "working_directory_sha256": "5071bf4af0754f7772a6aca044b35c44841fe650f72f072014f0821da557f4c4"
+                "working_directory_sha256": "3c842c4aedb6ab37c522401693fd694e1f485685b8617325b7521a27ed434059"
               }
             ]
           },
@@ -4416,7 +4416,7 @@
       "source_cas_sha256": "0ceca182384a8e68560ec542c0c2c0c695971b8488321ca0899ea7a880d6fd17",
       "source_expectation": "expected-live",
       "source_install_started": true,
-      "state_sha256": "9bc2cdd3f85ffd7bbff58c821ae1f6ad10b86420c40b723c4a30cfd8f1791502",
+      "state_sha256": "4c9b73137eca14ab13175b1ff89b4238c124447ddd7c4b76e8d5d66c57752d83",
       "status": "pass"
     },
     "schema-preserving-rollback": {
@@ -4426,8 +4426,8 @@
       "final_receipt_sha256": null,
       "final_state_status": "rolled_back",
       "fpm_checkpoint_receipt": {
-        "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-schema-preserving-rollback-v1k2tr6u/rollbacks/b02fce32-20261006T020552Z/fpm-opcache-before-source-mutation-receipt.json",
-        "sha256": "80303171cb96ff1600a4cd4d4709a5df88c16dbfbc2815c0653f604f806ac14a"
+        "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-schema-preserving-rollback-kwbckku2/rollbacks/b02fce32-20261006T022520Z/fpm-opcache-before-source-mutation-receipt.json",
+        "sha256": "d847be405d1612be329c0bb7a1b10e25eba7fe7a5d1fd74a86414030adce74f5"
       },
       "front_controller_mode": "0o644",
       "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
@@ -4459,7 +4459,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-schema-preserving-rollback-v1k2tr6u/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-schema-preserving-rollback-kwbckku2/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "identity_before": {
@@ -4470,7 +4470,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-schema-preserving-rollback-v1k2tr6u/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-schema-preserving-rollback-kwbckku2/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "operation": "cutover-static-gate",
@@ -4519,7 +4519,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-schema-preserving-rollback-v1k2tr6u/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-schema-preserving-rollback-kwbckku2/application/public/index.php",
             "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
           },
           "identity_before": {
@@ -4530,7 +4530,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-schema-preserving-rollback-v1k2tr6u/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-schema-preserving-rollback-kwbckku2/application/public/index.php",
             "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
           },
           "operation": "candidate-original-front-controller-restore",
@@ -4579,7 +4579,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-schema-preserving-rollback-v1k2tr6u/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-schema-preserving-rollback-kwbckku2/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "identity_before": {
@@ -4590,7 +4590,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-schema-preserving-rollback-v1k2tr6u/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-schema-preserving-rollback-kwbckku2/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "operation": "rollback-static-gate",
@@ -4639,7 +4639,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-schema-preserving-rollback-v1k2tr6u/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-schema-preserving-rollback-kwbckku2/application/public/index.php",
             "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
           },
           "identity_before": {
@@ -4650,7 +4650,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-schema-preserving-rollback-v1k2tr6u/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-schema-preserving-rollback-kwbckku2/application/public/index.php",
             "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
           },
           "operation": "rollback-original-front-controller-restore",
@@ -4685,16 +4685,16 @@
       "post_mutation_fpm_fallback_count": 0,
       "prohibited_command_count": 0,
       "raw_evidence_entries": 37,
-      "raw_evidence_manifest_sha256": "3176f80a8d750835ebb3ac0cda7a407158ac1189608c8aae3e0e728375d0257c",
-      "raw_state_directory_name": "b02fce32-20261006T020552Z",
+      "raw_evidence_manifest_sha256": "7145d7646d3152904a9a3763bbcd00c53f557d9b1bb09cd18c4d6f944559e4a5",
+      "raw_state_directory_name": "b02fce32-20261006T022520Z",
       "rollback_complete": true,
       "scenario": "schema-preserving-rollback",
       "scheduler_observation_receipts": [
         {
           "active": false,
-          "last_success_unix": 1791252012,
-          "monotonic_ns": 1791252353000000000,
-          "observed_at_utc": "2026-10-06T02:05:53Z",
+          "last_success_unix": 1791253212,
+          "monotonic_ns": 1791253521000000000,
+          "observed_at_utc": "2026-10-06T02:25:21Z",
           "pending": null,
           "phase": "rollback",
           "policy": "bounded_reviewed_qbo_only",
@@ -4711,16 +4711,16 @@
               {
                 "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
                 "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-                "pid": 76348,
+                "pid": 78655,
                 "scope": "verified_outside_application",
                 "scope_source": "native_proc_observation",
-                "start_ticks": 12848354,
+                "start_ticks": 12956075,
                 "uid": 33,
-                "working_directory_sha256": "5071bf4af0754f7772a6aca044b35c44841fe650f72f072014f0821da557f4c4"
+                "working_directory_sha256": "3c842c4aedb6ab37c522401693fd694e1f485685b8617325b7521a27ed434059"
               }
             ]
           },
-          "scheduler_snapshot_sha256": "e89aac4a0c1d06299f9801bd422f7a4c098d028605391cfc2eac100d11a26a68",
+          "scheduler_snapshot_sha256": "e833df5d5898cde2d04815c7b4ab32be19cf7ab10b2e66cbcf177f16d8892bd6",
           "sequence": 1,
           "status": "pass",
           "task": "qbo:refresh-admin-cache",
@@ -4728,9 +4728,9 @@
         },
         {
           "active": false,
-          "last_success_unix": 1791252012,
-          "monotonic_ns": 1791252353000000000,
-          "observed_at_utc": "2026-10-06T02:05:53Z",
+          "last_success_unix": 1791253212,
+          "monotonic_ns": 1791253521000000000,
+          "observed_at_utc": "2026-10-06T02:25:21Z",
           "pending": null,
           "phase": "rollback",
           "policy": "bounded_reviewed_qbo_only",
@@ -4747,16 +4747,16 @@
               {
                 "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
                 "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-                "pid": 76348,
+                "pid": 78655,
                 "scope": "verified_outside_application",
                 "scope_source": "native_proc_observation",
-                "start_ticks": 12848354,
+                "start_ticks": 12956075,
                 "uid": 33,
-                "working_directory_sha256": "5071bf4af0754f7772a6aca044b35c44841fe650f72f072014f0821da557f4c4"
+                "working_directory_sha256": "3c842c4aedb6ab37c522401693fd694e1f485685b8617325b7521a27ed434059"
               }
             ]
           },
-          "scheduler_snapshot_sha256": "e89aac4a0c1d06299f9801bd422f7a4c098d028605391cfc2eac100d11a26a68",
+          "scheduler_snapshot_sha256": "e833df5d5898cde2d04815c7b4ab32be19cf7ab10b2e66cbcf177f16d8892bd6",
           "sequence": 2,
           "status": "pass",
           "task": "qbo:refresh-admin-cache",
@@ -4764,9 +4764,9 @@
         },
         {
           "active": false,
-          "last_success_unix": 1791252012,
-          "monotonic_ns": 1791252353000000000,
-          "observed_at_utc": "2026-10-06T02:05:53Z",
+          "last_success_unix": 1791253212,
+          "monotonic_ns": 1791253521000000000,
+          "observed_at_utc": "2026-10-06T02:25:21Z",
           "pending": null,
           "phase": "rollback",
           "policy": "bounded_reviewed_qbo_only",
@@ -4783,16 +4783,16 @@
               {
                 "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
                 "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-                "pid": 76348,
+                "pid": 78655,
                 "scope": "verified_outside_application",
                 "scope_source": "native_proc_observation",
-                "start_ticks": 12848354,
+                "start_ticks": 12956075,
                 "uid": 33,
-                "working_directory_sha256": "5071bf4af0754f7772a6aca044b35c44841fe650f72f072014f0821da557f4c4"
+                "working_directory_sha256": "3c842c4aedb6ab37c522401693fd694e1f485685b8617325b7521a27ed434059"
               }
             ]
           },
-          "scheduler_snapshot_sha256": "e89aac4a0c1d06299f9801bd422f7a4c098d028605391cfc2eac100d11a26a68",
+          "scheduler_snapshot_sha256": "e833df5d5898cde2d04815c7b4ab32be19cf7ab10b2e66cbcf177f16d8892bd6",
           "sequence": 3,
           "status": "pass",
           "task": "qbo:refresh-admin-cache",
@@ -4805,7 +4805,7 @@
       "source_cas_sha256": "0ceca182384a8e68560ec542c0c2c0c695971b8488321ca0899ea7a880d6fd17",
       "source_expectation": "expected-live",
       "source_install_started": true,
-      "state_sha256": "7b134e0bf65bd22c87f70cb31d506b910f2cafa1030110bcaa875a33a100e7eb",
+      "state_sha256": "19e8f832ccf97205234219a003439c041d72a1fbaada762eb0535807c1f3ae60",
       "status": "pass"
     },
     "source-swap-failure": {
@@ -4815,8 +4815,8 @@
       "final_receipt_sha256": null,
       "final_state_status": "rolled_back",
       "fpm_checkpoint_receipt": {
-        "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-source-swap-failure-i916ld6q/rollbacks/b02fce32-20261006T020546Z/fpm-opcache-before-source-mutation-receipt.json",
-        "sha256": "3642b805a6d3828f7a972b5f58ba6a3877fc673081e9c7053c985fabdd02ab64"
+        "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-source-swap-failure-n_zjeewg/rollbacks/b02fce32-20261006T022514Z/fpm-opcache-before-source-mutation-receipt.json",
+        "sha256": "80688124aa41fb31afbcafdc2c927e6ec9c4ce4c5f80cc8d9f971bf3d50c337c"
       },
       "front_controller_mode": "0o644",
       "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
@@ -4848,7 +4848,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-source-swap-failure-i916ld6q/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-source-swap-failure-n_zjeewg/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "identity_before": {
@@ -4859,7 +4859,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-source-swap-failure-i916ld6q/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-source-swap-failure-n_zjeewg/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "operation": "cutover-static-gate",
@@ -4908,7 +4908,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-source-swap-failure-i916ld6q/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-source-swap-failure-n_zjeewg/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "identity_before": {
@@ -4919,7 +4919,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-source-swap-failure-i916ld6q/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-source-swap-failure-n_zjeewg/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "operation": "rollback-static-gate",
@@ -4968,7 +4968,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-source-swap-failure-i916ld6q/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-source-swap-failure-n_zjeewg/application/public/index.php",
             "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
           },
           "identity_before": {
@@ -4979,7 +4979,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-source-swap-failure-i916ld6q/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-source-swap-failure-n_zjeewg/application/public/index.php",
             "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
           },
           "operation": "rollback-original-front-controller-restore",
@@ -5014,16 +5014,16 @@
       "post_mutation_fpm_fallback_count": 0,
       "prohibited_command_count": 0,
       "raw_evidence_entries": 30,
-      "raw_evidence_manifest_sha256": "11bd9d5bb48d16b844f562a3ba13523c879f1fee0a0febeaf676e110fc98711f",
-      "raw_state_directory_name": "b02fce32-20261006T020546Z",
+      "raw_evidence_manifest_sha256": "82558fc34b6d538c18db0eae9cc4569043c4f525b3a56107c73e28c18c3cfa39",
+      "raw_state_directory_name": "b02fce32-20261006T022514Z",
       "rollback_complete": true,
       "scenario": "source-swap-failure",
       "scheduler_observation_receipts": [
         {
           "active": false,
-          "last_success_unix": 1791252012,
-          "monotonic_ns": 1791252346000000000,
-          "observed_at_utc": "2026-10-06T02:05:46Z",
+          "last_success_unix": 1791253212,
+          "monotonic_ns": 1791253515000000000,
+          "observed_at_utc": "2026-10-06T02:25:15Z",
           "pending": null,
           "phase": "rollback",
           "policy": "bounded_reviewed_qbo_only",
@@ -5040,16 +5040,16 @@
               {
                 "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
                 "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-                "pid": 76348,
+                "pid": 78655,
                 "scope": "verified_outside_application",
                 "scope_source": "native_proc_observation",
-                "start_ticks": 12848354,
+                "start_ticks": 12956075,
                 "uid": 33,
-                "working_directory_sha256": "5071bf4af0754f7772a6aca044b35c44841fe650f72f072014f0821da557f4c4"
+                "working_directory_sha256": "3c842c4aedb6ab37c522401693fd694e1f485685b8617325b7521a27ed434059"
               }
             ]
           },
-          "scheduler_snapshot_sha256": "e89aac4a0c1d06299f9801bd422f7a4c098d028605391cfc2eac100d11a26a68",
+          "scheduler_snapshot_sha256": "e833df5d5898cde2d04815c7b4ab32be19cf7ab10b2e66cbcf177f16d8892bd6",
           "sequence": 1,
           "status": "pass",
           "task": "qbo:refresh-admin-cache",
@@ -5057,9 +5057,9 @@
         },
         {
           "active": false,
-          "last_success_unix": 1791252012,
-          "monotonic_ns": 1791252346000000000,
-          "observed_at_utc": "2026-10-06T02:05:46Z",
+          "last_success_unix": 1791253212,
+          "monotonic_ns": 1791253515000000000,
+          "observed_at_utc": "2026-10-06T02:25:15Z",
           "pending": null,
           "phase": "rollback",
           "policy": "bounded_reviewed_qbo_only",
@@ -5076,16 +5076,16 @@
               {
                 "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
                 "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-                "pid": 76348,
+                "pid": 78655,
                 "scope": "verified_outside_application",
                 "scope_source": "native_proc_observation",
-                "start_ticks": 12848354,
+                "start_ticks": 12956075,
                 "uid": 33,
-                "working_directory_sha256": "5071bf4af0754f7772a6aca044b35c44841fe650f72f072014f0821da557f4c4"
+                "working_directory_sha256": "3c842c4aedb6ab37c522401693fd694e1f485685b8617325b7521a27ed434059"
               }
             ]
           },
-          "scheduler_snapshot_sha256": "e89aac4a0c1d06299f9801bd422f7a4c098d028605391cfc2eac100d11a26a68",
+          "scheduler_snapshot_sha256": "e833df5d5898cde2d04815c7b4ab32be19cf7ab10b2e66cbcf177f16d8892bd6",
           "sequence": 2,
           "status": "pass",
           "task": "qbo:refresh-admin-cache",
@@ -5093,9 +5093,9 @@
         },
         {
           "active": false,
-          "last_success_unix": 1791252012,
-          "monotonic_ns": 1791252346000000000,
-          "observed_at_utc": "2026-10-06T02:05:46Z",
+          "last_success_unix": 1791253212,
+          "monotonic_ns": 1791253515000000000,
+          "observed_at_utc": "2026-10-06T02:25:15Z",
           "pending": null,
           "phase": "rollback",
           "policy": "bounded_reviewed_qbo_only",
@@ -5112,16 +5112,16 @@
               {
                 "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
                 "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
-                "pid": 76348,
+                "pid": 78655,
                 "scope": "verified_outside_application",
                 "scope_source": "native_proc_observation",
-                "start_ticks": 12848354,
+                "start_ticks": 12956075,
                 "uid": 33,
-                "working_directory_sha256": "5071bf4af0754f7772a6aca044b35c44841fe650f72f072014f0821da557f4c4"
+                "working_directory_sha256": "3c842c4aedb6ab37c522401693fd694e1f485685b8617325b7521a27ed434059"
               }
             ]
           },
-          "scheduler_snapshot_sha256": "e89aac4a0c1d06299f9801bd422f7a4c098d028605391cfc2eac100d11a26a68",
+          "scheduler_snapshot_sha256": "e833df5d5898cde2d04815c7b4ab32be19cf7ab10b2e66cbcf177f16d8892bd6",
           "sequence": 3,
           "status": "pass",
           "task": "qbo:refresh-admin-cache",
@@ -5134,18 +5134,18 @@
       "source_cas_sha256": "0ceca182384a8e68560ec542c0c2c0c695971b8488321ca0899ea7a880d6fd17",
       "source_expectation": "expected-live",
       "source_install_started": true,
-      "state_sha256": "ee6b1049ea40af39e4be62b0d7c870251f4d8863da72e46679f1918f8b1aee60",
+      "state_sha256": "efbe9346feff9f108e7a328738560edc985928dc4cf6da6ffbb9e29c66dc609e",
       "status": "pass"
     },
     "success": {
       "additive_schema_preserved": true,
       "containment_http_verified": null,
       "expected_failure": false,
-      "final_receipt_sha256": "58b9d29787c834ebf7e0f7ddbacffbffecb94d6507668c09d6701d7f84dd6879",
+      "final_receipt_sha256": "bea1441b903cf4acc6750933ced70bf36900713555e14280ec59efa16994f1f5",
       "final_state_status": "awaiting_independent_log_review",
       "fpm_checkpoint_receipt": {
-        "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-success-f9g5z3_t/rollbacks/b02fce32-20261006T020542Z/fpm-opcache-before-source-mutation-receipt.json",
-        "sha256": "b76ab6b1dacd68b5c2633c8436fa4c4166dd41201d341ae2c8d55079e11d6d03"
+        "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-success-llkydkbh/rollbacks/b02fce32-20261006T022510Z/fpm-opcache-before-source-mutation-receipt.json",
+        "sha256": "2ec7b5529924db96d5129bf752d5a01e42496b4df6ac626d7a66d295c4c2b8df"
       },
       "front_controller_mode": "0o644",
       "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
@@ -5174,7 +5174,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-success-f9g5z3_t/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-success-llkydkbh/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "identity_before": {
@@ -5185,7 +5185,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-success-f9g5z3_t/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-success-llkydkbh/application/public/index.php",
             "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
           },
           "operation": "cutover-static-gate",
@@ -5234,7 +5234,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-success-f9g5z3_t/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-success-llkydkbh/application/public/index.php",
             "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
           },
           "identity_before": {
@@ -5245,7 +5245,7 @@
               "mode": 420,
               "uid": 1000
             },
-            "path": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum/buy-dtf-alpha-success-f9g5z3_t/application/public/index.php",
+            "path": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf/buy-dtf-alpha-success-llkydkbh/application/public/index.php",
             "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
           },
           "operation": "candidate-original-front-controller-restore",
@@ -5280,8 +5280,8 @@
       "post_mutation_fpm_fallback_count": 0,
       "prohibited_command_count": 0,
       "raw_evidence_entries": 30,
-      "raw_evidence_manifest_sha256": "3af6cca8523959478edd0b866091df473ee1f6011b446aafd88f6d5d0b612dcb",
-      "raw_state_directory_name": "b02fce32-20261006T020542Z",
+      "raw_evidence_manifest_sha256": "b6f61fa0f213535a7c961aeea6800ae7c79003d530d855afe45cb845d9e4ec06",
+      "raw_state_directory_name": "b02fce32-20261006T022510Z",
       "rollback_complete": false,
       "scenario": "success",
       "scheduler_observation_receipts": [],
@@ -5291,7 +5291,7 @@
       "source_cas_sha256": "b3379cd90676d8b3214371e17ffd3278cd43ba1885a6223b12998a8b40e5ea27",
       "source_expectation": "target",
       "source_install_started": true,
-      "state_sha256": "68c5535e1aaaa2927daa9523c920b84a4dad5db33672d642ee9c10284e975870",
+      "state_sha256": "96d4dcc9bfa37457be696f8c8f6296ac955cfcbe45b93dc99c7edf93ebaf372f",
       "status": "pass"
     }
   },

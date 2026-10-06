@@ -1,10 +1,10 @@
 {
   "portable_entries": 16,
   "portable_manifest": "/mnt/c/Users/danie/projects/bdtf-alpha-activation-v6-20261005/ops/evidence/production-alpha-transparency-activation-v6-20261005/source-rehearsal/PORTABLE_MANIFEST.json",
-  "portable_manifest_sha256": "762ff0d729bab4a7ba57786f33160236d1515cc5eba2a93288c968e54647eddb",
+  "portable_manifest_sha256": "684148ef3c0c6e4b85974ea26d6a1930bb35a10c76c7b0e1e189a35f6a69c0cc",
   "portable_receipt": "/mnt/c/Users/danie/projects/bdtf-alpha-activation-v6-20261005/ops/evidence/production-alpha-transparency-activation-v6-20261005/source-rehearsal/rehearsal-receipt.json",
-  "portable_receipt_sha256": "d4067fb14167d4563daa8df590d498cae4badba81785d47f0b5ebeeeed3981b7",
-  "private_rehearsal_directory": "/tmp/buy-dtf-alpha-rehearsal-2i3b9cum",
+  "portable_receipt_sha256": "b86a16447ceff7e2e3e66124715a28fcdf9f4d9e4f1d4e53de28a1df732187d8",
+  "private_rehearsal_directory": "/tmp/buy-dtf-alpha-rehearsal-t3cui1kf",
   "scenario_count": 15,
   "status": "pass"
 }

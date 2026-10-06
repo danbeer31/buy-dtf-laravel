@@ -58,7 +58,7 @@ TARGET_SHORT = TARGET_COMMIT[:8]
 HANDOFF_SHA256 = "ba9fd4dcf5fa5854b2e23418e0cd6ed8799874494a0341c726302b92a5acc127"
 RETIRED_ARTIFACT_COMMIT = "c43f39f556d057c99bb01e95ee7ca68658c05232"
 EXPECTED_ARCHIVE_SHA256 = "3067bca578201a39254d8544b633a04ff6a9e43fc0de2a2783a95ccde9a1bfcd"
-EXPECTED_MANIFEST_SHA256 = "d46b78f9bc65c1390c23a531f3ee3a39647f8866f4320d1c03d427496cdec4a5"
+EXPECTED_MANIFEST_SHA256 = "2779d5466b6e295abda07d123334ced354a2119277bf3ffd3d7e1cd0512c2f88"
 EXPECTED_HELPER_SHA256 = "839588fe2930e1e673c507b05f7ccf15d7166329d66c1563775154cd7030d200"
 EXPECTED_MIGRATION_SHA256 = "992fbfe8086732e9bde10be89c3f52ddb4fef49edfdec12b744377c2e4181bbf"
 MIGRATION_RELATIVE_PATH = Path(
@@ -129,11 +129,11 @@ DEPENDENCY_ENVELOPE_FROZEN = True
 DEPENDENCY_ENVELOPE_STATUS = "post_laravel_12_69_1_frozen_review_required"
 LOCAL_CORRECTION_REVIEW_ONLY = False
 
-# No execution authorization is issued by this local activation package.
-# Filling these requires a separately reviewed authorization-bound artifact.
-STAGE_APPROVAL_TOKEN = None
-DEPLOY_APPROVAL_TOKEN = None
-RECOVERY_APPROVAL_TOKEN = None
+# Expected values are frozen together; preparing them grants no execution authority.
+# The exact same runner must be used for separately authorized staging and cutover.
+STAGE_APPROVAL_TOKEN = "STAGE-BUYDTF-ALPHA-V6-b02fce3213fc6328"
+DEPLOY_APPROVAL_TOKEN = "DEPLOY-BUYDTF-ALPHA-V6-b02fce3213fc6328"
+RECOVERY_APPROVAL_TOKEN = "RECOVER-BUYDTF-ALPHA-V6-b02fce3213fc6328"
 
 CONTROL_FILES = {'production_alpha_scheduler_guard.py': 'd4334e0181ececbd76d140711998f1d143f648dc9a4de85f413f2083354b6489', 'production_alpha_process_scope_probe.php': '1dca015bffdaf4433ff00ecb0569faad0928c28a726b827f773d4cae4b4737c6', 'production_alpha_scheduler_probe.php': '91e81065a4add34e916674c2a7fcc3ebe5f867324ec350dc9220214102cf0d80', 'production_alpha_gate_controls.py': '2719da67c6d425e5fa4bef70aade0789aba1deccfaf09f8992c8674883c65c00', 'production_alpha_dependency_envelope.json': '04850fe3aef14981c92f5b2af373bd136cfb6fead456d86fcab7233acb009fd1', 'laravel_dependency_gate.py': 'b93c08f58a08333120369c1cc75c60631d621c3a8099ca3967065721c45679f5', 'laravel_nginx_identity.py': '1243fea2757aca89f586ec4b322b0d23ee1e19b2d027c21bd6523e71e6e6e8e0', 'laravel_fpm_opcache_probe.php': 'b8b34f87d45a0c000cc0df7917496631320cfbdcca1ff44bc41741ce0d569262', 'production_alpha_activation_controls.py': 'a2a09458289ccedf5384f000c534f23dfbb40aba9557f1a7736582456ab7c5bb', 'production_alpha_fpm_activation_probe.php': 'd3f9ac27e72f009156aedd3afca57b4f9586ec64a860d2cfd9fe3a5143b2c759'}
 
@@ -198,9 +198,13 @@ class DeploymentError(source_controls.DeploymentError):
     """A reviewed condition failed and the operation must stop closed."""
 
 
+def expected_authorization_bindings() -> dict[str, str | None]:
+    return {"stage": STAGE_APPROVAL_TOKEN, "deploy": DEPLOY_APPROVAL_TOKEN,
+        "recover": RECOVERY_APPROVAL_TOKEN}
+
+
 def require_action_approval(action: str, supplied: str | None) -> None:
-    expected = {"stage": STAGE_APPROVAL_TOKEN, "deploy": DEPLOY_APPROVAL_TOKEN,
-        "recover": RECOVERY_APPROVAL_TOKEN}.get(action)
+    expected = expected_authorization_bindings().get(action)
     prefix = {"stage": "STAGE", "deploy": "DEPLOY", "recover": "RECOVER"}.get(action)
     required_prefix = f"{prefix}-BUYDTF-ALPHA-V6-"
     if prefix is None or not isinstance(expected, str) or not expected.startswith(required_prefix) or len(expected) <= len(required_prefix):
@@ -3397,7 +3401,7 @@ def recover_state(
 
 def describe() -> dict[str, Any]:
     return {
-        "artifact": "BuyDTF source-only V6 activation package; execution tokens withheld",
+        "artifact": "BuyDTF source-only V6 authorization bindings; execution not authorized",
         "local_correction_review_only": LOCAL_CORRECTION_REVIEW_ONLY,
         "scheduler_policy": scheduler_controls.POLICY,
         "scheduler_policy_sha256": scheduler_controls.POLICY_SHA256,
@@ -3474,13 +3478,12 @@ def describe() -> dict[str, Any]:
         },
         "approval_tokens": {
             "status": (
-                "withheld_pending_activation_review_and_fresh_authorization"
+                "bindings_frozen_pending_execution_authorization"
                 if DEPENDENCY_ENVELOPE_FROZEN
                 else "withheld_pending_post_laravel_12_69_1_freeze"
             ),
-            "stage": None,
-            "deploy": None,
-            "recover": None,
+            **expected_authorization_bindings(),
+            "execution_authorization_granted": False,
         },
         "retired_artifacts": {
             "artifact_commit": [RETIRED_ARTIFACT_COMMIT],
@@ -3492,7 +3495,8 @@ def describe() -> dict[str, Any]:
             "accepted_correction_commit": activation_controls.ACCEPTED_CORRECTION_COMMIT,
             "production_php_fpm_required": "8.2.30", "production_fpm_verification": "not_performed_during_local_preparation",
             "checkpoints": ["phase0-before-release", "phase1", "post-phase1", "before-static-gate", "under-gate-before-source"],
-            "fresh_v6_release_required": True, "execution_approval_tokens_withheld": True},
+            "fresh_v6_release_required": True, "expected_bindings_frozen_together": True,
+            "execution_authorization_granted": False},
         "safety": {
             "git_operations": False,
             "composer_operations": False,

@@ -7,8 +7,8 @@
   "production_accessed": false,
   "receipts": {
     "fresh-v6-receipt-validation": {
-      "fresh_receipts": 23,
-      "negative_cases": 22,
+      "fresh_receipts": 24,
+      "negative_cases": 23,
       "status": "pass"
     },
     "gate-rehearsal": {
@@ -18,7 +18,7 @@
         "--parent",
         "/tmp",
         "--output",
-        "/tmp/buydtf-source-scheduler-gate-pc34aaql/gate-rehearsal.json"
+        "/tmp/buydtf-source-scheduler-gate-lxbqjmod/gate-rehearsal.json"
       ],
       "exit_code": 0,
       "scope": "local disposable validation; no production access",
@@ -35,14 +35,14 @@
         "/mnt/c/tools/php8230/php.exe",
         "C:\\Users\\danie\\projects\\bdtf-alpha-activation-v6-20261005\\ops\\deployment\\test_production_alpha_scheduler_probe.php",
         "\\\\wsl.localhost\\Ubuntu\\tmp\\buydtf-alpha-v3-build-a-20261004-r3",
-        "C:\\Users\\danie\\AppData\\Local\\Temp\\buydtf-writer-8230-hs7crxqg",
+        "C:\\Users\\danie\\AppData\\Local\\Temp\\buydtf-writer-8230-cnrlpvqh",
         "C:\\Users\\danie\\projects\\bdtf-alpha-activation-v6-20261005"
       ],
       "exit_code": 0,
       "scope": "local disposable validation; no production access",
       "status": "pass",
       "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "stdout_sha256": "445685f3438ca3f58e32bc5a702fe50f59acdf5d6eab37ee9f950c9077a9d04d"
+      "stdout_sha256": "a91d67a18c7f5d7cf06f2336d25e91805918fc06a2772750098628f4a78acd62"
     },
     "python-tests": {
       "argv": [
@@ -62,22 +62,22 @@
       "exit_code": 0,
       "scope": "local disposable validation; no production access",
       "status": "pass",
-      "stderr_sha256": "dbfd8fe1e2cdfef65c1feee599678c6039836884341f7a2c90f395db5c877fbd",
-      "stdout_sha256": "9ae4c578a333123114fd21eca4a82e0b0a44d9ae1986e78ca1e06aa797766623"
+      "stderr_sha256": "782d2fd668c7b20e6c765ee36ec9792aae0ad2e248bc9d4ceb3d08137d950ef8",
+      "stdout_sha256": "16590256eb1a5dbc5dccc84900ab0f188b97b15bcf90d94f90febc6c8edf075b"
     },
     "real-writer-integration": {
       "argv": [
         "/usr/bin/php",
         "ops/deployment/test_production_alpha_scheduler_probe.php",
         "/tmp/buydtf-alpha-v3-build-a-20261004-r3",
-        "/tmp/buydtf-scheduler-writer-xxbbg6rq",
+        "/tmp/buydtf-scheduler-writer-tczkn8gb",
         "/mnt/c/Users/danie/projects/bdtf-alpha-activation-v6-20261005"
       ],
       "exit_code": 0,
       "scope": "local disposable validation; no production access",
       "status": "pass",
       "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "stdout_sha256": "88feabf9e5be1a028cd01601dae8be852af5fbc5c23665002b78c19eede9a44c"
+      "stdout_sha256": "70e5a5b20856ef2cefab91761bed455edf2e78ea446bda7133a2eb6cc85fcd0a"
     },
     "scheduler-rehearsal": {
       "argv": [
@@ -90,7 +90,7 @@
       "scope": "local disposable validation; no production access",
       "status": "pass",
       "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "stdout_sha256": "700b190c29ef7dbca15315329e27429a3d6567da724045373784247fdd216a56"
+      "stdout_sha256": "c5d940a46969ce6002a32ef396fa492de50715e34a7f0f779d2fd6cb6512ce30"
     },
     "source-rehearsal": {
       "argv": [
@@ -103,13 +103,13 @@
       "scope": "local disposable validation; no production access",
       "status": "pass",
       "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "stdout_sha256": "71f819ccd42390b2a7da6ca598ded5fcb7476a318231e9c81d9b38fad4a124d7"
+      "stdout_sha256": "b352ec00859d66a5ca4140a031325a9db79ffca71b3fcb2609fff02f99d1079a"
     }
   },
-  "runner_sha256": "4ec63506a90b0aa3e7588a7e7de345e8db449acf5b94d1852edb19bcf264f278",
+  "runner_sha256": "8a89a2252975563cb65a94e0677edfd49238ef31875644e6b59352da365bb830",
   "runtime_probe_sha256": "839588fe2930e1e673c507b05f7ccf15d7166329d66c1563775154cd7030d200",
   "scheduler_guard_sha256": "d4334e0181ececbd76d140711998f1d143f648dc9a4de85f413f2083354b6489",
   "scheduler_probe_sha256": "91e81065a4add34e916674c2a7fcc3ebe5f867324ec350dc9220214102cf0d80",
-  "scope": "local activation package; execution tokens withheld",
+  "scope": "local final V6 expected bindings; execution not authorized",
   "status": "pass"
 }

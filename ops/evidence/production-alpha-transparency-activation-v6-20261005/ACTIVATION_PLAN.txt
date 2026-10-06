@@ -1,15 +1,24 @@
-This is a separate local activation review package based on accepted correction
+This final local binding package follows accepted activation commit
+2b94d6c5e70459351a2f7b530552a73b0a5c3ea2 and accepted correction
 2c14d6e401c9d24a7153c12f6ee4b74bd96f8582. The accepted scheduler, process-exit,
 process-scope, OPcache, gate, nginx, dependency-envelope, runtime and parser
 controls remain byte-for-byte unchanged. All eleven application members and
 their source archive remain unchanged. Earlier releases and evidence remain
 retained. This preparation does not authorize or perform production access.
 
-The correction-only hold is replaced with explicit withheld authorization
-bindings: stage, deploy and recover are all None. None, empty strings, retired
-V5 tokens and an arbitrary unissued V6 token cannot authorize any action.
-The CLI rejects before accessing production or input paths. The package cannot
-stage, deploy or recover in this state. No finalization action is introduced.
+The three expected authorization bindings are frozen together in the runner,
+application manifest and AUTHORIZATION_BINDINGS.json:
+
+  stage:   STAGE-BUYDTF-ALPHA-V6-b02fce3213fc6328
+  deploy:  DEPLOY-BUYDTF-ALPHA-V6-b02fce3213fc6328
+  recover: RECOVER-BUYDTF-ALPHA-V6-b02fce3213fc6328
+
+These expected values do not grant execution authority. Stage, cutover and
+separate recovery still require explicit action-specific user authorization.
+None, empty strings, retired V5 tokens, an unissued V6 value or another action's
+binding is rejected before production/input path access. No finalization action
+is introduced. The same bytes are used for staging and cutover; no later token
+edit is needed or allowed.
 
 The receipt-metadata review correction adds kind=file to the exact expected
 proof-file metadata, preserving UID/GID 1000:1000, mode 0600, hash binding and
@@ -20,12 +29,12 @@ tampering, missing-proof, escaping-path and symbolic-proof cases fail closed.
 Only external production observations are local doubles; these receipts do
 not satisfy the pending production PHP 8.2.30 FPM requirement or authorize use.
 
-Future authorization bindings must use fresh action-specific V6 values. They
-must be frozen, revalidated and independently reviewed before any production
-access or execution. Changing runner/input bytes invalidates the previous
-package review and requires another review. The eventual staged and executing
-runner must stay identical: do not edit token bindings between staging and
-cutover. Preparing expected action bindings never authorizes their execution;
+The final binding package must be independently reviewed before any production
+access or execution. Changing runner/input bytes invalidates the reviewed
+identities and requires another review. The eventual staged and executing
+runner must stay identical: do not edit bindings between staging and cutover.
+A real-validator regression rejects a changed staged runner even if its receipt
+hash has been rebound. Preparing expected bindings never authorizes execution;
 stage, cutover, separate recovery and finalization still need separate explicit
 evidence-bound user authorization. No retired authorization may be reused.
 
@@ -62,8 +71,9 @@ may be active after reopening. Scheduling must be strictly idle before mutation.
 
 Subject to independent review and separate future authorization:
 
-1. Complete and review fresh authorization bindings and freeze the exact final
-   runner and all fifteen inputs. Review this package before any push or access.
+1. Review the final frozen bindings, exact runner and all fifteen inputs.
+   The package remains local and unpushed until separately authorized. Keep
+   runner and input bytes unchanged between staging and cutover.
 2. Authorize read-only production verification and restricted Phase 0/Phase 1
    separately. Verify the original 326-file source, original front controller
    1000:1000/0644, PHP 8.2.30, Laravel 12.69.1, lock/vendor/cache/configuration,
@@ -100,7 +110,8 @@ Subject to independent review and separate future authorization:
    Preserve evidence and stop without retrying. A separate recovery attempt
    requires new state-bound authorization; never reuse failed V5 recovery.
 
-Current status: local only, unpushed, non-stageable; execution tokens withheld;
+Current status: local only, unpushed, expected bindings frozen together;
+execution not authorized; independent binding review still required;
 production PHP 8.2.30 FPM verification pending. No production access, staging,
 cutover, recovery, migration, restart, configuration/permission change,
 capability enablement, customer-artwork change, ShopNLTees change, retention

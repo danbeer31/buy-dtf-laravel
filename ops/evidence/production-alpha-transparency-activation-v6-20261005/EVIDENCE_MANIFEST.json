@@ -3,14 +3,14 @@
   "artifact": "buy-dtf-activation-v6-evidence-manifest",
   "entries": [
     {
-      "bytes": 12293,
+      "bytes": 13602,
       "path": "ops/deployment/build_production_alpha_activation_package.py",
-      "sha256": "f1b71eb6f589828ae399cea6d5b39e9d4c9924b431bdb399534d2cee7f13c62b"
+      "sha256": "67918a72684739e1fcf3e5fcfb4a5fb320690096688419c0135d14a4ed509ee0"
     },
     {
-      "bytes": 2325,
+      "bytes": 3900,
       "path": "ops/deployment/freeze_production_alpha_activation.py",
-      "sha256": "c5f07b8355fa47fce73b320dbb39bcfc4a7ccfa978795c4b3361bb7ce109a09b"
+      "sha256": "1251bbbc9d798ba507264fb2f05b4d9827eff517a4dd62485abb62e2e1aea62e"
     },
     {
       "bytes": 69829,
@@ -68,9 +68,9 @@
       "sha256": "91e81065a4add34e916674c2a7fcc3ebe5f867324ec350dc9220214102cf0d80"
     },
     {
-      "bytes": 165608,
+      "bytes": 165913,
       "path": "ops/deployment/production_alpha_transparency_deploy.py",
-      "sha256": "4ec63506a90b0aa3e7588a7e7de345e8db449acf5b94d1852edb19bcf264f278"
+      "sha256": "8a89a2252975563cb65a94e0677edfd49238ef31875644e6b59352da365bb830"
     },
     {
       "bytes": 14398,
@@ -88,9 +88,9 @@
       "sha256": "35b0907e9bec39ef0f9b8552827a6c184f20129104a404b5e5cfb63e28b1bb55"
     },
     {
-      "bytes": 22284,
+      "bytes": 24721,
       "path": "ops/deployment/test_production_alpha_activation.py",
-      "sha256": "2f3acfd8dabb2df68946c77dd8fd83bd849851c19b60d833964ac13326828d01"
+      "sha256": "e20cf364fa869499c941631315b43d3d7c12128cc5e42ef9f640ba24bdf0844d"
     },
     {
       "bytes": 17523,
@@ -98,34 +98,39 @@
       "sha256": "7c739559d3e41409ccf4eb4378a0477260507871177fea97a55b2342e0292f47"
     },
     {
-      "bytes": 22006,
+      "bytes": 22004,
       "path": "ops/deployment/test_production_alpha_process_scope.py",
-      "sha256": "eb26b9e5be5a760d50fd8fa8de32e7c3c1c44875be9d65c795a83553a9aff300"
+      "sha256": "503e87edae705e01744974ce5c212141bc8e7cf626c64778e371d2608ddf3904"
     },
     {
-      "bytes": 39540,
+      "bytes": 39572,
       "path": "ops/deployment/test_production_alpha_transparency_runner.py",
-      "sha256": "9b10e180059b5cc47e4f70d963fa034a2c31ca0ff00eed6cd4dad0deb0d6cd25"
+      "sha256": "674a4f3e91271a7d048f64291fc62f3039b070671d01979c67ef53f54df7bcb3"
     },
     {
-      "bytes": 8083,
+      "bytes": 8090,
       "path": "ops/deployment/validate_production_alpha_activation.py",
-      "sha256": "6e95eb4f14746fb0124ef6bb02a467db19f2f5351c151dfd4e19ae2122d12c22"
+      "sha256": "a8577c4ca49d188f630bb5eca5de2a2e4b7483ebf73c4f7a5e78abc91894211b"
     },
     {
-      "bytes": 7600,
+      "bytes": 8096,
       "path": "ops/evidence/production-alpha-transparency-activation-v6-20261005/ACTIVATION_PLAN.txt",
-      "sha256": "15b89203278111a709b151d0e0d57fca85040beea04ca2d6e6768ecd45cc2952"
+      "sha256": "87020a57db0871bb550bdae867021c727a10a20c76f53e3b1a88d4346cbcee1e"
     },
     {
-      "bytes": 10943,
+      "bytes": 11393,
       "path": "ops/evidence/production-alpha-transparency-activation-v6-20261005/APPLICATION_MANIFEST.json",
-      "sha256": "d46b78f9bc65c1390c23a531f3ee3a39647f8866f4320d1c03d427496cdec4a5"
+      "sha256": "2779d5466b6e295abda07d123334ced354a2119277bf3ffd3d7e1cd0512c2f88"
     },
     {
-      "bytes": 4885,
+      "bytes": 1017,
+      "path": "ops/evidence/production-alpha-transparency-activation-v6-20261005/AUTHORIZATION_BINDINGS.json",
+      "sha256": "51b9f7ef4331756ff29c3a275c074b0ce9d6c23a39a17879719d14e506c7d731"
+    },
+    {
+      "bytes": 5140,
       "path": "ops/evidence/production-alpha-transparency-activation-v6-20261005/INPUT_MANIFEST.json",
-      "sha256": "efb0c62b7ac26f864c4882ed152f5ee8ff3fe3a22a348b44142731b7ac5e892f"
+      "sha256": "061bbe6f8cb1ae609c287475b24343e4acdeb1db74a4a1bedca5d0d598d314db"
     },
     {
       "bytes": 1420,
@@ -133,24 +138,24 @@
       "sha256": "83a5be402382afa9feb023057ba61ade8d83fa2e2a56072b730c0f69a034a667"
     },
     {
-      "bytes": 4791,
+      "bytes": 5280,
       "path": "ops/evidence/production-alpha-transparency-activation-v6-20261005/REVIEW_RECEIPT.json",
-      "sha256": "f06fcc013c9beab8026aefeb358aba7041b387c87b878050fd70d218b15f420c"
+      "sha256": "2f0567c977d138886c94d9046ba789ce5b4b9af69c28c0ea0019acb9ebb90530"
     },
     {
-      "bytes": 4945,
+      "bytes": 4952,
       "path": "ops/evidence/production-alpha-transparency-activation-v6-20261005/VALIDATION_RECEIPT.json",
-      "sha256": "4b4d05f70c88a6a2f5b83baf6fd16ba65eaff7c2c0b384b9ca0735ae9a08927b"
+      "sha256": "34092540d6fed11141a5d6503658cae1251fec66296a03cbd848602639e36643"
     },
     {
-      "bytes": 22054,
+      "bytes": 22955,
       "path": "ops/evidence/production-alpha-transparency-activation-v6-20261005/fresh-v6-receipt-validation.json",
-      "sha256": "8546ee04ca676a0434f1320f40557d25f0a1137aa340ca0f423511b98f6e0ce2"
+      "sha256": "26957ba66330b487b0380d3b1b05d9b2da1950c12fc7956f975dac85a5a1dbd7"
     },
     {
       "bytes": 491,
       "path": "ops/evidence/production-alpha-transparency-activation-v6-20261005/gate-rehearsal.receipt.json",
-      "sha256": "ccbdf2a03f63866c430f23e88d43025e82fd443b8142ba0eab4819ede87630ef"
+      "sha256": "515ede10fb28ef8f056214116cca85c05074e88be3ee4085fc45ade4b88253cf"
     },
     {
       "bytes": 0,
@@ -165,12 +170,12 @@
     {
       "bytes": 147283,
       "path": "ops/evidence/production-alpha-transparency-activation-v6-20261005/gate-transition-rehearsal.json",
-      "sha256": "8f2cd7d0a0ff1a913c7ca8c18f19aa4ee12c4493d26d0f7ace505634e1d080e0"
+      "sha256": "5de7ee7c4810f972b20f2a6d8085c8e27aa880bdb07dae83955ac114f00d0d16"
     },
     {
-      "bytes": 151206,
+      "bytes": 151205,
       "path": "ops/evidence/production-alpha-transparency-activation-v6-20261005/linux-rehearsal.json",
-      "sha256": "3157b2312d8f084761331094ce025a6a26c3c28f86f3f3c840e8c477daffea7b"
+      "sha256": "c211ced158db4673669d9b7a77655b8cb6360784a2b2accd8feb39bf70593ff2"
     },
     {
       "bytes": 833,
@@ -185,12 +190,12 @@
     {
       "bytes": 33555,
       "path": "ops/evidence/production-alpha-transparency-activation-v6-20261005/php8230-read-only-writer.json",
-      "sha256": "442a30f0df306ea4ea48ea0c948fc566a1bacba3d2e9081687ca319902bd87a0"
+      "sha256": "399101f4ebde3c35fe77c84d9d4e2d32f776291e6935203c08b6af1c4b71f485"
     },
     {
       "bytes": 679,
       "path": "ops/evidence/production-alpha-transparency-activation-v6-20261005/php8230-writer-integration.receipt.json",
-      "sha256": "ae15d5ff5bcb0b18835f2fd9654f2329190e56ee7152018d2994ced314bb3399"
+      "sha256": "3503b87516ca12cbb237ae33021d62330710a033efcc10bee01b422778789fc7"
     },
     {
       "bytes": 0,
@@ -200,32 +205,32 @@
     {
       "bytes": 41581,
       "path": "ops/evidence/production-alpha-transparency-activation-v6-20261005/php8230-writer-integration.stdout.txt",
-      "sha256": "445685f3438ca3f58e32bc5a702fe50f59acdf5d6eab37ee9f950c9077a9d04d"
+      "sha256": "a91d67a18c7f5d7cf06f2336d25e91805918fc06a2772750098628f4a78acd62"
     },
     {
       "bytes": 680,
       "path": "ops/evidence/production-alpha-transparency-activation-v6-20261005/python-tests.receipt.json",
-      "sha256": "9700f40f29e0267d1e3809a6220164602aa6e5fd82fe6308330008dc13d45d15"
+      "sha256": "eedf369ad5f461d6d2380768ae89b1fce89603691e67d26e3757f2a31d31dc38"
     },
     {
-      "bytes": 29561,
+      "bytes": 30120,
       "path": "ops/evidence/production-alpha-transparency-activation-v6-20261005/python-tests.stderr.txt",
-      "sha256": "dbfd8fe1e2cdfef65c1feee599678c6039836884341f7a2c90f395db5c877fbd"
+      "sha256": "782d2fd668c7b20e6c765ee36ec9792aae0ad2e248bc9d4ceb3d08137d950ef8"
     },
     {
-      "bytes": 17183,
+      "bytes": 17892,
       "path": "ops/evidence/production-alpha-transparency-activation-v6-20261005/python-tests.stdout.txt",
-      "sha256": "9ae4c578a333123114fd21eca4a82e0b0a44d9ae1986e78ca1e06aa797766623"
+      "sha256": "16590256eb1a5dbc5dccc84900ab0f188b97b15bcf90d94f90febc6c8edf075b"
     },
     {
       "bytes": 33554,
       "path": "ops/evidence/production-alpha-transparency-activation-v6-20261005/real-writer-integration.json",
-      "sha256": "25cbc8723a534ba17efc53b83096ef45f2d9aa291b569bc4db792f15c2305f79"
+      "sha256": "ce99800b08f35b49fd57ce18a8ff7daf7cd6e9e5abdc30558d20c59c1376385b"
     },
     {
       "bytes": 541,
       "path": "ops/evidence/production-alpha-transparency-activation-v6-20261005/real-writer-integration.receipt.json",
-      "sha256": "c4e3b579367919a806d9da602122562819c02e73b28015adf1a60fa4b095f8c5"
+      "sha256": "42855c8c5071aee4e53a4513286c27b0edb814bc9bb0ab5b55ea2af7804b30a9"
     },
     {
       "bytes": 0,
@@ -235,17 +240,17 @@
     {
       "bytes": 41580,
       "path": "ops/evidence/production-alpha-transparency-activation-v6-20261005/real-writer-integration.stdout.txt",
-      "sha256": "88feabf9e5be1a028cd01601dae8be852af5fbc5c23665002b78c19eede9a44c"
+      "sha256": "70e5a5b20856ef2cefab91761bed455edf2e78ea446bda7133a2eb6cc85fcd0a"
     },
     {
-      "bytes": 1847412,
+      "bytes": 1848560,
       "path": "ops/evidence/production-alpha-transparency-activation-v6-20261005/scheduler-rehearsal/scheduler-rehearsal-receipt.json",
-      "sha256": "12199347afc37faf0bc0c1c12def0af18ed0caea0a511c9dc7ba4b9e1a08a365"
+      "sha256": "1a46bc78ee0bfca2f73f35e3722264621aa01bc0816122166ff0ea035357e58b"
     },
     {
       "bytes": 551,
       "path": "ops/evidence/production-alpha-transparency-activation-v6-20261005/scheduler-rehearsal.receipt.json",
-      "sha256": "b9a94c64d5a2e6044eae79b0a16d2da5c97e10013899c1a12fd3719cb340a3f8"
+      "sha256": "12c756af91b8383067b970e698b75573a099018275f8de040af2b475a37b938e"
     },
     {
       "bytes": 0,
@@ -255,97 +260,97 @@
     {
       "bytes": 130,
       "path": "ops/evidence/production-alpha-transparency-activation-v6-20261005/scheduler-rehearsal.stdout.txt",
-      "sha256": "700b190c29ef7dbca15315329e27429a3d6567da724045373784247fdd216a56"
+      "sha256": "c5d940a46969ce6002a32ef396fa492de50715e34a7f0f779d2fd6cb6512ce30"
     },
     {
       "bytes": 3077,
       "path": "ops/evidence/production-alpha-transparency-activation-v6-20261005/source-rehearsal/PORTABLE_MANIFEST.json",
-      "sha256": "762ff0d729bab4a7ba57786f33160236d1515cc5eba2a93288c968e54647eddb"
+      "sha256": "684148ef3c0c6e4b85974ea26d6a1930bb35a10c76c7b0e1e189a35f6a69c0cc"
     },
     {
       "bytes": 1592,
       "path": "ops/evidence/production-alpha-transparency-activation-v6-20261005/source-rehearsal/activation-fpm-before-gate-rejection-receipt.json",
-      "sha256": "780d22d80c9a46e0655c5402fd73067b9539eca3d91668246802ac9fd67982eb"
+      "sha256": "3f22a421492d9a3bca0214ab86e8853d0421435941761270a63cd21b4918a9c5"
     },
     {
       "bytes": 12961,
       "path": "ops/evidence/production-alpha-transparency-activation-v6-20261005/source-rehearsal/activation-fpm-under-gate-rejection-receipt.json",
-      "sha256": "d23ea67706d72c9eddda0c9444430b782ce56085acf04f9c515267840d8718ad"
+      "sha256": "18effd62fba89c2c91ed221f8667998549801aa4f5c661addc13127920b24c32"
     },
     {
       "bytes": 12864,
       "path": "ops/evidence/production-alpha-transparency-activation-v6-20261005/source-rehearsal/candidate-check-failure-receipt.json",
-      "sha256": "ae478dcfe560f97b05e98a626926ac8b1389af6362b1f3d3d41c33cf242ca814"
+      "sha256": "742ff54c9cb7bcd35925a47058fe571049625579bd3e1604c54bb39bc1170c5f"
     },
     {
       "bytes": 15112,
       "path": "ops/evidence/production-alpha-transparency-activation-v6-20261005/source-rehearsal/genuine-log-failure-receipt.json",
-      "sha256": "fae3a8d55cde07aa5424b8323b7aec8ae230910ca8c0a0f52673332e50f6e15a"
+      "sha256": "ab39ae1cbfddd10bcf21429634362d646f73ce9b2b65caf76c68212245e57e4c"
     },
     {
       "bytes": 15112,
       "path": "ops/evidence/production-alpha-transparency-activation-v6-20261005/source-rehearsal/post-reopen-failure-receipt.json",
-      "sha256": "78f8f993535a64daa36ede706db8a83e238e4f699e533d10bc078a55e74d5922"
+      "sha256": "8021d7830abf41b7872e1f74d56d921dc35a568c663233e0a50c14a116ea74cc"
     },
     {
       "bytes": 15192,
       "path": "ops/evidence/production-alpha-transparency-activation-v6-20261005/source-rehearsal/post-source-fpm-unavailable-receipt.json",
-      "sha256": "ddc07a3ed45cd8ac8cf0ece9886df38de84043e4035c6f38082aea971ed456e6"
+      "sha256": "5715b9ba09200e667417bc121ea67686c0f3e48ed19428c054f0cabf9d30eb44"
     },
     {
       "bytes": 17511,
       "path": "ops/evidence/production-alpha-transparency-activation-v6-20261005/source-rehearsal/post-source-gate-http-failure-receipt.json",
-      "sha256": "f6a3f635c56ebf950ec0d6c7af22c2119921380af8d11aa74cc4557f22c6a0e7"
+      "sha256": "377b4b81a3ca7f63374401cbd6e58d2cc63de37b00a16842d9c2565e57855552"
     },
     {
       "bytes": 12564,
       "path": "ops/evidence/production-alpha-transparency-activation-v6-20261005/source-rehearsal/pre-source-failure-receipt.json",
-      "sha256": "046ea340414369e3c9ac2090b5e60652b24fd756d98094b80ad3165b3729c321"
+      "sha256": "88fe4965a616ef806b126947603714b6224e1aabbe917a756ae6273bc9962795"
     },
     {
       "bytes": 15409,
       "path": "ops/evidence/production-alpha-transparency-activation-v6-20261005/source-rehearsal/recovery-with-normal-qbo-receipt.json",
-      "sha256": "09ef2548dbfde0ac2fa196d0d379dfbdaf6819e17c9a85155a77462f6be97f38"
+      "sha256": "07f9188c5457856519e393d623fd6717c53d22f14e736370c9b622e19b592e5a"
     },
     {
       "bytes": 17218,
       "path": "ops/evidence/production-alpha-transparency-activation-v6-20261005/source-rehearsal/recovery-with-qbo-startup-receipt.json",
-      "sha256": "f249f72029c087d71dbf2257bba8fa7e3feab2c196cc07a8d8a43ace78574b0c"
+      "sha256": "8d9ff647b019151cbda974ca2bcd0d985886f66fd675f8a504c91d6fc63e0b08"
     },
     {
       "bytes": 228672,
       "path": "ops/evidence/production-alpha-transparency-activation-v6-20261005/source-rehearsal/rehearsal-receipt.json",
-      "sha256": "d4067fb14167d4563daa8df590d498cae4badba81785d47f0b5ebeeeed3981b7"
+      "sha256": "b86a16447ceff7e2e3e66124715a28fcdf9f4d9e4f1d4e53de28a1df732187d8"
     },
     {
       "bytes": 15407,
       "path": "ops/evidence/production-alpha-transparency-activation-v6-20261005/source-rehearsal/rollback-with-normal-qbo-receipt.json",
-      "sha256": "df6bc412476b6a8fddfdd2bbef4db61879222e185c8917d9c5dfd6baaa0aa79b"
+      "sha256": "328b59cf4c01e6ad5758c2c29085d0fd4a2e72269f941d190b9ca7f5923c81b2"
     },
     {
       "bytes": 17216,
       "path": "ops/evidence/production-alpha-transparency-activation-v6-20261005/source-rehearsal/rollback-with-qbo-startup-receipt.json",
-      "sha256": "c558b636aba4581ffd621c9fcde634ff7bf847328723f63cef08bbcac0c67749"
+      "sha256": "d3a74c6ebfb0d4399b89157d980a6d9de8a2fa12e56edd066be1ae69caf2f70f"
     },
     {
       "bytes": 15182,
       "path": "ops/evidence/production-alpha-transparency-activation-v6-20261005/source-rehearsal/schema-preserving-rollback-receipt.json",
-      "sha256": "04ae4c22f7356de53d317ea16ce93621a684bf27220e9fe40ef60b3ab655fcef"
+      "sha256": "017442d761cc54cd4d4f4c60c33bc5ee941ea553b918a3552db26ce72e9ffbf2"
     },
     {
       "bytes": 12832,
       "path": "ops/evidence/production-alpha-transparency-activation-v6-20261005/source-rehearsal/source-swap-failure-receipt.json",
-      "sha256": "1df133fe7f3a78d72e9078dae0aa9063dbb2aa3f119987d51caddbaef4bd6a23"
+      "sha256": "1721d35fe6d38be3a334f1ebdeeaba038649c819ba817ce23c22d4f16081e4fc"
     },
     {
       "bytes": 6249,
       "path": "ops/evidence/production-alpha-transparency-activation-v6-20261005/source-rehearsal/success-receipt.json",
-      "sha256": "0b427beb9300959e338e42c55edb5189b2b7d5da481129b7b25c31f3930f86aa"
+      "sha256": "b9922dcb72f0cf37f1757cb239eeb2fceeeb9a8933452d26513fb538e6a358b4"
     },
     {
       "bytes": 560,
       "path": "ops/evidence/production-alpha-transparency-activation-v6-20261005/source-rehearsal.receipt.json",
-      "sha256": "a6df78640ffcab7d79eea5408ffcc6dc67d98eeb7e2899e9274fa7b37ed0ce0c"
+      "sha256": "dc2720bea31a61e7b770b42ccdc00ec4bde9be90ef250693281c640a5a017c6b"
     },
     {
       "bytes": 0,
@@ -355,7 +360,7 @@
     {
       "bytes": 729,
       "path": "ops/evidence/production-alpha-transparency-activation-v6-20261005/source-rehearsal.stdout.txt",
-      "sha256": "71f819ccd42390b2a7da6ca598ded5fcb7476a318231e9c81d9b38fad4a124d7"
+      "sha256": "b352ec00859d66a5ca4140a031325a9db79ffca71b3fcb2609fff02f99d1079a"
     }
   ],
   "production_accessed": false,

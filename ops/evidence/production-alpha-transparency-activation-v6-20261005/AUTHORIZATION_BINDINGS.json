@@ -1,0 +1,25 @@
+{
+  "accepted_activation_commit": "2b94d6c5e70459351a2f7b530552a73b0a5c3ea2",
+  "application_target_commit": "b02fce3213fc632891036f1b5c98b9cddb94e499",
+  "artifact": "buy-dtf-v6-expected-authorization-bindings-v1",
+  "binding_group_sha256": "cc2c3b7e904de1eb20b494c81cb2ed81134d34c09e90571e73313b61bb7fca52",
+  "cutover_requires_new_release_receipt": true,
+  "execution_authorization_granted": false,
+  "expected_values": {
+    "deploy": "DEPLOY-BUYDTF-ALPHA-V6-b02fce3213fc6328",
+    "recover": "RECOVER-BUYDTF-ALPHA-V6-b02fce3213fc6328",
+    "stage": "STAGE-BUYDTF-ALPHA-V6-b02fce3213fc6328"
+  },
+  "frozen_together": true,
+  "generation": "source-only-v6-activation",
+  "production_accessed": false,
+  "production_fpm_verification_performed": false,
+  "production_php_fpm_required": "8.2.30",
+  "recovery_requires_state_bound_authorization": true,
+  "runner_must_remain_identical_between_staging_and_cutover": true,
+  "separate_execution_authorizations_required": [
+    "stage",
+    "deploy",
+    "recover"
+  ]
+}

@@ -336,13 +336,13 @@ class ScopeTransportTests(unittest.TestCase):
 
 
 class LocalReviewOnlyTests(unittest.TestCase):
-    def test_direct_production_entrypoints_reject_before_path_access(self):
+    def test_missing_action_approval_rejects_before_path_access(self):
         with mock.patch.object(deploy, "APP_ROOT", Path("/var/www/buy-dtf")), mock.patch.object(deploy, "require_regular_file") as read:
             for action in (
-                    lambda: deploy.stage_release(archive=Path("unused"), manifest=Path("unused"), helper=Path("unused"), log_guard=Path("unused"), approval_token=deploy.STAGE_APPROVAL_TOKEN),
-                    lambda: deploy.deploy_release(release_receipt_path=Path("unused"), release_receipt_sha256="a" * 64, approval_token=deploy.DEPLOY_APPROVAL_TOKEN),
-                    lambda: deploy.recover_state(state_path=Path("unused"), approval_token=deploy.RECOVERY_APPROVAL_TOKEN)):
-                with self.assertRaisesRegex(deploy.DeploymentError, "non-stageable"):
+                    lambda: deploy.stage_release(archive=Path("unused"), manifest=Path("unused"), helper=Path("unused"), log_guard=Path("unused"), approval_token=None),
+                    lambda: deploy.deploy_release(release_receipt_path=Path("unused"), release_receipt_sha256="a" * 64, approval_token=deploy.DEPLOY_APPROVAL_TOKEN + "-wrong"),
+                    lambda: deploy.recover_state(state_path=Path("unused"), approval_token=deploy.STAGE_APPROVAL_TOKEN)):
+                with self.assertRaisesRegex(deploy.DeploymentError, "not supplied"):
                     action()
             read.assert_not_called()
 
@@ -351,8 +351,8 @@ class LocalReviewOnlyTests(unittest.TestCase):
             result = subprocess.run(["python3", str(ROOT / "ops/deployment/production_alpha_transparency_deploy.py"),
                 action, "--approval-token", "DEPLOY-BUYDTF-ALPHA-V5-b02fce3213fc6328"], capture_output=True, text=True, timeout=5)
             self.assertEqual(result.returncode, 1)
-            self.assertIn("non-stageable", result.stderr)
-        self.assertEqual(deploy.describe()["approval_tokens"]["stage"], None)
+            self.assertIn("not supplied", result.stderr)
+        self.assertFalse(deploy.describe()["approval_tokens"]["execution_authorization_granted"])
 
     def test_failed_v5_controls_and_receipt_are_permanently_retired(self):
         self.assertIn("d3c1a26bb1081bb47149eb2b34787d747e56a4db4ef0eb4668f62e3baf231a3d", deploy.RETIRED_RUNNER_SHA256S)

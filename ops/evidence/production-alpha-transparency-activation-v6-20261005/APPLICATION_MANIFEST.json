@@ -1,11 +1,15 @@
 {
   "activation_package": {
+    "accepted_activation_commit": "2b94d6c5e70459351a2f7b530552a73b0a5c3ea2",
     "accepted_correction_commit": "2c14d6e401c9d24a7153c12f6ee4b74bd96f8582",
     "accepted_manifest_sha256": "1821ba8099fafb2ddd48dd75f0a6ee8abbb43d83d5fafda2de9319022750b9a2",
-    "execution_approval_tokens": {
-      "deploy": null,
-      "recover": null,
-      "stage": null
+    "authorization_bindings_receipt_sha256": "51b9f7ef4331756ff29c3a275c074b0ce9d6c23a39a17879719d14e506c7d731",
+    "binding_group_sha256": "cc2c3b7e904de1eb20b494c81cb2ed81134d34c09e90571e73313b61bb7fca52",
+    "execution_authorization_granted": false,
+    "expected_authorization_bindings": {
+      "deploy": "DEPLOY-BUYDTF-ALPHA-V6-b02fce3213fc6328",
+      "recover": "RECOVER-BUYDTF-ALPHA-V6-b02fce3213fc6328",
+      "stage": "STAGE-BUYDTF-ALPHA-V6-b02fce3213fc6328"
     },
     "generation": "source-only-v6-activation",
     "production_fpm_8_2_30_verification_required": true,

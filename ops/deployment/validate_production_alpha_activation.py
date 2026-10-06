@@ -50,7 +50,7 @@ def run():
     passing = [value for value in validation_records if value["status"] == "pass"]
     rejected = [value for value in validation_records if value["status"] == "rejected"]
     expected_metadata = {"kind": "file", "uid": 1000, "gid": 1000, "mode": 0o600}
-    if len(passing) != 23 or len(rejected) != 22 or any(value["actor_uid"] != 1000 or value["actor_gid"] != 1000 for value in validation_records):
+    if len(passing) != 24 or len(rejected) != 23 or any(value["actor_uid"] != 1000 or value["actor_gid"] != 1000 for value in validation_records):
         raise RuntimeError("Actual UID/GID 1000 staging-receipt validation coverage is incomplete")
     if any(value["proof_metadata"] != {key: expected_metadata for key in ("activation_fpm", "activation_fpm_after")} for value in passing):
         raise RuntimeError("Fresh proof-file metadata did not pass the real validator")
@@ -88,7 +88,7 @@ def run():
         if proof["php_version"] != "8.2.30" or proof["status"] != "pass":
             raise RuntimeError("Actual PHP 8.2.30 writer integration failed")
         write(EVIDENCE / "php8230-read-only-writer.json", proof)
-    write(EVIDENCE / "VALIDATION_RECEIPT.json", {"status": "pass", "scope": "local activation package; execution tokens withheld",
+    write(EVIDENCE / "VALIDATION_RECEIPT.json", {"status": "pass", "scope": "local final V6 expected bindings; execution not authorized",
         "runner_sha256": sha(ROOT / "ops/deployment/production_alpha_transparency_deploy.py"),
         "scheduler_guard_sha256": sha(ROOT / "ops/deployment/production_alpha_scheduler_guard.py"),
         "scheduler_probe_sha256": sha(ROOT / "ops/deployment/production_alpha_scheduler_probe.php"),

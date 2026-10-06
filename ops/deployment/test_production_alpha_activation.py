@@ -40,8 +40,35 @@ def proof():
 
 
 class ActivationPrerequisiteTests(unittest.TestCase):
-    def test_all_tokens_are_withheld_and_none_is_never_an_authorization(self):
-        self.assertEqual((runner.STAGE_APPROVAL_TOKEN, runner.DEPLOY_APPROVAL_TOKEN, runner.RECOVERY_APPROVAL_TOKEN), (None, None, None))
+    def test_final_bindings_are_exact_distinct_and_action_specific(self):
+        expected = {action: prefix + "-BUYDTF-ALPHA-V6-b02fce3213fc6328"
+            for action, prefix in {"stage": "STAGE", "deploy": "DEPLOY", "recover": "RECOVER"}.items()}
+        self.assertEqual(runner.expected_authorization_bindings(), expected)
+        self.assertEqual(len(set(expected.values())), 3)
+        for action, correct in expected.items():
+            runner.require_action_approval(action, correct)
+            for wrong in (None, "", "DEPLOY-BUYDTF-ALPHA-V5-b02fce3213fc6328", "DEPLOY-BUYDTF-ALPHA-V6-UNISSUED", *[value for value in expected.values() if value != correct]):
+                with self.subTest(action=action, wrong=wrong), self.assertRaises(runner.DeploymentError):
+                    runner.require_action_approval(action, wrong)
+
+    def test_binding_group_matches_frozen_manifest_and_receipt(self):
+        bindings = runner.expected_authorization_bindings()
+        document = json.loads((EVIDENCE / "APPLICATION_MANIFEST.json").read_text())
+        receipt = json.loads((EVIDENCE / "AUTHORIZATION_BINDINGS.json").read_text())
+        digest = runner.sha256_bytes(runner.canonical_bytes(bindings))
+        self.assertEqual(document["activation_package"]["expected_authorization_bindings"], bindings)
+        self.assertEqual(document["activation_package"]["binding_group_sha256"], digest)
+        self.assertEqual(receipt["expected_values"], bindings)
+        self.assertEqual(receipt["binding_group_sha256"], digest)
+        self.assertEqual(document["activation_package"]["authorization_bindings_receipt_sha256"],
+            runner.sha256_file(EVIDENCE / "AUTHORIZATION_BINDINGS.json"))
+        self.assertFalse(receipt["execution_authorization_granted"])
+        self.assertTrue(receipt["runner_must_remain_identical_between_staging_and_cutover"])
+
+    @mock.patch.object(runner, "STAGE_APPROVAL_TOKEN", None)
+    @mock.patch.object(runner, "DEPLOY_APPROVAL_TOKEN", None)
+    @mock.patch.object(runner, "RECOVERY_APPROVAL_TOKEN", None)
+    def test_withheld_values_and_none_can_never_authorize_execution(self):
         for action in ("stage", "deploy", "recover"):
             for value in (None, "", "DEPLOY-BUYDTF-ALPHA-V5-b02fce3213fc6328", "DEPLOY-BUYDTF-ALPHA-V6-UNISSUED"):
                 with self.subTest(action=action, value=value), self.assertRaisesRegex(runner.DeploymentError, "withheld"):
@@ -337,6 +364,14 @@ class FreshV6StagingReceiptTests(unittest.TestCase):
                 receipt[key]["path"] = str(alias)
                 self.rebind_receipt(root, path, receipt)
                 self.rejected("symbolic_proof:" + key, root, "Required file is missing")
+
+    def test_staged_runner_must_equal_executing_runner_even_with_rebound_hash(self):
+        with self.fresh_receipt() as (root, path, receipt):
+            staged = Path(receipt["inputs"]["runner"]["path"])
+            staged.write_bytes(staged.read_bytes() + b"\n# changed after staging\n")
+            receipt["inputs"]["runner"]["sha256"] = runner.sha256_file(staged)
+            self.rebind_receipt(root, path, receipt)
+            self.rejected("runner_bytes_changed_after_staging", root, "Executing runner differs")
 
 
 if __name__ == "__main__":

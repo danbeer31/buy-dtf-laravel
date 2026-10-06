@@ -779,11 +779,11 @@ class ProductionAlphaRunnerTest(unittest.TestCase):
         )
         self.assertEqual(
             description["approval_tokens"]["status"],
-            "withheld_pending_activation_review_and_fresh_authorization",
+            "bindings_frozen_pending_execution_authorization",
         )
-        self.assertIsNone(description["approval_tokens"]["stage"])
-        self.assertIsNone(description["approval_tokens"]["deploy"])
-        self.assertIsNone(description["approval_tokens"]["recover"])
+        for action, value in deploy.expected_authorization_bindings().items():
+            self.assertEqual(description["approval_tokens"][action], value)
+        self.assertFalse(description["approval_tokens"]["execution_authorization_granted"])
         self.assertIn(
             "c43f39f556d057c99bb01e95ee7ca68658c05232",
             description["retired_artifacts"]["artifact_commit"],

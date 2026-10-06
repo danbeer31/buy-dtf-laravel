@@ -1,7 +1,7 @@
 {
   "external_production_observations": "explicit local doubles",
-  "fresh_receipts": 23,
-  "negative_cases": 22,
+  "fresh_receipts": 24,
+  "negative_cases": 23,
   "path_metadata_mocked": false,
   "production_accessed": false,
   "records": [
@@ -25,7 +25,7 @@
           "uid": 1000
         }
       },
-      "release_receipt_sha256": "cda13af38be8116fdc53696c0d9cb27a2535ce5e29b8db72bcd7aaaf450a6487",
+      "release_receipt_sha256": "2a6bf30b381cd82d2a54000d6bebdbf76ffb47f0a61f27a1b7925347c77a2aa3",
       "source_members": 11,
       "status": "pass"
     },
@@ -49,39 +49,7 @@
           "uid": 1000
         }
       },
-      "release_receipt_sha256": "d29d95e02b38f0baf720e65a016a72b1f6d2b172eee31a246ef14bfadbbc5c58",
-      "source_members": 11,
-      "status": "pass"
-    },
-    {
-      "actor_gid": 1000,
-      "actor_uid": 1000,
-      "case": "escaping_path:activation_fpm",
-      "error_type": "DeploymentError",
-      "reason": "Production FPM prerequisite evidence is not private or receipt-bound.",
-      "status": "rejected"
-    },
-    {
-      "actor_gid": 1000,
-      "actor_uid": 1000,
-      "case": "fresh_stage_real_validator",
-      "control_inputs": 10,
-      "generation": "source-only-v6-activation",
-      "proof_metadata": {
-        "activation_fpm": {
-          "gid": 1000,
-          "kind": "file",
-          "mode": 384,
-          "uid": 1000
-        },
-        "activation_fpm_after": {
-          "gid": 1000,
-          "kind": "file",
-          "mode": 384,
-          "uid": 1000
-        }
-      },
-      "release_receipt_sha256": "dc1f487bb60aec85e3cf5785798f817b983210ecec1e3d0280652e21b1025f2a",
+      "release_receipt_sha256": "2db014f635f9035c7d49c8079d6d1c9b408279223f46e6f3d761e77f1756b9b5",
       "source_members": 11,
       "status": "pass"
     },
@@ -113,7 +81,39 @@
           "uid": 1000
         }
       },
-      "release_receipt_sha256": "aabfbcae9c60b7b38ed8d40ba9a179ed2cc712e7ea110db736ab7810773f76d8",
+      "release_receipt_sha256": "bac19c45e2cbd30be0b8b0e8258c024f7d500cdd90f1f84dc7e60ca079ffb970",
+      "source_members": 11,
+      "status": "pass"
+    },
+    {
+      "actor_gid": 1000,
+      "actor_uid": 1000,
+      "case": "escaping_path:activation_fpm",
+      "error_type": "DeploymentError",
+      "reason": "Production FPM prerequisite evidence is not private or receipt-bound.",
+      "status": "rejected"
+    },
+    {
+      "actor_gid": 1000,
+      "actor_uid": 1000,
+      "case": "fresh_stage_real_validator",
+      "control_inputs": 10,
+      "generation": "source-only-v6-activation",
+      "proof_metadata": {
+        "activation_fpm": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 384,
+          "uid": 1000
+        },
+        "activation_fpm_after": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 384,
+          "uid": 1000
+        }
+      },
+      "release_receipt_sha256": "663eb8e728f751e4f288330afa95de0484777bc31b78e41265485ae35776773e",
       "source_members": 11,
       "status": "pass"
     },
@@ -145,7 +145,7 @@
           "uid": 1000
         }
       },
-      "release_receipt_sha256": "950c684a7a5fc7507f83025a7dbed55f38ffa7b35aa792a789c659e51bf202e4",
+      "release_receipt_sha256": "cae285cbd32b278698842ccc239fd0c865246025bc2ef351e52fdbb772ccd6ea",
       "source_members": 11,
       "status": "pass"
     },
@@ -177,7 +177,7 @@
           "uid": 1000
         }
       },
-      "release_receipt_sha256": "0847a3b5f4f4230a387c17bd31b8e3f03fbd6416adadc47e2c40fd19f3426baa",
+      "release_receipt_sha256": "28b71a5a0426c1203655ad3471fa00e6769518a0a42a7d5262d263ff1a231491",
       "source_members": 11,
       "status": "pass"
     },
@@ -186,7 +186,7 @@
       "actor_uid": 1000,
       "case": "missing_proof:activation_fpm",
       "error_type": "DeploymentError",
-      "reason": "Required file is missing, invalid, or symbolic: /tmp/buydtf-v6-receipt-test-vaofimot/v6-releases/b02fce32-20261006T020656Z/evidence/phase0-production-fpm-scope-receipt.json",
+      "reason": "Required file is missing, invalid, or symbolic: /tmp/buydtf-v6-receipt-test-k0gpgqm9/v6-releases/b02fce32-20261006T022623Z/evidence/phase0-production-fpm-scope-receipt.json",
       "status": "rejected"
     },
     {
@@ -209,7 +209,7 @@
           "uid": 1000
         }
       },
-      "release_receipt_sha256": "33fc554bbfc57c6f17066a1156212b17e0d089b0676efc61510752fa0580e6dd",
+      "release_receipt_sha256": "8616543368fd52a17ba94f86b42b2b1ac87c92b449be441688a2fad8cc44dc37",
       "source_members": 11,
       "status": "pass"
     },
@@ -241,7 +241,7 @@
           "uid": 1000
         }
       },
-      "release_receipt_sha256": "29c3bfd180392503857a85a95491fc7a3cc1b7dfa6ce63c4c3d4bb9c4eb4669f",
+      "release_receipt_sha256": "68c1e6d1f15d739d02f46b4e3ff46e843cce4fc607403e716e3e5a9c7f7dcf04",
       "source_members": 11,
       "status": "pass"
     },
@@ -250,7 +250,7 @@
       "actor_uid": 1000,
       "case": "missing_proof:activation_fpm_after",
       "error_type": "DeploymentError",
-      "reason": "Required file is missing, invalid, or symbolic: /tmp/buydtf-v6-receipt-test-fnpp1spk/v6-releases/b02fce32-20261006T020700Z/evidence/post-phase1-production-fpm-scope-receipt.json",
+      "reason": "Required file is missing, invalid, or symbolic: /tmp/buydtf-v6-receipt-test-3k8h2lhm/v6-releases/b02fce32-20261006T022627Z/evidence/post-phase1-production-fpm-scope-receipt.json",
       "status": "rejected"
     },
     {
@@ -273,7 +273,7 @@
           "uid": 1000
         }
       },
-      "release_receipt_sha256": "2750bb46dab7494a9173ebc4c7ad58d0796d00f5f37c1859412ea3300f3e9b30",
+      "release_receipt_sha256": "cf6dabd74f87952b6bbc81402890bed84b643439b8c7af6fb71dec10c155b10a",
       "source_members": 11,
       "status": "pass"
     },
@@ -305,7 +305,7 @@
           "uid": 1000
         }
       },
-      "release_receipt_sha256": "3322ea7ac86ae193a9a0ae398ac76deb1add58025bbb92a5e0f753f80863735c",
+      "release_receipt_sha256": "9ba93563be3ef34da368779cc67ebdd73b6debfd398c1292ac40d3c5327edddb",
       "source_members": 11,
       "status": "pass"
     },
@@ -337,7 +337,7 @@
           "uid": 1000
         }
       },
-      "release_receipt_sha256": "e57656335598f5edf96175c5b30b011a79b3257fe2cbfa8dffcab8e95bafed2e",
+      "release_receipt_sha256": "8ff10935d9bc4a8396c816555709ecc3cdb661da2ca70b67722a23d753bec3df",
       "source_members": 11,
       "status": "pass"
     },
@@ -369,7 +369,7 @@
           "uid": 1000
         }
       },
-      "release_receipt_sha256": "216cbf6acbde1df4563804c474f35a09314632796451fdbd367498bde880dfdc",
+      "release_receipt_sha256": "b523262239b566b27aaaf7744cb74077aa13805199de912b4831b2f535610e7e",
       "source_members": 11,
       "status": "pass"
     },
@@ -401,7 +401,7 @@
           "uid": 1000
         }
       },
-      "release_receipt_sha256": "beb4fa85e082c7c2786d584d3897dbbdea4d2c8c7d10cd9f0b84fbcdeae98c16",
+      "release_receipt_sha256": "25d47cbe496d5c8e2970e35756b19665fd30500aa93fc8de1e55d69847b1ef8e",
       "source_members": 11,
       "status": "pass"
     },
@@ -433,7 +433,7 @@
           "uid": 1000
         }
       },
-      "release_receipt_sha256": "98953b2198c9dcd8d4776199759ac4ec98b79b826f71239825938435ce6d9acb",
+      "release_receipt_sha256": "66e0c342f184c8487646d884179a697ae028df1853f4ab22985a55f99b319f5c",
       "source_members": 11,
       "status": "pass"
     },
@@ -442,7 +442,7 @@
       "actor_uid": 1000,
       "case": "proof_tampering:activation_fpm",
       "error_type": "DeploymentError",
-      "reason": "Checksum mismatch for /tmp/buydtf-v6-receipt-test-wbpv8lhq/v6-releases/b02fce32-20261006T020716Z/evidence/phase0-production-fpm-scope-receipt.json: expected ff47ee64c186ef7105639e66d34b7754609dc5c27b8a6db74aaab01372f789cb, got eb481424c5c9cbb1f5135183cbbb2414b3d57ded00609d2b910560ca8868d043",
+      "reason": "Checksum mismatch for /tmp/buydtf-v6-receipt-test-cnjbq0i1/v6-releases/b02fce32-20261006T022641Z/evidence/phase0-production-fpm-scope-receipt.json: expected f697bae0ad5a1cefd407dbc2bb62e1ec7ec0756fef382f635e63bddc7403af9b, got b97dba76881dea61ad1abacbcb164db47c95eee26d5fd25697dc68caa4a01a31",
       "status": "rejected"
     },
     {
@@ -465,7 +465,7 @@
           "uid": 1000
         }
       },
-      "release_receipt_sha256": "0fb94047b75d5390a3c048614af2d29ecf95d000f0e47dcedbce4afa54698623",
+      "release_receipt_sha256": "6a64feba427fa16f5fe12a5713bfbce063c65fe799dcc98091bc1287437b67ca",
       "source_members": 11,
       "status": "pass"
     },
@@ -497,7 +497,7 @@
           "uid": 1000
         }
       },
-      "release_receipt_sha256": "6cf9ffca4ee82d4adad1c46c5d8ceba91c59dad430c9277a4fb0bcaf221b2df9",
+      "release_receipt_sha256": "0cca651ee3658bd007a37e70d81d105112c2f1c0095c74a92e63f37c20db9609",
       "source_members": 11,
       "status": "pass"
     },
@@ -506,7 +506,7 @@
       "actor_uid": 1000,
       "case": "proof_tampering:activation_fpm_after",
       "error_type": "DeploymentError",
-      "reason": "Checksum mismatch for /tmp/buydtf-v6-receipt-test-4surmzz9/v6-releases/b02fce32-20261006T020721Z/evidence/post-phase1-production-fpm-scope-receipt.json: expected 099af4b77a4d8cd06b1eb8cc2ed10488d5079a7c06f85386eaff2f535622f121, got 84fd3f5a6ec656456364750dece9b92b8e11786467fc279faa3af08982502e99",
+      "reason": "Checksum mismatch for /tmp/buydtf-v6-receipt-test-i6khl3ss/v6-releases/b02fce32-20261006T022648Z/evidence/post-phase1-production-fpm-scope-receipt.json: expected bbbfeeb14356e01c814373ec0bc68cef5b578846a14dcd004019cf6ff32c3914, got 93efc1811737aa832e730d4af445f22fda6793711b8d3f92e63cba32b44790ca",
       "status": "rejected"
     },
     {
@@ -529,7 +529,7 @@
           "uid": 1000
         }
       },
-      "release_receipt_sha256": "7c1954b31452ee6c762874cd78ce12cf43ed2cfd9e8c9b398c7b23e61bc3d02e",
+      "release_receipt_sha256": "cc3ff11ea3804a7db0d51e9b4f3627948815940d0c0816460dd09a6dc82063a9",
       "source_members": 11,
       "status": "pass"
     },
@@ -561,7 +561,7 @@
           "uid": 1000
         }
       },
-      "release_receipt_sha256": "d5d153023fa4f3b499024abe930316478d8228b86e6d8d0307fc2975931bfda1",
+      "release_receipt_sha256": "f6b28d7021beed66476d828ff046256490fbcab983f2c0683a34f7ef2793425d",
       "source_members": 11,
       "status": "pass"
     },
@@ -570,7 +570,7 @@
       "actor_uid": 1000,
       "case": "ownership_drift:activation_fpm",
       "error_type": "PermissionError",
-      "reason": "[Errno 13] Permission denied: '/tmp/buydtf-v6-receipt-test-1j8akd7h/v6-releases/b02fce32-20261006T020726Z/evidence/phase0-production-fpm-scope-receipt.json'",
+      "reason": "[Errno 13] Permission denied: '/tmp/buydtf-v6-receipt-test-q0_1imjf/v6-releases/b02fce32-20261006T022653Z/evidence/phase0-production-fpm-scope-receipt.json'",
       "status": "rejected"
     },
     {
@@ -593,7 +593,7 @@
           "uid": 1000
         }
       },
-      "release_receipt_sha256": "01c02bbc594c39abdd4be59bdbd4a4f3f1cd29b19ee40039f08755dd6f9f72ae",
+      "release_receipt_sha256": "df5431b5f720febb96a406e379c9f327b6322b956acab24ede8947de0c22671e",
       "source_members": 11,
       "status": "pass"
     },
@@ -625,7 +625,7 @@
           "uid": 1000
         }
       },
-      "release_receipt_sha256": "f0cc8cfce9eefe70beac9818d81367cdc7b6e0b69560e63dc260af724db46890",
+      "release_receipt_sha256": "73cc3345fa1501f54af992ed92cec8f987553f6524a9d714cad892570c67ebe7",
       "source_members": 11,
       "status": "pass"
     },
@@ -634,7 +634,7 @@
       "actor_uid": 1000,
       "case": "ownership_drift:activation_fpm_after",
       "error_type": "PermissionError",
-      "reason": "[Errno 13] Permission denied: '/tmp/buydtf-v6-receipt-test-i9gt7mu7/v6-releases/b02fce32-20261006T020730Z/evidence/post-phase1-production-fpm-scope-receipt.json'",
+      "reason": "[Errno 13] Permission denied: '/tmp/buydtf-v6-receipt-test-8i15l7g5/v6-releases/b02fce32-20261006T022658Z/evidence/post-phase1-production-fpm-scope-receipt.json'",
       "status": "rejected"
     },
     {
@@ -657,7 +657,7 @@
           "uid": 1000
         }
       },
-      "release_receipt_sha256": "f6cc373d086082757faae336b47a323d5ace42334cc7c55d5da47c251c4a3e48",
+      "release_receipt_sha256": "88049b7636bc73733cb50a92df4a71389d16ad081fb7e1c32e15d7e6a3323074",
       "source_members": 11,
       "status": "pass"
     },
@@ -689,7 +689,39 @@
           "uid": 1000
         }
       },
-      "release_receipt_sha256": "8d3db7b5ef3fa01d872a468f822a123d6549cd0687166a67324ea2c9c1b40721",
+      "release_receipt_sha256": "e2da61203d27435683a8fd95c00bb5f252316f5b0dcc1430bee9fa407f4ceab8",
+      "source_members": 11,
+      "status": "pass"
+    },
+    {
+      "actor_gid": 1000,
+      "actor_uid": 1000,
+      "case": "runner_bytes_changed_after_staging",
+      "error_type": "DeploymentError",
+      "reason": "Executing runner differs from the runner frozen at Phase 1.",
+      "status": "rejected"
+    },
+    {
+      "actor_gid": 1000,
+      "actor_uid": 1000,
+      "case": "fresh_stage_real_validator",
+      "control_inputs": 10,
+      "generation": "source-only-v6-activation",
+      "proof_metadata": {
+        "activation_fpm": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 384,
+          "uid": 1000
+        },
+        "activation_fpm_after": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 384,
+          "uid": 1000
+        }
+      },
+      "release_receipt_sha256": "1a48065cc788782f77b98598092a74319ee2a76350fedd10648387c2ac140490",
       "source_members": 11,
       "status": "pass"
     },
@@ -698,7 +730,7 @@
       "actor_uid": 1000,
       "case": "symbolic_proof:activation_fpm",
       "error_type": "DeploymentError",
-      "reason": "Required file is missing, invalid, or symbolic: /tmp/buydtf-v6-receipt-test-u2x26zz8/v6-releases/b02fce32-20261006T020735Z/evidence/symbolic-proof.json",
+      "reason": "Required file is missing, invalid, or symbolic: /tmp/buydtf-v6-receipt-test-h1i84sz2/v6-releases/b02fce32-20261006T022705Z/evidence/symbolic-proof.json",
       "status": "rejected"
     },
     {
@@ -721,7 +753,7 @@
           "uid": 1000
         }
       },
-      "release_receipt_sha256": "450ff6544fdbd818b64d2c25a4163f5c7a0bd9e76df4ebea1cb029937480f784",
+      "release_receipt_sha256": "0e584b71267346ecf760a524c607a1ff780103366028c5eebcdf06d8e5c42d89",
       "source_members": 11,
       "status": "pass"
     },
@@ -730,11 +762,11 @@
       "actor_uid": 1000,
       "case": "symbolic_proof:activation_fpm_after",
       "error_type": "DeploymentError",
-      "reason": "Required file is missing, invalid, or symbolic: /tmp/buydtf-v6-receipt-test-8xbnik75/v6-releases/b02fce32-20261006T020739Z/evidence/symbolic-proof.json",
+      "reason": "Required file is missing, invalid, or symbolic: /tmp/buydtf-v6-receipt-test-fzedhonc/v6-releases/b02fce32-20261006T022707Z/evidence/symbolic-proof.json",
       "status": "rejected"
     }
   ],
-  "runner_sha256": "4ec63506a90b0aa3e7588a7e7de345e8db449acf5b94d1852edb19bcf264f278",
+  "runner_sha256": "8a89a2252975563cb65a94e0677edfd49238ef31875644e6b59352da365bb830",
   "scope": "disposable Linux staging receipts with real UID/GID, bytes and filesystem metadata",
   "stage_release_mocked": false,
   "status": "pass",

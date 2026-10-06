@@ -1,4 +1,5 @@
 {
+  "accepted_activation_commit": "2b94d6c5e70459351a2f7b530552a73b0a5c3ea2",
   "accepted_controls_unchanged": {
     "laravel_dependency_gate.py": "b93c08f58a08333120369c1cc75c60631d621c3a8099ca3967065721c45679f5",
     "laravel_fpm_opcache_probe.php": "b8b34f87d45a0c000cc0df7917496631320cfbdcca1ff44bc41741ce0d569262",
@@ -12,10 +13,12 @@
   "accepted_correction_commit": "2c14d6e401c9d24a7153c12f6ee4b74bd96f8582",
   "accepted_evidence_checksum_entries_verified": 69,
   "application_dependencies_configuration_artwork_changed": false,
-  "application_manifest_sha256": "d46b78f9bc65c1390c23a531f3ee3a39647f8866f4320d1c03d427496cdec4a5",
+  "application_manifest_sha256": "2779d5466b6e295abda07d123334ced354a2119277bf3ffd3d7e1cd0512c2f88",
   "application_members_unchanged": 11,
   "artifact": "buy-dtf-local-activation-v6-review-package",
   "artwork_hosts": [],
+  "authorization_bindings_receipt_sha256": "51b9f7ef4331756ff29c3a275c074b0ce9d6c23a39a17879719d14e506c7d731",
+  "binding_group_sha256": "cc2c3b7e904de1eb20b494c81cb2ed81134d34c09e90571e73313b61bb7fca52",
   "branch": "fix/production-alpha-transparency-activation-v6-20261005",
   "controls": {
     "laravel_dependency_gate.py": "b93c08f58a08333120369c1cc75c60631d621c3a8099ca3967065721c45679f5",
@@ -30,13 +33,14 @@
     "production_alpha_scheduler_probe.php": "91e81065a4add34e916674c2a7fcc3ebe5f867324ec350dc9220214102cf0d80"
   },
   "deployable": false,
-  "execution_approval_tokens": {
-    "deploy": null,
-    "recover": null,
-    "stage": null
+  "execution_authorization_granted": false,
+  "expected_authorization_bindings": {
+    "deploy": "DEPLOY-BUYDTF-ALPHA-V6-b02fce3213fc6328",
+    "recover": "RECOVER-BUYDTF-ALPHA-V6-b02fce3213fc6328",
+    "stage": "STAGE-BUYDTF-ALPHA-V6-b02fce3213fc6328"
   },
   "input_count": 15,
-  "input_manifest_sha256": "efb0c62b7ac26f864c4882ed152f5ee8ff3fe3a22a348b44142731b7ac5e892f",
+  "input_manifest_sha256": "061bbe6f8cb1ae609c287475b24343e4acdeb1db74a4a1bedca5d0d598d314db",
   "limits": [
     "Database, production runtime envelope and maintenance commands are isolated doubles.",
     "Local FPM is PHP 8.3.6; production PHP 8.2.30 is not accessed.",
@@ -46,13 +50,14 @@
     "bytes": 675840,
     "metadata": "1000:1000/0600; mtime 0; regular files only",
     "path": "/mnt/c/Users/danie/projects/bdtf-alpha-activation-v6-20261005/storage/app/private/operations/production-alpha-activation-v6-local-package-20261005/production-alpha-transparency-v6-inputs.tar",
-    "sha256": "54131efd3d38ba00e6ccb3f0a165f925ca8d39aa4e9e52f85e75d20eacd7ee2b",
+    "sha256": "047ba3a723f24f5b7f31a79d769ddcbd00d0df4db7727035af51683c16fe77f7",
     "two_serializations_byte_identical": true
   },
   "new_authorizations_issued": false,
+  "new_expected_bindings_prepared": true,
   "plan": "ACTIVATION_PLAN.txt",
   "private_linux_entries_verified": 3228,
-  "private_linux_manifest_sha256": "f0f6858d532f4593bbdc2ee83c5a4bd2041d757fc481b43d1f7f8c824a10f594",
+  "private_linux_manifest_sha256": "11d2b24bd62698939c3ddf0d526c8e3096e0e155151b64542cb21fbffe649fd4",
   "production_accessed": false,
   "production_php_8_2_30_fpm_prerequisite": {
     "accepted_scope_probe_sha256": "1dca015bffdaf4433ff00ecb0569faad0928c28a726b827f773d4cae4b4737c6",
@@ -63,18 +68,18 @@
   "pushed": false,
   "receiver_job_label_retention_enabled": false,
   "retained_evidence_preserved": true,
-  "runner_sha256": "4ec63506a90b0aa3e7588a7e7de345e8db449acf5b94d1852edb19bcf264f278",
+  "runner_sha256": "8a89a2252975563cb65a94e0677edfd49238ef31875644e6b59352da365bb830",
   "source_archive_sha256": "3067bca578201a39254d8544b633a04ff6a9e43fc0de2a2783a95ccde9a1bfcd",
   "stageable": false,
-  "status": "ready_for_independent_review_tokens_withheld",
+  "status": "ready_for_binding_review_execution_not_authorized",
   "tests": {
-    "control_suite": 157,
-    "fresh_v6_staged_receipts_real_validator": 23,
+    "control_suite": 160,
+    "fresh_v6_staged_receipts_real_validator": 24,
     "gate_monotonic_waits": 48,
     "linux_uid_1000_33_scenarios": 8,
     "native_php_8_2_30_lint_writer": "pass",
     "real_php83_activation_rejections": 8,
-    "real_receipt_negative_cases": 22,
+    "real_receipt_negative_cases": 23,
     "scheduler_scenarios": 23,
     "source_scenarios": 15
   }
