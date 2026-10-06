@@ -98,6 +98,28 @@ def actor(request_path: Path):
     positive = observation_reader(before_pid)
     require(positive["identity"] == before_pid and positive["observer_uid"] == 33,
             "FPM did not prove target scope with actual UID 33.")
+    activation = deploy.activation_controls
+    real_transport = subprocess.run
+    activation_rejection = []
+    def wrong_version_transport(argv, **kwargs):
+        value = real_transport(argv, **kwargs)
+        headers, body = value.stdout.replace(b"\r\n", b"\n").split(b"\n\n", 1)
+        require(b"Status: 503 Service Unavailable" in headers and json.loads(body) == {
+            "artifact": "buy-dtf-fpm-activation-witness-v1", "status": "rejected"},
+            "Real PHP 8.3.6 FPM unexpectedly qualified as production PHP 8.2.30.")
+        path = state_dir / "activation-wrong-php-fpm-response.private"
+        deploy.atomic_write(path, value.stdout, 0o600)
+        activation_rejection.append({"status": "rejected_before_mutation", "actual_php_fpm": request["local_php_version"],
+            "required_php_fpm": "8.2.30", "http_status": 503, "response_sha256": deploy.sha256_file(path),
+            "witness_sha256": activation.WITNESS_SHA256, "production_requirement_relaxed": False})
+        return value
+    with mock.patch.object(activation, "__file__", str(scope_helper.with_name("production_alpha_activation_controls.py"))), mock.patch.object(activation, "EXPECTED_SOCKET", scope_socket), mock.patch.object(activation.subprocess, "run", side_effect=wrong_version_transport):
+        try:
+            activation.verify_production_fpm_scope()
+        except activation.ActivationError:
+            require(len(activation_rejection) == 1, "Activation rejected before exercising the real FPM witness.")
+        else:
+            raise RuntimeError("Local PHP 8.3.6 must not pass the production FPM prerequisite.")
     probes = []
     commands = []
     exit_events = []
@@ -197,12 +219,14 @@ def actor(request_path: Path):
 
     baseline = fresh()
     state = {"version": 1, "target_commit": deploy.TARGET_COMMIT, "status": "fixture_post_mutation_failure",
+        "activation_generation": deploy.activation_controls.GENERATION,
         "source_install_started": False, "source_install_complete": False, "rollback_complete": False,
         "state_directory": str(state_dir), "front_controller_transitions": [], "created_directories": [],
         "release_receipt_sha256": "b" * 64, "fpm_opcache": frozen,
         "scheduler_policy_sha256": controls.POLICY_SHA256,
         "scheduler_identity_sha256": controls.identity_sha256(baseline), "installed_schema_baseline": baseline}
     patches = {
+        "RECOVERY_APPROVAL_TOKEN": "RECOVER-BUYDTF-ALPHA-V6-LOCAL-FIXTURE",
         "APP_ROOT": app, "FRONT_CONTROLLER": front, "FPM_SOCKET": scope_socket,
         "ROLLBACK_ROOT": state_dir.parent, "LARAVEL_MAINTENANCE_FILE": app / "storage/framework/down",
         "DEPLOYMENT_LOCK": app / "storage/framework/rehearsal.lock",
@@ -303,6 +327,7 @@ def actor(request_path: Path):
             "Full seven-second monotonic gate waits were not recorded.")
         portable = {"scenario": scenario, "status": "pass", "actor_uid": 1000, "target_uid": 33,
             "kernel_permission_denials": denial, "fpm_scope_proven": True,
+            "activation_php83_rejection": activation_rejection[0],
             "foreign_process_unchanged": scenario not in EXIT_SCENARIOS,
             "owned_fixture_completed_normally": scenario in EXIT_SCENARIOS, "exit_race_events": exit_events,
             "confirmed_process_exits": [item for row in process_receipts for item in row["confirmed_process_exits"]],
@@ -382,6 +407,10 @@ def run(private_parent: Path, output: Path, vendor: Path, original_source: Path)
         scope_helper = root / "production_alpha_process_scope_probe.php"
         shutil.copyfile(ROOT / "ops/deployment/production_alpha_process_scope_probe.php", scope_helper)
         owned(scope_helper, mode=0o600)
+        for name in ("production_alpha_activation_controls.py", "production_alpha_fpm_activation_probe.php", "production_alpha_scheduler_guard.py"):
+            path = root / name
+            shutil.copyfile(ROOT / "ops/deployment" / name, path)
+            owned(path, mode=0o600)
         nginx = fpm = foreign = None
         parent_channel = actor_channel = None
         try:

@@ -23,7 +23,7 @@ import rehearse_production_alpha_transparency as rehearsal
 
 
 ROOT = Path(__file__).resolve().parents[2]
-EVIDENCE = ROOT / "ops/evidence/process-permission-rollback-20261005"
+EVIDENCE = ROOT / "ops/evidence/production-alpha-transparency-activation-v6-20261005"
 SSL_INCLUDE = "/etc/letsencrypt/options-ssl-nginx.conf"
 
 
@@ -138,6 +138,7 @@ class NginxInventoryFixture:
         snapshot = rehearsal.runtime_snapshot()
         with self.verifier_environment(), ExitStack() as stack:
             for name, value in {
+                "activation_fpm_verification": lambda *args, **kwargs: {"isolated_rehearsal_double": True, "production_verified": False},
                 "APP_ROOT": self.app,
                 "FRONT_CONTROLLER": self.front,
                 "EXPECTED_APP_DEVICE": self.app.stat().st_dev,
@@ -162,6 +163,7 @@ class NginxInventoryFixture:
                 "active_fpm_connections": [],
             }.items():
                 stack.enter_context(mock.patch.object(runner, name, return_value=value))
+            stack.enter_context(mock.patch.object(runner, "STAGE_APPROVAL_TOKEN", "STAGE-BUYDTF-ALPHA-V6-LOCAL-FIXTURE"))
             stack.enter_context(mock.patch.object(controls, "require_frozen_fpm_opcache", return_value=self.envelope["fpm_opcache"]))
             stack.enter_context(mock.patch.object(controls, "require_configuration_identity", return_value=self.envelope["configuration_sha256"]))
             stack.enter_context(mock.patch.object(runner.shutil, "disk_usage", return_value=SimpleNamespace(total=8 * 1024**3, used=1, free=7 * 1024**3)))

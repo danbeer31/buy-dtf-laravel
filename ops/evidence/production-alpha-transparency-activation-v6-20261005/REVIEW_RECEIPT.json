@@ -1,0 +1,79 @@
+{
+  "accepted_controls_unchanged": {
+    "laravel_dependency_gate.py": "b93c08f58a08333120369c1cc75c60631d621c3a8099ca3967065721c45679f5",
+    "laravel_fpm_opcache_probe.php": "b8b34f87d45a0c000cc0df7917496631320cfbdcca1ff44bc41741ce0d569262",
+    "laravel_nginx_identity.py": "1243fea2757aca89f586ec4b322b0d23ee1e19b2d027c21bd6523e71e6e6e8e0",
+    "production_alpha_dependency_envelope.json": "04850fe3aef14981c92f5b2af373bd136cfb6fead456d86fcab7233acb009fd1",
+    "production_alpha_gate_controls.py": "2719da67c6d425e5fa4bef70aade0789aba1deccfaf09f8992c8674883c65c00",
+    "production_alpha_process_scope_probe.php": "1dca015bffdaf4433ff00ecb0569faad0928c28a726b827f773d4cae4b4737c6",
+    "production_alpha_scheduler_guard.py": "d4334e0181ececbd76d140711998f1d143f648dc9a4de85f413f2083354b6489",
+    "production_alpha_scheduler_probe.php": "91e81065a4add34e916674c2a7fcc3ebe5f867324ec350dc9220214102cf0d80"
+  },
+  "accepted_correction_commit": "2c14d6e401c9d24a7153c12f6ee4b74bd96f8582",
+  "accepted_evidence_checksum_entries_verified": 69,
+  "application_dependencies_configuration_artwork_changed": false,
+  "application_manifest_sha256": "d46b78f9bc65c1390c23a531f3ee3a39647f8866f4320d1c03d427496cdec4a5",
+  "application_members_unchanged": 11,
+  "artifact": "buy-dtf-local-activation-v6-review-package",
+  "artwork_hosts": [],
+  "branch": "fix/production-alpha-transparency-activation-v6-20261005",
+  "controls": {
+    "laravel_dependency_gate.py": "b93c08f58a08333120369c1cc75c60631d621c3a8099ca3967065721c45679f5",
+    "laravel_fpm_opcache_probe.php": "b8b34f87d45a0c000cc0df7917496631320cfbdcca1ff44bc41741ce0d569262",
+    "laravel_nginx_identity.py": "1243fea2757aca89f586ec4b322b0d23ee1e19b2d027c21bd6523e71e6e6e8e0",
+    "production_alpha_activation_controls.py": "a2a09458289ccedf5384f000c534f23dfbb40aba9557f1a7736582456ab7c5bb",
+    "production_alpha_dependency_envelope.json": "04850fe3aef14981c92f5b2af373bd136cfb6fead456d86fcab7233acb009fd1",
+    "production_alpha_fpm_activation_probe.php": "d3f9ac27e72f009156aedd3afca57b4f9586ec64a860d2cfd9fe3a5143b2c759",
+    "production_alpha_gate_controls.py": "2719da67c6d425e5fa4bef70aade0789aba1deccfaf09f8992c8674883c65c00",
+    "production_alpha_process_scope_probe.php": "1dca015bffdaf4433ff00ecb0569faad0928c28a726b827f773d4cae4b4737c6",
+    "production_alpha_scheduler_guard.py": "d4334e0181ececbd76d140711998f1d143f648dc9a4de85f413f2083354b6489",
+    "production_alpha_scheduler_probe.php": "91e81065a4add34e916674c2a7fcc3ebe5f867324ec350dc9220214102cf0d80"
+  },
+  "deployable": false,
+  "execution_approval_tokens": {
+    "deploy": null,
+    "recover": null,
+    "stage": null
+  },
+  "input_count": 15,
+  "input_manifest_sha256": "1b7210f1a126e5a0129755fd9c259ff478257a068655d005109bcbf51c09e5b6",
+  "limits": [
+    "Database, production runtime envelope and maintenance commands are isolated doubles.",
+    "Local FPM is PHP 8.3.6; production PHP 8.2.30 is not accessed.",
+    "HTTP fixture loads Laravel 12.69.1 but does not boot the customer application."
+  ],
+  "local_private_input_bundle": {
+    "bytes": 675840,
+    "metadata": "1000:1000/0600; mtime 0; regular files only",
+    "path": "/mnt/c/Users/danie/projects/bdtf-alpha-activation-v6-20261005/storage/app/private/operations/production-alpha-activation-v6-local-package-20261005/production-alpha-transparency-v6-inputs.tar",
+    "sha256": "197b7e07162a057836731f55ff63857e76d87ac4cc0e16e3bda80ae7b857c709",
+    "two_serializations_byte_identical": true
+  },
+  "new_authorizations_issued": false,
+  "plan": "ACTIVATION_PLAN.txt",
+  "private_linux_entries_verified": 3228,
+  "private_linux_manifest_sha256": "3bc8b9d794fa918ff5def3a091ed4368777d9862d8d3782c03879331b12c2d2b",
+  "production_accessed": false,
+  "production_php_8_2_30_fpm_prerequisite": {
+    "accepted_scope_probe_sha256": "1dca015bffdaf4433ff00ecb0569faad0928c28a726b827f773d4cae4b4737c6",
+    "required": true,
+    "status": "pending_future_authorized_production_verification",
+    "witness_sha256": "d3f9ac27e72f009156aedd3afca57b4f9586ec64a860d2cfd9fe3a5143b2c759"
+  },
+  "pushed": false,
+  "receiver_job_label_retention_enabled": false,
+  "retained_evidence_preserved": true,
+  "runner_sha256": "daa271588abd5078d54f290a8fffff4ac758be9b799b8585270712c9417b1826",
+  "source_archive_sha256": "3067bca578201a39254d8544b633a04ff6a9e43fc0de2a2783a95ccde9a1bfcd",
+  "stageable": false,
+  "status": "ready_for_independent_review_tokens_withheld",
+  "tests": {
+    "control_suite": 150,
+    "gate_monotonic_waits": 48,
+    "linux_uid_1000_33_scenarios": 8,
+    "native_php_8_2_30_lint_writer": "pass",
+    "real_php83_activation_rejections": 8,
+    "scheduler_scenarios": 23,
+    "source_scenarios": 15
+  }
+}

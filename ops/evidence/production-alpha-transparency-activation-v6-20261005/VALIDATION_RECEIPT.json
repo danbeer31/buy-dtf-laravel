@@ -1,0 +1,110 @@
+{
+  "accounting_tasks_executed": false,
+  "application_or_dependency_changes": false,
+  "cron_disabled": false,
+  "laravel_log_guard_sha256": "75921c4a9f1b9a21d710c7792900014eb517f2e936a97c82ff542dd3c208dd28",
+  "mutexes_cleared": false,
+  "production_accessed": false,
+  "receipts": {
+    "gate-rehearsal": {
+      "argv": [
+        "/usr/bin/python3",
+        "ops/deployment/rehearse_laravel_dependency_gate.py",
+        "--parent",
+        "/tmp",
+        "--output",
+        "/tmp/buydtf-source-scheduler-gate-czm5u20y/gate-rehearsal.json"
+      ],
+      "exit_code": 0,
+      "scope": "local disposable validation; no production access",
+      "status": "pass",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "php8230-lint": {
+      "files": 5,
+      "status": "pass"
+    },
+    "php8230-writer-integration": {
+      "argv": [
+        "/mnt/c/tools/php8230/php.exe",
+        "C:\\Users\\danie\\projects\\bdtf-alpha-activation-v6-20261005\\ops\\deployment\\test_production_alpha_scheduler_probe.php",
+        "\\\\wsl.localhost\\Ubuntu\\tmp\\buydtf-alpha-v3-build-a-20261004-r3",
+        "C:\\Users\\danie\\AppData\\Local\\Temp\\buydtf-writer-8230-_c4f51jl",
+        "C:\\Users\\danie\\projects\\bdtf-alpha-activation-v6-20261005"
+      ],
+      "exit_code": 0,
+      "scope": "local disposable validation; no production access",
+      "status": "pass",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "c2f119e739330696e44e0756234b1ff6dcd3fb2099b85785dda34f2fac1fef55"
+    },
+    "python-tests": {
+      "argv": [
+        "/usr/bin/python3",
+        "-m",
+        "unittest",
+        "-v",
+        "test_production_alpha_activation",
+        "test_production_alpha_process_scope",
+        "test_production_alpha_scheduler",
+        "test_production_alpha_transparency_runner",
+        "test_production_alpha_gate_controls",
+        "test_production_alpha_nginx_inventory",
+        "test_laravel_log_guard",
+        "test_laravel_dependency_gate"
+      ],
+      "exit_code": 0,
+      "scope": "local disposable validation; no production access",
+      "status": "pass",
+      "stderr_sha256": "91d57eb208964529fa9d77b8973ae4c0b9a03e7972886249fe23f8db7abf9f68",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "real-writer-integration": {
+      "argv": [
+        "/usr/bin/php",
+        "ops/deployment/test_production_alpha_scheduler_probe.php",
+        "/tmp/buydtf-alpha-v3-build-a-20261004-r3",
+        "/tmp/buydtf-scheduler-writer-mws1jfld",
+        "/mnt/c/Users/danie/projects/bdtf-alpha-activation-v6-20261005"
+      ],
+      "exit_code": 0,
+      "scope": "local disposable validation; no production access",
+      "status": "pass",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "972e2d0f1ec5510daccc14a729f8ad636841395e16b46b24d0e84d1a97e3f83c"
+    },
+    "scheduler-rehearsal": {
+      "argv": [
+        "/usr/bin/python3",
+        "ops/deployment/rehearse_production_alpha_scheduler.py",
+        "--output",
+        "/mnt/c/Users/danie/projects/bdtf-alpha-activation-v6-20261005/ops/evidence/production-alpha-transparency-activation-v6-20261005/scheduler-rehearsal"
+      ],
+      "exit_code": 0,
+      "scope": "local disposable validation; no production access",
+      "status": "pass",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "a8a11958115cc7772b1dac294473eb07b61fe4895d35fdd1a92e7a5fc11bf05a"
+    },
+    "source-rehearsal": {
+      "argv": [
+        "/usr/bin/python3",
+        "ops/deployment/rehearse_production_alpha_transparency.py",
+        "--portable-output",
+        "/mnt/c/Users/danie/projects/bdtf-alpha-activation-v6-20261005/ops/evidence/production-alpha-transparency-activation-v6-20261005/source-rehearsal"
+      ],
+      "exit_code": 0,
+      "scope": "local disposable validation; no production access",
+      "status": "pass",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "7cb1dbacacfff31d55aca1f23ca09e4773d60862b859d0bbca7ba1a9cfa68aba"
+    }
+  },
+  "runner_sha256": "daa271588abd5078d54f290a8fffff4ac758be9b799b8585270712c9417b1826",
+  "runtime_probe_sha256": "839588fe2930e1e673c507b05f7ccf15d7166329d66c1563775154cd7030d200",
+  "scheduler_guard_sha256": "d4334e0181ececbd76d140711998f1d143f648dc9a4de85f413f2083354b6489",
+  "scheduler_probe_sha256": "91e81065a4add34e916674c2a7fcc3ebe5f867324ec350dc9220214102cf0d80",
+  "scope": "local activation package; execution tokens withheld",
+  "status": "pass"
+}

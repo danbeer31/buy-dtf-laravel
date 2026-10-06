@@ -35,7 +35,7 @@ LOG_GUARD_PATH = ROOT / "ops/deployment/laravel_log_guard.py"
 LOG_FIXTURES = ROOT / "tests/Fixtures/Deployment/LaravelLogs"
 MANIFEST_PATH = (
     ROOT
-    / "ops/evidence/process-permission-rollback-20261005/APPLICATION_MANIFEST.json"
+    / "ops/evidence/production-alpha-transparency-activation-v6-20261005/APPLICATION_MANIFEST.json"
 )
 DEFAULT_ARCHIVE_PATH = (
     ROOT
@@ -57,6 +57,8 @@ SPEC.loader.exec_module(deploy)
 SCENARIOS = (
     "success",
     "pre-source-failure",
+    "activation-fpm-before-gate-rejection",
+    "activation-fpm-under-gate-rejection",
     "source-swap-failure",
     "candidate-check-failure",
     "post-reopen-failure",
@@ -376,6 +378,7 @@ def run_scenario(
         verification = deploy.validate_pre_source_runtime_snapshot(current)
         return {
             "status": "pass",
+            "activation_fpm": {"isolated_rehearsal_double": True, "production_verified": False},
             "controls": deploy.environment_identity(),
             "runtime": current,
             "runtime_command": {"rehearsal": True},
@@ -621,9 +624,16 @@ def run_scenario(
         )
 
     expected_failure = scenario != "success"
+    def activation_fpm_verification(*args, **kwargs):
+        if (scenario == "activation-fpm-before-gate-rejection" and kwargs["phase"] == "before-static-gate") or (scenario == "activation-fpm-under-gate-rejection" and kwargs["phase"] == "under-gate-before-source"):
+            raise deploy.DeploymentError("Exact production PHP 8.2.30 FPM prerequisite rejected.")
+        return {"phase": kwargs["phase"], "isolated_rehearsal_double": True, "production_verified": False}
     failure: dict[str, Any] | None = None
     release_receipt_hash = "b" * 64
     patches = {
+        "DEPLOY_APPROVAL_TOKEN": "DEPLOY-BUYDTF-ALPHA-V6-LOCAL-FIXTURE",
+        "RECOVERY_APPROVAL_TOKEN": "RECOVER-BUYDTF-ALPHA-V6-LOCAL-FIXTURE",
+        "activation_fpm_verification": activation_fpm_verification,
         "APP_ROOT": application,
         "RELEASE_ROOT": item["root"] / "releases",
         "ROLLBACK_ROOT": rollback,
@@ -738,7 +748,13 @@ def run_scenario(
             final_schema["schema_state"] == deploy.SCHEMA_STATE,
             "Scenario changed the installed schema state.",
         )
-        if expected_failure:
+        if scenario == "activation-fpm-before-gate-rejection":
+            require(state.get("source_install_started") is False and state.get("rollback_started") is False,
+                "A rejected activation prerequisite began mutation or rollback.")
+            require(not web_probe_log and not command_log, "A rejected activation prerequisite installed a gate or invoked Artisan.")
+            source = deploy.live_manifest_snapshot(rows, target=False)
+            schema_receipt = {"observed_schema_state": deploy.SCHEMA_STATE, "additive_schema_preserved": True}
+        elif expected_failure:
             require(state.get("rollback_complete") is True, "Automatic rollback did not complete.")
             source = deploy.live_manifest_snapshot(rows, target=False)
             schema_receipt = json.loads(

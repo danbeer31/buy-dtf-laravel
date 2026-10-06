@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "/usr/bin/php",
+    "ops/deployment/test_production_alpha_scheduler_probe.php",
+    "/tmp/buydtf-alpha-v3-build-a-20261004-r3",
+    "/tmp/buydtf-scheduler-writer-mws1jfld",
+    "/mnt/c/Users/danie/projects/bdtf-alpha-activation-v6-20261005"
+  ],
+  "exit_code": 0,
+  "scope": "local disposable validation; no production access",
+  "status": "pass",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stdout_sha256": "972e2d0f1ec5510daccc14a729f8ad636841395e16b46b24d0e84d1a97e3f83c"
+}

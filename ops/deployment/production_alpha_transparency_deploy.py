@@ -34,10 +34,11 @@ from typing import Any, Callable, Iterator
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import production_alpha_gate_controls as source_controls
 import production_alpha_scheduler_guard as scheduler_controls
+import production_alpha_activation_controls as activation_controls
 
 APP_ROOT = Path("/var/www/buy-dtf")
-RELEASE_ROOT = APP_ROOT / "storage/app/private/operations/production-alpha-transparency-releases"
-ROLLBACK_ROOT = APP_ROOT / "storage/app/private/operations/production-alpha-transparency-rollbacks"
+RELEASE_ROOT = APP_ROOT / "storage/app/private/operations/production-alpha-transparency-v6-releases"
+ROLLBACK_ROOT = APP_ROOT / "storage/app/private/operations/production-alpha-transparency-v6-rollbacks"
 DEPLOYMENT_LOCK = APP_ROOT / "storage/framework/production-alpha-transparency-deployment.lock"
 DEPENDENCY_LOCK = APP_ROOT / "storage/framework/dependency-deployment.lock"
 LARAVEL_MAINTENANCE_FILE = APP_ROOT / "storage/framework/down"
@@ -57,7 +58,7 @@ TARGET_SHORT = TARGET_COMMIT[:8]
 HANDOFF_SHA256 = "ba9fd4dcf5fa5854b2e23418e0cd6ed8799874494a0341c726302b92a5acc127"
 RETIRED_ARTIFACT_COMMIT = "c43f39f556d057c99bb01e95ee7ca68658c05232"
 EXPECTED_ARCHIVE_SHA256 = "3067bca578201a39254d8544b633a04ff6a9e43fc0de2a2783a95ccde9a1bfcd"
-EXPECTED_MANIFEST_SHA256 = "1821ba8099fafb2ddd48dd75f0a6ee8abbb43d83d5fafda2de9319022750b9a2"
+EXPECTED_MANIFEST_SHA256 = "d46b78f9bc65c1390c23a531f3ee3a39647f8866f4320d1c03d427496cdec4a5"
 EXPECTED_HELPER_SHA256 = "839588fe2930e1e673c507b05f7ccf15d7166329d66c1563775154cd7030d200"
 EXPECTED_MIGRATION_SHA256 = "992fbfe8086732e9bde10be89c3f52ddb4fef49edfdec12b744377c2e4181bbf"
 MIGRATION_RELATIVE_PATH = Path(
@@ -126,13 +127,15 @@ EXPECTED_FRONT_CONTROLLER_SHA256 = "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26
 # historical dependency envelope. Staging and cutover need separate authority.
 DEPENDENCY_ENVELOPE_FROZEN = True
 DEPENDENCY_ENVELOPE_STATUS = "post_laravel_12_69_1_frozen_review_required"
-LOCAL_CORRECTION_REVIEW_ONLY = True
+LOCAL_CORRECTION_REVIEW_ONLY = False
 
-STAGE_APPROVAL_TOKEN = f"STAGE-BUYDTF-ALPHA-V5-{TARGET_COMMIT[:16]}"
-DEPLOY_APPROVAL_TOKEN = f"DEPLOY-BUYDTF-ALPHA-V5-{TARGET_COMMIT[:16]}"
-RECOVERY_APPROVAL_TOKEN = f"RECOVER-BUYDTF-ALPHA-V5-{TARGET_COMMIT[:16]}"
+# No execution authorization is issued by this local activation package.
+# Filling these requires a separately reviewed authorization-bound artifact.
+STAGE_APPROVAL_TOKEN = None
+DEPLOY_APPROVAL_TOKEN = None
+RECOVERY_APPROVAL_TOKEN = None
 
-CONTROL_FILES = {'production_alpha_scheduler_guard.py': 'd4334e0181ececbd76d140711998f1d143f648dc9a4de85f413f2083354b6489', 'production_alpha_process_scope_probe.php': '1dca015bffdaf4433ff00ecb0569faad0928c28a726b827f773d4cae4b4737c6', 'production_alpha_scheduler_probe.php': '91e81065a4add34e916674c2a7fcc3ebe5f867324ec350dc9220214102cf0d80', 'production_alpha_gate_controls.py': '2719da67c6d425e5fa4bef70aade0789aba1deccfaf09f8992c8674883c65c00', 'production_alpha_dependency_envelope.json': '04850fe3aef14981c92f5b2af373bd136cfb6fead456d86fcab7233acb009fd1', 'laravel_dependency_gate.py': 'b93c08f58a08333120369c1cc75c60631d621c3a8099ca3967065721c45679f5', 'laravel_nginx_identity.py': '1243fea2757aca89f586ec4b322b0d23ee1e19b2d027c21bd6523e71e6e6e8e0', 'laravel_fpm_opcache_probe.php': 'b8b34f87d45a0c000cc0df7917496631320cfbdcca1ff44bc41741ce0d569262'}
+CONTROL_FILES = {'production_alpha_scheduler_guard.py': 'd4334e0181ececbd76d140711998f1d143f648dc9a4de85f413f2083354b6489', 'production_alpha_process_scope_probe.php': '1dca015bffdaf4433ff00ecb0569faad0928c28a726b827f773d4cae4b4737c6', 'production_alpha_scheduler_probe.php': '91e81065a4add34e916674c2a7fcc3ebe5f867324ec350dc9220214102cf0d80', 'production_alpha_gate_controls.py': '2719da67c6d425e5fa4bef70aade0789aba1deccfaf09f8992c8674883c65c00', 'production_alpha_dependency_envelope.json': '04850fe3aef14981c92f5b2af373bd136cfb6fead456d86fcab7233acb009fd1', 'laravel_dependency_gate.py': 'b93c08f58a08333120369c1cc75c60631d621c3a8099ca3967065721c45679f5', 'laravel_nginx_identity.py': '1243fea2757aca89f586ec4b322b0d23ee1e19b2d027c21bd6523e71e6e6e8e0', 'laravel_fpm_opcache_probe.php': 'b8b34f87d45a0c000cc0df7917496631320cfbdcca1ff44bc41741ce0d569262', 'production_alpha_activation_controls.py': 'a2a09458289ccedf5384f000c534f23dfbb40aba9557f1a7736582456ab7c5bb', 'production_alpha_fpm_activation_probe.php': 'd3f9ac27e72f009156aedd3afca57b4f9586ec64a860d2cfd9fe3a5143b2c759'}
 
 DRAIN_SECONDS = 65
 OPCACHE_WAIT_SECONDS = 7
@@ -193,6 +196,43 @@ def environment_identity():
 
 class DeploymentError(source_controls.DeploymentError):
     """A reviewed condition failed and the operation must stop closed."""
+
+
+def require_action_approval(action: str, supplied: str | None) -> None:
+    expected = {"stage": STAGE_APPROVAL_TOKEN, "deploy": DEPLOY_APPROVAL_TOKEN,
+        "recover": RECOVERY_APPROVAL_TOKEN}.get(action)
+    prefix = {"stage": "STAGE", "deploy": "DEPLOY", "recover": "RECOVER"}.get(action)
+    required_prefix = f"{prefix}-BUYDTF-ALPHA-V6-"
+    if prefix is None or not isinstance(expected, str) or not expected.startswith(required_prefix) or len(expected) <= len(required_prefix):
+        raise DeploymentError("Activation package is non-stageable: execution approval tokens are withheld pending independent review.")
+    if not isinstance(supplied, str) or not secrets.compare_digest(supplied, expected):
+        raise DeploymentError("The fresh action-specific V6 authorization was not supplied.")
+
+
+def activation_fpm_verification(directory: Path | None = None, *, phase: str,
+                                release_receipt_sha256: str | None = None) -> dict[str, Any]:
+    try:
+        proof = activation_controls.validate_proof(activation_controls.verify_production_fpm_scope())
+    except activation_controls.ActivationError as error:
+        raise DeploymentError(str(error)) from error
+    result = {"phase": phase, "proof": proof}
+    if release_receipt_sha256 is not None:
+        result["release_receipt_sha256"] = release_receipt_sha256
+    if directory is not None:
+        path = directory / f"{phase}-production-fpm-scope-receipt.json"
+        atomic_json(path, result)
+        result = {**result, "path": str(path), "sha256": sha256_file(path)}
+    return result
+
+
+def activation_fpm_checkpoint(state: dict[str, Any], state_path: Path, *, phase: str) -> dict[str, Any]:
+    if mutation_has_started(state):
+        raise DeploymentError("A new activation prerequisite cannot be established after source mutation.")
+    receipt = activation_fpm_verification(state_path.parent, phase=phase,
+        release_receipt_sha256=state["release_receipt_sha256"])
+    state.setdefault("activation_fpm_checkpoints", []).append(receipt)
+    write_state(state_path, state)
+    return receipt
 
 
 def sha256_bytes(value: bytes) -> str:
@@ -1159,6 +1199,7 @@ def production_preflight(
     if conflicts:
         raise DeploymentError("A scoped production process is active.")
     controls=environment_identity()
+    activation_fpm = activation_fpm_verification(evidence_directory, phase=prefix)
     full_source=full_source_identity(target=require_target_source)
     live_source = live_manifest_snapshot(manifest_rows, target=require_target_source)
     dependencies = dependency_identity()
@@ -1188,6 +1229,7 @@ def production_preflight(
         "full_source": full_source,
         "live_source": live_source,
         "controls": controls,
+        "activation_fpm": activation_fpm,
         "runtime": runtime,
         "runtime_command": runtime_command,
         "runtime_verification": runtime_verification,
@@ -1226,6 +1268,7 @@ def preflight_guard(helper: Path, rows: list[dict[str, Any]]) -> dict[str, Any]:
     if scoped_processes():
         raise DeploymentError("A scoped production process is active.")
     controls=environment_identity()
+    activation_fpm = activation_fpm_verification(phase="phase0-read-only-guard")
     full_source_identity(target=False)
     source = live_manifest_snapshot(rows, target=False)
     dependencies = dependency_identity()
@@ -1237,6 +1280,7 @@ def preflight_guard(helper: Path, rows: list[dict[str, Any]]) -> dict[str, Any]:
         "generated_at_utc": utc_now(),
         "source": source,
         "controls": controls,
+        "activation_fpm": activation_fpm,
         "dependencies": dependencies,
         "runtime": runtime,
         "runtime_verification": runtime_verification,
@@ -1500,8 +1544,7 @@ def stage_release(
             "Transparency staging is disabled until the post-Laravel-12.69.1 "
             "production dependency envelope is frozen and reviewed."
         )
-    if approval_token != STAGE_APPROVAL_TOKEN:
-        raise DeploymentError("The exact reviewed Phase 1 staging token was not supplied.")
+    require_action_approval("stage", approval_token)
     archive = require_regular_file(archive, EXPECTED_ARCHIVE_SHA256)
     manifest = require_regular_file(manifest, EXPECTED_MANIFEST_SHA256)
     helper = require_regular_file(helper, EXPECTED_HELPER_SHA256)
@@ -1510,6 +1553,8 @@ def stage_release(
     if sha256_file(runner) in RETIRED_RUNNER_SHA256S:
         raise DeploymentError("The executing runner is permanently retired.")
     rows = parse_manifest(manifest)
+    for name, digest in CONTROL_FILES.items():
+        require_regular_file(Path(__file__).with_name(name), digest)
 
     # This guard is intentionally before RELEASE_ROOT creation or any copy. A
     # hard-stop mismatch therefore leaves no Phase 1 production artifact.
@@ -1597,6 +1642,7 @@ def stage_release(
         post_source = live_manifest_snapshot(rows, target=False)
         post_dependencies = dependency_identity()
         post_health = health_snapshot()
+        activation_fpm_after = activation_fpm_verification(evidence, phase="post-phase1")
         if environment_identity() != preflight["controls"]:
             raise DeploymentError("FPM/nginx envelope changed during staging")
         if post_source["sha256"] != preflight["live_source"]["sha256"]:
@@ -1609,6 +1655,9 @@ def stage_release(
             "scope": "alpha-repair-schema-present-source-only-staging",
             "generated_at_utc": utc_now(),
             "target_commit": TARGET_COMMIT,
+            "activation_generation": activation_controls.GENERATION,
+            "activation_fpm": preflight["activation_fpm"],
+            "activation_fpm_after": activation_fpm_after,
             "release_directory": str(release),
             "control_inputs": control_inputs,
             "controls": preflight["controls"],
@@ -1726,6 +1775,21 @@ def validate_release_receipt(
         raise DeploymentError("Release receipt is not a successful Phase 1 receipt.")
     if receipt.get("target_commit") != TARGET_COMMIT or receipt.get("release_directory") != str(release):
         raise DeploymentError("Release receipt identity differs from the reviewed alpha repair.")
+    if receipt.get("activation_generation") != activation_controls.GENERATION:
+        raise DeploymentError("A fresh V6 release is required; older releases cannot be promoted.")
+    for key in ("activation_fpm", "activation_fpm_after"):
+        item = receipt.get(key, {})
+        proof_path = Path(str(item.get("path", "")))
+        require_regular_file(proof_path, str(item.get("sha256", "")))
+        if not is_relative_to(proof_path.resolve(strict=True), release / "evidence") or path_metadata(proof_path) != {"uid": 1000, "gid": 1000, "mode": 0o600}:
+            raise DeploymentError("Production FPM prerequisite evidence is not private or receipt-bound.")
+        recorded = load_json(proof_path)
+        if recorded != {"phase": item.get("phase"), "proof": item.get("proof")}:
+            raise DeploymentError("Staged production FPM prerequisite receipt differs.")
+        try:
+            activation_controls.validate_proof(recorded["proof"])
+        except activation_controls.ActivationError as error:
+            raise DeploymentError(str(error)) from error
     for name, digest in CONTROL_FILES.items():
         item=receipt.get("control_inputs",{}).get(name,{})
         if item.get("sha256") != digest or Path(item.get("path","")) != release/"inputs"/name:
@@ -3027,8 +3091,7 @@ def deploy_release(
             "Transparency deployment is disabled until the post-Laravel-12.69.1 "
             "production dependency envelope is frozen and reviewed."
         )
-    if approval_token != DEPLOY_APPROVAL_TOKEN:
-        raise DeploymentError("The exact reviewed deployment approval token was not supplied.")
+    require_action_approval("deploy", approval_token)
     receipt, release, rows = validate_release_receipt(
         release_receipt_path, release_receipt_sha256
     )
@@ -3052,6 +3115,7 @@ def deploy_release(
         state_path = state_directory / "state.json"
         state: dict[str, Any] = {
             "version": 1,
+            "activation_generation": activation_controls.GENERATION,
             "status": "initializing",
             "target_commit": TARGET_COMMIT,
             "release_receipt": str(release_receipt_path),
@@ -3120,6 +3184,7 @@ def deploy_release(
             write_state(state_path, state)
             append_event(state_directory, "source_backups_complete")
 
+            activation_fpm_checkpoint(state, state_path, phase="before-static-gate")
             gate = install_static_gate(
                 state_directory=state_directory,
                 name="cutover-static-gate",
@@ -3180,6 +3245,7 @@ def deploy_release(
             if environment_identity() != receipt["controls"]:
                 raise DeploymentError("Under-gate FPM/nginx envelope differs")
             source_controls.record_fpm_opcache_before_mutation(state,state_path)
+            activation_fpm_checkpoint(state, state_path, phase="under-gate-before-source")
             state["source_install_started"] = True
             state["status"] = "installing_source"
             write_state(state_path, state)
@@ -3300,8 +3366,7 @@ def recover_state(
     *, state_path: Path, approval_token: str
 ) -> Path:
     require_local_correction_scope()
-    if approval_token != RECOVERY_APPROVAL_TOKEN:
-        raise DeploymentError("The exact reviewed recovery approval token was not supplied.")
+    require_action_approval("recover", approval_token)
     state_path = require_regular_file(state_path)
     state_directory = state_path.parent.resolve(strict=True)
     if not is_relative_to(state_directory, ROLLBACK_ROOT.resolve(strict=True)):
@@ -3309,6 +3374,8 @@ def recover_state(
     state = load_json(state_path)
     if not isinstance(state, dict) or state.get("target_commit") != TARGET_COMMIT:
         raise DeploymentError("Recovery state does not belong to the reviewed alpha repair.")
+    if state.get("activation_generation") != activation_controls.GENERATION:
+        raise DeploymentError("Recovery cannot reuse a retired or earlier-generation state.")
     receipt_path = Path(str(state.get("release_receipt", "")))
     receipt_sha256 = str(state.get("release_receipt_sha256", ""))
     receipt, _, rows = validate_release_receipt(receipt_path, receipt_sha256)
@@ -3330,7 +3397,7 @@ def recover_state(
 
 def describe() -> dict[str, Any]:
     return {
-        "artifact": "BuyDTF local process-scope rollback correction; review only",
+        "artifact": "BuyDTF source-only V6 activation package; execution tokens withheld",
         "local_correction_review_only": LOCAL_CORRECTION_REVIEW_ONLY,
         "scheduler_policy": scheduler_controls.POLICY,
         "scheduler_policy_sha256": scheduler_controls.POLICY_SHA256,
@@ -3407,7 +3474,7 @@ def describe() -> dict[str, Any]:
         },
         "approval_tokens": {
             "status": (
-                "blocked_local_correction_requires_new_review_and_authorization"
+                "withheld_pending_activation_review_and_fresh_authorization"
                 if DEPENDENCY_ENVELOPE_FROZEN
                 else "withheld_pending_post_laravel_12_69_1_freeze"
             ),
@@ -3421,6 +3488,11 @@ def describe() -> dict[str, Any]:
             "release_receipt_sha256": sorted(RETIRED_RELEASE_RECEIPT_SHA256S),
             "release_receipt_paths": sorted(RETIRED_RELEASE_RECEIPT_PATHS),
         },
+        "activation_package": {"generation": activation_controls.GENERATION,
+            "accepted_correction_commit": activation_controls.ACCEPTED_CORRECTION_COMMIT,
+            "production_php_fpm_required": "8.2.30", "production_fpm_verification": "not_performed_during_local_preparation",
+            "checkpoints": ["phase0-before-release", "phase1", "post-phase1", "before-static-gate", "under-gate-before-source"],
+            "fresh_v6_release_required": True, "execution_approval_tokens_withheld": True},
         "safety": {
             "git_operations": False,
             "composer_operations": False,
@@ -3468,6 +3540,7 @@ def main() -> int:
             return 0
         if LOCAL_CORRECTION_REVIEW_ONLY:
             raise DeploymentError("Local correction is non-stageable: no deployment, recovery, or retry authorization exists.")
+        require_action_approval("stage" if arguments.stage else "deploy" if arguments.deploy else "recover", arguments.approval_token)
         if arguments.stage:
             if (
                 arguments.archive is None

@@ -1,0 +1,808 @@
+{
+  "accounting_task_executed": false,
+  "active_mutex_read_only": true,
+  "cookie_or_customer_data": false,
+  "database_observer_select_only": true,
+  "database_select_count": 2,
+  "disposable_framework_mutex_lifecycle_only": true,
+  "events": [
+    {
+      "command_sha256": "20772ee6610a62c91cd83c6b0c82bfc0f38f38a5a6e8e64a61a48a37870160fc",
+      "expires_at_minutes": 1440,
+      "expression": "30 1 * * *",
+      "mutex_name_sha256": null,
+      "run_in_background": false,
+      "timezone": "America/Chicago",
+      "without_overlapping": false
+    },
+    {
+      "command_sha256": "685af347906e39312efb03a2f5c0697721c26c967b2de7de40bb5c3bb9d07ee2",
+      "expires_at_minutes": 1440,
+      "expression": "0 * * * *",
+      "mutex_name_sha256": null,
+      "run_in_background": false,
+      "timezone": "America/Chicago",
+      "without_overlapping": false
+    },
+    {
+      "command_sha256": "d137b7ec46d628bd46e895d3ab2da4f26c0db690a47b62fcc5d68e21ca0335dc",
+      "expires_at_minutes": 15,
+      "expression": "*/10 * * * *",
+      "mutex_name_sha256": "a086c96c5fd6e5ba9e3e47ba418706400ad8928e2ea406688628a505d26b3eff",
+      "run_in_background": true,
+      "timezone": "America/Chicago",
+      "without_overlapping": true
+    }
+  ],
+  "expired_mutex_read_only": true,
+  "invalid_timestamp_cases_rejected": 9,
+  "laravel_due_cases": [
+    {
+      "at_utc": "2026-07-10T06:20:01Z",
+      "due_commands": [
+        "qbo:refresh-admin-cache"
+      ],
+      "local_time": "2026-07-10T01:20:01-05:00"
+    },
+    {
+      "at_utc": "2026-07-10T06:30:01Z",
+      "due_commands": [
+        "accounting:reconcile-stripe-holding",
+        "qbo:refresh-admin-cache"
+      ],
+      "local_time": "2026-07-10T01:30:01-05:00"
+    },
+    {
+      "at_utc": "2026-07-10T07:00:01Z",
+      "due_commands": [
+        "stripe:sync-payouts",
+        "qbo:refresh-admin-cache"
+      ],
+      "local_time": "2026-07-10T02:00:01-05:00"
+    },
+    {
+      "at_utc": "2026-12-10T07:20:01Z",
+      "due_commands": [
+        "qbo:refresh-admin-cache"
+      ],
+      "local_time": "2026-12-10T01:20:01-06:00"
+    },
+    {
+      "at_utc": "2026-12-10T07:30:01Z",
+      "due_commands": [
+        "accounting:reconcile-stripe-holding",
+        "qbo:refresh-admin-cache"
+      ],
+      "local_time": "2026-12-10T01:30:01-06:00"
+    },
+    {
+      "at_utc": "2026-12-10T08:00:01Z",
+      "due_commands": [
+        "stripe:sync-payouts",
+        "qbo:refresh-admin-cache"
+      ],
+      "local_time": "2026-12-10T02:00:01-06:00"
+    },
+    {
+      "at_utc": "2026-03-08T07:30:01Z",
+      "due_commands": [
+        "accounting:reconcile-stripe-holding",
+        "qbo:refresh-admin-cache"
+      ],
+      "local_time": "2026-03-08T01:30:01-06:00"
+    },
+    {
+      "at_utc": "2026-03-08T08:30:01Z",
+      "due_commands": [
+        "qbo:refresh-admin-cache"
+      ],
+      "local_time": "2026-03-08T03:30:01-05:00"
+    },
+    {
+      "at_utc": "2026-11-01T06:30:01Z",
+      "due_commands": [
+        "accounting:reconcile-stripe-holding",
+        "qbo:refresh-admin-cache"
+      ],
+      "local_time": "2026-11-01T01:30:01-05:00"
+    },
+    {
+      "at_utc": "2026-11-01T07:30:01Z",
+      "due_commands": [
+        "accounting:reconcile-stripe-holding",
+        "qbo:refresh-admin-cache"
+      ],
+      "local_time": "2026-11-01T01:30:01-06:00"
+    },
+    {
+      "at_utc": "2026-11-01T08:30:01Z",
+      "due_commands": [
+        "qbo:refresh-admin-cache"
+      ],
+      "local_time": "2026-11-01T02:30:01-06:00"
+    }
+  ],
+  "laravel_version": "12.69.1",
+  "lifecycles": {
+    "summer": [
+      {
+        "generated_at_utc": "2026-07-10T06:20:01Z",
+        "observer_cache_unchanged": true,
+        "phase": "startup",
+        "raw_writer_last_attempt_at": "2026-07-10T01:10:12-05:00",
+        "raw_writer_last_success_at": "2026-07-10T01:10:12-05:00",
+        "scheduler": {
+          "active_overlap_mutex_count": 1,
+          "application_timezone": "America/Chicago",
+          "cache_driver": "file",
+          "event_count": 3,
+          "events": [
+            {
+              "command_sha256": "20772ee6610a62c91cd83c6b0c82bfc0f38f38a5a6e8e64a61a48a37870160fc",
+              "expires_at_minutes": 1440,
+              "expression": "30 1 * * *",
+              "mutex_name_sha256": null,
+              "run_in_background": false,
+              "timezone": "America/Chicago",
+              "without_overlapping": false
+            },
+            {
+              "command_sha256": "685af347906e39312efb03a2f5c0697721c26c967b2de7de40bb5c3bb9d07ee2",
+              "expires_at_minutes": 1440,
+              "expression": "0 * * * *",
+              "mutex_name_sha256": null,
+              "run_in_background": false,
+              "timezone": "America/Chicago",
+              "without_overlapping": false
+            },
+            {
+              "command_sha256": "d137b7ec46d628bd46e895d3ab2da4f26c0db690a47b62fcc5d68e21ca0335dc",
+              "expires_at_minutes": 15,
+              "expression": "*/10 * * * *",
+              "mutex_name_sha256": "a086c96c5fd6e5ba9e3e47ba418706400ad8928e2ea406688628a505d26b3eff",
+              "run_in_background": true,
+              "timezone": "America/Chicago",
+              "without_overlapping": true
+            }
+          ],
+          "observer_version": 2,
+          "overlap_mutexes": [
+            {
+              "command_sha256": "d137b7ec46d628bd46e895d3ab2da4f26c0db690a47b62fcc5d68e21ca0335dc",
+              "exists": true,
+              "expires_at_unix": 1783665300,
+              "mutex_name_sha256": "a086c96c5fd6e5ba9e3e47ba418706400ad8928e2ea406688628a505d26b3eff",
+              "owner_sha256": "f88bdc7ab808941b6ea37c1ff2d29508aac641e58a3fd46d318d8fb053c98cbf"
+            }
+          ],
+          "php_default_timezone": "America/Chicago",
+          "read_only": true,
+          "refresh_status": {
+            "circuit_retry_at": null,
+            "exists": true,
+            "invoice_count": 10,
+            "last_attempt_at": "2026-07-10T06:10:12Z",
+            "last_error_at": null,
+            "last_error_present": false,
+            "last_success_at": "2026-07-10T06:10:12Z",
+            "linked_businesses": 4,
+            "state": "ok",
+            "updated_businesses": 4
+          },
+          "source_sha256": {
+            "app/Console/Commands/RefreshQboAdminSnapshots.php": "21b014cd459b284bdedda0d8aa6d489a65b85fb84a8525798875633ea484c224",
+            "app/Services/QboAdminSnapshotRefresher.php": "12c3a8bd07ec8218cb63e0b5f9d277dc8d9e7bb883d65f0ab913556509069ab2",
+            "app/Services/QboAdminSnapshotStore.php": "5162053198ca8f2bbc55759d1619f9c3a3be01df67d9b689e07d7e6e66c5ba21",
+            "routes/console.php": "26aabb054889be1279c4c74c3e37c412e6de8a527864657b523fe983de03d444"
+          },
+          "stripe_payout_sync_event_count": 1
+        }
+      },
+      {
+        "generated_at_utc": "2026-07-10T06:20:05Z",
+        "observer_cache_unchanged": true,
+        "phase": "running",
+        "raw_writer_last_attempt_at": "2026-07-10T01:20:05-05:00",
+        "raw_writer_last_success_at": "2026-07-10T01:10:12-05:00",
+        "scheduler": {
+          "active_overlap_mutex_count": 1,
+          "application_timezone": "America/Chicago",
+          "cache_driver": "file",
+          "event_count": 3,
+          "events": [
+            {
+              "command_sha256": "20772ee6610a62c91cd83c6b0c82bfc0f38f38a5a6e8e64a61a48a37870160fc",
+              "expires_at_minutes": 1440,
+              "expression": "30 1 * * *",
+              "mutex_name_sha256": null,
+              "run_in_background": false,
+              "timezone": "America/Chicago",
+              "without_overlapping": false
+            },
+            {
+              "command_sha256": "685af347906e39312efb03a2f5c0697721c26c967b2de7de40bb5c3bb9d07ee2",
+              "expires_at_minutes": 1440,
+              "expression": "0 * * * *",
+              "mutex_name_sha256": null,
+              "run_in_background": false,
+              "timezone": "America/Chicago",
+              "without_overlapping": false
+            },
+            {
+              "command_sha256": "d137b7ec46d628bd46e895d3ab2da4f26c0db690a47b62fcc5d68e21ca0335dc",
+              "expires_at_minutes": 15,
+              "expression": "*/10 * * * *",
+              "mutex_name_sha256": "a086c96c5fd6e5ba9e3e47ba418706400ad8928e2ea406688628a505d26b3eff",
+              "run_in_background": true,
+              "timezone": "America/Chicago",
+              "without_overlapping": true
+            }
+          ],
+          "observer_version": 2,
+          "overlap_mutexes": [
+            {
+              "command_sha256": "d137b7ec46d628bd46e895d3ab2da4f26c0db690a47b62fcc5d68e21ca0335dc",
+              "exists": true,
+              "expires_at_unix": 1783665300,
+              "mutex_name_sha256": "a086c96c5fd6e5ba9e3e47ba418706400ad8928e2ea406688628a505d26b3eff",
+              "owner_sha256": "f88bdc7ab808941b6ea37c1ff2d29508aac641e58a3fd46d318d8fb053c98cbf"
+            }
+          ],
+          "php_default_timezone": "America/Chicago",
+          "read_only": true,
+          "refresh_status": {
+            "circuit_retry_at": null,
+            "exists": true,
+            "invoice_count": 10,
+            "last_attempt_at": "2026-07-10T06:20:05Z",
+            "last_error_at": null,
+            "last_error_present": false,
+            "last_success_at": "2026-07-10T06:10:12Z",
+            "linked_businesses": 4,
+            "state": "ok",
+            "updated_businesses": 4
+          },
+          "source_sha256": {
+            "app/Console/Commands/RefreshQboAdminSnapshots.php": "21b014cd459b284bdedda0d8aa6d489a65b85fb84a8525798875633ea484c224",
+            "app/Services/QboAdminSnapshotRefresher.php": "12c3a8bd07ec8218cb63e0b5f9d277dc8d9e7bb883d65f0ab913556509069ab2",
+            "app/Services/QboAdminSnapshotStore.php": "5162053198ca8f2bbc55759d1619f9c3a3be01df67d9b689e07d7e6e66c5ba21",
+            "routes/console.php": "26aabb054889be1279c4c74c3e37c412e6de8a527864657b523fe983de03d444"
+          },
+          "stripe_payout_sync_event_count": 1
+        }
+      },
+      {
+        "generated_at_utc": "2026-07-10T06:20:12Z",
+        "observer_cache_unchanged": true,
+        "phase": "success_before_release",
+        "raw_writer_last_attempt_at": "2026-07-10T01:20:12-05:00",
+        "raw_writer_last_success_at": "2026-07-10T01:20:12-05:00",
+        "scheduler": {
+          "active_overlap_mutex_count": 1,
+          "application_timezone": "America/Chicago",
+          "cache_driver": "file",
+          "event_count": 3,
+          "events": [
+            {
+              "command_sha256": "20772ee6610a62c91cd83c6b0c82bfc0f38f38a5a6e8e64a61a48a37870160fc",
+              "expires_at_minutes": 1440,
+              "expression": "30 1 * * *",
+              "mutex_name_sha256": null,
+              "run_in_background": false,
+              "timezone": "America/Chicago",
+              "without_overlapping": false
+            },
+            {
+              "command_sha256": "685af347906e39312efb03a2f5c0697721c26c967b2de7de40bb5c3bb9d07ee2",
+              "expires_at_minutes": 1440,
+              "expression": "0 * * * *",
+              "mutex_name_sha256": null,
+              "run_in_background": false,
+              "timezone": "America/Chicago",
+              "without_overlapping": false
+            },
+            {
+              "command_sha256": "d137b7ec46d628bd46e895d3ab2da4f26c0db690a47b62fcc5d68e21ca0335dc",
+              "expires_at_minutes": 15,
+              "expression": "*/10 * * * *",
+              "mutex_name_sha256": "a086c96c5fd6e5ba9e3e47ba418706400ad8928e2ea406688628a505d26b3eff",
+              "run_in_background": true,
+              "timezone": "America/Chicago",
+              "without_overlapping": true
+            }
+          ],
+          "observer_version": 2,
+          "overlap_mutexes": [
+            {
+              "command_sha256": "d137b7ec46d628bd46e895d3ab2da4f26c0db690a47b62fcc5d68e21ca0335dc",
+              "exists": true,
+              "expires_at_unix": 1783665300,
+              "mutex_name_sha256": "a086c96c5fd6e5ba9e3e47ba418706400ad8928e2ea406688628a505d26b3eff",
+              "owner_sha256": "f88bdc7ab808941b6ea37c1ff2d29508aac641e58a3fd46d318d8fb053c98cbf"
+            }
+          ],
+          "php_default_timezone": "America/Chicago",
+          "read_only": true,
+          "refresh_status": {
+            "circuit_retry_at": null,
+            "exists": true,
+            "invoice_count": 10,
+            "last_attempt_at": "2026-07-10T06:20:12Z",
+            "last_error_at": null,
+            "last_error_present": false,
+            "last_success_at": "2026-07-10T06:20:12Z",
+            "linked_businesses": 4,
+            "state": "ok",
+            "updated_businesses": 4
+          },
+          "source_sha256": {
+            "app/Console/Commands/RefreshQboAdminSnapshots.php": "21b014cd459b284bdedda0d8aa6d489a65b85fb84a8525798875633ea484c224",
+            "app/Services/QboAdminSnapshotRefresher.php": "12c3a8bd07ec8218cb63e0b5f9d277dc8d9e7bb883d65f0ab913556509069ab2",
+            "app/Services/QboAdminSnapshotStore.php": "5162053198ca8f2bbc55759d1619f9c3a3be01df67d9b689e07d7e6e66c5ba21",
+            "routes/console.php": "26aabb054889be1279c4c74c3e37c412e6de8a527864657b523fe983de03d444"
+          },
+          "stripe_payout_sync_event_count": 1
+        }
+      },
+      {
+        "generated_at_utc": "2026-07-10T06:20:13Z",
+        "observer_cache_unchanged": true,
+        "phase": "released",
+        "raw_writer_last_attempt_at": "2026-07-10T01:20:12-05:00",
+        "raw_writer_last_success_at": "2026-07-10T01:20:12-05:00",
+        "scheduler": {
+          "active_overlap_mutex_count": 0,
+          "application_timezone": "America/Chicago",
+          "cache_driver": "file",
+          "event_count": 3,
+          "events": [
+            {
+              "command_sha256": "20772ee6610a62c91cd83c6b0c82bfc0f38f38a5a6e8e64a61a48a37870160fc",
+              "expires_at_minutes": 1440,
+              "expression": "30 1 * * *",
+              "mutex_name_sha256": null,
+              "run_in_background": false,
+              "timezone": "America/Chicago",
+              "without_overlapping": false
+            },
+            {
+              "command_sha256": "685af347906e39312efb03a2f5c0697721c26c967b2de7de40bb5c3bb9d07ee2",
+              "expires_at_minutes": 1440,
+              "expression": "0 * * * *",
+              "mutex_name_sha256": null,
+              "run_in_background": false,
+              "timezone": "America/Chicago",
+              "without_overlapping": false
+            },
+            {
+              "command_sha256": "d137b7ec46d628bd46e895d3ab2da4f26c0db690a47b62fcc5d68e21ca0335dc",
+              "expires_at_minutes": 15,
+              "expression": "*/10 * * * *",
+              "mutex_name_sha256": "a086c96c5fd6e5ba9e3e47ba418706400ad8928e2ea406688628a505d26b3eff",
+              "run_in_background": true,
+              "timezone": "America/Chicago",
+              "without_overlapping": true
+            }
+          ],
+          "observer_version": 2,
+          "overlap_mutexes": [
+            {
+              "command_sha256": "d137b7ec46d628bd46e895d3ab2da4f26c0db690a47b62fcc5d68e21ca0335dc",
+              "exists": false,
+              "expires_at_unix": null,
+              "mutex_name_sha256": "a086c96c5fd6e5ba9e3e47ba418706400ad8928e2ea406688628a505d26b3eff",
+              "owner_sha256": null
+            }
+          ],
+          "php_default_timezone": "America/Chicago",
+          "read_only": true,
+          "refresh_status": {
+            "circuit_retry_at": null,
+            "exists": true,
+            "invoice_count": 10,
+            "last_attempt_at": "2026-07-10T06:20:12Z",
+            "last_error_at": null,
+            "last_error_present": false,
+            "last_success_at": "2026-07-10T06:20:12Z",
+            "linked_businesses": 4,
+            "state": "ok",
+            "updated_businesses": 4
+          },
+          "source_sha256": {
+            "app/Console/Commands/RefreshQboAdminSnapshots.php": "21b014cd459b284bdedda0d8aa6d489a65b85fb84a8525798875633ea484c224",
+            "app/Services/QboAdminSnapshotRefresher.php": "12c3a8bd07ec8218cb63e0b5f9d277dc8d9e7bb883d65f0ab913556509069ab2",
+            "app/Services/QboAdminSnapshotStore.php": "5162053198ca8f2bbc55759d1619f9c3a3be01df67d9b689e07d7e6e66c5ba21",
+            "routes/console.php": "26aabb054889be1279c4c74c3e37c412e6de8a527864657b523fe983de03d444"
+          },
+          "stripe_payout_sync_event_count": 1
+        }
+      }
+    ],
+    "winter": [
+      {
+        "generated_at_utc": "2026-12-10T07:20:01Z",
+        "observer_cache_unchanged": true,
+        "phase": "startup",
+        "raw_writer_last_attempt_at": "2026-12-10T01:10:12-06:00",
+        "raw_writer_last_success_at": "2026-12-10T01:10:12-06:00",
+        "scheduler": {
+          "active_overlap_mutex_count": 1,
+          "application_timezone": "America/Chicago",
+          "cache_driver": "file",
+          "event_count": 3,
+          "events": [
+            {
+              "command_sha256": "20772ee6610a62c91cd83c6b0c82bfc0f38f38a5a6e8e64a61a48a37870160fc",
+              "expires_at_minutes": 1440,
+              "expression": "30 1 * * *",
+              "mutex_name_sha256": null,
+              "run_in_background": false,
+              "timezone": "America/Chicago",
+              "without_overlapping": false
+            },
+            {
+              "command_sha256": "685af347906e39312efb03a2f5c0697721c26c967b2de7de40bb5c3bb9d07ee2",
+              "expires_at_minutes": 1440,
+              "expression": "0 * * * *",
+              "mutex_name_sha256": null,
+              "run_in_background": false,
+              "timezone": "America/Chicago",
+              "without_overlapping": false
+            },
+            {
+              "command_sha256": "d137b7ec46d628bd46e895d3ab2da4f26c0db690a47b62fcc5d68e21ca0335dc",
+              "expires_at_minutes": 15,
+              "expression": "*/10 * * * *",
+              "mutex_name_sha256": "a086c96c5fd6e5ba9e3e47ba418706400ad8928e2ea406688628a505d26b3eff",
+              "run_in_background": true,
+              "timezone": "America/Chicago",
+              "without_overlapping": true
+            }
+          ],
+          "observer_version": 2,
+          "overlap_mutexes": [
+            {
+              "command_sha256": "d137b7ec46d628bd46e895d3ab2da4f26c0db690a47b62fcc5d68e21ca0335dc",
+              "exists": true,
+              "expires_at_unix": 1796888100,
+              "mutex_name_sha256": "a086c96c5fd6e5ba9e3e47ba418706400ad8928e2ea406688628a505d26b3eff",
+              "owner_sha256": "a91c9431c942258c48809db1f65ee9ebe5ae5579fbd0d2fdfe3920c2042a408d"
+            }
+          ],
+          "php_default_timezone": "America/Chicago",
+          "read_only": true,
+          "refresh_status": {
+            "circuit_retry_at": null,
+            "exists": true,
+            "invoice_count": 10,
+            "last_attempt_at": "2026-12-10T07:10:12Z",
+            "last_error_at": null,
+            "last_error_present": false,
+            "last_success_at": "2026-12-10T07:10:12Z",
+            "linked_businesses": 4,
+            "state": "ok",
+            "updated_businesses": 4
+          },
+          "source_sha256": {
+            "app/Console/Commands/RefreshQboAdminSnapshots.php": "21b014cd459b284bdedda0d8aa6d489a65b85fb84a8525798875633ea484c224",
+            "app/Services/QboAdminSnapshotRefresher.php": "12c3a8bd07ec8218cb63e0b5f9d277dc8d9e7bb883d65f0ab913556509069ab2",
+            "app/Services/QboAdminSnapshotStore.php": "5162053198ca8f2bbc55759d1619f9c3a3be01df67d9b689e07d7e6e66c5ba21",
+            "routes/console.php": "26aabb054889be1279c4c74c3e37c412e6de8a527864657b523fe983de03d444"
+          },
+          "stripe_payout_sync_event_count": 1
+        }
+      },
+      {
+        "generated_at_utc": "2026-12-10T07:20:05Z",
+        "observer_cache_unchanged": true,
+        "phase": "running",
+        "raw_writer_last_attempt_at": "2026-12-10T01:20:05-06:00",
+        "raw_writer_last_success_at": "2026-12-10T01:10:12-06:00",
+        "scheduler": {
+          "active_overlap_mutex_count": 1,
+          "application_timezone": "America/Chicago",
+          "cache_driver": "file",
+          "event_count": 3,
+          "events": [
+            {
+              "command_sha256": "20772ee6610a62c91cd83c6b0c82bfc0f38f38a5a6e8e64a61a48a37870160fc",
+              "expires_at_minutes": 1440,
+              "expression": "30 1 * * *",
+              "mutex_name_sha256": null,
+              "run_in_background": false,
+              "timezone": "America/Chicago",
+              "without_overlapping": false
+            },
+            {
+              "command_sha256": "685af347906e39312efb03a2f5c0697721c26c967b2de7de40bb5c3bb9d07ee2",
+              "expires_at_minutes": 1440,
+              "expression": "0 * * * *",
+              "mutex_name_sha256": null,
+              "run_in_background": false,
+              "timezone": "America/Chicago",
+              "without_overlapping": false
+            },
+            {
+              "command_sha256": "d137b7ec46d628bd46e895d3ab2da4f26c0db690a47b62fcc5d68e21ca0335dc",
+              "expires_at_minutes": 15,
+              "expression": "*/10 * * * *",
+              "mutex_name_sha256": "a086c96c5fd6e5ba9e3e47ba418706400ad8928e2ea406688628a505d26b3eff",
+              "run_in_background": true,
+              "timezone": "America/Chicago",
+              "without_overlapping": true
+            }
+          ],
+          "observer_version": 2,
+          "overlap_mutexes": [
+            {
+              "command_sha256": "d137b7ec46d628bd46e895d3ab2da4f26c0db690a47b62fcc5d68e21ca0335dc",
+              "exists": true,
+              "expires_at_unix": 1796888100,
+              "mutex_name_sha256": "a086c96c5fd6e5ba9e3e47ba418706400ad8928e2ea406688628a505d26b3eff",
+              "owner_sha256": "a91c9431c942258c48809db1f65ee9ebe5ae5579fbd0d2fdfe3920c2042a408d"
+            }
+          ],
+          "php_default_timezone": "America/Chicago",
+          "read_only": true,
+          "refresh_status": {
+            "circuit_retry_at": null,
+            "exists": true,
+            "invoice_count": 10,
+            "last_attempt_at": "2026-12-10T07:20:05Z",
+            "last_error_at": null,
+            "last_error_present": false,
+            "last_success_at": "2026-12-10T07:10:12Z",
+            "linked_businesses": 4,
+            "state": "ok",
+            "updated_businesses": 4
+          },
+          "source_sha256": {
+            "app/Console/Commands/RefreshQboAdminSnapshots.php": "21b014cd459b284bdedda0d8aa6d489a65b85fb84a8525798875633ea484c224",
+            "app/Services/QboAdminSnapshotRefresher.php": "12c3a8bd07ec8218cb63e0b5f9d277dc8d9e7bb883d65f0ab913556509069ab2",
+            "app/Services/QboAdminSnapshotStore.php": "5162053198ca8f2bbc55759d1619f9c3a3be01df67d9b689e07d7e6e66c5ba21",
+            "routes/console.php": "26aabb054889be1279c4c74c3e37c412e6de8a527864657b523fe983de03d444"
+          },
+          "stripe_payout_sync_event_count": 1
+        }
+      },
+      {
+        "generated_at_utc": "2026-12-10T07:20:12Z",
+        "observer_cache_unchanged": true,
+        "phase": "success_before_release",
+        "raw_writer_last_attempt_at": "2026-12-10T01:20:12-06:00",
+        "raw_writer_last_success_at": "2026-12-10T01:20:12-06:00",
+        "scheduler": {
+          "active_overlap_mutex_count": 1,
+          "application_timezone": "America/Chicago",
+          "cache_driver": "file",
+          "event_count": 3,
+          "events": [
+            {
+              "command_sha256": "20772ee6610a62c91cd83c6b0c82bfc0f38f38a5a6e8e64a61a48a37870160fc",
+              "expires_at_minutes": 1440,
+              "expression": "30 1 * * *",
+              "mutex_name_sha256": null,
+              "run_in_background": false,
+              "timezone": "America/Chicago",
+              "without_overlapping": false
+            },
+            {
+              "command_sha256": "685af347906e39312efb03a2f5c0697721c26c967b2de7de40bb5c3bb9d07ee2",
+              "expires_at_minutes": 1440,
+              "expression": "0 * * * *",
+              "mutex_name_sha256": null,
+              "run_in_background": false,
+              "timezone": "America/Chicago",
+              "without_overlapping": false
+            },
+            {
+              "command_sha256": "d137b7ec46d628bd46e895d3ab2da4f26c0db690a47b62fcc5d68e21ca0335dc",
+              "expires_at_minutes": 15,
+              "expression": "*/10 * * * *",
+              "mutex_name_sha256": "a086c96c5fd6e5ba9e3e47ba418706400ad8928e2ea406688628a505d26b3eff",
+              "run_in_background": true,
+              "timezone": "America/Chicago",
+              "without_overlapping": true
+            }
+          ],
+          "observer_version": 2,
+          "overlap_mutexes": [
+            {
+              "command_sha256": "d137b7ec46d628bd46e895d3ab2da4f26c0db690a47b62fcc5d68e21ca0335dc",
+              "exists": true,
+              "expires_at_unix": 1796888100,
+              "mutex_name_sha256": "a086c96c5fd6e5ba9e3e47ba418706400ad8928e2ea406688628a505d26b3eff",
+              "owner_sha256": "a91c9431c942258c48809db1f65ee9ebe5ae5579fbd0d2fdfe3920c2042a408d"
+            }
+          ],
+          "php_default_timezone": "America/Chicago",
+          "read_only": true,
+          "refresh_status": {
+            "circuit_retry_at": null,
+            "exists": true,
+            "invoice_count": 10,
+            "last_attempt_at": "2026-12-10T07:20:12Z",
+            "last_error_at": null,
+            "last_error_present": false,
+            "last_success_at": "2026-12-10T07:20:12Z",
+            "linked_businesses": 4,
+            "state": "ok",
+            "updated_businesses": 4
+          },
+          "source_sha256": {
+            "app/Console/Commands/RefreshQboAdminSnapshots.php": "21b014cd459b284bdedda0d8aa6d489a65b85fb84a8525798875633ea484c224",
+            "app/Services/QboAdminSnapshotRefresher.php": "12c3a8bd07ec8218cb63e0b5f9d277dc8d9e7bb883d65f0ab913556509069ab2",
+            "app/Services/QboAdminSnapshotStore.php": "5162053198ca8f2bbc55759d1619f9c3a3be01df67d9b689e07d7e6e66c5ba21",
+            "routes/console.php": "26aabb054889be1279c4c74c3e37c412e6de8a527864657b523fe983de03d444"
+          },
+          "stripe_payout_sync_event_count": 1
+        }
+      },
+      {
+        "generated_at_utc": "2026-12-10T07:20:13Z",
+        "observer_cache_unchanged": true,
+        "phase": "released",
+        "raw_writer_last_attempt_at": "2026-12-10T01:20:12-06:00",
+        "raw_writer_last_success_at": "2026-12-10T01:20:12-06:00",
+        "scheduler": {
+          "active_overlap_mutex_count": 0,
+          "application_timezone": "America/Chicago",
+          "cache_driver": "file",
+          "event_count": 3,
+          "events": [
+            {
+              "command_sha256": "20772ee6610a62c91cd83c6b0c82bfc0f38f38a5a6e8e64a61a48a37870160fc",
+              "expires_at_minutes": 1440,
+              "expression": "30 1 * * *",
+              "mutex_name_sha256": null,
+              "run_in_background": false,
+              "timezone": "America/Chicago",
+              "without_overlapping": false
+            },
+            {
+              "command_sha256": "685af347906e39312efb03a2f5c0697721c26c967b2de7de40bb5c3bb9d07ee2",
+              "expires_at_minutes": 1440,
+              "expression": "0 * * * *",
+              "mutex_name_sha256": null,
+              "run_in_background": false,
+              "timezone": "America/Chicago",
+              "without_overlapping": false
+            },
+            {
+              "command_sha256": "d137b7ec46d628bd46e895d3ab2da4f26c0db690a47b62fcc5d68e21ca0335dc",
+              "expires_at_minutes": 15,
+              "expression": "*/10 * * * *",
+              "mutex_name_sha256": "a086c96c5fd6e5ba9e3e47ba418706400ad8928e2ea406688628a505d26b3eff",
+              "run_in_background": true,
+              "timezone": "America/Chicago",
+              "without_overlapping": true
+            }
+          ],
+          "observer_version": 2,
+          "overlap_mutexes": [
+            {
+              "command_sha256": "d137b7ec46d628bd46e895d3ab2da4f26c0db690a47b62fcc5d68e21ca0335dc",
+              "exists": false,
+              "expires_at_unix": null,
+              "mutex_name_sha256": "a086c96c5fd6e5ba9e3e47ba418706400ad8928e2ea406688628a505d26b3eff",
+              "owner_sha256": null
+            }
+          ],
+          "php_default_timezone": "America/Chicago",
+          "read_only": true,
+          "refresh_status": {
+            "circuit_retry_at": null,
+            "exists": true,
+            "invoice_count": 10,
+            "last_attempt_at": "2026-12-10T07:20:12Z",
+            "last_error_at": null,
+            "last_error_present": false,
+            "last_success_at": "2026-12-10T07:20:12Z",
+            "linked_businesses": 4,
+            "state": "ok",
+            "updated_businesses": 4
+          },
+          "source_sha256": {
+            "app/Console/Commands/RefreshQboAdminSnapshots.php": "21b014cd459b284bdedda0d8aa6d489a65b85fb84a8525798875633ea484c224",
+            "app/Services/QboAdminSnapshotRefresher.php": "12c3a8bd07ec8218cb63e0b5f9d277dc8d9e7bb883d65f0ab913556509069ab2",
+            "app/Services/QboAdminSnapshotStore.php": "5162053198ca8f2bbc55759d1619f9c3a3be01df67d9b689e07d7e6e66c5ba21",
+            "routes/console.php": "26aabb054889be1279c4c74c3e37c412e6de8a527864657b523fe983de03d444"
+          },
+          "stripe_payout_sync_event_count": 1
+        }
+      }
+    ]
+  },
+  "malformed_mutex_read_only_rejected": true,
+  "normalized_commands": [
+    "php artisan stripe:sync-payouts",
+    "php artisan accounting:reconcile-stripe-holding",
+    "php artisan qbo:refresh-admin-cache"
+  ],
+  "php_version": "8.3.6",
+  "production_cache_or_timezone_changes": false,
+  "real_writer_class": "App\\Services\\QboAdminSnapshotStore",
+  "real_writer_sha256": "5162053198ca8f2bbc55759d1619f9c3a3be01df67d9b689e07d7e6e66c5ba21",
+  "snapshot_owner_is_only_sha256": true,
+  "source_sha256": {
+    "app/Console/Commands/RefreshQboAdminSnapshots.php": "21b014cd459b284bdedda0d8aa6d489a65b85fb84a8525798875633ea484c224",
+    "app/Services/QboAdminSnapshotRefresher.php": "12c3a8bd07ec8218cb63e0b5f9d277dc8d9e7bb883d65f0ab913556509069ab2",
+    "app/Services/QboAdminSnapshotStore.php": "5162053198ca8f2bbc55759d1619f9c3a3be01df67d9b689e07d7e6e66c5ba21",
+    "routes/console.php": "26aabb054889be1279c4c74c3e37c412e6de8a527864657b523fe983de03d444"
+  },
+  "status": "pass",
+  "timestamp_cases": {
+    "2026-10-04T19:20:12-05:00": "2026-10-05T00:20:12Z",
+    "2026-10-05T00:20:12.123456Z": "2026-10-05T00:20:12.123456Z",
+    "2026-10-05T09:20:12+09:00": "2026-10-05T00:20:12Z",
+    "2026-11-01T01:30:01-05:00": "2026-11-01T06:30:01Z",
+    "2026-11-01T01:30:01-06:00": "2026-11-01T07:30:01Z",
+    "2026-12-10T01:20:12-06:00": "2026-12-10T07:20:12Z"
+  },
+  "writer_failure": {
+    "active_overlap_mutex_count": 0,
+    "application_timezone": "America/Chicago",
+    "cache_driver": "file",
+    "event_count": 3,
+    "events": [
+      {
+        "command_sha256": "20772ee6610a62c91cd83c6b0c82bfc0f38f38a5a6e8e64a61a48a37870160fc",
+        "expires_at_minutes": 1440,
+        "expression": "30 1 * * *",
+        "mutex_name_sha256": null,
+        "run_in_background": false,
+        "timezone": "America/Chicago",
+        "without_overlapping": false
+      },
+      {
+        "command_sha256": "685af347906e39312efb03a2f5c0697721c26c967b2de7de40bb5c3bb9d07ee2",
+        "expires_at_minutes": 1440,
+        "expression": "0 * * * *",
+        "mutex_name_sha256": null,
+        "run_in_background": false,
+        "timezone": "America/Chicago",
+        "without_overlapping": false
+      },
+      {
+        "command_sha256": "d137b7ec46d628bd46e895d3ab2da4f26c0db690a47b62fcc5d68e21ca0335dc",
+        "expires_at_minutes": 15,
+        "expression": "*/10 * * * *",
+        "mutex_name_sha256": "a086c96c5fd6e5ba9e3e47ba418706400ad8928e2ea406688628a505d26b3eff",
+        "run_in_background": true,
+        "timezone": "America/Chicago",
+        "without_overlapping": true
+      }
+    ],
+    "observer_version": 2,
+    "overlap_mutexes": [
+      {
+        "command_sha256": "d137b7ec46d628bd46e895d3ab2da4f26c0db690a47b62fcc5d68e21ca0335dc",
+        "exists": false,
+        "expires_at_unix": null,
+        "mutex_name_sha256": "a086c96c5fd6e5ba9e3e47ba418706400ad8928e2ea406688628a505d26b3eff",
+        "owner_sha256": null
+      }
+    ],
+    "php_default_timezone": "America/Chicago",
+    "read_only": true,
+    "refresh_status": {
+      "circuit_retry_at": null,
+      "exists": true,
+      "invoice_count": 10,
+      "last_attempt_at": "2026-12-10T07:20:12Z",
+      "last_error_at": "2026-11-01T08:30:01Z",
+      "last_error_present": true,
+      "last_success_at": "2026-12-10T07:20:12Z",
+      "linked_businesses": 4,
+      "state": "error",
+      "updated_businesses": 4
+    },
+    "source_sha256": {
+      "app/Console/Commands/RefreshQboAdminSnapshots.php": "21b014cd459b284bdedda0d8aa6d489a65b85fb84a8525798875633ea484c224",
+      "app/Services/QboAdminSnapshotRefresher.php": "12c3a8bd07ec8218cb63e0b5f9d277dc8d9e7bb883d65f0ab913556509069ab2",
+      "app/Services/QboAdminSnapshotStore.php": "5162053198ca8f2bbc55759d1619f9c3a3be01df67d9b689e07d7e6e66c5ba21",
+      "routes/console.php": "26aabb054889be1279c4c74c3e37c412e6de8a527864657b523fe983de03d444"
+    },
+    "stripe_payout_sync_event_count": 1
+  }
+}

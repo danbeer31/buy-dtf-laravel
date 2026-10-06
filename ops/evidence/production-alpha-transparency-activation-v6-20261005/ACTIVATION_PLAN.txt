@@ -1,0 +1,98 @@
+This is a separate local activation review package based on accepted correction
+2c14d6e401c9d24a7153c12f6ee4b74bd96f8582. The accepted scheduler, process-exit,
+process-scope, OPcache, gate, nginx, dependency-envelope, runtime and parser
+controls remain byte-for-byte unchanged. All eleven application members and
+their source archive remain unchanged. Earlier releases and evidence remain
+retained. This preparation does not authorize or perform production access.
+
+The correction-only hold is replaced with explicit withheld authorization
+bindings: stage, deploy and recover are all None. None, empty strings, retired
+V5 tokens and an arbitrary unissued V6 token cannot authorize any action.
+The CLI rejects before accessing production or input paths. The package cannot
+stage, deploy or recover in this state. No finalization action is introduced.
+
+Future authorization bindings must use fresh action-specific V6 values. They
+must be frozen, revalidated and independently reviewed before any production
+access or execution. Changing runner/input bytes invalidates the previous
+package review and requires another review. The eventual staged and executing
+runner must stay identical: do not edit token bindings between staging and
+cutover. Preparing expected action bindings never authorizes their execution;
+stage, cutover, separate recovery and finalization still need separate explicit
+evidence-bound user authorization. No retired authorization may be reused.
+
+The required production prerequisite is not satisfied during local preparation.
+Local FPM is PHP 8.3.6, not the required production PHP 8.2.30. The new frozen
+operations witness rejects that version and rejects CLI execution. A future
+authorized Phase 0 must execute the exact witness via the existing socket
+/run/php/php8.2-fpm.sock as UID 1000. It checks PHP 8.2.30, fpm-fcgi, actual
+worker UID/GID 33, a fresh nonce, and PID/UID/start-ticks/command-hash identity.
+The unchanged accepted process-scope probe executes in that same FPM request
+against the witnessed worker. Its bytes are pinned in the bridge and copied
+unchanged beside the witness. This avoids relying on cross-worker dumpability
+or the worker selected for a second request. Fresh caller kernel checks and unchanged
+socket identity finish the proof. An unavailable, disappeared, changed,
+rejected, malformed, or wrong-version FPM target cannot qualify this prerequisite.
+Only nonsecret frozen control code is copied to a fresh temporary 0711 directory
+with two 0644 scripts; both are checked and removed. No existing permissions change.
+
+The proof is mandatory in both Phase 0 paths, before release creation, during
+Phase 1, after Phase 1, immediately before the first static gate installation,
+and under the gate immediately before source mutation. Private 0600 receipts
+bind the proof to the release and durable state. Release validation requires
+the V6 generation and both staging proof receipts. V6 has separate release and
+rollback roots; older releases/states cannot be promoted or recovered with it.
+
+Pre-mutation FPM checks remain strict. After mutation, the accepted containment,
+boot-independent source rollback, frozen FPM envelope and full seven-second
+monotonic waits remain intact. The new prerequisite is never re-established
+after source mutation, so its absence cannot block the boot-independent restore.
+Reopening still needs the accepted source, schema, scheduler and health checks.
+Live unreadable processes remain fatal; the accepted fresh exit proof and PID
+reuse rejection remain unchanged. Only the bounded reviewed Chicago QBO task
+may be active after reopening. Scheduling must be strictly idle before mutation.
+
+Subject to independent review and separate future authorization:
+
+1. Complete and review fresh authorization bindings and freeze the exact final
+   runner and all fifteen inputs. Review this package before any push or access.
+2. Authorize read-only production verification and restricted Phase 0/Phase 1
+   separately. Verify the original 326-file source, original front controller
+   1000:1000/0644, PHP 8.2.30, Laravel 12.69.1, lock/vendor/cache/configuration,
+   services, 18-file nginx include inventory and index routing. Use accepted
+   nginx evidence plus current protected bytes; never recreate nginx sudo.
+   Require a successful exact production FPM witness/scope proof. Stop on drift.
+3. Require the installed schema and 21-row ledger, nullable TEXT item_meta with
+   zero existing non-null values, empty incoming tables/queues, disabled
+   receiver/job-label/retention, empty artwork hosts and strictly idle scheduling.
+   Verify a fresh private transfer of all fifteen frozen inputs. Use the new V6
+   release root only. Preserve previous failed slots/releases/evidence. Stage
+   eleven source members, run their raw-byte/metadata checks and PHP lint, prove
+   production unchanged, and stop for independent stage review.
+4. A separate cutover authorization must bind the new release receipt, exact
+   runner and manifest. Repeat complete preflight, backups and FPM proof before
+   gate installation. Use the reviewed origin/public probes and full seven-
+   second waits. Repeat idle/schema/ledger/zero-item_meta and source/dependency
+   checks under the gate, then reverify FPM immediately before installing only
+   the eleven source members. Preserve all original artwork and derived-image,
+   Saved Image, preview, legacy and incoming-image-path behavior.
+5. Preserve the installed schema, Laravel 12.69.1 dependencies, bootstrap cache,
+   configuration and services. No migration, pretend, reversal, database restore,
+   dependency update/exchange, restart, permission grant, or artwork-host change.
+   Choose a Chicago/DST-aware window avoiding payout/reconciliation tasks.
+   Never disable cron, clear mutexes or force accounting work.
+6. Reopen through the reviewed exact front-controller restoration and wait.
+   Complete the cumulative 30-minute health/runtime/parsed-log/scheduler monitor,
+   permitting legitimate item_meta growth after cutover. Keep raw logs, headers,
+   cookies, configuration and customer data private. Stop at
+   awaiting_independent_log_review; finalization remains separately authorized.
+7. On an authorized attempt's failure, use the accepted automatic containment
+   and rollback only. Restore original source while retaining customer data,
+   schema and dependencies. Retain the gate when health or scope is ambiguous.
+   Preserve evidence and stop without retrying. A separate recovery attempt
+   requires new state-bound authorization; never reuse failed V5 recovery.
+
+Current status: local only, unpushed, non-stageable; execution tokens withheld;
+production PHP 8.2.30 FPM verification pending. No production access, staging,
+cutover, recovery, migration, restart, configuration/permission change,
+capability enablement, customer-artwork change, ShopNLTees change, retention
+action or customer deletion occurred. All prior accepted evidence is preserved.

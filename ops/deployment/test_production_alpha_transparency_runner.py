@@ -22,11 +22,11 @@ LOG_GUARD_PATH = ROOT / "ops/deployment/laravel_log_guard.py"
 FIXTURES = ROOT / "tests/Fixtures/Deployment/LaravelLogs"
 MANIFEST_PATH = (
     ROOT
-    / "ops/evidence/process-permission-rollback-20261005"
+    / "ops/evidence/production-alpha-transparency-activation-v6-20261005"
     / "APPLICATION_MANIFEST.json"
 )
 REHEARSAL_RECEIPT_PATH = (
-    ROOT / "ops/evidence/process-permission-rollback-20261005/source-rehearsal/rehearsal-receipt.json"
+    ROOT / "ops/evidence/production-alpha-transparency-activation-v6-20261005/source-rehearsal/rehearsal-receipt.json"
 )
 
 
@@ -779,7 +779,7 @@ class ProductionAlphaRunnerTest(unittest.TestCase):
         )
         self.assertEqual(
             description["approval_tokens"]["status"],
-            "blocked_local_correction_requires_new_review_and_authorization",
+            "withheld_pending_activation_review_and_fresh_authorization",
         )
         self.assertIsNone(description["approval_tokens"]["stage"])
         self.assertIsNone(description["approval_tokens"]["deploy"])
@@ -798,6 +798,8 @@ class ProductionAlphaRunnerTest(unittest.TestCase):
             (
                 "success",
                 "pre-source-failure",
+                "activation-fpm-before-gate-rejection",
+                "activation-fpm-under-gate-rejection",
                 "source-swap-failure",
                 "candidate-check-failure",
                 "post-reopen-failure",
@@ -835,6 +837,11 @@ class ProductionAlphaRunnerTest(unittest.TestCase):
                 if name == "success":
                     self.assertEqual(result["source_expectation"], "target")
                     self.assertFalse(result["rollback_complete"])
+                elif name == "activation-fpm-before-gate-rejection":
+                    self.assertEqual(result["source_expectation"], "expected-live")
+                    self.assertFalse(result["source_install_started"])
+                    self.assertFalse(result["rollback_complete"])
+                    self.assertEqual(result["separate_web_identity_probe_count"], 0)
                 else:
                     self.assertEqual(result["source_expectation"], "expected-live")
                     self.assertTrue(result["rollback_complete"])

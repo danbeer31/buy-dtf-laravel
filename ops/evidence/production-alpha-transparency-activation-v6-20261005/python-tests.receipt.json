@@ -1,0 +1,21 @@
+{
+  "argv": [
+    "/usr/bin/python3",
+    "-m",
+    "unittest",
+    "-v",
+    "test_production_alpha_activation",
+    "test_production_alpha_process_scope",
+    "test_production_alpha_scheduler",
+    "test_production_alpha_transparency_runner",
+    "test_production_alpha_gate_controls",
+    "test_production_alpha_nginx_inventory",
+    "test_laravel_log_guard",
+    "test_laravel_dependency_gate"
+  ],
+  "exit_code": 0,
+  "scope": "local disposable validation; no production access",
+  "status": "pass",
+  "stderr_sha256": "91d57eb208964529fa9d77b8973ae4c0b9a03e7972886249fe23f8db7abf9f68",
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

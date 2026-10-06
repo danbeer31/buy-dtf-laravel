@@ -349,7 +349,7 @@ class LocalReviewOnlyTests(unittest.TestCase):
     def test_all_cli_mutations_reject_before_access_even_with_consumed_token(self):
         for action in ("--stage", "--deploy", "--recover"):
             result = subprocess.run(["python3", str(ROOT / "ops/deployment/production_alpha_transparency_deploy.py"),
-                action, "--approval-token", deploy.DEPLOY_APPROVAL_TOKEN], capture_output=True, text=True, timeout=5)
+                action, "--approval-token", "DEPLOY-BUYDTF-ALPHA-V5-b02fce3213fc6328"], capture_output=True, text=True, timeout=5)
             self.assertEqual(result.returncode, 1)
             self.assertIn("non-stageable", result.stderr)
         self.assertEqual(deploy.describe()["approval_tokens"]["stage"], None)

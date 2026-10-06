@@ -1,0 +1,389 @@
+{
+  "additive_schema_preserved": true,
+  "containment_http_verified": true,
+  "expected_failure": true,
+  "final_receipt_sha256": null,
+  "final_state_status": "rolled_back",
+  "fpm_checkpoint_receipt": {
+    "path": "/tmp/buy-dtf-alpha-rehearsal-gsv3sm8c/buy-dtf-alpha-genuine-log-failure-lgp7d0fd/rollbacks/b02fce32-20261006T014834Z/fpm-opcache-before-source-mutation-receipt.json",
+    "sha256": "3d1edbec2194c196c6b0e5b9a5de3ceb4d231d3e9227100693dca23cce7378f4"
+  },
+  "front_controller_mode": "0o644",
+  "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
+  "migration_command_count": 0,
+  "migration_command_invoked": false,
+  "migration_executed_this_attempt": false,
+  "migration_pretend_invoked": false,
+  "observed_failure": {
+    "message_sha256": "27a0cb73c731a7ed4cbc97ada24eda533f64b7dcd0b0c8db5b927e2c3b1834c7",
+    "type": "DeploymentError"
+  },
+  "opcache_clock_model": "virtual clock advances the complete frozen seven-second interval; real FPM proof is separate",
+  "opcache_wait_receipts": [
+    {
+      "artifact": "buy-dtf-front-controller-opcache-revalidation-wait-v1",
+      "complete_revalidation_interval_seconds": 4,
+      "configured_wait_seconds": 7,
+      "deadline_monotonic_ns": 7000000000,
+      "earliest_allowed_probe_at_utc": "2026-09-21T14:13:27.000000Z",
+      "elapsed_monotonic_ns": 7000000000,
+      "elapsed_monotonic_seconds": 7.0,
+      "end_monotonic_ns": 7000000000,
+      "ended_at_utc": "2026-09-21T14:13:27.000000Z",
+      "identity_after": {
+        "bytes": 582,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "path": "/tmp/buy-dtf-alpha-rehearsal-gsv3sm8c/buy-dtf-alpha-genuine-log-failure-lgp7d0fd/application/public/index.php",
+        "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+      },
+      "identity_before": {
+        "bytes": 582,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "path": "/tmp/buy-dtf-alpha-rehearsal-gsv3sm8c/buy-dtf-alpha-genuine-log-failure-lgp7d0fd/application/public/index.php",
+        "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+      },
+      "operation": "cutover-static-gate",
+      "policy": {
+        "artifact": "buy-dtf-php-fpm-opcache-revalidation-policy-v1",
+        "complete_revalidation_interval_seconds": 4,
+        "file_update_protection_seconds": 2,
+        "formula": "max(5, 2 * revalidate_freq + file_update_protection + 1)",
+        "minimum_floor_seconds": 5,
+        "minimum_wait_seconds": 7,
+        "opcache_enable": true,
+        "php_version": "8.2.30",
+        "revalidate_freq_seconds": 2,
+        "safety_margin_seconds": 1,
+        "sapi": "fpm-fcgi",
+        "second_revalidation_window_seconds": 2,
+        "validate_timestamps": true
+      },
+      "sequence": 1,
+      "start_monotonic_ns": 0,
+      "started_at_utc": "2026-09-21T14:13:20.000000Z",
+      "status": "complete",
+      "target_metadata": {
+        "gid": 1000,
+        "kind": "file",
+        "mode": 420,
+        "uid": 1000
+      },
+      "target_sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+    },
+    {
+      "artifact": "buy-dtf-front-controller-opcache-revalidation-wait-v1",
+      "complete_revalidation_interval_seconds": 4,
+      "configured_wait_seconds": 7,
+      "deadline_monotonic_ns": 14000000000,
+      "earliest_allowed_probe_at_utc": "2026-09-21T14:13:34.000000Z",
+      "elapsed_monotonic_ns": 7000000000,
+      "elapsed_monotonic_seconds": 7.0,
+      "end_monotonic_ns": 14000000000,
+      "ended_at_utc": "2026-09-21T14:13:34.000000Z",
+      "identity_after": {
+        "bytes": 543,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "path": "/tmp/buy-dtf-alpha-rehearsal-gsv3sm8c/buy-dtf-alpha-genuine-log-failure-lgp7d0fd/application/public/index.php",
+        "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
+      },
+      "identity_before": {
+        "bytes": 543,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "path": "/tmp/buy-dtf-alpha-rehearsal-gsv3sm8c/buy-dtf-alpha-genuine-log-failure-lgp7d0fd/application/public/index.php",
+        "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
+      },
+      "operation": "candidate-original-front-controller-restore",
+      "policy": {
+        "artifact": "buy-dtf-php-fpm-opcache-revalidation-policy-v1",
+        "complete_revalidation_interval_seconds": 4,
+        "file_update_protection_seconds": 2,
+        "formula": "max(5, 2 * revalidate_freq + file_update_protection + 1)",
+        "minimum_floor_seconds": 5,
+        "minimum_wait_seconds": 7,
+        "opcache_enable": true,
+        "php_version": "8.2.30",
+        "revalidate_freq_seconds": 2,
+        "safety_margin_seconds": 1,
+        "sapi": "fpm-fcgi",
+        "second_revalidation_window_seconds": 2,
+        "validate_timestamps": true
+      },
+      "sequence": 2,
+      "start_monotonic_ns": 7000000000,
+      "started_at_utc": "2026-09-21T14:13:27.000000Z",
+      "status": "complete",
+      "target_metadata": {
+        "gid": 1000,
+        "kind": "file",
+        "mode": 420,
+        "uid": 1000
+      },
+      "target_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
+    },
+    {
+      "artifact": "buy-dtf-front-controller-opcache-revalidation-wait-v1",
+      "complete_revalidation_interval_seconds": 4,
+      "configured_wait_seconds": 7,
+      "deadline_monotonic_ns": 21000000000,
+      "earliest_allowed_probe_at_utc": "2026-09-21T14:13:41.000000Z",
+      "elapsed_monotonic_ns": 7000000000,
+      "elapsed_monotonic_seconds": 7.0,
+      "end_monotonic_ns": 21000000000,
+      "ended_at_utc": "2026-09-21T14:13:41.000000Z",
+      "identity_after": {
+        "bytes": 582,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "path": "/tmp/buy-dtf-alpha-rehearsal-gsv3sm8c/buy-dtf-alpha-genuine-log-failure-lgp7d0fd/application/public/index.php",
+        "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+      },
+      "identity_before": {
+        "bytes": 582,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "path": "/tmp/buy-dtf-alpha-rehearsal-gsv3sm8c/buy-dtf-alpha-genuine-log-failure-lgp7d0fd/application/public/index.php",
+        "sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+      },
+      "operation": "rollback-static-gate",
+      "policy": {
+        "artifact": "buy-dtf-php-fpm-opcache-revalidation-policy-v1",
+        "complete_revalidation_interval_seconds": 4,
+        "file_update_protection_seconds": 2,
+        "formula": "max(5, 2 * revalidate_freq + file_update_protection + 1)",
+        "minimum_floor_seconds": 5,
+        "minimum_wait_seconds": 7,
+        "opcache_enable": true,
+        "php_version": "8.2.30",
+        "revalidate_freq_seconds": 2,
+        "safety_margin_seconds": 1,
+        "sapi": "fpm-fcgi",
+        "second_revalidation_window_seconds": 2,
+        "validate_timestamps": true
+      },
+      "sequence": 3,
+      "start_monotonic_ns": 14000000000,
+      "started_at_utc": "2026-09-21T14:13:34.000000Z",
+      "status": "complete",
+      "target_metadata": {
+        "gid": 1000,
+        "kind": "file",
+        "mode": 420,
+        "uid": 1000
+      },
+      "target_sha256": "d18fc1520808b10814a6e86ef41ce22f9c6d326318f96fc3db78aed153199ea4"
+    },
+    {
+      "artifact": "buy-dtf-front-controller-opcache-revalidation-wait-v1",
+      "complete_revalidation_interval_seconds": 4,
+      "configured_wait_seconds": 7,
+      "deadline_monotonic_ns": 28000000000,
+      "earliest_allowed_probe_at_utc": "2026-09-21T14:13:48.000000Z",
+      "elapsed_monotonic_ns": 7000000000,
+      "elapsed_monotonic_seconds": 7.0,
+      "end_monotonic_ns": 28000000000,
+      "ended_at_utc": "2026-09-21T14:13:48.000000Z",
+      "identity_after": {
+        "bytes": 543,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "path": "/tmp/buy-dtf-alpha-rehearsal-gsv3sm8c/buy-dtf-alpha-genuine-log-failure-lgp7d0fd/application/public/index.php",
+        "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
+      },
+      "identity_before": {
+        "bytes": 543,
+        "metadata": {
+          "gid": 1000,
+          "kind": "file",
+          "mode": 420,
+          "uid": 1000
+        },
+        "path": "/tmp/buy-dtf-alpha-rehearsal-gsv3sm8c/buy-dtf-alpha-genuine-log-failure-lgp7d0fd/application/public/index.php",
+        "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
+      },
+      "operation": "rollback-original-front-controller-restore",
+      "policy": {
+        "artifact": "buy-dtf-php-fpm-opcache-revalidation-policy-v1",
+        "complete_revalidation_interval_seconds": 4,
+        "file_update_protection_seconds": 2,
+        "formula": "max(5, 2 * revalidate_freq + file_update_protection + 1)",
+        "minimum_floor_seconds": 5,
+        "minimum_wait_seconds": 7,
+        "opcache_enable": true,
+        "php_version": "8.2.30",
+        "revalidate_freq_seconds": 2,
+        "safety_margin_seconds": 1,
+        "sapi": "fpm-fcgi",
+        "second_revalidation_window_seconds": 2,
+        "validate_timestamps": true
+      },
+      "sequence": 4,
+      "start_monotonic_ns": 21000000000,
+      "started_at_utc": "2026-09-21T14:13:41.000000Z",
+      "status": "complete",
+      "target_metadata": {
+        "gid": 1000,
+        "kind": "file",
+        "mode": 420,
+        "uid": 1000
+      },
+      "target_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9"
+    }
+  ],
+  "post_mutation_fpm_fallback_count": 0,
+  "prohibited_command_count": 0,
+  "raw_evidence_entries": 36,
+  "raw_evidence_manifest_sha256": "6c82cec884dff325631fb3c6b9706ea6a3097a400e4fdaf39ffe5ac93ecc03f6",
+  "raw_state_directory_name": "b02fce32-20261006T014834Z",
+  "rollback_complete": true,
+  "scenario": "genuine-log-failure",
+  "scheduler_observation_receipts": [
+    {
+      "active": false,
+      "last_success_unix": 1791250812,
+      "monotonic_ns": 1791251315000000000,
+      "observed_at_utc": "2026-10-06T01:48:35Z",
+      "pending": null,
+      "phase": "rollback",
+      "policy": "bounded_reviewed_qbo_only",
+      "policy_sha256": "b86b2525ecd9430acafbf886358876a4fc3d57a8fe560f9740b5a162d1940020",
+      "process_envelope": {
+        "confirmed_process_exits": [],
+        "environments_read": false,
+        "mutex_or_task_actions": false,
+        "processes": [],
+        "read_only": true,
+        "status": "pass",
+        "uid_33_scope_probes": 0,
+        "verified_outside_application": [
+          {
+            "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
+            "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
+            "pid": 74765,
+            "scope": "verified_outside_application",
+            "scope_source": "native_proc_observation",
+            "start_ticks": 12750498,
+            "uid": 33,
+            "working_directory_sha256": "3028dd12df8ec7f5f74e33b390fb6b35e18fdafa455ebc072b936b7aef951f06"
+          }
+        ]
+      },
+      "scheduler_snapshot_sha256": "f0ac91c22345ee9bca7aa120c3bf58c0054f578afad25566ce39ca6c75df3928",
+      "sequence": 1,
+      "status": "pass",
+      "task": "qbo:refresh-admin-cache",
+      "transitions": []
+    },
+    {
+      "active": false,
+      "last_success_unix": 1791250812,
+      "monotonic_ns": 1791251315000000000,
+      "observed_at_utc": "2026-10-06T01:48:35Z",
+      "pending": null,
+      "phase": "rollback",
+      "policy": "bounded_reviewed_qbo_only",
+      "policy_sha256": "b86b2525ecd9430acafbf886358876a4fc3d57a8fe560f9740b5a162d1940020",
+      "process_envelope": {
+        "confirmed_process_exits": [],
+        "environments_read": false,
+        "mutex_or_task_actions": false,
+        "processes": [],
+        "read_only": true,
+        "status": "pass",
+        "uid_33_scope_probes": 0,
+        "verified_outside_application": [
+          {
+            "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
+            "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
+            "pid": 74765,
+            "scope": "verified_outside_application",
+            "scope_source": "native_proc_observation",
+            "start_ticks": 12750498,
+            "uid": 33,
+            "working_directory_sha256": "3028dd12df8ec7f5f74e33b390fb6b35e18fdafa455ebc072b936b7aef951f06"
+          }
+        ]
+      },
+      "scheduler_snapshot_sha256": "f0ac91c22345ee9bca7aa120c3bf58c0054f578afad25566ce39ca6c75df3928",
+      "sequence": 2,
+      "status": "pass",
+      "task": "qbo:refresh-admin-cache",
+      "transitions": []
+    },
+    {
+      "active": false,
+      "last_success_unix": 1791250812,
+      "monotonic_ns": 1791251315000000000,
+      "observed_at_utc": "2026-10-06T01:48:35Z",
+      "pending": null,
+      "phase": "rollback",
+      "policy": "bounded_reviewed_qbo_only",
+      "policy_sha256": "b86b2525ecd9430acafbf886358876a4fc3d57a8fe560f9740b5a162d1940020",
+      "process_envelope": {
+        "confirmed_process_exits": [],
+        "environments_read": false,
+        "mutex_or_task_actions": false,
+        "processes": [],
+        "read_only": true,
+        "status": "pass",
+        "uid_33_scope_probes": 0,
+        "verified_outside_application": [
+          {
+            "argv_sha256": "93352168148cc725b3b12507f95346093d58a688d243e22ef0bc4cb346ba1dae",
+            "executable_sha256": "83b35b44e34a1c4beeea5761338b4f611b8d5196d3d0523a6f3f9c781bf2ccc8",
+            "pid": 74765,
+            "scope": "verified_outside_application",
+            "scope_source": "native_proc_observation",
+            "start_ticks": 12750498,
+            "uid": 33,
+            "working_directory_sha256": "3028dd12df8ec7f5f74e33b390fb6b35e18fdafa455ebc072b936b7aef951f06"
+          }
+        ]
+      },
+      "scheduler_snapshot_sha256": "f0ac91c22345ee9bca7aa120c3bf58c0054f578afad25566ce39ca6c75df3928",
+      "sequence": 3,
+      "status": "pass",
+      "task": "qbo:refresh-admin-cache",
+      "transitions": []
+    }
+  ],
+  "schema_state": "installed_schema_source_only_v1",
+  "separate_web_identity_all_passed": true,
+  "separate_web_identity_probe_count": 6,
+  "source_cas_sha256": "0ceca182384a8e68560ec542c0c2c0c695971b8488321ca0899ea7a880d6fd17",
+  "source_expectation": "expected-live",
+  "source_install_started": true,
+  "state_sha256": "7ba1b74d3ac21090226283217245c2c2a960ef09606086bf2c9209eae7797652",
+  "status": "pass"
+}

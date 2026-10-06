@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "/mnt/c/tools/php8230/php.exe",
+    "C:\\Users\\danie\\projects\\bdtf-alpha-activation-v6-20261005\\ops\\deployment\\test_production_alpha_scheduler_probe.php",
+    "\\\\wsl.localhost\\Ubuntu\\tmp\\buydtf-alpha-v3-build-a-20261004-r3",
+    "C:\\Users\\danie\\AppData\\Local\\Temp\\buydtf-writer-8230-_c4f51jl",
+    "C:\\Users\\danie\\projects\\bdtf-alpha-activation-v6-20261005"
+  ],
+  "exit_code": 0,
+  "scope": "local disposable validation; no production access",
+  "status": "pass",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stdout_sha256": "c2f119e739330696e44e0756234b1ff6dcd3fb2099b85785dda34f2fac1fef55"
+}
