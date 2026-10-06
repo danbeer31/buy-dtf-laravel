@@ -1,0 +1,391 @@
+{
+  "accepted_state_and_receipts_unchanged": true,
+  "artifact": "buy-dtf-v6-documentation-closeout-current-read-only-verification-v1",
+  "bound_deployment_state_sha256": "c4818553b72c0da8f2df3a5f6376e737655b9e16b43e5068d7cb5e6a1bb0a9b0",
+  "bound_final_receipt_sha256": "215bd7535a7d3f08aa2893f7260d443c9f3a3979a5f72f069a3c7d734189de52",
+  "complete_private_manifest_sha256": "e258205c9e0413774f562468a1d9243438283d399687fdc802c7114015a301ff",
+  "current": {
+    "capabilities": {
+      "allowed_host_count": 0,
+      "job_label_enabled": false,
+      "receiver_enabled": false,
+      "retention_enabled": false
+    },
+    "dependencies": {
+      "bootstrap_cache": {
+        "bytes": 21768,
+        "directories": 0,
+        "files": 2,
+        "sha256": "468c3eadd5d92b7c13024ab613ebb5ad986015359ef3181adee51892a3110ac9"
+      },
+      "composer_lock_sha256": "77055fc8acf891496b0b356bb034d7935c04989a3751f52b788ecd1b7999206d",
+      "packages_sha256": "21da8f9ed19687e708cc7bc5cc59394c6fcdf9b9deadf617ae70526f815a1db0",
+      "services_sha256": "1f7623b2b4ffd2c4099fb34ad86fc96c1479e27bf81b1b0ba328c988cc4ffcb5",
+      "vendor": {
+        "bytes": 26481661,
+        "directories": 925,
+        "files": 6460,
+        "sha256": "7df0a101ceb0386b72ec4cfc71f2be8576fc5a5d4b777d11c05e5b7f1ed770d8"
+      },
+      "vendor_policy": {
+        "directory_mode": 509,
+        "executable_allowlist_sha256": "551df886bc842a49ea87d8d9bb0cfe3478e3cc5eeea841c83409e8349d120154",
+        "executable_file_mode": 509,
+        "executable_files": 10,
+        "gid": 1000,
+        "manifest": {
+          "bytes": 26481661,
+          "directories": 925,
+          "files": 6460,
+          "sha256": "7df0a101ceb0386b72ec4cfc71f2be8576fc5a5d4b777d11c05e5b7f1ed770d8"
+        },
+        "metadata_sha256": "db8aba0a4f49d0cecaeaac0b5b742c5f94b1a514a8d4452c361cb61e2dbacf0d",
+        "ordinary_file_mode": 436,
+        "ordinary_files": 6450,
+        "root_metadata": {
+          "gid": 1000,
+          "kind": "directory",
+          "mode": 509,
+          "uid": 1000
+        },
+        "total_bytes": 26481661,
+        "uid": 1000
+      }
+    },
+    "environment": {
+      "configuration_sha256": {
+        ".env": "b650d0c1d2a065363dff447d6f1b3e01507a399ad2d7fce37bab7eb69f30a762",
+        "config/database.php": "d25ab83243dc255e43ddbaa856991dae93016dd8ff77fa11be20d222693bb8f9",
+        "config/incoming_order.php": "e5f3ace351d762da2feac4ec055e4e20166737db9fc6e950899e7c4b834a2ce7"
+      },
+      "fpm_opcache": {
+        "artifact": "buy-dtf-php-fpm-opcache-envelope-v4",
+        "environment_helper_sha256": "1243fea2757aca89f586ec4b322b0d23ee1e19b2d027c21bd6523e71e6e6e8e0",
+        "policy": {
+          "artifact": "buy-dtf-php-fpm-opcache-revalidation-policy-v1",
+          "complete_revalidation_interval_seconds": 4,
+          "file_update_protection_seconds": 2,
+          "formula": "max(5, 2 * revalidate_freq + file_update_protection + 1)",
+          "minimum_floor_seconds": 5,
+          "minimum_wait_seconds": 7,
+          "opcache_enable": true,
+          "php_version": "8.2.30",
+          "revalidate_freq_seconds": 2,
+          "safety_margin_seconds": 1,
+          "sapi": "fpm-fcgi",
+          "second_revalidation_window_seconds": 2,
+          "validate_timestamps": true
+        },
+        "probe": {
+          "artifact": "buy-dtf-php-fpm-opcache-probe-v1",
+          "directives": {
+            "opcache.enable": {
+              "normalized": true,
+              "raw": "1"
+            },
+            "opcache.file_update_protection": {
+              "normalized": 2,
+              "raw": "2"
+            },
+            "opcache.revalidate_freq": {
+              "normalized": 2,
+              "raw": "2"
+            },
+            "opcache.validate_timestamps": {
+              "normalized": true,
+              "raw": "1"
+            }
+          },
+          "opcache_configuration_directives": {
+            "opcache.enable": true,
+            "opcache.file_update_protection": 2,
+            "opcache.revalidate_freq": 2,
+            "opcache.validate_timestamps": true
+          },
+          "php_version": "8.2.30",
+          "sapi": "fpm-fcgi"
+        },
+        "probe_helper_sha256": "b8b34f87d45a0c000cc0df7917496631320cfbdcca1ff44bc41741ce0d569262",
+        "status": "pass"
+      },
+      "frozen_envelope_sha256": "04850fe3aef14981c92f5b2af373bd136cfb6fead456d86fcab7233acb009fd1",
+      "nginx": {
+        "approved_include_inventory_sha256": "4133ef8f575626f0b24e017c4f0320ffce05bb1e1bae71c8a3eca0f4acc1dbf1",
+        "document_root_identity": {
+          "document_root": "/var/www/buy-dtf/public",
+          "listen_directives": [
+            "443 ssl",
+            "[::]:443 ssl"
+          ],
+          "matching_tls_server_count": 1,
+          "origin_loopback_compatible": true,
+          "origin_probe_address": "127.0.0.1:443",
+          "php_index_route": {
+            "fastcgi_pass": "unix:/run/php/php8.2-fpm.sock",
+            "fpm_socket": "/run/php/php8.2-fpm.sock",
+            "location_block_sha256": "7679a35b2126a018482777c861dab3a5d113de1758ff112293c05a9d5eadb939",
+            "location_order": 16,
+            "location_selector": [
+              "~",
+              "\\.php$"
+            ],
+            "request_uri": "/index.php",
+            "resolved_script_filename": "/var/www/buy-dtf/public/index.php",
+            "route_identity_sha256": "06d1662ea1d7c66227ddee107b10aa97bdb67544594e726421caff26a9187eb5",
+            "script_filename_expression": "$document_root$fastcgi_script_name"
+          },
+          "resolved_document_root": "/var/www/buy-dtf/public",
+          "server_block_sha256": "ab10b7949304e82c35dc1060caecfec2ea486f2ddc578f1709358e425ea4c440",
+          "server_name": "buy-dtf.com",
+          "tls": true
+        },
+        "effective_config_sha256": "97270e7f001d71a99c2c905c233306986f2e5f18e9c46f5b8872702886624061",
+        "method": "accepted_dump_exact_current_bytes_and_includes_unchanged_services",
+        "new_administrator_access_required": false,
+        "services_sha256": "792e450402ff2220dd3515433bd7b05bb211b592dacb58601122d0310f39a814",
+        "status": "pass"
+      }
+    },
+    "front_controller_metadata": {
+      "gid": 1000,
+      "kind": "file",
+      "mode": 420,
+      "uid": 1000
+    },
+    "front_controller_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
+    "health": {
+      "routes": [
+        {
+          "bytes": 19976,
+          "redirect_present": false,
+          "status": 200,
+          "url": "https://buy-dtf.com/"
+        },
+        {
+          "bytes": 1827,
+          "redirect_present": false,
+          "status": 200,
+          "url": "https://buy-dtf.com/up"
+        },
+        {
+          "bytes": 9793,
+          "redirect_present": false,
+          "status": 200,
+          "url": "https://buy-dtf.com/login"
+        },
+        {
+          "bytes": 346,
+          "redirect_present": true,
+          "status": 302,
+          "url": "https://buy-dtf.com/admin"
+        },
+        {
+          "bytes": 346,
+          "redirect_present": true,
+          "status": 302,
+          "url": "https://buy-dtf.com/checkout"
+        },
+        {
+          "bytes": 20104,
+          "redirect_present": false,
+          "status": 200,
+          "url": "https://www.buy-dtf.com/"
+        },
+        {
+          "bytes": 1827,
+          "redirect_present": false,
+          "status": 200,
+          "url": "https://www.buy-dtf.com/up"
+        }
+      ],
+      "vite_assets": [
+        {
+          "bytes": 230956,
+          "redirect_present": false,
+          "status": 200,
+          "url": "https://buy-dtf.com/build/assets/app-B5oFf84X.css"
+        },
+        {
+          "bytes": 163857,
+          "redirect_present": false,
+          "status": 200,
+          "url": "https://buy-dtf.com/build/assets/app-cwinOvGr.js"
+        }
+      ],
+      "vite_manifest_sha256": "496deb082f252b319b12538ec2e9114589bcfbe7b3809ed74996faaf9e9e7f9f"
+    },
+    "ledger": {
+      "incoming_order_entry_count": 1,
+      "rows": 21,
+      "sha256": "f1140209ad897fbdba506d87329f9e4481ccfa5aff7fb6a423e6ec7a0dbe5f53",
+      "target_entry_count": 1
+    },
+    "locks": {
+      "dependency_deployment_free": true,
+      "source_deployment_free": true
+    },
+    "maintenance_active": false,
+    "queue": {
+      "connection": "sync",
+      "counts": {
+        "failed_jobs": 0,
+        "failed_jobs_table_exists": true,
+        "jobs": 0,
+        "jobs_table_exists": true
+      }
+    },
+    "runtime": {
+      "imagick_loaded": true,
+      "laravel_version": "12.69.1",
+      "php_version": "8.2.30"
+    },
+    "scheduler": {
+      "active_overlap_mutex_count": 0,
+      "application_timezone": "America/Chicago",
+      "event_count": 3,
+      "last_attempt_at": "2026-10-06T03:50:12Z",
+      "last_error_present": false,
+      "last_success_at": "2026-10-06T03:50:12Z",
+      "read_only": true,
+      "refresh_state": "ok"
+    },
+    "schema": {
+      "api_asset_records_rows": 0,
+      "incoming_order_jobs_rows": 0,
+      "item_meta_nonnull_rows": 0,
+      "item_meta_nullable_text": true,
+      "sha256": "5485779bdcf0ea3a4372410ef76cd0bc418d1f6400128868606e901b8e9e85da"
+    },
+    "source": {
+      "files": 327,
+      "reviewed_member_cas_sha256": "b3379cd90676d8b3214371e17ffd3278cd43ba1885a6223b12998a8b40e5ea27",
+      "reviewed_members": 11,
+      "sha256": "2c8268cdfbfd3fc294d17de7ab960ab2e1a7f8faa38acd68935af18945f1bc4f"
+    },
+    "static_gate_active": false
+  },
+  "exact_retained_evidence_inventory": true,
+  "existing_state_status": "awaiting_independent_log_review",
+  "finalization_command_introduced_or_executed": false,
+  "finished_at_utc": "2026-10-06T03:50:34Z",
+  "private_sha256sums_sha256": "ec9c8d27dfe64a458c99f8a7f6879677303c5d7cef9af308ced9004a51e309c3",
+  "production_mutation_performed": false,
+  "raw_evidence_kept_private": true,
+  "remote_evidence_files_written": 0,
+  "retained_checksum_entries_verified": 257,
+  "retained_evidence_files_verified": 256,
+  "rollback": {
+    "backed_up_replacements": [
+      {
+        "backup_relative_path": "source-before/app/Helpers/ImageHelper.php",
+        "bytes": 28229,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "app/Helpers/ImageHelper.php",
+        "sha256": "b840aa320764dca8896512422456b39162a079d7428aab78b7ad1c7ec1beb637",
+        "uid": 1000
+      },
+      {
+        "backup_relative_path": "source-before/app/Helpers/ProductionHelper.php",
+        "bytes": 17594,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "app/Helpers/ProductionHelper.php",
+        "sha256": "fc14a5ff52714f311cc3f2bdcdf3410ade6927505bcc626eccbbc11f129d8f12",
+        "uid": 1000
+      },
+      {
+        "backup_relative_path": "source-before/app/Http/Controllers/Admin/OrderImageController.php",
+        "bytes": 14948,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "app/Http/Controllers/Admin/OrderImageController.php",
+        "sha256": "49c2925ad3dfb0aeea32f5baf98926a2cc5112ba543d9178c6297273ff6442f1",
+        "uid": 1000
+      },
+      {
+        "backup_relative_path": "source-before/app/Http/Controllers/CartController.php",
+        "bytes": 32079,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "app/Http/Controllers/CartController.php",
+        "sha256": "713ae74db4410bb4ca22e5f4f3c77ddef17403004796a9e4418fe14ea7d6696a",
+        "uid": 1000
+      },
+      {
+        "backup_relative_path": "source-before/app/Http/Controllers/TeamCustomizationController.php",
+        "bytes": 9957,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "app/Http/Controllers/TeamCustomizationController.php",
+        "sha256": "46c5f4079915e25f3466e0e98305918812376039546f91ed8a9f220737f56fc3",
+        "uid": 1000
+      },
+      {
+        "backup_relative_path": "source-before/app/Models/DtfImage.php",
+        "bytes": 8990,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "app/Models/DtfImage.php",
+        "sha256": "14d6245a1ac65babfa6d06152bd9fc6692c9d33c5fe3ba5e2b8efabce728d0c2",
+        "uid": 1000
+      },
+      {
+        "backup_relative_path": "source-before/app/Models/SavedImage.php",
+        "bytes": 1043,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "app/Models/SavedImage.php",
+        "sha256": "0282da64284bdddc2ad11ccc48c3f32c8ef0443823bbb4dcbe1d05b7973d12f7",
+        "uid": 1000
+      },
+      {
+        "backup_relative_path": "source-before/app/Http/Controllers/Checkout/CheckoutController.php",
+        "bytes": 44433,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "app/Http/Controllers/Checkout/CheckoutController.php",
+        "sha256": "4b39e9381f728b8b4a0f8a828494827b0e2520ce80d0d36910b44185e6d5c2dd",
+        "uid": 1000
+      },
+      {
+        "backup_relative_path": "source-before/app/Services/ShippoService.php",
+        "bytes": 8299,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "app/Services/ShippoService.php",
+        "sha256": "617673b6921ddf209c67534b6c42b13f23771a1d3fdea907f7583f7459e193c7",
+        "uid": 1000
+      },
+      {
+        "backup_relative_path": "source-before/app/Http/Controllers/Webhooks/ShippoWebhookController.php",
+        "bytes": 3385,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "app/Http/Controllers/Webhooks/ShippoWebhookController.php",
+        "sha256": "d8d91199bc0ca810204a04b4452cbf460bb939020a8e21b46537736a1bd5acbd",
+        "uid": 1000
+      }
+    ],
+    "evidence_and_backups_unchanged": true,
+    "new_source_addition_absent_before": true,
+    "original_front_controller_backup_sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
+    "original_front_controller_metadata_to_restore": {
+      "gid": 1000,
+      "kind": "file",
+      "mode": 420,
+      "uid": 1000
+    },
+    "source_backup_receipt_sha256": "743d8026ed6b6315e937119c64832b108c62d2496b60f88f7e64ccc1c0652535",
+    "source_backup_tree": {
+      "bytes": 168957,
+      "directories": 9,
+      "files": 10,
+      "sha256": "df1d3911f229114f222c68bce85fd3a7d3f50778a339fbfc61b4b2bc2930df13"
+    }
+  },
+  "runtime_probe_stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "runtime_probe_stdout_sha256": "84f59397a64a50cf6c15bedaa5d868f89bba4a6082d796156c02864985886d91",
+  "started_at_utc": "2026-10-06T03:50:31Z",
+  "status": "pass"
+}

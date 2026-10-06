@@ -1,0 +1,19 @@
+{
+  "bytes": 474,
+  "decode_replacement_count": 0,
+  "entry_count": 3,
+  "fatal_entry_count": 0,
+  "fatal_finding_count": 0,
+  "fatal_findings": [],
+  "global_failure_count": 0,
+  "invalid_utf8": false,
+  "level_counts": {
+    "INFO": 3
+  },
+  "nonfatal_error_entry_count": 0,
+  "orphan_entry_count": 0,
+  "rollback_finding_count": 0,
+  "sha256": "d96d34745ea0a18bb76d553ab7a33b86596f170a670d3e05f7209e317f4af477",
+  "signal_counts": {},
+  "status": "pass"
+}

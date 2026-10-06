@@ -1,0 +1,2123 @@
+{
+  "artifact": "buy-dtf-v6-documentation-closeout-portable-evidence-manifest-v1",
+  "bound_deployment_state_sha256": "c4818553b72c0da8f2df3a5f6376e737655b9e16b43e5068d7cb5e6a1bb0a9b0",
+  "bound_final_receipt_sha256": "215bd7535a7d3f08aa2893f7260d443c9f3a3979a5f72f069a3c7d734189de52",
+  "documentation_files": [
+    {
+      "bytes": 4665,
+      "path": "CLOSEOUT.md",
+      "sha256": "f56315c4378af01f3e4f22ab2a8e12bcc29fbfeb1e43652f741318694926bc2d"
+    },
+    {
+      "bytes": 1074,
+      "path": "acceptance-binding.json",
+      "sha256": "7a77fb6b5555d3172dc0758f1738f45153703400b85d36faa0dcd57a531af27c"
+    },
+    {
+      "bytes": 4118,
+      "path": "accepted-receipt-index.json",
+      "sha256": "5236e4e2894c497387292e118f1905ead3b4419cf50075f9b711cdb780a07c9b"
+    },
+    {
+      "bytes": 3656,
+      "path": "closeout.json",
+      "sha256": "8b6011faee2560744816e945967e48f13ba5e54b630e4a2958171889f874a792"
+    },
+    {
+      "bytes": 14368,
+      "path": "current-read-only-verification.redacted.json",
+      "sha256": "6d421c54aee97a4c5688ed53ad3df4094a2ec87e73ded5e6897cb87db0234324"
+    },
+    {
+      "bytes": 459,
+      "path": "parsed-log-analysis.redacted.json",
+      "sha256": "d37f66023ced60d2e64179ccdcc1fdd751c2a14adaf5835a67b2f9e97e5eba00"
+    }
+  ],
+  "documentation_status": "independent_review_accepted_documentation_closed_out",
+  "feature_branch": "fix/production-alpha-transparency-activation-v6-20261005",
+  "finalization_command_introduced_or_run": false,
+  "generated_at_utc": "2026-10-06T03:52:01Z",
+  "manifest_rules": {
+    "documentation_paths_relative_to": "this manifest directory",
+    "manifest_self_hash_in": "SHA256SUMS",
+    "private_evidence_paths_relative_to": "logical roots below; private files are not embedded or committed",
+    "raw_evidence_publication_forbidden": true
+  },
+  "production_state_status": "awaiting_independent_log_review",
+  "production_state_unchanged": true,
+  "retained_private_evidence": {
+    "checksums_verified": 257,
+    "current_read_only_verification_sha256": "6d421c54aee97a4c5688ed53ad3df4094a2ec87e73ded5e6897cb87db0234324",
+    "files": [
+      {
+        "bytes": 0,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "attempt/cutover.stderr.private",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "uid": 1000
+      },
+      {
+        "bytes": 302,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "attempt/cutover.stdout.private",
+        "sha256": "b3cbb423e76d6106d5cd7d008528f3217e57401f51bfe59adcd82c518feaaf34",
+        "uid": 1000
+      },
+      {
+        "bytes": 6424,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "attempt/independent-review-evidence/independent-log-review-request.json",
+        "sha256": "8575560ea618714b9b9ee61a8492ea52ef5e0116d1f8137988d181e3b48aa349",
+        "uid": 1000
+      },
+      {
+        "bytes": 23913,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "attempt/independent-review-evidence/post-cutover-read-only-verification.json",
+        "sha256": "2f5c4c9a50d475fc3d98c11ff0be16cea4cfe19dd94b8ed2145fe6f61f82fbf6",
+        "uid": 1000
+      },
+      {
+        "bytes": 22511,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "attempt/independent-review-evidence/private-log-evidence-manifest.json",
+        "sha256": "a9a92d64d608577cab097aa7fe4c367e54eb8e94f2abefdd5d081f7ed4e007fd",
+        "uid": 1000
+      },
+      {
+        "bytes": 1508,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "attempt/one-cutover-attempt.receipt.json",
+        "sha256": "4ad8e6630b54cc75df13f40fc70d4f2c0eb2841ba743de1fc339d261f5d13101",
+        "uid": 1000
+      },
+      {
+        "bytes": 1101,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "attempt/one-cutover-attempt.started.json",
+        "sha256": "75dba0dd31b69a213fa38fa64898cc0c3ed948a59c9f9ae0a77da49e36420320",
+        "uid": 1000
+      },
+      {
+        "bytes": 1717,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/before-static-gate-production-fpm-scope-receipt.json",
+        "sha256": "a82f358559411e571e0ff30dc3969b464f288da65980b0d8ef94819cacaf4eff",
+        "uid": 1000
+      },
+      {
+        "bytes": 0,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/candidate-artisan-about.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "uid": 1000
+      },
+      {
+        "bytes": 893,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/candidate-artisan-about.stdout.txt",
+        "sha256": "d5e413c817e11828c3a652c1ddc26dc8d7a5b33d73a0f57bedc3969885e71a88",
+        "uid": 1000
+      },
+      {
+        "bytes": 0,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/candidate-artisan-up.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "uid": 1000
+      },
+      {
+        "bytes": 38,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/candidate-artisan-up.stdout.txt",
+        "sha256": "9d22a3ad7bd855df397fa6746d36585b5e1d9f4eb6688466caabc0a2fe3332cf",
+        "uid": 1000
+      },
+      {
+        "bytes": 30545,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/candidate-checks.json",
+        "sha256": "9951cee89d279104b578ef5dd2acf04649fe8eb60615277216a76f40eaafa51f",
+        "uid": 1000
+      },
+      {
+        "bytes": 0,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/candidate-fpm-probe-1.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "uid": 1000
+      },
+      {
+        "bytes": 922,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/candidate-fpm-probe-1.stdout.txt",
+        "sha256": "a522d0611e0b991786c787fde48a756803afa8b1e7fb4cd2e5792281345efe9f",
+        "uid": 1000
+      },
+      {
+        "bytes": 0,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/candidate-fpm-probe-2.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "uid": 1000
+      },
+      {
+        "bytes": 922,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/candidate-fpm-probe-2.stdout.txt",
+        "sha256": "a522d0611e0b991786c787fde48a756803afa8b1e7fb4cd2e5792281345efe9f",
+        "uid": 1000
+      },
+      {
+        "bytes": 1913,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/candidate-original-front-controller-restore-opcache-revalidation-wait-0002-receipt.json",
+        "sha256": "54a49817ed4f6bf2c6bdcc8ee98144fcdff62629f57862ccfaf68a8ce0c636e1",
+        "uid": 1000
+      },
+      {
+        "bytes": 7022,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/candidate-original-front-controller-restore-receipt.json",
+        "sha256": "1c2d313596b077988e193b3f7edadcaf7c88c48ed0324d05ff4a06e1ad9a6fad",
+        "uid": 1000
+      },
+      {
+        "bytes": 0,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/candidate-route-list.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "uid": 1000
+      },
+      {
+        "bytes": 1884,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/candidate-route-list.stdout.txt",
+        "sha256": "0cd88dabe73ec18318dc7b9e8625540eebad8898020dd6358a1e3f0ac150bff0",
+        "uid": 1000
+      },
+      {
+        "bytes": 0,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/candidate-runtime-probe.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "uid": 1000
+      },
+      {
+        "bytes": 14554,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/candidate-runtime-probe.stdout.txt",
+        "sha256": "226b02a01d8dc9ca1d4923112daab3963080c3f4c394236bf23863ac4df36835",
+        "uid": 1000
+      },
+      {
+        "bytes": 0,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/cutover-artisan-down.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "uid": 1000
+      },
+      {
+        "bytes": 53,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/cutover-artisan-down.stdout.txt",
+        "sha256": "3c5cfdcedc620eec8281cb799dc1e0d02db502af9bbce7b5869d3e2edd7da83b",
+        "uid": 1000
+      },
+      {
+        "bytes": 0,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/cutover-installed-schema-probe.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "uid": 1000
+      },
+      {
+        "bytes": 14554,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/cutover-installed-schema-probe.stdout.txt",
+        "sha256": "fcc9350e28b701e0a7f955b2c7eeb7bf2b1be056681777159387d59d8a2139fa",
+        "uid": 1000
+      },
+      {
+        "bytes": 30823,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/cutover-installed-schema-receipt.json",
+        "sha256": "ecc6d4f733fa479b7211e6e8bcc55bd4e43500fcf0331ce56d71b7b7c423f5d3",
+        "uid": 1000
+      },
+      {
+        "bytes": 1620,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/cutover-preflight-production-fpm-scope-receipt.json",
+        "sha256": "8e71feb7a879025b7a771d846548d6c1ce757c25522940f78e751a56ca70069f",
+        "uid": 1000
+      },
+      {
+        "bytes": 36628,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/cutover-preflight-receipt.json",
+        "sha256": "69b2379acbba3fcecef0d663905b20ecfcecef52a5c52e3967342294c0617b04",
+        "uid": 1000
+      },
+      {
+        "bytes": 0,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/cutover-preflight-runtime-probe.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "uid": 1000
+      },
+      {
+        "bytes": 14554,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/cutover-preflight-runtime-probe.stdout.txt",
+        "sha256": "6b2a8ef0bc85a7ae219e850f80dfc3c3bb891dbacf1ca79f71048313126e9d1a",
+        "uid": 1000
+      },
+      {
+        "bytes": 64,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/cutover-static-gate-1.origin.body.txt",
+        "sha256": "cbc07d3c5d4bdf97dafe44fb76d493c2cbf4ce39ef0a972fac02403c6fd64814",
+        "uid": 1000
+      },
+      {
+        "bytes": 310,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/cutover-static-gate-1.origin.headers.redacted.txt",
+        "sha256": "2a023a2cbef96ef22e9df51e6b0b0ec2dc4cdd480a87504c82c6b23425d62e0f",
+        "uid": 1000
+      },
+      {
+        "bytes": 320,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/cutover-static-gate-1.origin.headers.txt",
+        "sha256": "54e948feee4b2c512d2d8c181c6ca0cacece47baddc2173430e2f131773e0dba",
+        "uid": 1000
+      },
+      {
+        "bytes": 64,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/cutover-static-gate-2.origin.body.txt",
+        "sha256": "087a561123c632ecb088f93d1da57a0b483749488a55440f424ccaf9bf13cbf4",
+        "uid": 1000
+      },
+      {
+        "bytes": 310,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/cutover-static-gate-2.origin.headers.redacted.txt",
+        "sha256": "16e02d88009a6992354e72b1209b4123712a9ef31bcdb6c642a39a5a8c19fcdb",
+        "uid": 1000
+      },
+      {
+        "bytes": 320,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/cutover-static-gate-2.origin.headers.txt",
+        "sha256": "30ec831f31d273c960e04aaf19ec28413c03c0d05dec2e1448d65c8f5209b11a",
+        "uid": 1000
+      },
+      {
+        "bytes": 8313,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/cutover-static-gate-gate-verification-receipt.json",
+        "sha256": "4cde012f36daca14a1b5e9040f8e451eb3dadfbba7b3161327126a4f600b305e",
+        "uid": 1000
+      },
+      {
+        "bytes": 1889,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/cutover-static-gate-opcache-revalidation-wait-0001-receipt.json",
+        "sha256": "97054dc75f2495bd2b2281230d10e9f91937f48bc881b40694ca590ebeaaad6e",
+        "uid": 1000
+      },
+      {
+        "bytes": 64,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/cutover-static-gate.public.body.txt",
+        "sha256": "e53304b2b5fe61f331d70648ca3bf8381c4670f6c54a7f753124282b35b4fbc3",
+        "uid": 1000
+      },
+      {
+        "bytes": 707,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/cutover-static-gate.public.headers.redacted.txt",
+        "sha256": "5ff6e3b352410915ec3173ab6574d1d943b80be885163ed5f92bcfab02d15850",
+        "uid": 1000
+      },
+      {
+        "bytes": 722,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/cutover-static-gate.public.headers.txt",
+        "sha256": "41bd771666f34941afde4087a5b151b5b72407b8a1bcea7c54d94fec9d510343",
+        "uid": 1000
+      },
+      {
+        "bytes": 16975,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/events.jsonl",
+        "sha256": "5b93566902781b44942d5f4f237855583a61ceeba3b860dbb03df0d447df442c",
+        "uid": 1000
+      },
+      {
+        "bytes": 97145,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/final-receipt.json",
+        "sha256": "215bd7535a7d3f08aa2893f7260d443c9f3a3979a5f72f069a3c7d734189de52",
+        "uid": 1000
+      },
+      {
+        "bytes": 2216,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/fpm-opcache-before-source-mutation-receipt.json",
+        "sha256": "fad87f28dc8ddc011336f054c6fb2b64706cb44929f222dfd1e68277e7e7f7a9",
+        "uid": 1000
+      },
+      {
+        "bytes": 543,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/front-controller-before.php",
+        "sha256": "eba77cba39695b6bd091fe5211d481f7ebb2ce2d8d26230b5a609465d0a4aff9",
+        "uid": 1000
+      },
+      {
+        "bytes": 2129,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/gate-events.jsonl",
+        "sha256": "101065ea92df17e57683fbd8eaadddeec452fb28d37c9924f573927a177b6572",
+        "uid": 1000
+      },
+      {
+        "bytes": 459,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/laravel-log-final-analysis.json",
+        "sha256": "d37f66023ced60d2e64179ccdcc1fdd751c2a14adaf5835a67b2f9e97e5eba00",
+        "uid": 1000
+      },
+      {
+        "bytes": 606,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/laravel-log-final-delta.txt",
+        "sha256": "2513021408962c1b569784bb6ec432ad1015b6be1639cb82aa77522d458a1c61",
+        "uid": 1000
+      },
+      {
+        "bytes": 440,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/laravel-log-post-open-analysis.json",
+        "sha256": "504eef5b8b992ba2e38f237ec6a6776cad852b848535b8939e15aa726b6731e8",
+        "uid": 1000
+      },
+      {
+        "bytes": 132,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/laravel-log-post-open-delta.txt",
+        "sha256": "541c5b78ebe0f52949dda567aa2e2013ae55508fd2eaf50b2c05b26e0b75dcf5",
+        "uid": 1000
+      },
+      {
+        "bytes": 0,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-final-runtime.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "uid": 1000
+      },
+      {
+        "bytes": 14554,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-final-runtime.stdout.txt",
+        "sha256": "ab64bc6c5f1de4a7ab892df7443acd1f3730a57bde83c4095a27736843d2590a",
+        "uid": 1000
+      },
+      {
+        "bytes": 0,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-01.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "uid": 1000
+      },
+      {
+        "bytes": 14554,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-01.stdout.txt",
+        "sha256": "0a817bdea7d9f3a121f866b987dcebc6ea854428804a07e5e0091dc2c11c85e8",
+        "uid": 1000
+      },
+      {
+        "bytes": 0,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-02.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "uid": 1000
+      },
+      {
+        "bytes": 14554,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-02.stdout.txt",
+        "sha256": "b3da39d3e8b709cc96f35b52aab52f655c38f174cbfd819a1c249db58bcc2206",
+        "uid": 1000
+      },
+      {
+        "bytes": 0,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-03.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "uid": 1000
+      },
+      {
+        "bytes": 14554,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-03.stdout.txt",
+        "sha256": "1008648b1aa5bc411a2afb982ac6d885f691a855a4f400adaf23e47665d09c1c",
+        "uid": 1000
+      },
+      {
+        "bytes": 0,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-04.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "uid": 1000
+      },
+      {
+        "bytes": 14554,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-04.stdout.txt",
+        "sha256": "f83fa856008b948fbcf70ab29f808575309cf0be813cc2933f6e6aa9ca9906bb",
+        "uid": 1000
+      },
+      {
+        "bytes": 0,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-05.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "uid": 1000
+      },
+      {
+        "bytes": 14554,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-05.stdout.txt",
+        "sha256": "75097e4c6ae266eae80a1e43893e7873d1b659c556ccc1390ff7a01b4dbe384c",
+        "uid": 1000
+      },
+      {
+        "bytes": 0,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-06.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "uid": 1000
+      },
+      {
+        "bytes": 14554,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-06.stdout.txt",
+        "sha256": "cba2ee7cc121c15672d2dfe259a3e0b96a3a26b5c9424a2f069aa272e9725070",
+        "uid": 1000
+      },
+      {
+        "bytes": 0,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-07.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "uid": 1000
+      },
+      {
+        "bytes": 14554,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-07.stdout.txt",
+        "sha256": "b99be8b46b2c8e16cda3a59fb6cd18e2b9d2f5a7b2b5794412d18d9663d41246",
+        "uid": 1000
+      },
+      {
+        "bytes": 0,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-08.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "uid": 1000
+      },
+      {
+        "bytes": 14554,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-08.stdout.txt",
+        "sha256": "e6c068357b78c3a4bf7121c6395abc8004a7ab9b0af0497418633734978fed6a",
+        "uid": 1000
+      },
+      {
+        "bytes": 0,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-09.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "uid": 1000
+      },
+      {
+        "bytes": 14554,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-09.stdout.txt",
+        "sha256": "8e4587d68b823d6b09aad93fe7ca7775405e16aaef104fac0848f68b2e7ac685",
+        "uid": 1000
+      },
+      {
+        "bytes": 0,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-10.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "uid": 1000
+      },
+      {
+        "bytes": 14554,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-10.stdout.txt",
+        "sha256": "43d74198d81e1a89da805bbd66ce1fc40b312f65cca3bc8dde6a7073571f1f08",
+        "uid": 1000
+      },
+      {
+        "bytes": 0,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-11.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "uid": 1000
+      },
+      {
+        "bytes": 14554,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-11.stdout.txt",
+        "sha256": "d319ab79dc8eef4aeb906429df3689b331dbd1cbf8ae369b1f4d8593fbbe0c61",
+        "uid": 1000
+      },
+      {
+        "bytes": 0,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-12.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "uid": 1000
+      },
+      {
+        "bytes": 14554,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-12.stdout.txt",
+        "sha256": "7f1ce89c4e11b9e83a6903834c1fb1250b731bc75624f37f4c91f53bc0fc49cd",
+        "uid": 1000
+      },
+      {
+        "bytes": 0,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-13.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "uid": 1000
+      },
+      {
+        "bytes": 14554,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-13.stdout.txt",
+        "sha256": "72f7177af95f1d22e5611a3f339d48210295f3bc9f310bc490cdc4a71e942a70",
+        "uid": 1000
+      },
+      {
+        "bytes": 0,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-14.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "uid": 1000
+      },
+      {
+        "bytes": 14554,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-14.stdout.txt",
+        "sha256": "e2327e7393305f1a39db454ca696996cb89253f8473013ad200fe885ee75b8b9",
+        "uid": 1000
+      },
+      {
+        "bytes": 0,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-15.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "uid": 1000
+      },
+      {
+        "bytes": 14554,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-15.stdout.txt",
+        "sha256": "15c37de04788a2a076cca68b03e2fa0318f958ec9dc4343768dfc29c0303aaa4",
+        "uid": 1000
+      },
+      {
+        "bytes": 0,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-16.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "uid": 1000
+      },
+      {
+        "bytes": 14621,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-16.stdout.txt",
+        "sha256": "e51dfb4f55f7e7dbc8450063ea82ffd223ca43c7f1b278c2c63293e97e8b9a0a",
+        "uid": 1000
+      },
+      {
+        "bytes": 0,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-17.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "uid": 1000
+      },
+      {
+        "bytes": 14554,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-17.stdout.txt",
+        "sha256": "19e0fcc9fb4d83d3ed1842901096e59fb2bf015fcdeed4cec588d62f87de2ec1",
+        "uid": 1000
+      },
+      {
+        "bytes": 0,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-18.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "uid": 1000
+      },
+      {
+        "bytes": 14554,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-18.stdout.txt",
+        "sha256": "d78f7c1561c5199ea98c0a8d41de93b0d69dfc69a35f876bd089df428981575f",
+        "uid": 1000
+      },
+      {
+        "bytes": 0,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-19.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "uid": 1000
+      },
+      {
+        "bytes": 14554,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-19.stdout.txt",
+        "sha256": "4c8a33376ad79f5f28fc35fba9b9db6aa116b77bd2efc0365db416504a6240a1",
+        "uid": 1000
+      },
+      {
+        "bytes": 0,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-20.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "uid": 1000
+      },
+      {
+        "bytes": 14554,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-20.stdout.txt",
+        "sha256": "f922cd7c6cf80421da017d45fb12a6d71369912eb560c1fd1a24aa61cd5c215f",
+        "uid": 1000
+      },
+      {
+        "bytes": 0,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-21.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "uid": 1000
+      },
+      {
+        "bytes": 14554,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-21.stdout.txt",
+        "sha256": "171ce535e103dca93fb780866099f60943a419886732cf4b993801b42562ee16",
+        "uid": 1000
+      },
+      {
+        "bytes": 0,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-22.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "uid": 1000
+      },
+      {
+        "bytes": 14554,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-22.stdout.txt",
+        "sha256": "c60d342476a7d1ca9fce7d4550f5d6a32726d2ab4122df9a0736f13e0e4eb565",
+        "uid": 1000
+      },
+      {
+        "bytes": 0,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-23.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "uid": 1000
+      },
+      {
+        "bytes": 14554,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-23.stdout.txt",
+        "sha256": "b816e8b90a81cd5bf61e2b2a2d406a5a10c25ba451a7cfcca54facaa3750ce68",
+        "uid": 1000
+      },
+      {
+        "bytes": 0,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-24.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "uid": 1000
+      },
+      {
+        "bytes": 14554,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-24.stdout.txt",
+        "sha256": "d7203b08c4b75c2d1f05e004bfd2add141fdb64911553e7a83d02682b363d82f",
+        "uid": 1000
+      },
+      {
+        "bytes": 0,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-25.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "uid": 1000
+      },
+      {
+        "bytes": 14554,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-25.stdout.txt",
+        "sha256": "98eb1164da962cece8b2e572fbc47486ba89be6e256294c50550444b4a728490",
+        "uid": 1000
+      },
+      {
+        "bytes": 0,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-26.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "uid": 1000
+      },
+      {
+        "bytes": 14554,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-26.stdout.txt",
+        "sha256": "9584c4b5736df53c59317f3d23ffe5bd3e3558f08cb338e43fb838c3f192a318",
+        "uid": 1000
+      },
+      {
+        "bytes": 0,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-27.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "uid": 1000
+      },
+      {
+        "bytes": 14554,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-27.stdout.txt",
+        "sha256": "47c37c9fddb386710892ca8238674b3ef4ad20c6ecdaa64f2414239a9ad9b539",
+        "uid": 1000
+      },
+      {
+        "bytes": 0,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-28.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "uid": 1000
+      },
+      {
+        "bytes": 14554,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-28.stdout.txt",
+        "sha256": "b9a1f4057b32a62093cbed1bb32f2ea16be946f9f6a0cc074c9bcab9aae988c6",
+        "uid": 1000
+      },
+      {
+        "bytes": 0,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-29.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "uid": 1000
+      },
+      {
+        "bytes": 14554,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-29.stdout.txt",
+        "sha256": "b9a8a9ce50fa4044a10cfc18db40e16176c001481ca23adfc522b0b9c1db77e3",
+        "uid": 1000
+      },
+      {
+        "bytes": 0,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-30.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "uid": 1000
+      },
+      {
+        "bytes": 14554,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitor-runtime-30.stdout.txt",
+        "sha256": "31798cbf6f3751de5c1003069b5bb332787d0287e73419babaab18ee7f2b243d",
+        "uid": 1000
+      },
+      {
+        "bytes": 852334,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/monitoring-samples.json",
+        "sha256": "8a31cb96059bd23896e3b5a516576ba690fd9b32722a25c09dee7c87352834c5",
+        "uid": 1000
+      },
+      {
+        "bytes": 1413,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/post-open-capability-1.body.json",
+        "sha256": "666b42533646e10b22642a0f1f8f83ee9a95f0b7871e65a23ed9a4c81941201c",
+        "uid": 1000
+      },
+      {
+        "bytes": 572,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/post-open-capability-1.headers.txt",
+        "sha256": "9f8eb58115ca11d60877e2a35b42fa840b45e9c2643221675f7857607e064910",
+        "uid": 1000
+      },
+      {
+        "bytes": 1413,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/post-open-capability-2.body.json",
+        "sha256": "666b42533646e10b22642a0f1f8f83ee9a95f0b7871e65a23ed9a4c81941201c",
+        "uid": 1000
+      },
+      {
+        "bytes": 582,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/post-open-capability-2.headers.txt",
+        "sha256": "bdf7b9009d54360bf69358ea3957b334c37b22eae5effcef9043e48597da96e3",
+        "uid": 1000
+      },
+      {
+        "bytes": 0,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/post-open-runtime.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "uid": 1000
+      },
+      {
+        "bytes": 14554,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/post-open-runtime.stdout.txt",
+        "sha256": "0a817bdea7d9f3a121f866b987dcebc6ea854428804a07e5e0091dc2c11c85e8",
+        "uid": 1000
+      },
+      {
+        "bytes": 1501,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/runtime-drain.json",
+        "sha256": "03687f018e86bf80a65624738bddd55bcd282a8711ebf0ed018daf41f1d56feb",
+        "uid": 1000
+      },
+      {
+        "bytes": 352,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-activity-state.json",
+        "sha256": "f70cbecdd6c05066af5ae0832e4680eb9365487d997839b77843b69bdeff7d7d",
+        "uid": 1000
+      },
+      {
+        "bytes": 0,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-monitor-followup-1791256814773036904.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "uid": 1000
+      },
+      {
+        "bytes": 14554,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-monitor-followup-1791256814773036904.stdout.txt",
+        "sha256": "386e00cd6c543a244951f5868779fe72ab2fefb36406b06dae7bec893bf4a532",
+        "uid": 1000
+      },
+      {
+        "bytes": 2224,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0001.json",
+        "sha256": "5a679a86e97a21e8c01b204c5beb2d072d95cd12d2c241736d587b2965c993b0",
+        "uid": 1000
+      },
+      {
+        "bytes": 2222,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0002.json",
+        "sha256": "0c1ed8439996e290526b220a87c869bc01afcf6b7610a876933923c5ec9d33b6",
+        "uid": 1000
+      },
+      {
+        "bytes": 2222,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0003.json",
+        "sha256": "5a6bd82a982f792d8fbd28f6e46f8ac2c7ff57d93acc4fbffc4f46ac54b4ffeb",
+        "uid": 1000
+      },
+      {
+        "bytes": 2222,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0004.json",
+        "sha256": "e7f3119d713337626fc1eafbb12a7d2fe09c3aee2a3da294f454fc9bb7019091",
+        "uid": 1000
+      },
+      {
+        "bytes": 2222,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0005.json",
+        "sha256": "806c5c4a374c2d1deafbe9c49f1ecdf262131343dc542d29c2eac9078da4eac1",
+        "uid": 1000
+      },
+      {
+        "bytes": 2222,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0006.json",
+        "sha256": "a3b217364e3b0fe45ded063e2f3c6f16949ed8cca2a6723af074e6eb05cc4635",
+        "uid": 1000
+      },
+      {
+        "bytes": 2222,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0007.json",
+        "sha256": "009c2f3847f796348f4a98f7a7dd709ef13f1b64f21183358a694588cccb7042",
+        "uid": 1000
+      },
+      {
+        "bytes": 2222,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0008.json",
+        "sha256": "8d8f41e83e0962c8d08f73a9ef4c15cde5014a7e944c728fb9afd7736d1ec4c1",
+        "uid": 1000
+      },
+      {
+        "bytes": 2222,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0009.json",
+        "sha256": "acc1c07423b99c39aec0793d9b00971939c18117602973c7cefe696b47c9727a",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0010.json",
+        "sha256": "aae2b693a6680f7363e1612147fd2f47cf2e55f89a2ef03f418519c1141a8331",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0011.json",
+        "sha256": "7847cdf810fa7102fcec7a941d9cfcda69958f3f3324755471cc48dfb5016403",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0012.json",
+        "sha256": "156bf9834a79f6887999eef6c6e83f6eae28d4c78302f26d580a73b18193baf2",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0013.json",
+        "sha256": "534b994ba76f8454693a16135672fdc70adb19301dc7db354e03bd9598034725",
+        "uid": 1000
+      },
+      {
+        "bytes": 2258,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0014.json",
+        "sha256": "ed4e2abe47a3f970f9f1866e093673d5d6ee63c9cca72e9fa2038774dbe4d3cf",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0015.json",
+        "sha256": "c7aa711723024ee407f7875f4c2372fe247477d3ecf5230e1114bb2173725228",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0016.json",
+        "sha256": "6b0b998f60dcdce135f5548cd0592a640337a46788b1662c3b8b6d72a691b6c9",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0017.json",
+        "sha256": "4b2e0f3a2c1407cc8aec8e16fad0aad63bb263b1e8d016b7638639ca06febdf0",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0018.json",
+        "sha256": "4f6c386cdd677f9eb813fdf1f6090548cb8bab9b877bcd7b63b4625de9222dca",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0019.json",
+        "sha256": "217cebc559cb82c175ef8d06b87032ea70675cb43bda3f07fe61ae07cd30bd23",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0020.json",
+        "sha256": "6b8bd70a4f120395490422777c26bfe7e3917455f69178f8d9424175f9631251",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0021.json",
+        "sha256": "8cf57bcaba0a259541beee4dbc0b6c1171e86472d9a1b24b3b8ab93b0a4d1292",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0022.json",
+        "sha256": "2c556e3791338111f3faa233480b429c05d7f1ed35b21c15a020454d982f1f6e",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0023.json",
+        "sha256": "24f53354188ecccc4e2c1ff24ebf58831a819f233ad36af179eb7b21705f65fe",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0024.json",
+        "sha256": "3adf78c79344cfcbb3994b68e2102cb6137603d1686d05d16f4ba74d094bc825",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0025.json",
+        "sha256": "44f04bd65098230ca46ecfc4dd123419b235510e04274ccca3b7e9b76b1c6051",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0026.json",
+        "sha256": "cbae041217e7f401b10ba15e93e6ab705d4754548ea7c97c1a789ab510ac2c00",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0027.json",
+        "sha256": "924512670cbbc54445b2be9e6841796cbc38b7553da3d31818fc006d39ed88a3",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0028.json",
+        "sha256": "e73fdcee8e4b83af5a5ed1e47c2bae5591658b5d658da6512cc9e0287968e8b8",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0029.json",
+        "sha256": "873613b74369cf5885b532065b2782f7ea436f2cc1b609b2361bb9c67fae1230",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0030.json",
+        "sha256": "e4cc6dedba766e2d73c08c35f0b23512ae529346f20b152b60db79f25a87318c",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0031.json",
+        "sha256": "6ecfa68ff7459d6745d9857a335c8680fb7688d7e48cc31499874e47484cab72",
+        "uid": 1000
+      },
+      {
+        "bytes": 2953,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0032.json",
+        "sha256": "9f24176a5cc416a53d28e3e6ffdf44a98c25e66959834ce488169eac32ef95ba",
+        "uid": 1000
+      },
+      {
+        "bytes": 2540,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0033.json",
+        "sha256": "c187561987734130c96eddc0ced0a1a1a918cac2c6b85fd37a1e78dec9226318",
+        "uid": 1000
+      },
+      {
+        "bytes": 2258,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0034.json",
+        "sha256": "a5d0f48bd6693ae6cbc4e9c07b7f79c72a7318c3497459819d76c152e7c60d50",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0035.json",
+        "sha256": "9b334efb9404b2ec677a99387bc3560654bfa22c7bfe7f73507dcf5d797fe8ce",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0036.json",
+        "sha256": "9eebdd703ba97e03dd0421f124b54a4cd5ce604e5dbc29cc70e34b2b208dc8ab",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0037.json",
+        "sha256": "bc605581fab5a7f107f1e211ebd885ff23e705a93074cc01331fc0f546d4d75c",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0038.json",
+        "sha256": "7fbbdd7dcb18a82e9d34b4a631404b65e7dec5e532c43b8366eedf0a27e32354",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0039.json",
+        "sha256": "d690d8cda34315f0129bb1a4ff520696c2306052ce2fba3e8ffbb7ec6d7ea037",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0040.json",
+        "sha256": "eefbf414510fb5ab307028248e6b887b19fbc830c0eb9836540a47e3011baa88",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0041.json",
+        "sha256": "9b8d236570ba97f0d5b908f37a57db212238e26eb4f146d16b67c9399b50adef",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0042.json",
+        "sha256": "1f326a62f6430444792d6eafe204c09ec11ba3f968887bda8768b2c152114983",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0043.json",
+        "sha256": "5ea5fe6ced84674760d50baece937007685a03f1523874b014ef212c96359e88",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0044.json",
+        "sha256": "0361a7675347e9e3cc48a9405d6fd26847250de0a21a620041fef0cec99cb8c4",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0045.json",
+        "sha256": "d3d4ff8405b142f02d644f106076edf5a60b4aca9257cd6bd1c4284cd65c2b5b",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0046.json",
+        "sha256": "94e91c1032b457278c3bd2890cc671ee6b3c16bdc6db0b79c2e87dd0e6ea9f18",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0047.json",
+        "sha256": "09cfedba39d36967d0587d0dbcb601d1d508056938a11f1d6be201d74d4b058c",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0048.json",
+        "sha256": "f68da3ab21bba151086ad4550cdc59a2dada2d3f92afed5b3da9313570d723e4",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0049.json",
+        "sha256": "a45b4d34435c67fcefa22a983af0cf78bb57883799c2ec412c79c919e47c9bc2",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0050.json",
+        "sha256": "045afdb2517c36e042c429c3196ffbc336b07f069172217fe81375c5833c2703",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0051.json",
+        "sha256": "2d698939d1d973e8300cf17fa7d53a731dd9caf7950688ed4544b857f2976078",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0052.json",
+        "sha256": "134f3e9d08332e1c4319a001fc7dbb08bb04a6129da502cc22163903476cb85e",
+        "uid": 1000
+      },
+      {
+        "bytes": 2258,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0053.json",
+        "sha256": "f4e30c81bc2776044d9540ab1250b51b19fada3df02217500d24772543a18c30",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0054.json",
+        "sha256": "24e7ddf75c676985875caa63decfdc3ebecafd540d1fdd046d0e6389b45ac42f",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0055.json",
+        "sha256": "513e7cd308d0b8023dd8d51eb4f4a5b2dbef7e2b5fe320b97a27e8590c4a3732",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0056.json",
+        "sha256": "ca66be9451da8757fb3955c43b17bf7757e4dfbb131ef026e56740879ca335a9",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0057.json",
+        "sha256": "42c89a4a89cd8750fd9fc7700ae2ef0680b05be56b8ad463e71552d23fb09d11",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0058.json",
+        "sha256": "69c0b8cf5d29e0cb5aa2708dfa13a67476efc3b993fcf1511c2f5745e1e91a7c",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0059.json",
+        "sha256": "758325d6dbe46ff2d1d410ef05f7211a82bb41cba5ddc633c5ab9d6c21741606",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0060.json",
+        "sha256": "d7ab386423e899f1a11020387e376057aa00b9b94a32ef276c106f7298df71c9",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0061.json",
+        "sha256": "a1cf04caf959e3ec5c7cecff98e527027789a61e0aecfd41ecaceef435dd6bd3",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0062.json",
+        "sha256": "b8b11913b5298698fc58ccb0538973eb0b70e1c8785e6845709bccd4e8970301",
+        "uid": 1000
+      },
+      {
+        "bytes": 2223,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/scheduler-observation-0063.json",
+        "sha256": "fc45bb06a1ff5b055de72f2048c2fc69b41eae22fab9a5185445cb44a32cd4d8",
+        "uid": 1000
+      },
+      {
+        "bytes": 5587,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/source-backup-receipt.json",
+        "sha256": "743d8026ed6b6315e937119c64832b108c62d2496b60f88f7e64ccc1c0652535",
+        "uid": 1000
+      },
+      {
+        "bytes": 28229,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/source-before/app/Helpers/ImageHelper.php",
+        "sha256": "b840aa320764dca8896512422456b39162a079d7428aab78b7ad1c7ec1beb637",
+        "uid": 1000
+      },
+      {
+        "bytes": 17594,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/source-before/app/Helpers/ProductionHelper.php",
+        "sha256": "fc14a5ff52714f311cc3f2bdcdf3410ade6927505bcc626eccbbc11f129d8f12",
+        "uid": 1000
+      },
+      {
+        "bytes": 14948,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/source-before/app/Http/Controllers/Admin/OrderImageController.php",
+        "sha256": "49c2925ad3dfb0aeea32f5baf98926a2cc5112ba543d9178c6297273ff6442f1",
+        "uid": 1000
+      },
+      {
+        "bytes": 32079,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/source-before/app/Http/Controllers/CartController.php",
+        "sha256": "713ae74db4410bb4ca22e5f4f3c77ddef17403004796a9e4418fe14ea7d6696a",
+        "uid": 1000
+      },
+      {
+        "bytes": 44433,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/source-before/app/Http/Controllers/Checkout/CheckoutController.php",
+        "sha256": "4b39e9381f728b8b4a0f8a828494827b0e2520ce80d0d36910b44185e6d5c2dd",
+        "uid": 1000
+      },
+      {
+        "bytes": 9957,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/source-before/app/Http/Controllers/TeamCustomizationController.php",
+        "sha256": "46c5f4079915e25f3466e0e98305918812376039546f91ed8a9f220737f56fc3",
+        "uid": 1000
+      },
+      {
+        "bytes": 3385,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/source-before/app/Http/Controllers/Webhooks/ShippoWebhookController.php",
+        "sha256": "d8d91199bc0ca810204a04b4452cbf460bb939020a8e21b46537736a1bd5acbd",
+        "uid": 1000
+      },
+      {
+        "bytes": 8990,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/source-before/app/Models/DtfImage.php",
+        "sha256": "14d6245a1ac65babfa6d06152bd9fc6692c9d33c5fe3ba5e2b8efabce728d0c2",
+        "uid": 1000
+      },
+      {
+        "bytes": 1043,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/source-before/app/Models/SavedImage.php",
+        "sha256": "0282da64284bdddc2ad11ccc48c3f32c8ef0443823bbb4dcbe1d05b7973d12f7",
+        "uid": 1000
+      },
+      {
+        "bytes": 8299,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/source-before/app/Services/ShippoService.php",
+        "sha256": "617673b6921ddf209c67534b6c42b13f23771a1d3fdea907f7583f7459e193c7",
+        "uid": 1000
+      },
+      {
+        "bytes": 10208,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/source-install-receipt.json",
+        "sha256": "b4963f1b8fa3a0a2373279632f40ffbaaa3770a83c692b50548a3fb891a97a5c",
+        "uid": 1000
+      },
+      {
+        "bytes": 53099,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/state.json",
+        "sha256": "c4818553b72c0da8f2df3a5f6376e737655b9e16b43e5068d7cb5e6a1bb0a9b0",
+        "uid": 1000
+      },
+      {
+        "bytes": 1723,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "deployment/under-gate-before-source-production-fpm-scope-receipt.json",
+        "sha256": "8893db5f2316ee788c4a5a6fbe4cadaf219cf9c7e6fc91c6b97e3bcb432464e6",
+        "uid": 1000
+      },
+      {
+        "bytes": 40050,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "release/candidate/app/Helpers/ImageHelper.php",
+        "sha256": "852eeb5843c27c8c8272adb8ebd0940e3961109ade2a727329b0c41f7c2ecede",
+        "uid": 1000
+      },
+      {
+        "bytes": 17948,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "release/candidate/app/Helpers/ProductionHelper.php",
+        "sha256": "8d0a18fcbe6c1297ac5f41c082100d9e6baa9ed4b7252ce5b36994a7c5d551a7",
+        "uid": 1000
+      },
+      {
+        "bytes": 15188,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "release/candidate/app/Http/Controllers/Admin/OrderImageController.php",
+        "sha256": "9567e7950999b7ea9b744e9cd59a8fa9e9563490ad8ce069549a4137c3687bcb",
+        "uid": 1000
+      },
+      {
+        "bytes": 36241,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "release/candidate/app/Http/Controllers/CartController.php",
+        "sha256": "deb8a5265bc371c24e358f59d2b12fb81d03d414e29f585f658f7d43b6aca051",
+        "uid": 1000
+      },
+      {
+        "bytes": 44572,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "release/candidate/app/Http/Controllers/Checkout/CheckoutController.php",
+        "sha256": "206dfc3c9e80cfe537971f7adee4d9120fe7fd3e6200c0b94d18fa5f4ff5d2b6",
+        "uid": 1000
+      },
+      {
+        "bytes": 11172,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "release/candidate/app/Http/Controllers/TeamCustomizationController.php",
+        "sha256": "ffff301f85fd02c0913d5d7f492b5a5f0661088aac8ba1f53973e563e06a89af",
+        "uid": 1000
+      },
+      {
+        "bytes": 3538,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "release/candidate/app/Http/Controllers/Webhooks/ShippoWebhookController.php",
+        "sha256": "cc82a885ac67dfda46d98f103d94c865c7c6a0961951b1234b5e6450dcf2a466",
+        "uid": 1000
+      },
+      {
+        "bytes": 9837,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "release/candidate/app/Models/DtfImage.php",
+        "sha256": "9f67088a0a6c760ebccf02a510d72fa0bafa6bf157ddcff712ce74af6b3c55ed",
+        "uid": 1000
+      },
+      {
+        "bytes": 1520,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "release/candidate/app/Models/SavedImage.php",
+        "sha256": "41b4ffcfa94ba9648b7c7e717efc1a82da37ed890d0ef31f96b00264b94f1a66",
+        "uid": 1000
+      },
+      {
+        "bytes": 9086,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "release/candidate/app/Services/ShippoService.php",
+        "sha256": "0bc3ebff9bf24406559c564ef659784c157573a1cac3b6eb6558022214c468ff",
+        "uid": 1000
+      },
+      {
+        "bytes": 2303,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "release/candidate/database/migrations/2026_10_01_120000_add_item_meta_to_savedimages_table.php",
+        "sha256": "992fbfe8086732e9bde10be89c3f52ddb4fef49edfdec12b744377c2e4181bbf",
+        "uid": 1000
+      },
+      {
+        "bytes": 7611,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "release/evidence-manifest.json",
+        "sha256": "0c474cf2ffeb0aebb70d0c99488619970f5650ce087ea5ec9f7c2c46b68a2c35",
+        "uid": 1000
+      },
+      {
+        "bytes": 2112,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "release/evidence/candidate-extraction.json",
+        "sha256": "1da01774ce214a27c126ecdd000fd28eeb796d0f1b5c2b7e3688e7cf7d2c36eb",
+        "uid": 1000
+      },
+      {
+        "bytes": 2035,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "release/evidence/candidate-verification.json",
+        "sha256": "3efc6019400adc32d6dc09e19798694f4edbfb442b56acbe06fd58293354332c",
+        "uid": 1000
+      },
+      {
+        "bytes": 0,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "release/evidence/installed-schema-after-staging.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "uid": 1000
+      },
+      {
+        "bytes": 14554,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "release/evidence/installed-schema-after-staging.stdout.txt",
+        "sha256": "190f8d9a13ca7c9c51599becf2391a2713dce4ca00735b74d8ca7e5f0562172b",
+        "uid": 1000
+      },
+      {
+        "bytes": 33592,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "release/evidence/installed-schema-state-receipt.json",
+        "sha256": "06c491dd789c935f4a315c8346df27e49af8dfdb2a25f7b26cb0f452a4a5f5fc",
+        "uid": 1000
+      },
+      {
+        "bytes": 36608,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "release/evidence/phase0-preflight-receipt.json",
+        "sha256": "edaaa889e2d15ac6a6808ca4ac1a733e0a2a91de4f1dfc14d48c778f682af3ef",
+        "uid": 1000
+      },
+      {
+        "bytes": 1609,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "release/evidence/phase0-production-fpm-scope-receipt.json",
+        "sha256": "a3d78b739266ca18dffe05a7a53a6907bc4afa9d9e94ca909665dba3519b78e3",
+        "uid": 1000
+      },
+      {
+        "bytes": 0,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "release/evidence/phase0-runtime-probe.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "uid": 1000
+      },
+      {
+        "bytes": 14554,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "release/evidence/phase0-runtime-probe.stdout.txt",
+        "sha256": "9b3eb1e4e099a2ae4560c3af839e5efa19a26e215208b6a2495e11cb2ffd0738",
+        "uid": 1000
+      },
+      {
+        "bytes": 2931,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "release/evidence/php-lint.json",
+        "sha256": "71fc8d2f31a6af0cee02c6ffef1c5b4e7549eca95abf65c1eab16ad58b832348",
+        "uid": 1000
+      },
+      {
+        "bytes": 497,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "release/evidence/php-lint.stderr.txt",
+        "sha256": "224966633323dba2d6288f1da5407205324b4c84e76419721bf80bae19e800cd",
+        "uid": 1000
+      },
+      {
+        "bytes": 2677,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "release/evidence/php-lint.stdout.txt",
+        "sha256": "650654f17f7ad51fad1223cb1d87adf639f5632a789c305d78c935f14a1d1c35",
+        "uid": 1000
+      },
+      {
+        "bytes": 2073,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "release/evidence/planned-install-metadata.json",
+        "sha256": "89f43a26aa802c21a6e34af8c82f01a2f9bc631cd457edd71ba251c7855a2ed3",
+        "uid": 1000
+      },
+      {
+        "bytes": 1614,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "release/evidence/post-phase1-production-fpm-scope-receipt.json",
+        "sha256": "650082593d2ee086d7683e8572edfc6489c98cb51f1a3122d0062237dab307d5",
+        "uid": 1000
+      },
+      {
+        "bytes": 11393,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "release/inputs/APPLICATION_MANIFEST.json",
+        "sha256": "2779d5466b6e295abda07d123334ced354a2119277bf3ffd3d7e1cd0512c2f88",
+        "uid": 1000
+      },
+      {
+        "bytes": 69829,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "release/inputs/laravel_dependency_gate.py",
+        "sha256": "b93c08f58a08333120369c1cc75c60631d621c3a8099ca3967065721c45679f5",
+        "uid": 1000
+      },
+      {
+        "bytes": 3480,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "release/inputs/laravel_fpm_opcache_probe.php",
+        "sha256": "b8b34f87d45a0c000cc0df7917496631320cfbdcca1ff44bc41741ce0d569262",
+        "uid": 1000
+      },
+      {
+        "bytes": 12007,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "release/inputs/laravel_log_guard.py",
+        "sha256": "75921c4a9f1b9a21d710c7792900014eb517f2e936a97c82ff542dd3c208dd28",
+        "uid": 1000
+      },
+      {
+        "bytes": 37980,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "release/inputs/laravel_nginx_identity.py",
+        "sha256": "1243fea2757aca89f586ec4b322b0d23ee1e19b2d027c21bd6523e71e6e6e8e0",
+        "uid": 1000
+      },
+      {
+        "bytes": 215040,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "release/inputs/production-alpha-transparency-b02fce32.tar",
+        "sha256": "3067bca578201a39254d8544b633a04ff6a9e43fc0de2a2783a95ccde9a1bfcd",
+        "uid": 1000
+      },
+      {
+        "bytes": 11685,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "release/inputs/production_alpha_activation_controls.py",
+        "sha256": "a2a09458289ccedf5384f000c534f23dfbb40aba9557f1a7736582456ab7c5bb",
+        "uid": 1000
+      },
+      {
+        "bytes": 16542,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "release/inputs/production_alpha_dependency_envelope.json",
+        "sha256": "04850fe3aef14981c92f5b2af373bd136cfb6fead456d86fcab7233acb009fd1",
+        "uid": 1000
+      },
+      {
+        "bytes": 2279,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "release/inputs/production_alpha_fpm_activation_probe.php",
+        "sha256": "d3f9ac27e72f009156aedd3afca57b4f9586ec64a860d2cfd9fe3a5143b2c759",
+        "uid": 1000
+      },
+      {
+        "bytes": 39363,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "release/inputs/production_alpha_gate_controls.py",
+        "sha256": "2719da67c6d425e5fa4bef70aade0789aba1deccfaf09f8992c8674883c65c00",
+        "uid": 1000
+      },
+      {
+        "bytes": 4552,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "release/inputs/production_alpha_process_scope_probe.php",
+        "sha256": "1dca015bffdaf4433ff00ecb0569faad0928c28a726b827f773d4cae4b4737c6",
+        "uid": 1000
+      },
+      {
+        "bytes": 40355,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "release/inputs/production_alpha_scheduler_guard.py",
+        "sha256": "d4334e0181ececbd76d140711998f1d143f648dc9a4de85f413f2083354b6489",
+        "uid": 1000
+      },
+      {
+        "bytes": 10443,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "release/inputs/production_alpha_scheduler_probe.php",
+        "sha256": "91e81065a4add34e916674c2a7fcc3ebe5f867324ec350dc9220214102cf0d80",
+        "uid": 1000
+      },
+      {
+        "bytes": 165913,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "release/inputs/production_alpha_transparency_deploy.py",
+        "sha256": "8a89a2252975563cb65a94e0677edfd49238ef31875644e6b59352da365bb830",
+        "uid": 1000
+      },
+      {
+        "bytes": 14398,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "release/inputs/production_alpha_transparency_runtime_probe.php",
+        "sha256": "839588fe2930e1e673c507b05f7ccf15d7166329d66c1563775154cd7030d200",
+        "uid": 1000
+      },
+      {
+        "bytes": 784,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "release/phase1-complete.json",
+        "sha256": "2f0f19c1bd8056a7e27d479fb26232d3702a38b1d7d18451a5ec9506b9fd2870",
+        "uid": 1000
+      },
+      {
+        "bytes": 32587,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "release/release-receipt.json",
+        "sha256": "95097dc69ec2e7390a9bd00b3af00393165e84d3a1a286a0c371b25a7e6bbab2",
+        "uid": 1000
+      },
+      {
+        "bytes": 6233,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "stage-evidence/complete-stage-SHA256SUMS",
+        "sha256": "f99460d185510bdf12d05399f72da1df75f0ed115bcf06db99d1e662f2c44d25",
+        "uid": 1000
+      },
+      {
+        "bytes": 13727,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "stage-evidence/complete-stage-evidence-manifest.json",
+        "sha256": "d5c0ebedaa3a0bb39a358d7f343f4efb242fcedf937674907160f234346de627",
+        "uid": 1000
+      },
+      {
+        "bytes": 1029,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "stage-evidence/one-stage-attempt.receipt.json",
+        "sha256": "b77c1e315cbd210ed6da6316fd79d69de278163a00d9ecaf4af5df884249133e",
+        "uid": 1000
+      },
+      {
+        "bytes": 1571,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "stage-evidence/one-stage-attempt.started.json",
+        "sha256": "b97d3e056f34af3e7cfed4eabba727046662694b42654b7ad7367c80d425808b",
+        "uid": 1000
+      },
+      {
+        "bytes": 0,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "stage-evidence/one-stage-attempt.stderr.private",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "uid": 1000
+      },
+      {
+        "bytes": 291,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "stage-evidence/one-stage-attempt.stdout.private",
+        "sha256": "4cd2f9c394268e8d313466aca95a8e7198aff4253b0b00425ed4a3824bd9f254",
+        "uid": 1000
+      },
+      {
+        "bytes": 1638,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "stage-evidence/post-staging-read-only-verification-production-fpm-scope-receipt.json",
+        "sha256": "1b74f8a516800cb3456ffde05dbdf0d778336b0ba2365c7357ea1830c51ce107",
+        "uid": 1000
+      },
+      {
+        "bytes": 76433,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "stage-evidence/post-staging-read-only-verification.json",
+        "sha256": "4114031d02ee04e3ae7cd9eaa140b81e3bbb7dc4dac7253fab72800b687e9544",
+        "uid": 1000
+      },
+      {
+        "bytes": 0,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "stage-evidence/post-staging-runtime-probe.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "uid": 1000
+      },
+      {
+        "bytes": 14554,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "stage-evidence/post-staging-runtime-probe.stdout.txt",
+        "sha256": "5a7f2d6b2504bd62a39ff66fc758c72925c8af89a6edc96ab6368b094c694a83",
+        "uid": 1000
+      },
+      {
+        "bytes": 6192,
+        "gid": 1000,
+        "mode": "0600",
+        "path": "stage-evidence/reviewed-input-upload-receipt.json",
+        "sha256": "c301bba04b6f22818ddf91879406515cef469e0d4382e3dc368c62e98981b7fb",
+        "uid": 1000
+      }
+    ],
+    "files_verified": 256,
+    "logical_roots": {
+      "attempt": "/var/www/buy-dtf/storage/app/private/operations/production-alpha-transparency-v6-cutover-attempts/95097dc69ec2-20261006T030249Z-1791255769666163979",
+      "deployment": "/var/www/buy-dtf/storage/app/private/operations/production-alpha-transparency-v6-rollbacks/b02fce32-20261006T030249Z",
+      "release": "/var/www/buy-dtf/storage/app/private/operations/production-alpha-transparency-v6-releases/b02fce32-20261006T024438Z",
+      "stage-evidence": "/var/www/buy-dtf/storage/app/private/operations/production-alpha-transparency-v6-staging-inputs/53f44905f985-20261006T024324Z-1791254604037852094/evidence"
+    },
+    "manifest_and_checksum_artifacts": [
+      {
+        "path": "attempt/independent-review-evidence/complete-cutover-evidence-manifest.json",
+        "sha256": "e258205c9e0413774f562468a1d9243438283d399687fdc802c7114015a301ff"
+      },
+      {
+        "path": "attempt/independent-review-evidence/SHA256SUMS",
+        "sha256": "ec9c8d27dfe64a458c99f8a7f6879677303c5d7cef9af308ced9004a51e309c3"
+      }
+    ],
+    "original_complete_manifest_sha256": "e258205c9e0413774f562468a1d9243438283d399687fdc802c7114015a301ff",
+    "original_sha256sums_sha256": "ec9c8d27dfe64a458c99f8a7f6879677303c5d7cef9af308ced9004a51e309c3"
+  },
+  "reviewed_execution_commit": "53f44905f985b4967789f6fe2e1f5aa1d4b7a127"
+}
