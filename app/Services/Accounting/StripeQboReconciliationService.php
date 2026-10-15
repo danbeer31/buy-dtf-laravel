@@ -9,6 +9,7 @@ use App\Models\StripePayout;
 use App\Models\StripePayoutEntry;
 use App\Services\QboService;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class StripeQboReconciliationService
 {
@@ -31,7 +32,7 @@ class StripeQboReconciliationService
     public function run(array $options = []): array
     {
         $businessId = isset($options['business_id']) ? (int) $options['business_id'] : null;
-        $scope = (string) ($options['scope'] ?? ($options['as_of_date'] ? 'as_of' : 'current'));
+        $scope = (string) ($options['scope'] ?? (!empty($options['as_of_date']) ? 'as_of' : 'current'));
         $toleranceCents = (int) ($options['tolerance_cents'] ?? 1);
         $persist = (bool) ($options['persist'] ?? true);
         $asOfDate = !empty($options['as_of_date']) ? Carbon::parse((string) $options['as_of_date']) : null;
@@ -73,15 +74,37 @@ class StripeQboReconciliationService
             $actualCents = $this->toCents($actualBalance);
 
             $difference = $actualCents - $expectedCents;
-            $status = abs($difference) <= $toleranceCents ? 'balanced' : 'mismatch';
+            $duplicateGroups = PaymentInfo::query()
+                ->select('processor_confirm')
+                ->selectRaw('COUNT(*) AS copies')
+                ->where('processor', 'Stripe')
+                ->whereIn('status', ['complete', 'paid'])
+                ->whereNotNull('processor_confirm')
+                ->groupBy('processor_confirm')
+                ->havingRaw('COUNT(*) > 1')
+                ->get();
+            $duplicateRows = $duplicateGroups->sum(fn ($group) => (int) $group->copies - 1);
+            $pendingCompletions = DB::connection((new PaymentInfo())->getConnectionName())
+                ->table('stripe_payment_completions')
+                ->whereIn('state', ['claimed', 'processing', 'needs_review'])
+                ->count();
+            $status = abs($difference) <= $toleranceCents && $duplicateRows === 0 && $pendingCompletions === 0
+                ? 'balanced' : 'mismatch';
 
             $result['expected_holding_amount_cents'] = $expectedCents;
             $result['actual_holding_amount_cents'] = $actualCents;
             $result['difference_amount_cents'] = $difference;
             $result['status'] = $status;
+            if ($duplicateRows || $pendingCompletions) {
+                $result['notes'] = "Accounting review required: {$duplicateRows} extra Stripe payment rows across "
+                    . $duplicateGroups->count() . " PaymentIntents; {$pendingCompletions} incomplete or uncertain completions.";
+            }
             $result['meta'] = array_merge($components['meta'], [
                 'holding_account_id' => (string) $holdingAccountId,
                 'actual_scope' => 'qbo_account_balance',
+                'duplicate_stripe_payment_groups' => $duplicateGroups->count(),
+                'duplicate_stripe_payment_rows' => $duplicateRows,
+                'pending_stripe_completions' => $pendingCompletions,
             ]);
         } catch (\Throwable $e) {
             $result['status'] = 'error';
