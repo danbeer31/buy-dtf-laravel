@@ -178,26 +178,32 @@
 
         let updating = false;
         const clamp = n => Math.min(MAX, Math.max(MIN, round3(n)));
-        const fmt   = n => String(clamp(n)).replace(/\.?0+$/,'');
+        const fmt   = n => String(clamp(n));
+
+        function currentRatio() {
+            const locked = toNum(card.dataset.lockRatio, 0);
+            return locked > 0 ? locked : ratio;
+        }
 
         function syncFromWidth() {
             if (!lock.checked || updating) return;
             const W = toNum(wInp.value, MIN);
             updating = true;
-            hInp.value = fmt(W / (ratio || 1));
+            hInp.value = fmt(W / currentRatio());
             updating = false;
         }
         function syncFromHeight() {
             if (!lock.checked || updating) return;
             const H = toNum(hInp.value, MIN);
             updating = true;
-            wInp.value = fmt(H * (ratio || 1));
+            wInp.value = fmt(H * currentRatio());
             updating = false;
         }
         function freezeCurrentRatio() {
             const W = toNum(wInp.value, MIN), H = toNum(hInp.value, MIN);
             if (H > 0) ratio = W / H;
             card.dataset.ratio = String(ratio);
+            card.dataset.lockRatio = String(ratio);
         }
 
         // Events

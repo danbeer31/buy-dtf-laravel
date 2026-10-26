@@ -378,7 +378,7 @@
                 return Number.isFinite(n) ? n : d;
             };
             const clamp = (n) => Math.min(MAX, Math.max(MIN, n));
-            const fmt = (n) => String(clamp(Math.round(n * 1000) / 1000)).replace(/\.?0+$/, '');
+            const fmt = (n) => String(clamp(Math.round(n * 1000) / 1000));
 
             function getCard(el) {
                 return el?.closest?.('.image-card') || null;

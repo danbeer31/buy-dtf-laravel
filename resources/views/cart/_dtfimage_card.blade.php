@@ -80,13 +80,13 @@
                     @else
                         <div class="col-4">
                             <label class="form-label small fw-semibold text-muted mb-1">Width (in)</label>
-                            <input class="form-control form-control-sm input-width border-0 bg-light" type="number" step="0.25" min="0.25"
+                            <input class="form-control form-control-sm input-width border-0 bg-light" type="number" step="0.001" min="0.25"
                                    name="width"
                                    value="{{ number_format($it['width'], 2, '.', '') }}">
                         </div>
                         <div class="col-4">
                             <label class="form-label small fw-semibold text-muted mb-1">Height (in)</label>
-                            <input class="form-control form-control-sm input-height border-0 bg-light" type="number" step="0.25" min="0.25"
+                            <input class="form-control form-control-sm input-height border-0 bg-light" type="number" step="0.001" min="0.25"
                                    name="height"
                                    value="{{ number_format($it['height'], 2, '.', '') }}">
                         </div>
@@ -118,21 +118,18 @@
                                 {{ $isDisabled ? 'disabled' : '' }}
                                 onchange="if(this.value) {
                                     const [wVal, hVal] = this.value.split('|');
+                                    const width=Number(wVal), height=Number(hVal);
                                     const f=this.closest('form');
                                     const wInp=f.querySelector('.input-width');
                                     const hInp=f.querySelector('.input-height');
                                     const card=f.closest('.image-card');
-                                    if(card && parseFloat(hVal)>0){
-                                        card.dataset.ratio=String(parseFloat(wVal)/parseFloat(hVal));
-                                    }
-                                    wInp.dispatchEvent(new Event('focusin', {bubbles:true}));
-                                    hInp.dispatchEvent(new Event('focusin', {bubbles:true}));
+                                    if(!card || !Number.isFinite(width) || !Number.isFinite(height) || width<=0 || height<=0) return;
                                     wInp.value=wVal;
                                     hInp.value=hVal;
-                                    wInp.dispatchEvent(new Event('input', {bubbles:true}));
-                                    hInp.dispatchEvent(new Event('input', {bubbles:true}));
-                                    wInp.dispatchEvent(new Event('focusout', {bubbles:true}));
-                                    hInp.dispatchEvent(new Event('focusout', {bubbles:true}));
+                                    card.dataset.ratio=String(width/height);
+                                    card.dataset.lockRatio=card.dataset.ratio;
+                                    clearTimeout(card._saveTimer);
+                                    if(typeof window.autosave === 'function') window.autosave(card);
                                 }">
                             <option value="">Select previous size...</option>
                             @foreach($it['other_sizes'] as $os)
