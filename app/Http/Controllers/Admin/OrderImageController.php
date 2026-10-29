@@ -356,6 +356,7 @@ class OrderImageController extends Controller
                 (string)@filemtime($originalAbs),
                 (string)($image->updated_at?->timestamp ?? ''),
                 $image->productionAlphaPolicyIdentity(),
+                'alpha-bounds-v2',
             ])
         );
 

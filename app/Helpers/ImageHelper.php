@@ -944,12 +944,16 @@ class ImageHelper
         $mask = clone $image;
         $mask->setImagePage(0, 0, 0, 0);
         $mask->separateImageChannel(Imagick::CHANNEL_ALPHA);
-        $mask->setImageBackgroundColor(new ImagickPixel('black'));
+        // trimImage uses the corner pixel as its border color. An opaque
+        // corner would otherwise cause it to remove valid edge artwork.
+        $mask->setImageBackgroundColor(new ImagickPixel('white'));
+        $mask->setImageAlphaChannel(Imagick::ALPHACHANNEL_REMOVE);
+        $mask->borderImage(new ImagickPixel('white'), 1, 1);
         $mask->trimImage(0);
         $page = $mask->getImagePage();
         $bounds = [
-            'x' => max(0, (int) ($page['x'] ?? 0)),
-            'y' => max(0, (int) ($page['y'] ?? 0)),
+            'x' => max(0, (int) ($page['x'] ?? 0) - 1),
+            'y' => max(0, (int) ($page['y'] ?? 0) - 1),
             'width' => $mask->getImageWidth(),
             'height' => $mask->getImageHeight(),
         ];

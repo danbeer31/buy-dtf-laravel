@@ -109,6 +109,37 @@ class ProductionAlphaNormalizationTest extends TestCase
         }
     }
 
+    public function test_opaque_top_edge_is_preserved_by_alpha_bounds_and_production_render(): void
+    {
+        $source = $this->temporaryDirectory.'/opaque-top-edge.png';
+        $artwork = imagecreatetruecolor(12, 18);
+        imagealphablending($artwork, false);
+        imagesavealpha($artwork, true);
+        $transparent = imagecolorallocatealpha($artwork, 0, 0, 0, 127);
+        $yellow = imagecolorallocatealpha($artwork, 255, 210, 45, 0);
+        imagefilledrectangle($artwork, 0, 0, 11, 17, $transparent);
+        imagefilledrectangle($artwork, 0, 0, 11, 3, $yellow);
+        imagefilledrectangle($artwork, 4, 3, 7, 17, $yellow);
+        self::assertTrue(imagepng($artwork, $source));
+        imagedestroy($artwork);
+
+        $expectedBounds = ['x' => 0, 'y' => 0, 'width' => 12, 'height' => 18];
+        foreach (['imagick', 'gd'] as $renderer) {
+            $bounds = ImageHelper::productionAlphaBounds($source, 128, $renderer);
+            self::assertTrue($bounds['success'] ?? false);
+            self::assertSame($expectedBounds, array_intersect_key($bounds, $expectedBounds));
+
+            $output = $this->temporaryDirectory."/opaque-top-edge-$renderer.png";
+            $result = ImageHelper::prepareForProduction($source, $output, 12 / 300, 18 / 300, 300, 128, $renderer);
+            self::assertTrue($result['success'] ?? false);
+            self::assertSame([12, 18], array_slice(getimagesize($output), 0, 2));
+            self::assertSame(255, $this->alphaAt($output, 0, 0), "$renderer removed the top-left edge");
+            self::assertSame(255, $this->alphaAt($output, 11, 2), "$renderer removed the top-right edge");
+            self::assertSame(255, $this->alphaAt($output, 5, 17), "$renderer removed the stem");
+            self::assertSame(0, $this->alphaAt($output, 0, 6), "$renderer filled transparent artwork");
+        }
+    }
+
     public function test_threshold_cutoff_preserves_128_and_discards_127_for_both_renderers(): void
     {
         $source = $this->fixturePath('antialiased-edges.png');

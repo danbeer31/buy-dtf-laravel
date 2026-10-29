@@ -98,6 +98,7 @@ class ProductionComparisonAlphaPolicyTest extends TestCase
                     (string) filemtime($sourcePath),
                     (string) ($image->updated_at?->timestamp ?? ''),
                     $image->productionAlphaPolicyIdentity(),
+                    'alpha-bounds-v2',
                 ]));
                 $this->assertSame(
                     'production_'.$image->id.'_'.$expectedVersion.'.png',

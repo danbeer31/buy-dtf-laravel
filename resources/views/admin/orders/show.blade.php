@@ -398,7 +398,7 @@
                         <div class="small text-muted" id="compareMeta"></div>
                         <div class="d-flex align-items-center gap-2">
                             <a id="compareDownloadProduction" href="#" class="btn btn-sm btn-outline-primary disabled" download>
-                                <i class="bi bi-download me-1"></i> Download Production
+                                <i class="bi bi-download me-1"></i> Download Preview
                             </a>
                             <label for="compareBg" class="small text-muted mb-0">Background</label>
                             <select id="compareBg" class="form-select form-select-sm" style="width: 170px;">
@@ -423,11 +423,11 @@
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="small text-uppercase text-muted fw-bold mb-2">Production Output (Dropbox)</div>
+                            <div class="small text-uppercase text-muted fw-bold mb-2">Production Preview</div>
                             <div class="small text-muted mb-2" id="compareProductionMeta"></div>
                             <div class="compare-frame rounded border p-2 d-flex align-items-center justify-content-center" data-frame>
                                 <div class="compare-stage position-relative" data-stage style="padding-right: 34px; padding-bottom: 30px; display: inline-block;">
-                                    <img id="compareProcessedImg" src="" alt="Processed" class="img-fluid d-block" style="max-height: 65vh;">
+                                    <img id="compareProcessedImg" src="" alt="Production preview" class="img-fluid d-block" style="max-height: 65vh;">
                                     <canvas class="compare-ruler position-absolute" data-ruler-bottom style="left: 0; bottom: 0; height: 30px; pointer-events: none;"></canvas>
                                     <canvas class="compare-ruler position-absolute" data-ruler-right style="right: 0; top: 0; width: 34px; pointer-events: none;"></canvas>
                                 </div>
